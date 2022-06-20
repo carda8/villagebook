@@ -33,9 +33,6 @@ const Main = ({navigation}) => {
           style={{flex: 1, backgroundColor: 'tomato'}}
         />
       </View>
-      <View style={{backgroundColor: 'gray'}}>
-        <Text>hihihihihi</Text>
-      </View>
     </SafeAreaView>
   );
 };

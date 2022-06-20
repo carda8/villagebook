@@ -2,16 +2,19 @@ import React from 'react';
 import {Image, Pressable, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-const Header = ({title, navigation}) => {
+const Header = ({title, navigation, style}) => {
   return (
-    <SafeAreaView
-      style={{
-        width: '100%',
-        height: 50,
-        backgroundColor: 'gray',
-        alignItems: 'center',
-        flexDirection: 'row',
-      }}>
+    <View
+      style={[
+        {
+          width: '100%',
+          height: 30,
+          backgroundColor: 'rgba(52, 52, 52, 0.0)',
+          alignItems: 'center',
+          flexDirection: 'row',
+        },
+        style,
+      ]}>
       <Pressable
         hitSlop={15}
         onPress={() => {
@@ -19,7 +22,7 @@ const Header = ({title, navigation}) => {
         }}>
         <Image
           source={require('~/assets/btn_top_left.png')}
-          style={{height: 50}}
+          style={{height: 30}}
           resizeMode={'contain'}
         />
       </Pressable>
@@ -38,7 +41,7 @@ const Header = ({title, navigation}) => {
           {title}
         </Text>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

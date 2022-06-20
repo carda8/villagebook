@@ -2,26 +2,25 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Animated, Pressable} from 'react-native';
-import Header from '../component/Header';
-import CallMain from '../screens/call/CallMain';
-import Main from '../screens/home/Main';
+import MenuTopFirst from '../screens/menu/MenuTopFirst';
 
 const Tab = createMaterialTopTabNavigator();
 
-const CallTopNavigator = ({navigation}) => {
+const MenuTopNavigator = ({navigation}) => {
   const tabRef = useRef(0);
   return (
     <>
-      <Header title={'CALL 메인'} navigation={navigation} />
       <Tab.Navigator
-        initialRouteName="CallMain"
+        // initialLayout={{height: 450}}
+        // style={{height: 500}}
+        initialRouteName="call11"
         screenOptions={{
           tabBarScrollEnabled: true,
           tabBarItemStyle: {
             width: 'auto',
           },
           tabBarLabelStyle: {
-            color: 'red',
+            color: 'orange',
           },
           tabBarIndicatorStyle: {
             height: 30,
@@ -83,19 +82,12 @@ const CallTopNavigator = ({navigation}) => {
             );
           },
         }}>
-        <Tab.Screen name="Call1" component={CallMain} />
-        <Tab.Screen name="Call2" component={CallMain} />
-        <Tab.Screen name="Call3" component={CallMain} />
-        <Tab.Screen name="Call4" component={CallMain} />
-        <Tab.Screen name="Call5" component={CallMain} />
-        <Tab.Screen name="Call6" component={CallMain} />
-        <Tab.Screen name="Call7" component={CallMain} />
-        <Tab.Screen name="Call8" component={CallMain} />
-        <Tab.Screen name="Call9" component={CallMain} />
-        <Tab.Screen name="Call0" component={CallMain} />
+        <Tab.Screen name="call11" component={MenuTopFirst} />
+        <Tab.Screen name="call22" component={MenuTopFirst} />
+        <Tab.Screen name="call33" component={MenuTopFirst} />
       </Tab.Navigator>
     </>
   );
 };
 
-export default CallTopNavigator;
+export default MenuTopNavigator;

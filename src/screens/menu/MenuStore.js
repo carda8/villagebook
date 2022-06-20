@@ -2,17 +2,17 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Animated, Pressable} from 'react-native';
-import Header from '../component/Header';
-import CallMain from '../screens/call/CallMain';
-import Main from '../screens/home/Main';
+import Header from '../../component/Header';
+import CallMain from '../call/CallMain';
+import MenuMain from './MenuMain';
 
 const Tab = createMaterialTopTabNavigator();
 
-const CallTopNavigator = ({navigation}) => {
+const MenuStroe = ({navigation}) => {
   const tabRef = useRef(0);
   return (
     <>
-      <Header title={'CALL 메인'} navigation={navigation} />
+      <Header title={'MENU 메인'} navigation={navigation} />
       <Tab.Navigator
         initialRouteName="CallMain"
         screenOptions={{
@@ -83,19 +83,13 @@ const CallTopNavigator = ({navigation}) => {
             );
           },
         }}>
-        <Tab.Screen name="Call1" component={CallMain} />
-        <Tab.Screen name="Call2" component={CallMain} />
-        <Tab.Screen name="Call3" component={CallMain} />
-        <Tab.Screen name="Call4" component={CallMain} />
-        <Tab.Screen name="Call5" component={CallMain} />
-        <Tab.Screen name="Call6" component={CallMain} />
-        <Tab.Screen name="Call7" component={CallMain} />
-        <Tab.Screen name="Call8" component={CallMain} />
-        <Tab.Screen name="Call9" component={CallMain} />
-        <Tab.Screen name="Call0" component={CallMain} />
+        <Tab.Screen name="Call1" component={MenuMain} />
+        <Tab.Screen name="Call2" component={MenuMain} />
+        <Tab.Screen name="Call3" component={MenuMain} />
+        <Tab.Screen name="Call4" component={MenuMain} />
       </Tab.Navigator>
     </>
   );
 };
 
-export default CallTopNavigator;
+export default MenuStroe;

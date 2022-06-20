@@ -4,54 +4,34 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header';
 import commonStyles from '../../styles/commonStyle';
 
-const CallMain = ({navigation}) => {
+const MenuMain = ({navigation}) => {
   return (
     <SafeAreaView
       style={{
         ...commonStyles.safeAreaStyle,
       }}>
-      <View style={{flexDirection: 'row', flex: 1}}>
+      <View style={{flexDirection: 'column', flex: 1}}>
         <View style={{flex: 1}}>
           <Pressable
             onPress={() => {
-              navigation.navigate('MenuStore');
+              navigation.navigate('MenuDetail');
             }}
             style={{
               flex: 1,
               backgroundColor: 'tomato',
-              margin: 20,
+              margin: 4,
             }}></Pressable>
           <Pressable
             style={{
               flex: 1,
               backgroundColor: 'tomato',
-              margin: 20,
+              margin: 4,
             }}></Pressable>
           <Pressable
             style={{
               flex: 1,
               backgroundColor: 'tomato',
-              margin: 20,
-            }}></Pressable>
-        </View>
-        <View style={{flex: 1}}>
-          <Pressable
-            style={{
-              flex: 1,
-              backgroundColor: 'tomato',
-              margin: 20,
-            }}></Pressable>
-          <Pressable
-            style={{
-              flex: 1,
-              backgroundColor: 'tomato',
-              margin: 20,
-            }}></Pressable>
-          <Pressable
-            style={{
-              flex: 1,
-              backgroundColor: 'tomato',
-              margin: 20,
+              margin: 4,
             }}></Pressable>
         </View>
         <View style={{flex: 1}}>
@@ -59,19 +39,19 @@ const CallMain = ({navigation}) => {
             style={{
               flex: 1,
               backgroundColor: 'tomato',
-              margin: 20,
+              margin: 4,
             }}></Pressable>
           <Pressable
             style={{
               flex: 1,
               backgroundColor: 'tomato',
-              margin: 20,
+              margin: 4,
             }}></Pressable>
           <Pressable
             style={{
               flex: 1,
               backgroundColor: 'tomato',
-              margin: 20,
+              margin: 4,
             }}></Pressable>
         </View>
       </View>
@@ -79,4 +59,4 @@ const CallMain = ({navigation}) => {
   );
 };
 
-export default CallMain;
+export default MenuMain;
