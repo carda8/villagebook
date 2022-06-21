@@ -17,6 +17,7 @@ import Test from '../../Test';
 
 const MenuDetail = ({navigation}) => {
   const [index, setIndex] = useState(0);
+  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const [routes] = useState([
     {key: 'first', title: 'First'},
     {key: 'second', title: 'Second'},
@@ -34,92 +35,37 @@ const MenuDetail = ({navigation}) => {
           flexDirection: 'row',
           opacity: trigger ? 1 : 0,
           backgroundColor: 'white',
-        }}
-      >
-        <Pressable
-          onPress={() => {
-            setSelected({idx: 0, isScrolling: false});
-            focusTarget.current[0].measureLayout(
-              scrollRef.current,
-              (left, top, width, height) => {
-                scrollRef.current.scrollTo({
-                  x: 0,
-                  y: top - 90,
-                  animated: true,
-                });
-                console.log('position', left, top, width, height);
-              },
-            );
-          }}
-          style={{
-            flex: 1,
-            backgroundColor: selected.idx === 0 ? 'tomato' : 'gray',
-            margin: 10,
-            borderRadius: 30,
-          }}
-        ></Pressable>
-        <Pressable
-          onPress={() => {
-            setSelected({idx: 1, isScrolling: false});
-            focusTarget.current[1].measureLayout(
-              scrollRef.current,
-              (left, top, width, height) => {
-                scrollRef.current.scrollTo({
-                  x: 0,
-                  y: top - 100,
-                  animated: true,
-                });
-                console.log('position', left, top, width, height);
-              },
-            );
-          }}
-          style={{
-            flex: 1,
-            backgroundColor: selected.idx === 1 ? 'tomato' : 'gray',
-            margin: 10,
-            borderRadius: 30,
-          }}
-        ></Pressable>
-        <Pressable
-          onPress={() => {
-            setSelected({idx: 2, isScrolling: false});
-            focusTarget.current[2].measureLayout(
-              scrollRef.current,
-              (left, top, width, height) => {
-                scrollRef.current.scrollTo({
-                  x: 0,
-                  y: top - 100,
-                  animated: true,
-                });
-                console.log('position', left, top, width, height);
-              },
-            );
-          }}
-          style={{
-            flex: 1,
-            backgroundColor: selected.idx === 2 ? 'tomato' : 'gray',
-            margin: 10,
-            borderRadius: 30,
-          }}
-        ></Pressable>
-        <Pressable
-          onPress={() => {
-            setSelected({idx: 3, isScrolling: false});
-            focusTarget.current[3].measureLayout(
-              scrollRef.current,
-              (left, top, width, height) => {
-                scrollRef.current.scrollTo({x: 0, y: top - 40, animated: true});
-                console.log('position', left, top, width, height);
-              },
-            );
-          }}
-          style={{
-            flex: 1,
-            backgroundColor: selected.idx === 3 ? 'tomato' : 'gray',
-            margin: 10,
-            borderRadius: 30,
-          }}
-        ></Pressable>
+        }}>
+        <ScrollView
+          horizontal
+          hitSlop={20}
+          showsHorizontalScrollIndicator={false}>
+          {arr.map((item, index) => (
+            <Pressable
+              key={index}
+              onPress={() => {
+                focusTarget.current[index].measureLayout(
+                  scrollRef.current,
+                  (left, top, width, height) => {
+                    scrollRef.current.scrollTo({
+                      x: 0,
+                      y: top - 90,
+                      animated: true,
+                    });
+                    console.log('position', left, top, width, height);
+                  },
+                );
+                setSelected({idx: index, isScrolling: false});
+              }}
+              style={{
+                height: 35,
+                width: 50,
+                backgroundColor: selected.idx === index ? 'tomato' : 'gray',
+                margin: 10,
+                borderRadius: 30,
+              }}></Pressable>
+          ))}
+        </ScrollView>
       </View>
     );
   };
@@ -161,74 +107,32 @@ const MenuDetail = ({navigation}) => {
               }}
               onScroll={e => {
                 const positionY = e.nativeEvent.contentOffset.y;
-                // console.log(e.nativeEvent.contentOffset);
                 if (positionY >= temp && trigger === false) setTrigger(true);
                 if (positionY <= temp && trigger === true) setTrigger(false);
                 if (selected.isScrolling && index === 0) {
-                  focusTarget.current[0].measureLayout(
-                    scrollRef.current,
-                    (left, top, width, height) => {
-                      if (
-                        positionY > top - 100 &&
-                        positionY < top + 30 &&
-                        // positionY < top + height - 100 &&
-                        selected.idx !== 0
-                      ) {
-                        setSelected({...selected, idx: 0});
-                        console.log('1', positionY);
-                      }
-                    },
-                  );
-                  focusTarget.current[1].measureLayout(
-                    scrollRef.current,
-                    (left, top, width, height) => {
-                      if (
-                        positionY > top - 100 &&
-                        positionY < top + 30 &&
-                        // positionY < top + height - 80 &&
-                        selected.idx !== 1
-                      ) {
-                        setSelected({...selected, idx: 1});
-                        console.log('2', positionY, top, height);
-                      }
-                    },
-                  );
-                  focusTarget.current[2].measureLayout(
-                    scrollRef.current,
-                    (left, top, width, height) => {
-                      if (
-                        positionY > top - 100 &&
-                        positionY < top + 30 &&
-                        selected.idx !== 2
-                      ) {
-                        setSelected({...selected, idx: 2});
-                        console.log('3', positionY, top, height);
-                      }
-                    },
-                  );
-                  focusTarget.current[3].measureLayout(
-                    scrollRef.current,
-                    (left, top, width, height) => {
-                      if (
-                        positionY > top - 100 &&
-                        positionY < top + 30 &&
-                        selected.idx !== 3
-                      ) {
-                        setSelected({...selected, idx: 3});
-                        console.log('4', positionY, top, height);
-                      }
-                    },
-                  );
+                  arr.map((item, index) => {
+                    focusTarget.current[index].measureLayout(
+                      scrollRef.current,
+                      (left, top, width, height) => {
+                        if (
+                          positionY > top - 100 &&
+                          positionY < top + 30 &&
+                          selected.idx !== index
+                        ) {
+                          setSelected({...selected, idx: index});
+                          console.log('1', positionY);
+                        }
+                      },
+                    );
+                  });
                 }
-              }}
-            >
+              }}>
               <Swiper
                 loop
                 autoplay
                 showsPagination={false}
                 removeClippedSubviews={false}
-                style={{height: 300}}
-              >
+                style={{height: 300}}>
                 <View style={styles.slide1}>
                   <Text style={styles.text}>Hello Swiper</Text>
                 </View>
@@ -246,8 +150,7 @@ const MenuDetail = ({navigation}) => {
                   height: 200,
                   marginHorizontal: 20,
                   backgroundColor: 'gray',
-                }}
-              >
+                }}>
                 <Text style={{fontSize: 30, textAlign: 'center'}}>TITLE</Text>
               </View>
               <View
@@ -257,8 +160,7 @@ const MenuDetail = ({navigation}) => {
                   height: 40,
                   marginHorizontal: 20,
                   backgroundColor: 'gray',
-                }}
-              >
+                }}>
                 <Text style={{fontSize: 20, textAlign: 'center'}}>COUPONE</Text>
               </View>
               <View
@@ -268,11 +170,11 @@ const MenuDetail = ({navigation}) => {
                   height: 200,
                   marginHorizontal: 20,
                   backgroundColor: 'gray',
-                }}
-              >
+                }}>
                 <Text style={{fontSize: 20, textAlign: 'center'}}>DETAIL</Text>
               </View>
               <TabView
+                swipeEnabled={false}
                 renderScene={renderScene}
                 style={{
                   height: 100,
@@ -301,24 +203,16 @@ const MenuDetail = ({navigation}) => {
                   style={{flex: 1, top: -50}}
                   onLayout={e => {
                     setTemp(e.nativeEvent.layout.y - 100);
-                  }}
-                >
-                  <View
-                    ref={el => (focusTarget.current[0] = el)}
-                    style={{height: 400, backgroundColor: 'teal'}}
-                  ></View>
-                  <View
-                    ref={el => (focusTarget.current[1] = el)}
-                    style={{height: 400, backgroundColor: 'linen'}}
-                  ></View>
-                  <View
-                    ref={el => (focusTarget.current[2] = el)}
-                    style={{height: 400, backgroundColor: 'pink'}}
-                  ></View>
-                  <View
-                    ref={el => (focusTarget.current[3] = el)}
-                    style={{height: 400, backgroundColor: 'tomato'}}
-                  ></View>
+                  }}>
+                  {arr.map((item, index) => (
+                    <View
+                      key={index}
+                      ref={el => (focusTarget.current[index] = el)}
+                      style={{
+                        height: 400,
+                        backgroundColor: index % 2 === 0 ? 'teal' : 'linen',
+                      }}></View>
+                  ))}
                 </View>
               )}
               {index === 1 && (

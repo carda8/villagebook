@@ -1,60 +1,41 @@
 import React from 'react';
-import {Pressable, View} from 'react-native';
+import {FlatList, Pressable, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header';
 import commonStyles from '../../styles/commonStyle';
 
 const MenuMain = ({navigation}) => {
+  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const renderItem = item => {
+    return (
+      <Pressable
+        onPress={() => {
+          navigation.navigate('MenuDetail');
+        }}
+        style={{
+          height: 100,
+          backgroundColor: 'gray',
+          margin: 20,
+        }}></Pressable>
+    );
+  };
+  const ListHeaderComponent = () => {
+    return (
+      <View
+        style={{height: 50, width: '100%', backgroundColor: 'tomato'}}></View>
+    );
+  };
   return (
     <>
       <View style={{flexDirection: 'column', flex: 1}}>
-        <Pressable
-          onPress={() => {
-            navigation.navigate('MenuDetail');
-          }}
-          style={{
-            flex: 1,
-            backgroundColor: 'gray',
-            margin: 4,
-          }}
-        ></Pressable>
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: 'tomato',
-            margin: 4,
-          }}
-        ></Pressable>
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: 'tomato',
-            margin: 4,
-          }}
-        ></Pressable>
-      </View>
-      <View style={{flex: 1}}>
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: 'tomato',
-            margin: 4,
-          }}
-        ></Pressable>
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: 'tomato',
-            margin: 4,
-          }}
-        ></Pressable>
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: 'tomato',
-            margin: 4,
-          }}
-        ></Pressable>
+        <FlatList
+          data={arr}
+          stickyHeaderIndices={[0]}
+          // StickyHeaderComponent={() => <ListHeaderComponent />}
+          ListHeaderComponent={() => <ListHeaderComponent />}
+          renderItem={item => renderItem(item)}
+          keyExtractor={(item, index) => index}
+        />
       </View>
     </>
   );

@@ -33,9 +33,7 @@ const MenuStroe = ({navigation}) => {
             width: 'auto',
           },
           tabBarIndicator: props => {
-            // console.log('props ::', props.);
             props.position.addListener(value => {
-              // if (Math.floor(value.value) !== props.state.index)
               if (props.state.index <= value.value)
                 tabRef.current = props.state.index;
             });
@@ -49,8 +47,7 @@ const MenuStroe = ({navigation}) => {
               if (idx === 0) arr.push(0);
               else arr.push(_getWidth(idx - 1));
             });
-            // console.log('arr', arr);
-            // console.log('index', index);
+
             const _getToValue = idx => {
               let temp = 0;
               for (let i = 0; i <= idx; i++) {
@@ -58,11 +55,6 @@ const MenuStroe = ({navigation}) => {
               }
               return temp;
             };
-            // _getToValue(
-            //   tabRef.current - index >= 2 || index - tabRef.current >= 2
-            //     ? index
-            //     : tabRef.current,
-            // ),
             let animation = new Animated.Value(_getToValue(tabRef.current));
             Animated.spring(animation, {
               toValue: _getToValue(index),
@@ -84,8 +76,7 @@ const MenuStroe = ({navigation}) => {
               />
             );
           },
-        }}
-      >
+        }}>
         <Tab.Screen name="Call1" component={MenuMain} />
         <Tab.Screen name="Call2" component={MenuMain} />
         <Tab.Screen name="Call3" component={MenuMain} />
