@@ -2,16 +2,18 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Animated, Pressable} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../component/Header';
 import CallMain from '../screens/call/CallMain';
 import Main from '../screens/home/Main';
+import commonStyles from '../styles/commonStyle';
 
 const Tab = createMaterialTopTabNavigator();
 
 const CallTopNavigator = ({navigation}) => {
   const tabRef = useRef(0);
   return (
-    <>
+    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'CALL 메인'} navigation={navigation} />
       <Tab.Navigator
         initialRouteName="CallMain"
@@ -82,7 +84,8 @@ const CallTopNavigator = ({navigation}) => {
               />
             );
           },
-        }}>
+        }}
+      >
         <Tab.Screen name="Call1" component={CallMain} />
         <Tab.Screen name="Call2" component={CallMain} />
         <Tab.Screen name="Call3" component={CallMain} />
@@ -94,7 +97,7 @@ const CallTopNavigator = ({navigation}) => {
         <Tab.Screen name="Call9" component={CallMain} />
         <Tab.Screen name="Call0" component={CallMain} />
       </Tab.Navigator>
-    </>
+    </SafeAreaView>
   );
 };
 
