@@ -12,7 +12,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Swiper from 'react-native-swiper';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Header from '../../component/Header';
-import MenuTopNavigator from '../../navigator/MenuTopNavigator';
 import commonStyles from '../../styles/commonStyle';
 import Test from '../../Test';
 
@@ -35,7 +34,8 @@ const MenuDetail = ({navigation}) => {
           flexDirection: 'row',
           opacity: trigger ? 1 : 0,
           backgroundColor: 'white',
-        }}>
+        }}
+      >
         <Pressable
           onPress={() => {
             setSelected({idx: 0, isScrolling: false});
@@ -56,7 +56,8 @@ const MenuDetail = ({navigation}) => {
             backgroundColor: selected.idx === 0 ? 'tomato' : 'gray',
             margin: 10,
             borderRadius: 30,
-          }}></Pressable>
+          }}
+        ></Pressable>
         <Pressable
           onPress={() => {
             setSelected({idx: 1, isScrolling: false});
@@ -77,7 +78,8 @@ const MenuDetail = ({navigation}) => {
             backgroundColor: selected.idx === 1 ? 'tomato' : 'gray',
             margin: 10,
             borderRadius: 30,
-          }}></Pressable>
+          }}
+        ></Pressable>
         <Pressable
           onPress={() => {
             setSelected({idx: 2, isScrolling: false});
@@ -98,7 +100,8 @@ const MenuDetail = ({navigation}) => {
             backgroundColor: selected.idx === 2 ? 'tomato' : 'gray',
             margin: 10,
             borderRadius: 30,
-          }}></Pressable>
+          }}
+        ></Pressable>
         <Pressable
           onPress={() => {
             setSelected({idx: 3, isScrolling: false});
@@ -115,10 +118,9 @@ const MenuDetail = ({navigation}) => {
             backgroundColor: selected.idx === 3 ? 'tomato' : 'gray',
             margin: 10,
             borderRadius: 30,
-          }}></Pressable>
+          }}
+        ></Pressable>
       </View>
-      // <MenuTopNavigator></MenuTopNavigator>
-      // <View style={{height: 100, width: 100, backgroundColor: 'teal'}}></View>
     );
   };
 
@@ -218,13 +220,15 @@ const MenuDetail = ({navigation}) => {
                     },
                   );
                 }
-              }}>
+              }}
+            >
               <Swiper
                 loop
                 autoplay
                 showsPagination={false}
                 removeClippedSubviews={false}
-                style={{height: 300}}>
+                style={{height: 300}}
+              >
                 <View style={styles.slide1}>
                   <Text style={styles.text}>Hello Swiper</Text>
                 </View>
@@ -242,7 +246,8 @@ const MenuDetail = ({navigation}) => {
                   height: 200,
                   marginHorizontal: 20,
                   backgroundColor: 'gray',
-                }}>
+                }}
+              >
                 <Text style={{fontSize: 30, textAlign: 'center'}}>TITLE</Text>
               </View>
               <View
@@ -252,7 +257,8 @@ const MenuDetail = ({navigation}) => {
                   height: 40,
                   marginHorizontal: 20,
                   backgroundColor: 'gray',
-                }}>
+                }}
+              >
                 <Text style={{fontSize: 20, textAlign: 'center'}}>COUPONE</Text>
               </View>
               <View
@@ -262,7 +268,8 @@ const MenuDetail = ({navigation}) => {
                   height: 200,
                   marginHorizontal: 20,
                   backgroundColor: 'gray',
-                }}>
+                }}
+              >
                 <Text style={{fontSize: 20, textAlign: 'center'}}>DETAIL</Text>
               </View>
               <TabView
@@ -294,19 +301,24 @@ const MenuDetail = ({navigation}) => {
                   style={{flex: 1, top: -50}}
                   onLayout={e => {
                     setTemp(e.nativeEvent.layout.y - 100);
-                  }}>
+                  }}
+                >
                   <View
                     ref={el => (focusTarget.current[0] = el)}
-                    style={{height: 400, backgroundColor: 'teal'}}></View>
+                    style={{height: 400, backgroundColor: 'teal'}}
+                  ></View>
                   <View
                     ref={el => (focusTarget.current[1] = el)}
-                    style={{height: 400, backgroundColor: 'linen'}}></View>
+                    style={{height: 400, backgroundColor: 'linen'}}
+                  ></View>
                   <View
                     ref={el => (focusTarget.current[2] = el)}
-                    style={{height: 400, backgroundColor: 'pink'}}></View>
+                    style={{height: 400, backgroundColor: 'pink'}}
+                  ></View>
                   <View
                     ref={el => (focusTarget.current[3] = el)}
-                    style={{height: 400, backgroundColor: 'tomato'}}></View>
+                    style={{height: 400, backgroundColor: 'tomato'}}
+                  ></View>
                 </View>
               )}
               {index === 1 && (
