@@ -1,8 +1,5 @@
 import React from 'react';
 import {FlatList, Pressable, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import Header from '../../component/Header';
-import commonStyles from '../../styles/commonStyle';
 
 const MenuMain = ({navigation}) => {
   const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];

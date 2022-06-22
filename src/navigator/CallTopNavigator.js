@@ -10,13 +10,15 @@ import commonStyles from '../styles/commonStyle';
 
 const Tab = createMaterialTopTabNavigator();
 
-const CallTopNavigator = ({navigation}) => {
+const CallTopNavigator = ({navigation, route}) => {
+  const routeIdx = route.params.routeIdx ?? 'Call1';
   const tabRef = useRef(0);
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'CALL 메인'} navigation={navigation} />
       <Tab.Navigator
-        initialRouteName="CallMain"
+        initialRouteName={routeIdx}
         screenOptions={{
           tabBarScrollEnabled: true,
           tabBarItemStyle: {
@@ -84,8 +86,7 @@ const CallTopNavigator = ({navigation}) => {
               />
             );
           },
-        }}
-      >
+        }}>
         <Tab.Screen name="Call1" component={CallMain} />
         <Tab.Screen name="Call2" component={CallMain} />
         <Tab.Screen name="Call3" component={CallMain} />

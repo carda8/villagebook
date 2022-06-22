@@ -10,13 +10,14 @@ import MenuMain from './MenuMain';
 
 const Tab = createMaterialTopTabNavigator();
 
-const MenuStroe = ({navigation}) => {
+const MenuStroe = ({navigation, route}) => {
   const tabRef = useRef(0);
+  const routeIdx = route.params.routeIdx ?? 'Menu1';
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'MENU 메인'} navigation={navigation} />
       <Tab.Navigator
-        initialRouteName="CallMain"
+        initialRouteName={routeIdx}
         screenOptions={{
           tabBarScrollEnabled: true,
           tabBarItemStyle: {
@@ -77,10 +78,10 @@ const MenuStroe = ({navigation}) => {
             );
           },
         }}>
-        <Tab.Screen name="Call1" component={MenuMain} />
-        <Tab.Screen name="Call2" component={MenuMain} />
-        <Tab.Screen name="Call3" component={MenuMain} />
-        <Tab.Screen name="Call4" component={MenuMain} />
+        <Tab.Screen name="Menu1" component={MenuMain} />
+        <Tab.Screen name="Menu2" component={MenuMain} />
+        <Tab.Screen name="Menu3" component={MenuMain} />
+        <Tab.Screen name="Menu4" component={MenuMain} />
       </Tab.Navigator>
     </SafeAreaView>
   );
