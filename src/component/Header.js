@@ -8,10 +8,12 @@ const Header = ({title, navigation, style}) => {
       style={[
         {
           width: '100%',
-          height: 30,
-          backgroundColor: 'rgba(52, 52, 52, 0.0)',
+          height: 40,
+          backgroundColor: 'linen',
           alignItems: 'center',
           flexDirection: 'row',
+          borderBottomLeftRadius: 10,
+          borderBottomRightRadius: 10,
         },
         style,
       ]}>

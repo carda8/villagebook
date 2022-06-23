@@ -47,11 +47,12 @@ allprojects {
                 excludeGroup "com.facebook.react"
             }
         }
-        google()
-        jcenter()
         maven {
             url 'https://naver.jfrog.io/artifactory/maven/'
         }
+        google()
+        jcenter()
+
         maven { url 'https://www.jitpack.io' }
 
     }
