@@ -10,6 +10,7 @@ import MenuDetail from '../screens/menu/MenuDetail';
 import Map from '../screens/map/Map';
 import Test from '../Test';
 import AddressSearch from '../screens/map/AddressSearch';
+import Login from '../screens/login/login';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,8 +18,9 @@ const MainStackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Test"
+        initialRouteName="Login"
         screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="CallTopNavigator" component={CallTopNavigator} />
         <Stack.Screen name="MenuStore" component={MenuStroe} />
