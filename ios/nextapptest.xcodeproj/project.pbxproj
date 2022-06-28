@@ -23,6 +23,7 @@
 		BEC57F92E49942B8AC716909 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9A3515722CD44393B96A02D1 /* Pretendard-Regular.otf */; };
 		3CB0CB6E01F043A0ACF6EDA7 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D9026C0982A04230B676EC45 /* Pretendard-SemiBold.otf */; };
 		D3677C5BD2AC4EF4B73BB705 /* Pretendard-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3A8D9DA294AD499DA7B91EA8 /* Pretendard-Thin.otf */; };
+		37FE83C720124800B81BC531 /* BMJUA.otf in Resources */ = {isa = PBXBuildFile; fileRef = E2C8FD56133845518CC1A14B /* BMJUA.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		9A3515722CD44393B96A02D1 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; name = "Pretendard-Regular.otf"; path = "../src/assets/fonts/Pretendard-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D9026C0982A04230B676EC45 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; name = "Pretendard-SemiBold.otf"; path = "../src/assets/fonts/Pretendard-SemiBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		3A8D9DA294AD499DA7B91EA8 /* Pretendard-Thin.otf */ = {isa = PBXFileReference; name = "Pretendard-Thin.otf"; path = "../src/assets/fonts/Pretendard-Thin.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E2C8FD56133845518CC1A14B /* BMJUA.otf */ = {isa = PBXFileReference; name = "BMJUA.otf"; path = "../src/assets/fonts/BMJUA.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 				9A3515722CD44393B96A02D1 /* Pretendard-Regular.otf */,
 				D9026C0982A04230B676EC45 /* Pretendard-SemiBold.otf */,
 				3A8D9DA294AD499DA7B91EA8 /* Pretendard-Thin.otf */,
+				E2C8FD56133845518CC1A14B /* BMJUA.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 				BEC57F92E49942B8AC716909 /* Pretendard-Regular.otf in Resources */,
 				3CB0CB6E01F043A0ACF6EDA7 /* Pretendard-SemiBold.otf in Resources */,
 				D3677C5BD2AC4EF4B73BB705 /* Pretendard-Thin.otf in Resources */,
+				37FE83C720124800B81BC531 /* BMJUA.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

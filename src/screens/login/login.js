@@ -18,8 +18,13 @@ import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 
-const Login = () => {
+const Login = ({navigation}) => {
   const layout = useWindowDimensions();
+  const Divider = () => {
+    return (
+      <View style={{width: 1, height: 20, backgroundColor: colors.colorE3}} />
+    );
+  };
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <ScrollView>
@@ -37,6 +42,9 @@ const Login = () => {
           }}>
           <Input />
           <Pressable
+            onPress={() => {
+              navigation.navigate('Main');
+            }}
             style={{
               width: '100%',
               height: 50,
@@ -57,19 +65,22 @@ const Login = () => {
               flexDirection: 'row',
               marginBottom: 70,
               justifyContent: 'space-around',
+              alignItems: 'center',
             }}>
             <Pressable onPress={() => {}}>
               <TextRegular style={{fontSize: 16}}>아이디 찾기</TextRegular>
             </Pressable>
+            <Divider />
             <Pressable onPress={() => {}}>
               <TextRegular style={{fontSize: 16}}>비밀번호 찾기</TextRegular>
             </Pressable>
+            <Divider />
             <Pressable onPress={() => {}}>
               <TextRegular style={{fontSize: 16}}>회원가입</TextRegular>
             </Pressable>
           </View>
 
-          <View
+          <Pressable
             style={{
               width: '100%',
               height: 20,
@@ -83,7 +94,7 @@ const Login = () => {
               }}>
               SNS 계정으로 로그인
             </TextMedium>
-          </View>
+          </Pressable>
 
           <View
             style={{

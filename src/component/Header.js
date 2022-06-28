@@ -1,48 +1,98 @@
 import React from 'react';
 import {Image, Pressable, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import colors from '../styles/colors';
+import TextMedium from './text/TextMedium';
 
-const Header = ({title, navigation, style}) => {
+const Header = ({
+  title,
+  navigation,
+  style,
+  showLogo,
+  showCart,
+  showLike,
+  showNoti,
+  showShare,
+}) => {
   return (
     <View
       style={[
         {
           width: '100%',
-          height: 40,
-          backgroundColor: 'linen',
+          height: 57,
+          backgroundColor: 'white',
           alignItems: 'center',
           flexDirection: 'row',
-          borderBottomLeftRadius: 10,
-          borderBottomRightRadius: 10,
+          paddingHorizontal: 20,
         },
         style,
       ]}>
       <Pressable
         hitSlop={15}
         onPress={() => {
-          navigation.goBack();
+          if (!showLogo) navigation.goBack();
         }}>
-        <Image
-          source={require('~/assets/btn_top_left.png')}
-          style={{height: 30}}
-          resizeMode={'contain'}
-        />
+        {showLogo ? (
+          <Image
+            source={require('~/assets/logo.png')}
+            style={{height: 23, width: 94}}
+            resizeMode={'contain'}
+          />
+        ) : (
+          <Image
+            source={require('~/assets/top_ic_history.png')}
+            style={{height: 30, width: 30}}
+            resizeMode={'contain'}
+          />
+        )}
       </Pressable>
-      <View
-        style={{
-          flex: 1,
-          left: 0,
-          right: 0,
-          position: 'absolute',
-          alignItems: 'center',
-        }}>
-        <Text
-          style={{
-            fontSize: 20,
-          }}>
-          {title}
-        </Text>
+
+      <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
+        {(showNoti || showLike) && (
+          <Pressable hitSlop={10} onPress={() => {}}>
+            <Image
+              source={
+                showNoti
+                  ? require('~/assets/top_ball.png')
+                  : require('~/assets/top_heart.png')
+              }
+              style={{height: 30, width: 30, marginRight: 10}}
+              resizeMode={'contain'}
+            />
+          </Pressable>
+        )}
+
+        {(showCart || showShare) && (
+          <Pressable hitSlop={10} onPress={() => {}}>
+            <Image
+              source={
+                showCart
+                  ? require('~/assets/top_cart.png')
+                  : require('~/assets/top_share_w.png')
+              }
+              style={{height: 30, width: 30}}
+              resizeMode={'contain'}
+            />
+          </Pressable>
+        )}
       </View>
+
+      {/* 중간 타이틀 */}
+      {title ? (
+        <View
+          style={{
+            flex: 1,
+            marginLeft: 18,
+          }}>
+          <TextMedium
+            style={{
+              fontSize: 17,
+              color: colors.fontColOr2,
+            }}>
+            {title}
+          </TextMedium>
+        </View>
+      ) : null}
     </View>
   );
 };

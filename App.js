@@ -1,6 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {Provider} from 'react-redux';
 import Splash from './src/component/Splash';
 import MainStackNavigator from './src/navigator/MainStackNavigator';
+import store from './src/store/store';
 
 const App = () => {
   const [isSplash, setIsSplash] = useState(true);
@@ -13,7 +15,11 @@ const App = () => {
 
   if (isSplash) return <Splash />;
 
-  return <MainStackNavigator />;
+  return (
+    <Provider store={store}>
+      <MainStackNavigator />
+    </Provider>
+  );
 };
 
 export default App;
