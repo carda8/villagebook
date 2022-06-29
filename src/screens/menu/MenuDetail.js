@@ -25,6 +25,7 @@ const MenuDetail = ({navigation}) => {
     {key: 'second', title: 'Second'},
   ]);
   const [temp, setTemp] = useState();
+  const [headerTrigger, setHeaderTrigger] = useState(false);
   const [trigger, setTrigger] = useState(false);
   const [selected, setSelected] = useState({idx: '', isScrolling: false});
 
@@ -34,61 +35,11 @@ const MenuDetail = ({navigation}) => {
   const chipTarget = useRef([]);
 
   const chipWidth = 80;
+
   useEffect(() => {
     console.log('index', selected);
   }, [selected]);
 
-  // const FirstRoute = () => {
-  //   return (
-  //     <View
-  //       style={{
-  //         flex: 1,
-  //         flexDirection: 'row',
-  //         opacity: trigger ? 1 : 0,
-  //         backgroundColor: 'white',
-  //       }}>
-  //       <ScrollView
-  //         horizontal
-  //         hitSlop={20}
-  //         showsHorizontalScrollIndicator={false}>
-  //         {arr.map((item, index) => (
-  //           <Pressable
-  //             key={index}
-  //             onPress={() => {
-  //               focusTarget.current[index].measureLayout(
-  //                 scrollRef.current,
-  //                 (left, top, width, height) => {
-  //                   scrollRef.current.scrollTo({
-  //                     x: 0,
-  //                     y: top - 90,
-  //                     animated: true,
-  //                   });
-  //                   console.log('position', left, top, width, height);
-  //                 },
-  //               );
-  //               setSelected({idx: index, isScrolling: false});
-  //             }}
-  //             style={{
-  //               height: 35,
-  //               width: 50,
-  //               backgroundColor: selected.idx === index ? 'tomato' : 'gray',
-  //               margin: 10,
-  //               borderRadius: 30,
-  //             }}></Pressable>
-  //         ))}
-  //       </ScrollView>
-  //     </View>
-  //   );
-  // };
-
-  // const SecondRoute = () => {
-  //   return <></>;
-  // };
-
-  // const renderScene = SceneMap({
-  //   first: FirstRoute,
-  //   second: SecondRoute,
-  // });
   useEffect(() => {
     if (chipTarget.current[selected.idx]) {
       chipTarget.current[selected.idx].measureLayout(
@@ -107,10 +58,9 @@ const MenuDetail = ({navigation}) => {
   return (
     <>
       <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-        <Header navigation={navigation} title={''} />
         <ScrollView
           ref={scrollRef}
-          stickyHeaderIndices={[2]}
+          stickyHeaderIndices={[3]}
           // contentOffset={{x: 0, y: 100}}
           onScrollBeginDrag={e => {
             if (selected.isScrolling !== true) {
@@ -119,6 +69,11 @@ const MenuDetail = ({navigation}) => {
           }}
           onScroll={e => {
             const positionY = e.nativeEvent.contentOffset.y;
+            if (positionY >= 300 && headerTrigger === false)
+              setHeaderTrigger(true);
+            if (positionY <= 300 && headerTrigger === true)
+              setHeaderTrigger(false);
+
             if (positionY >= temp && trigger === false) setTrigger(true);
             if (positionY <= temp && trigger === true) setTrigger(false);
             if (selected.isScrolling && index === 0) {
@@ -138,8 +93,22 @@ const MenuDetail = ({navigation}) => {
               });
             }
           }}>
+          <Header
+            navigation={navigation}
+            showLike={true}
+            showShare={true}
+            iconColor={'white'}
+            title={''}
+            style={{
+              backgroundColor: 'rgba(0,0,0,0)',
+              position: 'absolute',
+              zIndex: 100,
+            }}
+          />
           <ImageSwipe />
-          <MenuSubs />
+          <View style={{paddingHorizontal: 22}}>
+            <MenuSubs />
+          </View>
 
           {/* <Pressable
             style={{

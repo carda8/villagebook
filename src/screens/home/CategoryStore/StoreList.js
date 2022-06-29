@@ -1,8 +1,20 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Animated, Pressable} from 'react-native';
+import {
+  View,
+  Animated,
+  Pressable,
+  ScrollView,
+  Text,
+  useWindowDimensions,
+} from 'react-native';
+import {color} from 'react-native-reanimated';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../../component/Header';
+import TextBold from '../../../component/text/TextBold';
+import TextMedium from '../../../component/text/TextMedium';
+import TextRegular from '../../../component/text/TextRegular';
+import TextSBold from '../../../component/text/TextSBold';
 import colors from '../../../styles/colors';
 import commonStyles from '../../../styles/commonStyle';
 import SubCategory from './SubCategory';
@@ -11,30 +23,101 @@ const Tab = createMaterialTopTabNavigator();
 
 const StoreList = ({navigation, route}) => {
   const tabRef = useRef(0);
+  const layout = useWindowDimensions();
   const routeIdx = route.params?.routteIdx ?? 'Menu1';
+  const arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+  const [selectedFilter, setSelectedFilter] = useState(0);
+
+  useEffect(() => {
+    console.log('sel', selectedFilter);
+  }, [selectedFilter]);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={String(routeIdx)} navigation={navigation} />
+
+      <View
+        style={{
+          flex: 1,
+          height: 40,
+          zIndex: 100,
+          top: 110,
+          position: 'absolute',
+          minWidth: layout.width,
+        }}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{alignItems: 'center', marginLeft: 22}}>
+          {arr.map((item, index) => (
+            <Pressable
+              key={index}
+              onPress={() => {
+                setSelectedFilter(index);
+              }}
+              style={{
+                height: 30,
+                backgroundColor:
+                  selectedFilter === index ? colors.primary : 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 18,
+                paddingHorizontal: 13,
+                marginRight: 10,
+              }}>
+              {selectedFilter === index ? (
+                <TextSBold
+                  style={{
+                    color:
+                      selectedFilter === index ? 'white' : colors.fontColorA2,
+                  }}>
+                  기본순
+                </TextSBold>
+              ) : (
+                <TextRegular>기본순</TextRegular>
+              )}
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+
       <Tab.Navigator
         initialRouteName={routeIdx}
-        sceneContainerStyle={{flex: 1, backgroundColor: 'white'}}
-        screenOptions={{
+        sceneContainerStyle={{
+          flex: 1,
+          backgroundColor: 'white',
+          paddingTop: 45,
+          paddingHorizontal: 22,
+        }}
+        style={{flex: 1}}
+        screenOptions={({route}) => ({
+          tabBarLabel: props => (
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Pretendard-Bold',
+                  // : 'Pretendard-Medium',
+                  color: props.focused ? colors.primary : colors.fontColor2,
+                }}>
+                {route.name}
+              </Text>
+            </View>
+          ),
           tabBarScrollEnabled: true,
           tabBarItemStyle: {
+            flexGrow: 2,
             width: 'auto',
-          },
-          tabBarLabelStyle: {
-            fontFamily: 'Pretendard-Bold',
-            fontSize: 15,
-            color: colors.primary,
           },
           tabBarIndicatorStyle: {
             height: 30,
           },
           tabBarIndicatorContainerStyle: {
             justifyContent: 'flex-end',
-            width: 'auto',
           },
           tabBarIndicator: props => {
             props.position.addListener(value => {
@@ -68,24 +151,26 @@ const StoreList = ({navigation, route}) => {
               useNativeDriver: true,
             }).start();
             return (
-              <Animated.View
-                style={{
-                  transform: [{translateX: animation}],
-                  width: tabWidth * 0.9,
-                  marginHorizontal: tabWidth * 0.05,
-                  backgroundColor: colors.primary,
-                  height: 3,
-                }}
-              />
+              <>
+                <Animated.View
+                  style={{
+                    transform: [{translateX: animation}],
+                    width: tabWidth * 0.9,
+                    marginHorizontal: tabWidth * 0.05,
+                    backgroundColor: colors.primary,
+                    height: 3,
+                  }}
+                />
+              </>
             );
           },
-        }}>
-        <Tab.Screen name="Menu1" component={SubCategory} />
-        <Tab.Screen name="Menu2" component={SubCategory} />
-        <Tab.Screen name="Menu3" component={SubCategory} />
-        <Tab.Screen name="Menu4" component={SubCategory} />
-        <Tab.Screen name="Menu5" component={SubCategory} />
-        <Tab.Screen name="Menu6" component={SubCategory} />
+        })}>
+        <Tab.Screen name="1인분" component={SubCategory} />
+        <Tab.Screen name="돈까스/회/일식" component={SubCategory} />
+        <Tab.Screen name="중식" component={SubCategory} />
+        <Tab.Screen name="치킨" component={SubCategory} />
+        <Tab.Screen name="카페/디저트" component={SubCategory} />
+        <Tab.Screen name="일식" component={SubCategory} />
       </Tab.Navigator>
     </SafeAreaView>
   );

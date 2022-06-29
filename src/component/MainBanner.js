@@ -14,7 +14,7 @@ const MainBanner = ({navigation, style}) => {
       <Swiper
         autoplay
         style={{height: 184}}
-        containerStyle={[{marginBottom: 60}, style]}
+        containerStyle={style}
         removeClippedSubviews={false}
         renderPagination={(index, total, context) => (
           <>
@@ -24,8 +24,8 @@ const MainBanner = ({navigation, style}) => {
                 right: 20,
                 width: 44,
                 height: 21,
-                alignItems: 'center',
                 borderRadius: 50,
+                alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: 'rgba(22, 22, 22, 0.57)',
                 position: 'absolute',

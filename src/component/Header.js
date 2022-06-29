@@ -13,6 +13,7 @@ const Header = ({
   showLike,
   showNoti,
   showShare,
+  iconColor,
 }) => {
   return (
     <View
@@ -20,7 +21,7 @@ const Header = ({
         {
           width: '100%',
           height: 57,
-          backgroundColor: 'white',
+          backgroundColor: 'rgba(0,0,0,0.0)',
           alignItems: 'center',
           flexDirection: 'row',
           paddingHorizontal: 20,
@@ -41,7 +42,11 @@ const Header = ({
         ) : (
           <Image
             source={require('~/assets/top_ic_history.png')}
-            style={{height: 30, width: 30}}
+            style={{
+              height: 30,
+              width: 30,
+              tintColor: iconColor ? iconColor : null,
+            }}
             resizeMode={'contain'}
           />
         )}
@@ -56,7 +61,12 @@ const Header = ({
                   ? require('~/assets/top_ball.png')
                   : require('~/assets/top_heart.png')
               }
-              style={{height: 30, width: 30, marginRight: 10}}
+              style={{
+                height: 30,
+                width: 30,
+                marginRight: 10,
+                tintColor: iconColor ? iconColor : null,
+              }}
               resizeMode={'contain'}
             />
           </Pressable>
@@ -70,7 +80,11 @@ const Header = ({
                   ? require('~/assets/top_cart.png')
                   : require('~/assets/top_share_w.png')
               }
-              style={{height: 30, width: 30}}
+              style={{
+                height: 30,
+                width: 30,
+                tintColor: iconColor ? iconColor : null,
+              }}
               resizeMode={'contain'}
             />
           </Pressable>
@@ -87,7 +101,7 @@ const Header = ({
           <TextMedium
             style={{
               fontSize: 17,
-              color: colors.fontColOr2,
+              color: colors.fontColor2,
             }}>
             {title}
           </TextMedium>

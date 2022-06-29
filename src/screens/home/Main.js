@@ -73,11 +73,11 @@ const Main = ({navigation}) => {
             style={{
               flex: 1,
               borderRadius: 25,
-              backgroundColor: colors.mainBG1,
               marginRight: 16,
               paddingTop: 34,
               paddingLeft: 27,
               borderWidth: 1,
+              backgroundColor: colors.mainBG1,
               borderColor: colors.mainBG1Border,
             }}>
             <TextJua style={{fontSize: 23, color: colors.fontMain1}}>
@@ -109,8 +109,8 @@ const Main = ({navigation}) => {
               paddingTop: 34,
               paddingLeft: 27,
               backgroundColor: colors.mainBG2,
-              borderWidth: 1,
               borderColor: colors.mainBG2Border,
+              borderWidth: 1,
             }}>
             <TextJua style={{fontSize: 23, color: colors.fontMain2}}>
               동네마켓
@@ -140,7 +140,7 @@ const Main = ({navigation}) => {
           }}>
           <Pressable
             onPress={() => {
-              navigation.navigate('CallTopNavigator', {routeIdx: 'Call5'});
+              navigation.navigate('CategoryView');
             }}
             style={{
               flex: 1,
@@ -174,7 +174,7 @@ const Main = ({navigation}) => {
         </View>
 
         {/* 메인배너 */}
-        <MainBanner navigation={navigation} />
+        <MainBanner navigation={navigation} style={{marginBottom: 60}} />
 
         {/* 약관 */}
         <View style={{flexDirection: 'row', alignItems: 'center'}}>

@@ -5,7 +5,7 @@ import colors from '../styles/colors';
 const Divider = ({style}) => {
   return (
     <View
-      style={[{width: 1, height: 20, backgroundColor: colors.colorE3}, style]}
+      style={[{width: 1, height: 15, backgroundColor: colors.colorE3}, style]}
     />
   );
 };
