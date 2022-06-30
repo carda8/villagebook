@@ -14,11 +14,13 @@ import Chip from '../../../component/Chip';
 import TextMedium from '../../../component/text/TextMedium';
 import TextRegular from '../../../component/text/TextRegular';
 import Dot from '../../../component/Dot';
+import ReviewSimple from '../../../component/reviews/ReviewSimple';
 
 // 2.1 : 1
-const SubCategory = ({navigation}) => {
+const StoreItems = ({navigation, route}) => {
   const arr = [1, 2, 3, 4, 5, 6, 7, 8];
   console.log('subs rendered');
+  console.log('params', route.params);
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
@@ -94,7 +96,15 @@ const SubCategory = ({navigation}) => {
             marginTop: 22,
           }}>
           <View style={{marginBottom: 9}}>
-            <TextMedium style={{fontSize: 16}}>맛나분식 부산대점</TextMedium>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <TextMedium style={{fontSize: 16}}>맛나분식 부산대점</TextMedium>
+              <ReviewSimple />
+            </View>
             <View
               style={{flexDirection: 'row', flexWrap: 'wrap', marginTop: 9}}>
               <View
@@ -149,4 +159,4 @@ const SubCategory = ({navigation}) => {
   );
 };
 
-export default SubCategory;
+export default StoreItems;

@@ -1,11 +1,39 @@
 import React from 'react';
-import {Image, Pressable, Text, View} from 'react-native';
+import {Image, Pressable, Text, useWindowDimensions, View} from 'react-native';
+import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import colors from '../../styles/colors';
 import Divider from '../Divider';
+import ReviewSimple2 from '../reviews/ReviewSimple2';
 import TextLight from '../text/TextLight';
+import MenuDescTab from './MenuDescTab';
 
-const MenuSubs = () => {
-  console.log('Menusubs rendered');
+const MenuDesc = () => {
+  const layout = useWindowDimensions();
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    {key: 'first', title: 'First'},
+    {key: 'second', title: 'Second'},
+  ]);
+
+  const FirstRoute = () => (
+    <View style={{flexGrow: 1, backgroundColor: '#ff4081'}}>
+      <Text>123</Text>
+    </View>
+  );
+
+  const SecondRoute = () => (
+    <View style={{flex: 1, backgroundColor: '#673ab7'}}>
+      <Text>123</Text>
+    </View>
+  );
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+  });
+
+  console.log('MenuDesc rendered');
   return (
     <>
       <View
@@ -13,6 +41,7 @@ const MenuSubs = () => {
           top: -40,
           width: 81,
           height: 81,
+          marginHorizontal: 22,
           borderRadius: 30,
           backgroundColor: colors.storeIcon,
           alignItems: 'center',
@@ -30,23 +59,11 @@ const MenuSubs = () => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
+            paddingHorizontal: 22,
           }}>
           <View>
             <Text style={{fontSize: 22}}>맛나버거 부산대점(test)</Text>
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <TextLight style={{color: colors.fontColorA2}}>
-                최근 리뷰 222
-              </TextLight>
-              <Divider style={{marginHorizontal: 8}} />
-              <TextLight style={{color: colors.fontColorA2}}>
-                최근 사장님댓글 222
-              </TextLight>
-            </View>
+            <ReviewSimple2 />
           </View>
 
           <View style={{}}>
@@ -69,11 +86,13 @@ const MenuSubs = () => {
             </Pressable>
           </View>
         </View>
+
         <Pressable
           style={{
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: colors.couponBG,
+            marginHorizontal: 22,
             height: 50,
             borderRadius: 8,
             marginTop: 19,
@@ -83,23 +102,10 @@ const MenuSubs = () => {
             이 매장의 할인 쿠폰받기
           </Text>
         </Pressable>
-        <View
-          style={{
-            flex: 1,
-            height: 40,
-          }}>
-          <Text style={{fontSize: 20}}>COUPONE</Text>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            height: 200,
-          }}>
-          <Text style={{fontSize: 20}}>DETAIL</Text>
-        </View>
+        <MenuDescTab />
       </View>
     </>
   );
 };
 
-export default React.memo(MenuSubs);
+export default React.memo(MenuDesc);

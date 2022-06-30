@@ -17,7 +17,7 @@ import TextRegular from '../../../component/text/TextRegular';
 import TextSBold from '../../../component/text/TextSBold';
 import colors from '../../../styles/colors';
 import commonStyles from '../../../styles/commonStyle';
-import SubCategory from './SubCategory';
+import StoreItems from './StoreItems';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -91,6 +91,8 @@ const StoreList = ({navigation, route}) => {
         }}
         style={{flex: 1}}
         screenOptions={({route}) => ({
+          lazy: true,
+          tabBarStyle: {paddingLeft: 22},
           tabBarLabel: props => (
             <View
               style={{
@@ -118,6 +120,7 @@ const StoreList = ({navigation, route}) => {
           },
           tabBarIndicatorContainerStyle: {
             justifyContent: 'flex-end',
+            paddingLeft: 22,
           },
           tabBarIndicator: props => {
             props.position.addListener(value => {
@@ -165,12 +168,16 @@ const StoreList = ({navigation, route}) => {
             );
           },
         })}>
-        <Tab.Screen name="1인분" component={SubCategory} />
-        <Tab.Screen name="돈까스/회/일식" component={SubCategory} />
-        <Tab.Screen name="중식" component={SubCategory} />
-        <Tab.Screen name="치킨" component={SubCategory} />
-        <Tab.Screen name="카페/디저트" component={SubCategory} />
-        <Tab.Screen name="일식" component={SubCategory} />
+        <Tab.Screen
+          name="1인분"
+          component={StoreItems}
+          initialParams={{cate: '1인분'}}
+        />
+        <Tab.Screen name="돈까스/회/일식" component={StoreItems} />
+        <Tab.Screen name="중식" component={StoreItems} />
+        <Tab.Screen name="치킨" component={StoreItems} />
+        <Tab.Screen name="카페/디저트" component={StoreItems} />
+        <Tab.Screen name="일식" component={StoreItems} />
       </Tab.Navigator>
     </SafeAreaView>
   );

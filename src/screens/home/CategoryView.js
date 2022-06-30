@@ -1,30 +1,12 @@
 import React from 'react';
-import {
-  FlatList,
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {FlatList, Image} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch} from 'react-redux';
-import {useSelector} from 'react-redux';
-import BottomBar from '../../component/BottomBar';
-import Divider from '../../component/Divider';
 import Header from '../../component/Header';
 import MainBanner from '../../component/MainBanner';
 import SearchBox from '../../component/mainScreen/SearchBox';
-import TextBold from '../../component/text/TextBold';
 import TextEBold from '../../component/text/TextEBold';
-import TextJua from '../../component/text/TextJua';
 import TextMedium from '../../component/text/TextMedium';
-import TextRegular from '../../component/text/TextRegular';
-import BottomNavigator from '../../navigator/BottomNavigator';
-import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 
 const CategoryView = ({navigation}) => {

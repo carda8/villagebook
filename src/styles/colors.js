@@ -5,7 +5,8 @@ export default {
   fontColor6: '#666666',
   fontColor8: '#888888',
   fontColor2: '#222222',
-  fontCOlor3: '#333333',
+  fontColor3: '#333333',
+  fontColor99: '#999999',
 
   colorE3: '#E3E3E3',
   inputBoxBG: '#F8F8F8',
@@ -27,4 +28,7 @@ export default {
 
   storeIcon: '#F5F5F5',
   couponBG: '#E8F7FA',
+
+  borderColor: '#EEEEEE',
+  borderColor22: '#222222',
 };

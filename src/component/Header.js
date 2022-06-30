@@ -24,7 +24,7 @@ const Header = ({
           backgroundColor: 'rgba(0,0,0,0.0)',
           alignItems: 'center',
           flexDirection: 'row',
-          paddingHorizontal: 20,
+          paddingHorizontal: 22,
         },
         style,
       ]}>
