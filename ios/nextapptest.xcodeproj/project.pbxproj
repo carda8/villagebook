@@ -25,6 +25,9 @@
 		D3677C5BD2AC4EF4B73BB705 /* Pretendard-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3A8D9DA294AD499DA7B91EA8 /* Pretendard-Thin.otf */; };
 		37FE83C720124800B81BC531 /* BMJUA.otf in Resources */ = {isa = PBXBuildFile; fileRef = E2C8FD56133845518CC1A14B /* BMJUA.otf */; };
 		C6176E9F08B24AD18E985985 /* CoreGothicD-CoreGothicDBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4923E93BF94B4AC2B0E1B287 /* CoreGothicD-CoreGothicDBold.ttf */; };
+		2D1FD34A800E408CAA6CF259 /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = FED064E8EA264013A5EC2856 /* NotoSansKR-Medium.otf */; };
+		77A37847DA4A40688B7BB3F8 /* NotoSansKR-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAC6DE91117D44BCA98D02B4 /* NotoSansKR-Regular.otf */; };
+		065A48A2FD7E4BB4B5E4D64C /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D3226E065E984638984BD836 /* NotoSansKR-Bold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +69,9 @@
 		3A8D9DA294AD499DA7B91EA8 /* Pretendard-Thin.otf */ = {isa = PBXFileReference; name = "Pretendard-Thin.otf"; path = "../src/assets/fonts/Pretendard-Thin.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		E2C8FD56133845518CC1A14B /* BMJUA.otf */ = {isa = PBXFileReference; name = "BMJUA.otf"; path = "../src/assets/fonts/BMJUA.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		4923E93BF94B4AC2B0E1B287 /* CoreGothicD-CoreGothicDBold.ttf */ = {isa = PBXFileReference; name = "CoreGothicD-CoreGothicDBold.ttf"; path = "../src/assets/fonts/CoreGothicD-CoreGothicDBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FED064E8EA264013A5EC2856 /* NotoSansKR-Medium.otf */ = {isa = PBXFileReference; name = "NotoSansKR-Medium.otf"; path = "../src/assets/fonts/NotoSansKR-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		EAC6DE91117D44BCA98D02B4 /* NotoSansKR-Regular.otf */ = {isa = PBXFileReference; name = "NotoSansKR-Regular.otf"; path = "../src/assets/fonts/NotoSansKR-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D3226E065E984638984BD836 /* NotoSansKR-Bold.otf */ = {isa = PBXFileReference; name = "NotoSansKR-Bold.otf"; path = "../src/assets/fonts/NotoSansKR-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +191,9 @@
 				3A8D9DA294AD499DA7B91EA8 /* Pretendard-Thin.otf */,
 				E2C8FD56133845518CC1A14B /* BMJUA.otf */,
 				4923E93BF94B4AC2B0E1B287 /* CoreGothicD-CoreGothicDBold.ttf */,
+				FED064E8EA264013A5EC2856 /* NotoSansKR-Medium.otf */,
+				EAC6DE91117D44BCA98D02B4 /* NotoSansKR-Regular.otf */,
+				D3226E065E984638984BD836 /* NotoSansKR-Bold.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -297,6 +306,9 @@
 				D3677C5BD2AC4EF4B73BB705 /* Pretendard-Thin.otf in Resources */,
 				37FE83C720124800B81BC531 /* BMJUA.otf in Resources */,
 				C6176E9F08B24AD18E985985 /* CoreGothicD-CoreGothicDBold.ttf in Resources */,
+				2D1FD34A800E408CAA6CF259 /* NotoSansKR-Medium.otf in Resources */,
+				77A37847DA4A40688B7BB3F8 /* NotoSansKR-Regular.otf in Resources */,
+				065A48A2FD7E4BB4B5E4D64C /* NotoSansKR-Bold.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -64,6 +64,9 @@
 		<string>Pretendard-Thin.otf</string>
 		<string>BMJUA.otf</string>
 		<string>CoreGothicD-CoreGothicDBold.ttf</string>
+		<string>NotoSansKR-Medium.otf</string>
+		<string>NotoSansKR-Regular.otf</string>
+		<string>NotoSansKR-Bold.otf</string>
 	</array>
 </dict>
 </plist>

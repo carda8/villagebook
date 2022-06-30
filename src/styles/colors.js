@@ -25,10 +25,13 @@ export default {
   chipCoupon: '#20ABC8',
   chipTakeoutFont: '#888888',
   chipTakeoutBG: '#F8F8F8',
+  chipBorder: '#707070',
 
   storeIcon: '#F5F5F5',
   couponBG: '#E8F7FA',
 
   borderColor: '#EEEEEE',
   borderColor22: '#222222',
+
+  dividerL: '#F2F2F2',
 };

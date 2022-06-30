@@ -30,7 +30,6 @@ const MainStackNavigator = () => {
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="CategoryView" component={CategoryView} />
         <Stack.Screen name="StoreList" component={StoreList} />
-
         <Stack.Screen name="LikeMain" component={LikeMain} />
         <Stack.Screen name="OrderList" component={OrderList} />
         <Stack.Screen name="DiscountMain" component={DiscountMain} />
