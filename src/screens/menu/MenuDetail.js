@@ -1,6 +1,7 @@
 import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import {
   Image,
+  PermissionsAndroid,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -27,6 +28,8 @@ import TextNotoM from '../../component/text/TextNotoM';
 import TextNotoR from '../../component/text/TextNotoR';
 import TextNotoB from '../../component/text/TextNotoB';
 import DividerL from '../../component/DividerL';
+import {Slider} from '@miblanchard/react-native-slider';
+import {launchCamera} from 'react-native-image-picker';
 
 const MenuDetail = ({navigation}) => {
   const layout = useWindowDimensions();
@@ -48,6 +51,51 @@ const MenuDetail = ({navigation}) => {
   const chipTarget = useRef([]);
 
   const chipWidth = 80;
+
+  const _setRating = isTotal => {
+    const temp = 5;
+    let temp2 = [];
+
+    for (let i = 0; i < temp; i++) {
+      temp2.push(
+        <Image
+          key={i}
+          source={require('~/assets/ico_star_on.png')}
+          style={{width: isTotal ? 20 : 16, height: isTotal ? 20 : 16}}
+          resizeMode="contain"
+        />,
+      );
+    }
+
+    return temp2;
+  };
+
+  const _setSlider = () => {
+    const temp = 5;
+    let temp2 = [];
+    for (let i = 0; i < 5; i++) {
+      temp2.push(
+        <View key={i} style={{flexDirection: 'row'}}>
+          <Slider
+            value={1}
+            maximumValue={5}
+            disabled
+            minimumTrackTintColor={colors.primary}
+            trackStyle={{
+              backgroundColor: 'white',
+              height: 5,
+              padding: 0,
+              margin: 0,
+            }}
+            containerStyle={{width: 87, height: 20}}
+            renderThumbComponent={() => <></>}
+          />
+          <Text style={{marginLeft: 10}}>{'5점 (40)'}</Text>
+        </View>,
+      );
+    }
+    return temp2;
+  };
 
   useEffect(() => {
     console.log('index', selected);
@@ -576,6 +624,7 @@ const MenuDetail = ({navigation}) => {
                   backgroundColor: '#F5F5F5',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  paddingHorizontal: 22,
                 }}>
                 <View style={{flexDirection: 'row'}}>
                   <TextBold style={{fontSize: 15}}>이 상품에 </TextBold>
@@ -588,152 +637,207 @@ const MenuDetail = ({navigation}) => {
                 <TextBold style={{fontSize: 15}}>
                   소중한 리뷰를 남겨주었습니다.
                 </TextBold>
-
-                <TextBold style={{fontSize: 44, color: colors.primary}}>
-                  {''}4.3
-                </TextBold>
-                <View style={{flexDirection: 'row'}}>
-                  <Image
-                    source={require('~/assets/ico_star_on.png')}
-                    style={{width: 20, height: 20}}
-                    resizeMode="contain"
-                  />
-                  <Image
-                    source={require('~/assets/ico_star_on.png')}
-                    style={{width: 20, height: 20}}
-                    resizeMode="contain"
-                  />
-                  <Image
-                    source={require('~/assets/ico_star_on.png')}
-                    style={{width: 20, height: 20}}
-                    resizeMode="contain"
-                  />
-                  <Image
-                    source={require('~/assets/ico_star_on.png')}
-                    style={{width: 20, height: 20}}
-                    resizeMode="contain"
-                  />
-
-                  <Image
-                    source={require('~/assets/ico_star_on.png')}
-                    style={{width: 20, height: 20}}
-                    resizeMode="contain"
-                  />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 20,
+                  }}>
+                  <View
+                    style={{
+                      alignItems: 'center',
+                    }}>
+                    <TextBold style={{fontSize: 44, color: colors.primary}}>
+                      {''}4.3
+                    </TextBold>
+                    <View style={{flexDirection: 'row'}}>
+                      {_setRating(true)}
+                    </View>
+                  </View>
+                  <View style={{marginLeft: 30}}>{_setSlider()}</View>
                 </View>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: 'white',
+                  paddingHorizontal: 22,
+                  paddingVertical: 35,
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 15,
+                  }}>
+                  <Image
+                    source={require('~/assets/no_use_img.png')}
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 38 / 2,
+                      marginRight: 13,
+                    }}
+                    resizeMode="contain"
+                  />
+                  <View>
+                    <Pressable
+                      onPress={async () => {
+                        await PermissionsAndroid.request(
+                          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                        );
+                        const result = await launchCamera(
+                          {
+                            quality: 0.99,
+                            mediaType: 'photo',
+                            saveToPhotos: true,
+                          },
+                          res => {
+                            const {originalRotation} = res;
+                            console.log('result::', originalRotation);
+                          },
+                        );
+                        console.log('result', result);
+                      }}
+                      style={{height: 20, backgroundColor: 'gray'}}></Pressable>
+                    <TextBold style={{fontSize: 15, color: colors.fontColor2}}>
+                      맛집대동여지도
+                    </TextBold>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <TextRegular
+                        style={{fontSize: 13, color: colors.fontColorA2}}>
+                        7달전
+                      </TextRegular>
+                      <View style={{flexDirection: 'row', marginLeft: 23}}>
+                        {_setRating(false)}
+                      </View>
+                    </View>
+                  </View>
+                </View>
+                <TextRegular>
+                  맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
+                  맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
+                </TextRegular>
               </View>
             </View>
           )}
 
-          <DividerL />
-          <View
-            style={{
-              paddingHorizontal: 22,
-              paddingVertical: 20,
-              backgroundColor: 'white',
-            }}>
-            <TextNotoM
-              style={{
-                fontSize: 17,
-                color: colors.fontColor2,
-                includeFontPadding: false,
-                marginBottom: 7,
-              }}>
-              원산지 표기
-            </TextNotoM>
-            <TextNotoR
-              style={{
-                fontSize: 13,
-                color: colors.fontColor8,
-                includeFontPadding: false,
-              }}>
-              햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기 :
-              국내산)햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 : 국내산,
-              닭고기 : 국내산)햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 :
-              국내산, 닭고기 : 국내산)햄치즈, 햄스페셜,
-              햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기 : 국내산)
-            </TextNotoR>
-          </View>
+          {index !== 2 && (
+            <>
+              <DividerL />
+              <View
+                style={{
+                  paddingHorizontal: 22,
+                  paddingVertical: 20,
+                  backgroundColor: 'white',
+                }}>
+                <TextNotoM
+                  style={{
+                    fontSize: 17,
+                    color: colors.fontColor2,
+                    includeFontPadding: false,
+                    marginBottom: 7,
+                  }}>
+                  원산지 표기
+                </TextNotoM>
+                <TextNotoR
+                  style={{
+                    fontSize: 13,
+                    color: colors.fontColor8,
+                    includeFontPadding: false,
+                  }}>
+                  햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기
+                  : 국내산)햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 :
+                  국내산, 닭고기 : 국내산)햄치즈, 햄스페셜,
+                  햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기 : 국내산)햄치즈,
+                  햄스페셜, 햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기 :
+                  국내산)
+                </TextNotoR>
+              </View>
 
-          <View
-            style={{
-              paddingHorizontal: 22,
-              paddingVertical: 20,
-              backgroundColor: colors.inputBoxBG,
-              marginTop: 20,
-            }}>
-            <TextNotoB
-              style={{
-                fontSize: 14,
-                color: colors.fontColor3,
-                includeFontPadding: false,
-                marginBottom: 7,
-              }}>
-              유의사항
-            </TextNotoB>
-            <TextNotoR
-              style={{
-                fontSize: 13,
-                color: colors.fontColor8,
-                includeFontPadding: false,
-              }}>
-              메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-              상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로 작성되었으며
-              변동될 수 있습니다.
-            </TextNotoR>
-          </View>
+              <View
+                style={{
+                  paddingHorizontal: 22,
+                  paddingVertical: 20,
+                  backgroundColor: colors.inputBoxBG,
+                  marginTop: 20,
+                }}>
+                <TextNotoB
+                  style={{
+                    fontSize: 14,
+                    color: colors.fontColor3,
+                    includeFontPadding: false,
+                    marginBottom: 7,
+                  }}>
+                  유의사항
+                </TextNotoB>
+                <TextNotoR
+                  style={{
+                    fontSize: 13,
+                    color: colors.fontColor8,
+                    includeFontPadding: false,
+                  }}>
+                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
+                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
+                  작성되었으며 변동될 수 있습니다.
+                </TextNotoR>
+              </View>
 
-          <View
-            style={{
-              paddingHorizontal: 22,
-              paddingVertical: 20,
-              backgroundColor: colors.inputBoxBG,
-            }}>
-            <TextNotoB
-              style={{
-                fontSize: 14,
-                color: colors.fontColor3,
-                includeFontPadding: false,
-                marginBottom: 7,
-              }}>
-              유의사항
-            </TextNotoB>
-            <TextNotoR
-              style={{
-                fontSize: 13,
-                color: colors.fontColor8,
-                includeFontPadding: false,
-              }}>
-              메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-              상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로 작성되었으며
-              변동될 수 있습니다.
-            </TextNotoR>
-          </View>
-          <View
-            style={{
-              paddingHorizontal: 22,
-              paddingVertical: 20,
-              backgroundColor: colors.inputBoxBG,
-            }}>
-            <TextNotoB
-              style={{
-                fontSize: 14,
-                color: colors.fontColor3,
-                includeFontPadding: false,
-                marginBottom: 7,
-              }}>
-              유의사항
-            </TextNotoB>
-            <TextNotoR
-              style={{
-                fontSize: 13,
-                color: colors.fontColor8,
-                includeFontPadding: false,
-              }}>
-              메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-              상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로 작성되었으며
-              변동될 수 있습니다.
-            </TextNotoR>
-          </View>
+              <View
+                style={{
+                  paddingHorizontal: 22,
+                  paddingVertical: 20,
+                  backgroundColor: colors.inputBoxBG,
+                }}>
+                <TextNotoB
+                  style={{
+                    fontSize: 14,
+                    color: colors.fontColor3,
+                    includeFontPadding: false,
+                    marginBottom: 7,
+                  }}>
+                  유의사항
+                </TextNotoB>
+                <TextNotoR
+                  style={{
+                    fontSize: 13,
+                    color: colors.fontColor8,
+                    includeFontPadding: false,
+                  }}>
+                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
+                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
+                  작성되었으며 변동될 수 있습니다.
+                </TextNotoR>
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 22,
+                  paddingVertical: 20,
+                  backgroundColor: colors.inputBoxBG,
+                }}>
+                <TextNotoB
+                  style={{
+                    fontSize: 14,
+                    color: colors.fontColor3,
+                    includeFontPadding: false,
+                    marginBottom: 7,
+                  }}>
+                  유의사항
+                </TextNotoB>
+                <TextNotoR
+                  style={{
+                    fontSize: 13,
+                    color: colors.fontColor8,
+                    includeFontPadding: false,
+                  }}>
+                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
+                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
+                  작성되었으며 변동될 수 있습니다.
+                </TextNotoR>
+              </View>
+            </>
+          )}
         </ScrollView>
       </SafeAreaView>
     </>
