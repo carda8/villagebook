@@ -52,6 +52,23 @@ const Header = ({
         )}
       </Pressable>
 
+      {/* 타이틀 */}
+      {title ? (
+        <View
+          style={{
+            flex: 1,
+            marginLeft: 18,
+          }}>
+          <TextMedium
+            style={{
+              fontSize: 17,
+              color: colors.fontColor2,
+            }}>
+            {title}
+          </TextMedium>
+        </View>
+      ) : null}
+
       <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
         {(showNoti || showLike) && (
           <Pressable hitSlop={10} onPress={() => {}}>
@@ -90,23 +107,6 @@ const Header = ({
           </Pressable>
         )}
       </View>
-
-      {/* 중간 타이틀 */}
-      {title ? (
-        <View
-          style={{
-            flex: 1,
-            marginLeft: 18,
-          }}>
-          <TextMedium
-            style={{
-              fontSize: 17,
-              color: colors.fontColor2,
-            }}>
-            {title}
-          </TextMedium>
-        </View>
-      ) : null}
     </View>
   );
 };

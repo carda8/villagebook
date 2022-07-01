@@ -24,7 +24,7 @@ const MainStackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="StoreList"
+        initialRouteName="Main"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Main} />
@@ -39,7 +39,7 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen name="Map" component={Map} />
         <Stack.Screen name="AddressSearch" component={AddressSearch} />
-        {/* <Stack.Screen name="Test" component={Test} /> */}
+        <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>
     </NavigationContainer>
   );

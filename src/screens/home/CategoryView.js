@@ -7,10 +7,30 @@ import MainBanner from '../../component/MainBanner';
 import SearchBox from '../../component/mainScreen/SearchBox';
 import TextEBold from '../../component/text/TextEBold';
 import TextMedium from '../../component/text/TextMedium';
+// import category from '../../config/category';
 import commonStyles from '../../styles/commonStyle';
 
 const CategoryView = ({navigation}) => {
-  const arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+  const arr = [
+    '1인분',
+    '돈까스/회/일식',
+    '중식',
+    '치킨',
+    '백반/죽/국수',
+    '카페/디저트',
+    '분식',
+    '찜/탕/찌개',
+    '피자',
+    '양식',
+    '고기/구이',
+    '족발/보쌈',
+    '아시안',
+    '패스트푸드',
+    '야식',
+    '도시락',
+    '체인점',
+    '맛집추천',
+  ];
   const renderItem = item => {
     return (
       <Pressable
@@ -20,14 +40,13 @@ const CategoryView = ({navigation}) => {
         style={{
           flex: 1,
           alignItems: 'center',
-          justifyContent: 'center',
         }}>
         <Image
           source={require('~/assets/cat01.png')}
           style={{width: 46, height: 46}}
           resizeMode="contain"
         />
-        <TextMedium style={{fontSize: 13}}>{item.index}</TextMedium>
+        <TextMedium style={{fontSize: 13}}>{item.item}</TextMedium>
       </Pressable>
     );
   };
@@ -75,8 +94,8 @@ const CategoryView = ({navigation}) => {
           </>
         )}
         renderItem={item => renderItem(item)}
-        numColumns={4}
-        columnWrapperStyle={{marginBottom: 20}}
+        numColumns={3}
+        columnWrapperStyle={{marginBottom: 20, marginHorizontal: -11}}
         keyExtractor={(item, index) => index}
       />
     </SafeAreaView>

@@ -29,7 +29,7 @@ import TextNotoR from '../../component/text/TextNotoR';
 import TextNotoB from '../../component/text/TextNotoB';
 import DividerL from '../../component/DividerL';
 import {Slider} from '@miblanchard/react-native-slider';
-import {launchCamera} from 'react-native-image-picker';
+import ImagePicker, {launchCamera} from 'react-native-image-picker';
 
 const MenuDetail = ({navigation}) => {
   const layout = useWindowDimensions();
@@ -682,6 +682,7 @@ const MenuDetail = ({navigation}) => {
                     resizeMode="contain"
                   />
                   <View>
+                    {/* 카메라 돌아 저장 시 돌아감  */}
                     <Pressable
                       onPress={async () => {
                         await PermissionsAndroid.request(
@@ -689,13 +690,11 @@ const MenuDetail = ({navigation}) => {
                         );
                         const result = await launchCamera(
                           {
-                            quality: 0.99,
                             mediaType: 'photo',
-                            saveToPhotos: true,
+                            // saveToPhotos: true,
                           },
                           res => {
-                            const {originalRotation} = res;
-                            console.log('result::', originalRotation);
+                            console.log('result::', res);
                           },
                         );
                         console.log('result', result);
@@ -719,6 +718,51 @@ const MenuDetail = ({navigation}) => {
                   맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
                   맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
                 </TextRegular>
+                <FastImage
+                  source={require('~/assets/dummy/CK_tc01560002923_l.jpg')}
+                  resizeMode={FastImage.resizeMode.cover}
+                  style={{
+                    flex: 1,
+                    height: 245,
+                    marginTop: 20,
+                    marginBottom: 8,
+                    borderRadius: 10,
+                  }}
+                />
+                <View
+                  style={{
+                    borderRadius: 15,
+                    borderTopLeftRadius: 0,
+                    backgroundColor: colors.storeIcon,
+                    paddingVertical: 16,
+                    paddingHorizontal: 13,
+                  }}>
+                  <View
+                    style={{flexDirection: 'row', alignItems: 'flex-start'}}>
+                    <Image
+                      source={require('~/assets/no_use_img.png')}
+                      style={{width: 38, height: 38, borderRadius: 38 / 2}}
+                      resizeMode="cover"
+                    />
+                    <View style={{marginLeft: 15, flex: 1}}>
+                      <TextBold style={{fontSize: 16, color: colors.primary}}>
+                        맛나버거 부산대점
+                      </TextBold>
+                      <TextRegular
+                        style={{fontSize: 13, color: colors.fontColorA2}}>
+                        {Date()}
+                      </TextRegular>
+                      <TextRegular
+                        style={{
+                          fontSize: 15,
+                          color: colors.fontColor2,
+                          marginTop: 7,
+                        }}>
+                        맛있다고 하시니 다행입니다. 많이 이용해주세요
+                      </TextRegular>
+                    </View>
+                  </View>
+                </View>
               </View>
             </View>
           )}
