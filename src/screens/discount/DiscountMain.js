@@ -1,5 +1,5 @@
 import {View, Text, Pressable, Image, FlatList} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
@@ -10,10 +10,16 @@ import TextRegular from '../../component/text/TextRegular';
 import TextNotoB from '../../component/text/TextNotoB';
 import {replaceString} from '../../config/utils/Price';
 import TextMedium from '../../component/text/TextMedium';
+import Pagination from '../../component/Pagenation';
 
 const DiscountMain = ({navigation}) => {
   const arr = [1, 2, 3];
+  const [page, setPage] = useState(1);
 
+  const handlePage = item => {
+    console.log('item', item);
+    setPage(item);
+  };
   const renderItem = item => {
     return (
       <View
@@ -24,12 +30,11 @@ const DiscountMain = ({navigation}) => {
           borderColor: colors.borderColor,
           marginBottom: 10,
           marginHorizontal: 22,
-          paddingTop: 24,
-          paddingLeft: 20,
           flexDirection: 'row',
           alignItems: 'center',
+          overflow: 'hidden',
         }}>
-        <View>
+        <View style={{flex: 3, paddingLeft: 20}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <TextMedium style={{fontSize: 17, color: colors.fontColor2}}>
               1000원 쿠폰
@@ -55,8 +60,16 @@ const DiscountMain = ({navigation}) => {
           </View>
         </View>
         <Pressable
-          style={{width: 88, alignItems: 'center', justifyContent: 'center'}}>
-          <TextNotoM>자세히</TextNotoM>
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            borderLeftWidth: 1,
+            borderColor: colors.borderColor,
+            backgroundColor: colors.couponBG,
+          }}>
+          <TextNotoM style={{color: colors.fontColor2}}>자세히</TextNotoM>
         </Pressable>
       </View>
     );
@@ -78,6 +91,15 @@ const DiscountMain = ({navigation}) => {
         </View> */}
 
       <FlatList
+        ListFooterComponent={() => (
+          <Pagination
+            total={10}
+            numberOfItems={3}
+            selectedPage={page}
+            handlePage={handlePage}
+            marginVertical={30}
+          />
+        )}
         ListHeaderComponent={() => (
           <>
             <View style={{paddingHorizontal: 22, marginTop: 26}}>

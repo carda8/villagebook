@@ -17,6 +17,14 @@ import DiscountMain from '../screens/discount/DiscountMain';
 import MyPage from '../screens/mypage/MyPage';
 import CategoryView from '../screens/home/CategoryView';
 import StoreList from '../screens/home/CategoryStore/StoreList';
+import EditInfo from '../screens/mypage/EditInfo';
+import Notice from '../screens/mypage/Notice';
+import FAQ from '../screens/mypage/FAQ';
+import PointCoupon from '../screens/mypage/PointCoupon';
+import Review from '../screens/mypage/Review';
+import PushSetting from '../screens/mypage/PushSetting';
+import NoticeDetail from '../screens/mypage/NoticeDetail';
+import FAQWrite from '../screens/mypage/FAQWrite';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +47,17 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen name="Map" component={Map} />
         <Stack.Screen name="AddressSearch" component={AddressSearch} />
+
+        <Stack.Screen name="EditInfo" component={EditInfo} />
+        <Stack.Screen name="Notice" component={Notice} />
+        <Stack.Screen name="NoticeDetail" component={NoticeDetail} />
+        <Stack.Screen name="FAQ" component={FAQ} />
+        <Stack.Screen name="FAQWrite" component={FAQWrite} />
+        <Stack.Screen name="PointCoupon" component={PointCoupon} />
+        <Stack.Screen name="Event" component={Event} />
+        <Stack.Screen name="Review" component={Review} />
+        <Stack.Screen name="PushSetting" component={PushSetting} />
+
         <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>
     </NavigationContainer>

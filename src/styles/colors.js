@@ -34,4 +34,6 @@ export default {
   borderColor22: '#222222',
 
   dividerL: '#F2F2F2',
+
+  pagenationBG: '#EFEFEF',
 };

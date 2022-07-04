@@ -20,7 +20,7 @@ import ReviewSimple from '../../../component/reviews/ReviewSimple';
 const StoreItems = ({navigation, route}) => {
   const arr = [1, 2, 3, 4, 5, 6, 7, 8];
   console.log('subs rendered');
-  console.log('params', route.params);
+  // console.log('params', route.params);
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
