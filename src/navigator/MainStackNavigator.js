@@ -25,6 +25,10 @@ import Review from '../screens/mypage/Review';
 import PushSetting from '../screens/mypage/PushSetting';
 import NoticeDetail from '../screens/mypage/NoticeDetail';
 import FAQWrite from '../screens/mypage/FAQWrite';
+import FAQDetail from '../screens/mypage/FAQDetail';
+import EventBoard from '../screens/mypage/EventBoard';
+import EventDetail from '../screens/mypage/EventDetail';
+import OptionSelect from '../screens/menu/OptionSelect';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +49,7 @@ const MainStackNavigator = () => {
         <Stack.Screen name="CallTopNavigator" component={CallTopNavigator} />
         <Stack.Screen name="MenuStore" component={MenuStroe} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
+        <Stack.Screen name="OptionSelect" component={OptionSelect} />
         <Stack.Screen name="Map" component={Map} />
         <Stack.Screen name="AddressSearch" component={AddressSearch} />
 
@@ -52,9 +57,11 @@ const MainStackNavigator = () => {
         <Stack.Screen name="Notice" component={Notice} />
         <Stack.Screen name="NoticeDetail" component={NoticeDetail} />
         <Stack.Screen name="FAQ" component={FAQ} />
+        <Stack.Screen name="FAQDetail" component={FAQDetail} />
         <Stack.Screen name="FAQWrite" component={FAQWrite} />
         <Stack.Screen name="PointCoupon" component={PointCoupon} />
-        <Stack.Screen name="Event" component={Event} />
+        <Stack.Screen name="EventBoard" component={EventBoard} />
+        <Stack.Screen name="EventDetail" component={EventDetail} />
         <Stack.Screen name="Review" component={Review} />
         <Stack.Screen name="PushSetting" component={PushSetting} />
 

@@ -22,7 +22,7 @@ const MyPage = ({navigation}) => {
     '1:1문의',
     '포인트&쿠폰',
     '이벤트',
-    '리뷰관리',
+    '리뷰 관리',
     '알림 설정',
   ];
   return (
@@ -127,10 +127,10 @@ const MyPage = ({navigation}) => {
                     navigation.navigate('FAQ');
                     break;
                   case 3:
-                    navigation.navigate('PointCoupon');
+                    navigation.navigate('DiscountMain');
                     break;
                   case 4:
-                    navigation.navigate('Event');
+                    navigation.navigate('EventBoard');
                     break;
                   case 5:
                     navigation.navigate('Review');

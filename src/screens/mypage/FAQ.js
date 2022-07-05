@@ -59,7 +59,7 @@ const FAQ = ({navigation}) => {
     return (
       <Pressable
         onPress={() => {
-          navigation.navigate('FAQWrite', {boardIndex: item.index});
+          navigation.navigate('FAQDetail', {boardIndex: item.index});
         }}
         style={{
           height: 70,

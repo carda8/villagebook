@@ -6,6 +6,7 @@ import Header from '../../component/Header';
 import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import FastImage from 'react-native-fast-image';
+import dayjs from 'dayjs';
 
 const OrderList = ({navigation}) => {
   const arr = [1, 2, 3, 4, 5, 6];
@@ -28,7 +29,9 @@ const OrderList = ({navigation}) => {
             flexDirection: 'row',
           }}>
           <View style={{flex: 1}}>
-            <TextRegular>주문일자 : {Date()}</TextRegular>
+            <TextRegular>
+              주문일자 : {dayjs().format('YYYY-MM-DD HH:mm')}
+            </TextRegular>
           </View>
           <View
             style={{

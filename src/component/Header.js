@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image, Pressable, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
 import colors from '../styles/colors';
 import TextMedium from './text/TextMedium';
 
@@ -14,7 +15,9 @@ const Header = ({
   showNoti,
   showShare,
   iconColor,
+  category,
 }) => {
+  const {currentCategory} = useSelector(state => state.categoryReducer);
   return (
     <View
       style={[
@@ -68,6 +71,21 @@ const Header = ({
           </TextMedium>
         </View>
       ) : null}
+      {category && (
+        <View
+          style={{
+            flex: 1,
+            marginLeft: 18,
+          }}>
+          <TextMedium
+            style={{
+              fontSize: 17,
+              color: colors.fontColor2,
+            }}>
+            {currentCategory}
+          </TextMedium>
+        </View>
+      )}
 
       <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
         {(showNoti || showLike) && (

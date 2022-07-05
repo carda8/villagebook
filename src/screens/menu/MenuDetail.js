@@ -121,10 +121,10 @@ const MenuDetail = ({navigation}) => {
       <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
         <View
           style={{
-            zIndex: trigger ? 1000 : -1,
             top: 50,
             position: 'absolute',
-            opacity: trigger ? 1 : 0,
+            opacity: trigger && index === 0 ? 1 : 0,
+            zIndex: trigger && index === 0 ? 1000 : -1,
             backgroundColor: 'white',
           }}>
           <ScrollView
@@ -134,7 +134,7 @@ const MenuDetail = ({navigation}) => {
             showsHorizontalScrollIndicator={false}>
             {arr.map((item, index) => (
               <Pressable
-                disabled={!trigger}
+                disabled={!trigger && index === 0}
                 key={index}
                 ref={el => (chipTarget.current[index] = el)}
                 onPress={() => {

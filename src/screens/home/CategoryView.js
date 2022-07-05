@@ -7,42 +7,58 @@ import MainBanner from '../../component/MainBanner';
 import SearchBox from '../../component/mainScreen/SearchBox';
 import TextEBold from '../../component/text/TextEBold';
 import TextMedium from '../../component/text/TextMedium';
-// import category from '../../config/category';
+import Category from '../../config/Category';
+import IconPath from '../../config/IconPath';
 import commonStyles from '../../styles/commonStyle';
 
-const CategoryView = ({navigation}) => {
-  const arr = [
-    '1인분',
-    '돈까스/회/일식',
-    '중식',
-    '치킨',
-    '백반/죽/국수',
-    '카페/디저트',
-    '분식',
-    '찜/탕/찌개',
-    '피자',
-    '양식',
-    '고기/구이',
-    '족발/보쌈',
-    '아시안',
-    '패스트푸드',
-    '야식',
-    '도시락',
-    '체인점',
-    '맛집추천',
-  ];
+const CategoryView = ({navigation, route}) => {
+  const selectedCategory = route.params?.selectedCategory;
+  let arr;
+  if (selectedCategory) {
+    switch (selectedCategory) {
+      case 'food':
+        arr = Category.food;
+        break;
+      case 'market':
+        arr = Category.market;
+        break;
+      case 'convenience':
+        arr = Category.convenience;
+        break;
+      default:
+        break;
+    }
+  }
   const renderItem = item => {
+    let idxNum = 1;
+    switch (selectedCategory) {
+      case 'food':
+        idxNum = idxNum;
+        break;
+      case 'market':
+        idxNum = 19;
+        break;
+      case 'convenience':
+        idxNum = 37;
+        break;
+      default:
+        break;
+    }
     return (
       <Pressable
         onPress={() => {
-          navigation.navigate('StoreList', {routteIdx: item.index});
+          navigation.navigate('StoreList', {
+            routeIdx: item.item,
+            category: selectedCategory,
+          });
         }}
         style={{
           flex: 1,
           alignItems: 'center',
+          // marginHorizontal: 10,
         }}>
         <Image
-          source={require('~/assets/cat01.png')}
+          source={IconPath[item.index + idxNum]}
           style={{width: 46, height: 46}}
           resizeMode="contain"
         />
@@ -64,7 +80,6 @@ const CategoryView = ({navigation}) => {
       <FlatList
         data={arr}
         scrollEnabled
-        style={{paddingHorizontal: 22, paddingBottom: 70}}
         ListHeaderComponent={() => (
           <>
             <Pressable
@@ -95,7 +110,8 @@ const CategoryView = ({navigation}) => {
         )}
         renderItem={item => renderItem(item)}
         numColumns={3}
-        columnWrapperStyle={{marginBottom: 20, marginHorizontal: -11}}
+        contentContainerStyle={{paddingHorizontal: 22}}
+        columnWrapperStyle={{marginBottom: 20}}
         keyExtractor={(item, index) => index}
       />
     </SafeAreaView>

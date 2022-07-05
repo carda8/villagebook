@@ -19,8 +19,8 @@ import ReviewSimple from '../../../component/reviews/ReviewSimple';
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
   const arr = [1, 2, 3, 4, 5, 6, 7, 8];
-  console.log('subs rendered');
-  // console.log('params', route.params);
+
+  console.log('items route', route.params);
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
@@ -102,7 +102,14 @@ const StoreItems = ({navigation, route}) => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <TextMedium style={{fontSize: 16}}>맛나분식 부산대점</TextMedium>
+              <View style={{flex: 1}} clip>
+                <Text
+                  style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}>
+                  맛나분식 맛나분식 {route.params.cate}
+                </Text>
+              </View>
               <ReviewSimple />
             </View>
             <View
