@@ -2,10 +2,14 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const menuSlice = createSlice({
   name: 'menu',
-  initialState: {},
-  reducers: {},
+  initialState: {optionHeader: false},
+  reducers: {
+    setOptionHeader: (state, action) => {
+      state.optionHeader = action.payload;
+    },
+  },
 });
 
 const {actions, reducer} = menuSlice;
-export const {} = actions;
+export const {setOptionHeader} = actions;
 export const menuReducer = reducer;

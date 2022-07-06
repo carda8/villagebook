@@ -34,8 +34,14 @@ import ImagePicker, {launchCamera} from 'react-native-image-picker';
 const MenuDetail = ({navigation}) => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const arr = ['토스트', '음료', '토스트', '음료', '토스트', '주류', 8, 9];
-  const arrTop = [1, 2, 3];
+  const arr = ['토스트', '음료', '토스트', '음료', '사이드', '주류', 8, 9];
+  const arrTop = [
+    {name: '싸이버거 1', price: 1000, desc: '싸이버거 입니다'},
+    {name: '싸이버거 2', price: 2000, desc: '싸이버거 입니다'},
+    {name: '싸이버거 3', price: 3000, desc: '싸이버거 입니다'},
+    {name: '싸이버거 4', price: 40000, desc: '싸이버거 입니다'},
+    {name: '싸이버거 5', price: 50000, desc: '싸이버거 입니다'},
+  ];
   const [routes] = useState([
     {key: 'first', title: 'First'},
     {key: 'second', title: 'Second'},
@@ -358,7 +364,10 @@ const MenuDetail = ({navigation}) => {
                   </View>
                   <View style={{flex: 1}}>
                     {arrTop.map((item, index) => (
-                      <View
+                      <Pressable
+                        onPress={() => {
+                          navigation.navigate('OptionSelect', {data: item});
+                        }}
                         key={index}
                         style={{
                           flex: 1,
@@ -389,11 +398,11 @@ const MenuDetail = ({navigation}) => {
                           <View style={{flex: 1}}>
                             <TextMedium
                               style={{fontSize: 17, color: colors.fontColor2}}>
-                              맵달맵달 리챔
+                              {item.name}
                             </TextMedium>
                             <TextMedium
                               style={{fontSize: 15, color: colors.fontColor8}}>
-                              계란+콘+모짜렐라치즈+리챔3장+ 핫스모크소스
+                              {item.desc}
                             </TextMedium>
                           </View>
                         </View>
@@ -403,7 +412,7 @@ const MenuDetail = ({navigation}) => {
                             3,700원
                           </TextBold>
                         </View>
-                      </View>
+                      </Pressable>
                     ))}
                   </View>
                 </View>
@@ -415,7 +424,6 @@ const MenuDetail = ({navigation}) => {
                         height: 50,
                         paddingVertical: 15,
                         paddingHorizontal: 22,
-                        borderTopWidth: 1,
                         borderBottomWidth: 1,
                         borderColor: colors.borderColor,
                       }}>
@@ -425,12 +433,15 @@ const MenuDetail = ({navigation}) => {
                       key={index}
                       ref={el => (focusTarget.current[index] = el)}
                       style={{
-                        height: 400,
+                        flex: 1,
                         backgroundColor: 'white',
                       }}>
                       <View style={{flex: 1}}>
                         {arrTop.map((item, index) => (
-                          <View
+                          <Pressable
+                            onPress={() => {
+                              navigation.navigate('OptionSelect', {data: item});
+                            }}
                             key={index}
                             style={{
                               flex: 1,
@@ -484,7 +495,7 @@ const MenuDetail = ({navigation}) => {
                                 </TextBold>
                               </View>
                             </View>
-                          </View>
+                          </Pressable>
                         ))}
                       </View>
                     </View>
