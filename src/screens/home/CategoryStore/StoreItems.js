@@ -19,6 +19,8 @@ import ReviewSimple from '../../../component/reviews/ReviewSimple';
 import DividerL from '../../../component/DividerL';
 import TextBold from '../../../component/text/TextBold';
 import ImageCover from '../../../component/ImageCover';
+import {useDispatch} from 'react-redux';
+import {setCurrentStoreCode} from '../../../store/reducers/CartReducer';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
@@ -28,30 +30,35 @@ const StoreItems = ({navigation, route}) => {
       data: [
         {
           name: '버거킹 부산대점',
+          storeCode: 1,
           tip: 1000,
           review: 999,
           isOpen: true,
         },
         {
           name: '롯데리아 부산대점',
+          storeCode: 2,
           tip: 1000,
           review: 999,
           isOpen: true,
         },
         {
           name: '맥도날드 부산대점',
+          storeCode: 3,
           tip: 1000,
           review: 999,
           isOpen: true,
         },
         {
           name: '인앤아웃 부산대점',
+          storeCode: 4,
           tip: 1000,
           review: 999,
           isOpen: true,
         },
         {
           name: '고든램지 버거',
+          storeCode: 5,
           tip: 1000,
           review: 999,
           isOpen: true,
@@ -63,30 +70,35 @@ const StoreItems = ({navigation, route}) => {
       data: [
         {
           name: '버거킹 부산대점',
+          storeCode: 6,
           tip: 1000,
           review: 999,
           isOpen: false,
         },
         {
           name: '버거킹 구서점',
+          storeCode: 7,
           tip: 1000,
           review: 999,
           isOpen: false,
         },
         {
           name: 'KFC 구서점',
+          storeCode: 8,
           tip: 1000,
           review: 999,
           isOpen: false,
         },
         {
           name: '버거킹 부산대점',
+          storeCode: 9,
           tip: 1000,
           review: 999,
           isOpen: false,
         },
         {
           name: '버거킹 부산대점',
+          storeCode: 10,
           tip: 1000,
           review: 999,
           isOpen: false,
@@ -95,16 +107,22 @@ const StoreItems = ({navigation, route}) => {
     },
   ];
 
-  console.log('items route', route.params);
+  console.log('items cate route', route.params);
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
+  const dispatch = useDispatch();
 
   //368 88 279
   const renderItem = item => {
+    const storeCode = item.item.storeCode;
     return (
       <Pressable
-        onPress={() => navigation.navigate('MenuDetail')}
+        onPress={() => {
+          console.log('code', storeCode);
+          dispatch(setCurrentStoreCode(storeCode));
+          navigation.navigate('MenuDetail');
+        }}
         style={{
           flex: 1,
           // height: IMG_CONTAINER,

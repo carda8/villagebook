@@ -36,11 +36,11 @@ const MenuDetail = ({navigation}) => {
   const [index, setIndex] = useState(0);
   const arr = ['토스트', '음료', '토스트', '음료', '사이드', '주류', 8, 9];
   const arrTop = [
-    {name: '싸이버거 1', price: 1000, desc: '싸이버거 입니다'},
-    {name: '싸이버거 2', price: 2000, desc: '싸이버거 입니다'},
-    {name: '싸이버거 3', price: 3000, desc: '싸이버거 입니다'},
-    {name: '싸이버거 4', price: 40000, desc: '싸이버거 입니다'},
-    {name: '싸이버거 5', price: 50000, desc: '싸이버거 입니다'},
+    {name: '싸이버거 1', price: 1000, desc: '싸이버거 입니다', itemCode: 1},
+    {name: '싸이버거 2', price: 2000, desc: '싸이버거 입니다', itemCode: 2},
+    {name: '싸이버거 3', price: 3000, desc: '싸이버거 입니다', itemCode: 3},
+    {name: '싸이버거 4', price: 40000, desc: '싸이버거 입니다', itemCode: 4},
+    {name: '싸이버거 5', price: 50000, desc: '싸이버거 입니다', itemCode: 5},
   ];
   const [routes] = useState([
     {key: 'first', title: 'First'},
@@ -161,7 +161,6 @@ const MenuDetail = ({navigation}) => {
                       console.log('widht', width);
                       scrollRefSub.current.scrollTo({
                         x: left - layout.width / 3 - 10,
-
                         animated: true,
                       });
                     },

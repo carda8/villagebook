@@ -25,10 +25,11 @@ const OptionCount = ({data}) => {
       <Pressable
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
         onPress={() => {
-          if (cartStore.mainCount > 1) {
+          if (cartStore.mainCount.count > 1) {
             dispatch(
               setMainCount({
-                count: cartStore.mainCount - 1,
+                count: cartStore.mainCount.count - 1,
+                mainItemCode: cartStore.currentStoreCode,
                 price: cartStore.totalPrice - data.price,
               }),
             );
@@ -49,14 +50,15 @@ const OptionCount = ({data}) => {
           borderRightWidth: 1,
           borderColor: colors.borderColor,
         }}>
-        <TextBold>{cartStore.mainCount}</TextBold>
+        <TextBold>{cartStore.mainCount.count}</TextBold>
       </View>
       <Pressable
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
         onPress={() => {
           dispatch(
             setMainCount({
-              count: cartStore.mainCount + 1,
+              count: cartStore.mainCount.count + 1,
+              mainItemCode: cartStore.currentStoreCode,
               price: cartStore.totalPrice + data.price,
             }),
           );

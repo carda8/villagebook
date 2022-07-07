@@ -24,13 +24,20 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setOptionHeader} from '../../store/reducers/MenuReducer';
 import OptionCount from './OptionCount';
 import CartButton from './CartButton';
-import {setMainCount, setSubMenu} from '../../store/reducers/CartReducer';
+import {
+  initOption,
+  setMainCount,
+  setSubMenu,
+} from '../../store/reducers/CartReducer';
 
 const OptionSelect = ({navigation, route}) => {
   const data = route.params.data;
   console.log('data', data);
-  const {optionHeader} = useSelector(state => state.menuReducer);
+  const {optionHeader, currentStoreCode} = useSelector(
+    state => state.menuReducer,
+  );
   const dispatch = useDispatch();
+  const storeCode = 1;
   const arr = [
     {
       option: '매운맛 선택',
@@ -38,21 +45,25 @@ const OptionSelect = ({navigation, route}) => {
       data: [
         {
           name: '매운맛 추가 x',
+          price: 0,
         },
         {
           name: '신라면 정도',
+          price: 500,
         },
         {
           name: '불닭 정도',
+          price: 1000,
         },
         {
           name: '불닭 x3',
+          price: 1500,
         },
       ],
     },
     {
       option: '사이드 선택',
-      required: false,
+      required: true,
       data: [
         {
           name: '사이드1',
@@ -118,9 +129,20 @@ const OptionSelect = ({navigation, route}) => {
     },
   ];
   const layout = useWindowDimensions();
-
+  const _getReqiredItem = () => {
+    const temp = arr.filter((item, index) => item.required === true);
+    console.log('get temp', temp);
+    dispatch(
+      initOption({
+        count: 1,
+        mainItemCode: data.itemCode,
+        price: data.price,
+        mainReqired: temp,
+      }),
+    );
+  };
   useEffect(() => {
-    dispatch(setMainCount({count: 1, price: data.price}));
+    _getReqiredItem();
   }, []);
 
   return (
@@ -132,7 +154,7 @@ const OptionSelect = ({navigation, route}) => {
         style={{position: 'absolute', zIndex: 500}}
         isOption={true}
       />
-      <CartButton />
+      <CartButton navigation={navigation} />
       <SectionList
         onScroll={e => {
           let positionY = e.nativeEvent.contentOffset.y;

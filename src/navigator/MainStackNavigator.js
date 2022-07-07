@@ -29,6 +29,7 @@ import FAQDetail from '../screens/mypage/FAQDetail';
 import EventBoard from '../screens/mypage/EventBoard';
 import EventDetail from '../screens/mypage/EventDetail';
 import OptionSelect from '../screens/menu/OptionSelect';
+import CartMain from '../screens/menu/cart/CartMain';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,7 +37,7 @@ const MainStackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Main"
+        initialRouteName="CartMain"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Main} />
@@ -50,6 +51,7 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MenuStore" component={MenuStroe} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen name="OptionSelect" component={OptionSelect} />
+        <Stack.Screen name="CartMain" component={CartMain} />
         <Stack.Screen name="Map" component={Map} />
         <Stack.Screen name="AddressSearch" component={AddressSearch} />
 

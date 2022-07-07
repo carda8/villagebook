@@ -7,16 +7,16 @@ import {replaceString} from '../../config/utils/Price';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   removeSubMenu,
-  setRequired,
+  setMainRequired,
   setSubMenu,
 } from '../../store/reducers/CartReducer';
 
 const OptionRenderItem = ({item, data}) => {
-  const item2 = item.item;
-  console.log('IEM', item);
+  const cartStore = useSelector(state => state.cartReducer);
   const [check, setCheck] = useState(false);
   const dispatch = useDispatch();
-  const {mainReqired} = useSelector(state => state.cartReducer);
+  const item2 = item.item;
+
   return (
     <View
       style={{
@@ -32,22 +32,36 @@ const OptionRenderItem = ({item, data}) => {
           onPress={() => {
             setCheck(!check);
             if (item.section.required) {
-              dispatch(setRequired(item2.name));
+              if (
+                cartStore.selectedMainOption[item.section.option] !== item2.name
+              ) {
+                dispatch(
+                  setMainRequired({
+                    key: item.section.option,
+                    value: item2.name,
+                    price: item.item.price,
+                  }),
+                );
+              }
             } else {
               //체크 시
               if (!check)
                 dispatch(
-                  setSubMenu([
-                    {itemCode: 1, itemCount: 1, itemPrice: item2.price ?? 0},
-                  ]),
+                  setSubMenu({
+                    itemCode: 1,
+                    itemCount: 1,
+                    itemPrice: item2.price ?? 0,
+                  }),
                 );
 
               //체크 해제 시
               if (check)
                 dispatch(
-                  removeSubMenu([
-                    {itemCode: 1, itemCount: 1, itemPrice: item2.price ?? 0},
-                  ]),
+                  removeSubMenu({
+                    itemCode: 1,
+                    itemCount: 1,
+                    itemPrice: item2.price ?? 0,
+                  }),
                 );
             }
           }}
@@ -60,7 +74,8 @@ const OptionRenderItem = ({item, data}) => {
             <Image
               source={
                 item.section.required
-                  ? mainReqired === item2.name
+                  ? cartStore.selectedMainOption[item.section.option]?.val ===
+                    item2.name
                     ? require('~/assets/top_ic_map_on.png')
                     : require('~/assets/top_ic_map_off.png')
                   : check
