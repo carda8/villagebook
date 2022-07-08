@@ -1,5 +1,5 @@
 import {View, Text, Image, ScrollView, Pressable} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../../styles/commonStyle';
 import Header from '../../../component/Header';
@@ -9,17 +9,21 @@ import colors from '../../../styles/colors';
 import TextRegular from '../../../component/text/TextRegular';
 import OptionCount from '../OptionCount';
 import DividerL from '../../../component/DividerL';
+import Divider from '../../../component/Divider';
+import CartButton from '../CartButton';
 
 const CartMain = ({navigation}) => {
+  const [isDelivery, setIsDelivery] = useState(true);
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'카트'} />
-      <ScrollView>
+      <Header title={'카트'} navigation={navigation} />
+      <CartButton navigation={navigation} goTo={'OrderPage'} />
+      <ScrollView contentContainerStyle={{paddingBottom: 100}}>
         <View
           style={{
             paddingHorizontal: 22,
             alignItems: 'center',
-            marginTop: 20,
+            paddingTop: 20,
           }}>
           <Image
             source={require('~/assets/no_use_img.png')}
@@ -56,14 +60,14 @@ const CartMain = ({navigation}) => {
                 marginTop: 10,
               }}>
               <TextBold>21,500</TextBold>
-              <OptionCount />
+              <OptionCount isTest />
             </View>
           </View>
           <Pressable
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginVertical: 10,
+              marginVertical: 20,
             }}>
             <Image
               source={require('~/assets/ico_plus.png')}
@@ -77,26 +81,38 @@ const CartMain = ({navigation}) => {
           <TextBold>배달/포장 선택</TextBold>
           <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
             <Pressable
+              onPress={() => setIsDelivery(true)}
               style={{
                 flex: 1,
+                borderRadius: 7,
+                alignItems: 'center',
+                justifyContent: 'center',
                 height: 50,
                 marginRight: 10,
-                borderRadius: 7,
-                backgroundColor: colors.primary,
-                alignItems: 'center',
-                justifyContent: 'center',
+                backgroundColor: isDelivery
+                  ? colors.primary
+                  : colors.inputBoxBG,
               }}>
-              <TextBold style={{color: 'white'}}>배달</TextBold>
+              <TextBold
+                style={{color: isDelivery ? 'white' : colors.fontColor2}}>
+                배달
+              </TextBold>
             </Pressable>
             <Pressable
+              onPress={() => setIsDelivery(false)}
               style={{
                 flex: 1,
                 borderRadius: 7,
-                backgroundColor: colors.inputBoxBG,
+                backgroundColor: isDelivery
+                  ? colors.inputBoxBG
+                  : colors.primary,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <TextBold>포장</TextBold>
+              <TextBold
+                style={{color: !isDelivery ? 'white' : colors.fontColor2}}>
+                포장
+              </TextBold>
             </Pressable>
           </View>
           <View style={{marginTop: 10}}>
@@ -106,15 +122,24 @@ const CartMain = ({navigation}) => {
               <TextRegular>2,000원</TextRegular>
             </View>
             <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <TextRegular>배달팁</TextRegular>
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginVertical: 10,
+              }}>
+              <TextRegular>추가 배달팁</TextRegular>
               <TextRegular>2,000원</TextRegular>
             </View>
-
             <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <TextRegular>총 주문금액</TextRegular>
-              <TextRegular>20,000원</TextRegular>
+              style={{height: 1, backgroundColor: colors.borderColor}}></View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 20,
+              }}>
+              <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
+              <TextBold style={{fontSize: 18}}>20,000원</TextBold>
             </View>
           </View>
         </View>

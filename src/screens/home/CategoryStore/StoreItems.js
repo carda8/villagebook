@@ -256,9 +256,7 @@ const StoreItems = ({navigation, route}) => {
         keyExtractor={(item, index) => item + index}
         renderItem={item => renderItem(item)}
         renderSectionHeader={({section: {isOpen}}) =>
-          !isOpen && (
-            <TextBold style={{fontSize: 20}}>준비중이에요{' > _ <!!'}</TextBold>
-          )
+          !isOpen && <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
         }
         showsVerticalScrollIndicator={false}
       />

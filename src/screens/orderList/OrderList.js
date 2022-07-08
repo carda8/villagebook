@@ -85,6 +85,9 @@ const OrderList = ({navigation}) => {
             </TextRegular>
           </Pressable>
           <Pressable
+            onPress={() => {
+              navigation.navigate('OrderSumary');
+            }}
             style={{
               flex: 1,
               borderWidth: 1,
@@ -99,6 +102,9 @@ const OrderList = ({navigation}) => {
             </TextRegular>
           </Pressable>
           <Pressable
+            onPress={() => {
+              navigation.navigate('WriteReview');
+            }}
             style={{
               flex: 1,
               borderWidth: 1,

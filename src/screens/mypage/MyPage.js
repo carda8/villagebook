@@ -163,13 +163,13 @@ const MyPage = ({navigation}) => {
             paddingHorizontal: 22,
           }}>
           <TextBold style={{color: colors.fontColor2}}>주의사항</TextBold>
-          <TextBold style={{color: colors.fontColor2}}>주문취소</TextBold>
+          {/* <TextBold style={{color: colors.fontColor2}}>주문취소</TextBold>
           <TextBold style={{color: colors.fontColor2}}>업체연락처</TextBold>
           <TextBold style={{color: colors.fontColor2}}>주문누락</TextBold>
           <TextBold style={{color: colors.fontColor2}}>쿠폰사용</TextBold>
           <TextBold style={{color: colors.fontColor2}}>포인트사용</TextBold>
           <TextBold style={{color: colors.fontColor2}}>전화주문</TextBold>
-          <TextBold style={{color: colors.fontColor2}}>유의사항</TextBold>
+          <TextBold style={{color: colors.fontColor2}}>유의사항</TextBold> */}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -9,7 +9,7 @@ import {
   setMainCount,
 } from '../../store/reducers/CartReducer';
 
-const OptionCount = ({data}) => {
+const OptionCount = ({data, isTest}) => {
   const [count, setCount] = useState(1);
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
@@ -26,13 +26,15 @@ const OptionCount = ({data}) => {
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
         onPress={() => {
           if (cartStore.mainCount.count > 1) {
-            dispatch(
-              setMainCount({
-                count: cartStore.mainCount.count - 1,
-                mainItemCode: cartStore.currentStoreCode,
-                price: cartStore.totalPrice - data.price,
-              }),
-            );
+            if (!isTest) {
+              dispatch(
+                setMainCount({
+                  count: cartStore.mainCount.count - 1,
+                  mainItemCode: cartStore.currentStoreCode,
+                  price: cartStore.totalPrice - data.price,
+                }),
+              );
+            }
             // setCount(count - 1);
           }
         }}>
@@ -55,13 +57,15 @@ const OptionCount = ({data}) => {
       <Pressable
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
         onPress={() => {
-          dispatch(
-            setMainCount({
-              count: cartStore.mainCount.count + 1,
-              mainItemCode: cartStore.currentStoreCode,
-              price: cartStore.totalPrice + data.price,
-            }),
-          );
+          if (!isTest) {
+            dispatch(
+              setMainCount({
+                count: cartStore.mainCount.count + 1,
+                mainItemCode: cartStore.currentStoreCode,
+                price: cartStore.totalPrice + data.price,
+              }),
+            );
+          }
         }}>
         <Image
           source={require('~/assets/ico_plus.png')}

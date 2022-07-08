@@ -7,6 +7,7 @@ export default {
   fontColor2: '#222222',
   fontColor3: '#333333',
   fontColor99: '#999999',
+  fontColorRed: '#D91313',
 
   colorE3: '#E3E3E3',
   inputBoxBG: '#F8F8F8',

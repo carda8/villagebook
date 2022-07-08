@@ -30,6 +30,11 @@ import EventBoard from '../screens/mypage/EventBoard';
 import EventDetail from '../screens/mypage/EventDetail';
 import OptionSelect from '../screens/menu/OptionSelect';
 import CartMain from '../screens/menu/cart/CartMain';
+import WriteOrderForm from '../screens/menu/orderDetail/WriteOrderForm';
+import PaymentMethod from '../screens/menu/orderDetail/PaymentMethod';
+import OrderSumary from '../screens/menu/orderDetail/OrderSumary';
+import OrderFinish from '../screens/menu/orderDetail/OrderFinish';
+import WriteReview from '../screens/orderList/WriteReview';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +42,7 @@ const MainStackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="CartMain"
+        initialRouteName="Main"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Main} />
@@ -45,6 +50,7 @@ const MainStackNavigator = () => {
         <Stack.Screen name="StoreList" component={StoreList} />
         <Stack.Screen name="LikeMain" component={LikeMain} />
         <Stack.Screen name="OrderList" component={OrderList} />
+        <Stack.Screen name="WriteReview" component={WriteReview} />
         <Stack.Screen name="DiscountMain" component={DiscountMain} />
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen name="CallTopNavigator" component={CallTopNavigator} />
@@ -52,9 +58,17 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen name="OptionSelect" component={OptionSelect} />
         <Stack.Screen name="CartMain" component={CartMain} />
+        <Stack.Screen name="WriteOrderForm" component={WriteOrderForm} />
+        <Stack.Screen
+          name="PaymentMethod"
+          component={PaymentMethod}
+          options={{animation: 'slide_from_bottom'}}
+        />
+        <Stack.Screen name="OrderSumary" component={OrderSumary} />
+        <Stack.Screen name="OrderFinish" component={OrderFinish} />
+
         <Stack.Screen name="Map" component={Map} />
         <Stack.Screen name="AddressSearch" component={AddressSearch} />
-
         <Stack.Screen name="EditInfo" component={EditInfo} />
         <Stack.Screen name="Notice" component={Notice} />
         <Stack.Screen name="NoticeDetail" component={NoticeDetail} />

@@ -19,6 +19,7 @@ const Header = ({
   iconColor,
   category,
   isOption,
+  isPayment,
 }) => {
   const {currentCategory} = useSelector(state => state.categoryReducer);
   const {optionHeader} = useSelector(state => state.menuReducer);
@@ -54,18 +55,21 @@ const Header = ({
 
   return (
     <>
-      <Animated.View
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: 57,
-          backgroundColor: 'white',
-          opacity: fadeAnim,
-          zIndex: 100,
-          justifyContent: 'center',
-        }}>
-        <TextBold style={{marginLeft: 70}}>{fadeTitle}</TextBold>
-      </Animated.View>
+      {fadeTitle && (
+        <Animated.View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: 57,
+            backgroundColor: 'white',
+            opacity: fadeAnim,
+            zIndex: 100,
+            justifyContent: 'center',
+          }}>
+          <TextBold style={{marginLeft: 70}}>{fadeTitle}</TextBold>
+        </Animated.View>
+      )}
+
       <View
         style={[
           {
@@ -91,7 +95,11 @@ const Header = ({
             />
           ) : (
             <Image
-              source={require('~/assets/top_ic_history.png')}
+              source={
+                isPayment
+                  ? require('~/assets/pop_close.png')
+                  : require('~/assets/top_ic_history.png')
+              }
               style={{
                 height: 30,
                 width: 30,
