@@ -24,8 +24,9 @@ const MainStackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="StoreList"
-        screenOptions={{headerShown: false}}>
+        initialRouteName="Login"
+        screenOptions={{headerShown: false}}
+      >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="CategoryView" component={CategoryView} />

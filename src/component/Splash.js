@@ -7,6 +7,7 @@ import {
   Button,
   SafeAreaView,
   Image,
+  Platform,
 } from 'react-native';
 
 const Splash = () => {
@@ -44,11 +45,14 @@ const Splash = () => {
           // Bind opacity to animated value
           opacity: fadeAnim,
         },
-      ]}>
+      ]}
+    >
       <SafeAreaView style={{...styles.container}}>
         <Image
           source={require('../assets/splash.png')}
-          resizeMode="center"></Image>
+          style={{width: '100%', height: '100%'}}
+          resizeMode="center"
+        ></Image>
       </SafeAreaView>
     </Animated.View>
   );

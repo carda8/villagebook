@@ -36,51 +36,6 @@ const StoreList = ({navigation, route}) => {
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={String(routeIdx)} navigation={navigation} />
 
-      <View
-        style={{
-          flex: 1,
-          height: 40,
-          zIndex: 100,
-          top: 110,
-          position: 'absolute',
-          minWidth: layout.width,
-        }}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{alignItems: 'center', marginLeft: 22}}>
-          {arr.map((item, index) => (
-            <Pressable
-              key={index}
-              onPress={() => {
-                setSelectedFilter(index);
-              }}
-              style={{
-                height: 30,
-                backgroundColor:
-                  selectedFilter === index ? colors.primary : 'white',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 18,
-                paddingHorizontal: 13,
-                marginRight: 10,
-              }}>
-              {selectedFilter === index ? (
-                <TextSBold
-                  style={{
-                    color:
-                      selectedFilter === index ? 'white' : colors.fontColorA2,
-                  }}>
-                  기본순
-                </TextSBold>
-              ) : (
-                <TextRegular>기본순</TextRegular>
-              )}
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
-
       <Tab.Navigator
         initialRouteName={routeIdx}
         sceneContainerStyle={{
@@ -99,13 +54,15 @@ const StoreList = ({navigation, route}) => {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontFamily: 'Pretendard-Bold',
                   // : 'Pretendard-Medium',
                   color: props.focused ? colors.primary : colors.fontColor2,
-                }}>
+                }}
+              >
                 {route.name}
               </Text>
             </View>
@@ -167,7 +124,8 @@ const StoreList = ({navigation, route}) => {
               </>
             );
           },
-        })}>
+        })}
+      >
         <Tab.Screen
           name="1인분"
           component={StoreItems}
@@ -179,6 +137,54 @@ const StoreList = ({navigation, route}) => {
         <Tab.Screen name="카페/디저트" component={StoreItems} />
         <Tab.Screen name="일식" component={StoreItems} />
       </Tab.Navigator>
+      <View
+        style={{
+          flex: 1,
+          height: 40,
+          zIndex: 100,
+          top: 110,
+          position: 'absolute',
+          minWidth: layout.width,
+        }}
+      >
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{alignItems: 'center', marginLeft: 22}}
+        >
+          {arr.map((item, index) => (
+            <Pressable
+              key={index}
+              onPress={() => {
+                setSelectedFilter(index);
+              }}
+              style={{
+                height: 30,
+                backgroundColor:
+                  selectedFilter === index ? colors.primary : 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 18,
+                paddingHorizontal: 13,
+                marginRight: 10,
+              }}
+            >
+              {selectedFilter === index ? (
+                <TextSBold
+                  style={{
+                    color:
+                      selectedFilter === index ? 'white' : colors.fontColorA2,
+                  }}
+                >
+                  기본순
+                </TextSBold>
+              ) : (
+                <TextRegular>기본순</TextRegular>
+              )}
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
