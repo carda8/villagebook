@@ -21,8 +21,10 @@ import TextJua from '../../component/text/TextJua';
 import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
+import {API_KEY} from '@env';
 
 const Main = ({navigation}) => {
+  console.log(API_KEY);
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header
@@ -87,9 +89,8 @@ const Main = ({navigation}) => {
               source={require('~/assets/main_ico01.png')}
               style={{
                 flex: 1,
-                width: 85,
+                width: 120,
                 alignSelf: 'flex-end',
-                marginRight: 5,
               }}
               resizeMode="contain"
             />
@@ -119,9 +120,8 @@ const Main = ({navigation}) => {
               source={require('~/assets/main_ico02.png')}
               style={{
                 flex: 1,
-                width: 85,
+                width: 120,
                 alignSelf: 'flex-end',
-                marginRight: 10,
               }}
               resizeMode="contain"
             />
@@ -164,7 +164,7 @@ const Main = ({navigation}) => {
             <Image
               source={require('~/assets/main_ico03.png')}
               style={{
-                width: 140,
+                width: 150,
                 height: 139,
               }}
               resizeMode="contain"

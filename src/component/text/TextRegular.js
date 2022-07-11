@@ -6,7 +6,7 @@ const TextRegular = ({children, style}) => {
   return (
     <Text
       style={[
-        {fontFamily: 'Pretendard-Regular', color: colors.fontColor6},
+        {fontFamily: 'Pretendard-Regular', color: colors.fontColor2},
         style,
       ]}>
       {children}

@@ -6,6 +6,7 @@ import BottomBar from '../../component/BottomBar';
 import Header from '../../component/Header';
 import colors from '../../styles/colors';
 import LikeItems from '../../component/likeStoreScreen/LikeItems';
+import {encode} from 'jwt-simple';
 
 const LikeMain = ({navigation}) => {
   const [tabIdx, setTabIdx] = useState(0);

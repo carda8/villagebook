@@ -1,4 +1,4 @@
-package com.dmonster.villagebook.newarchitecture;
+package com.dmonster.dongnaebook.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.dmonster.villagebook.BuildConfig;
-import com.dmonster.villagebook.newarchitecture.components.MainComponentsRegistry;
-import com.dmonster.villagebook.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.dmonster.dongnaebook.BuildConfig;
+import com.dmonster.dongnaebook.newarchitecture.components.MainComponentsRegistry;
+import com.dmonster.dongnaebook.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

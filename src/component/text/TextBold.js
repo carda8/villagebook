@@ -6,7 +6,7 @@ const TextBold = ({children, style}) => {
   return (
     <Text
       style={[
-        {fontFamily: 'Pretendard-Bold', color: colors.fontColor6},
+        {fontFamily: 'Pretendard-Bold', color: colors.fontColor2},
         style,
       ]}>
       {children}

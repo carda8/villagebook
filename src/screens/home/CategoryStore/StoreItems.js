@@ -1,29 +1,25 @@
 import {
-  View,
-  Text,
-  ScrollView,
-  FlatList,
-  useWindowDimensions,
   Image,
   Pressable,
   SectionList,
+  Text,
+  useWindowDimensions,
+  View,
 } from 'react-native';
 import React from 'react';
 import FastImage from 'react-native-fast-image';
-import colors from '../../../styles/colors';
+import { useDispatch } from 'react-redux';
 import Chip from '../../../component/Chip';
-import TextMedium from '../../../component/text/TextMedium';
-import TextRegular from '../../../component/text/TextRegular';
 import Dot from '../../../component/Dot';
-import ReviewSimple from '../../../component/reviews/ReviewSimple';
-import DividerL from '../../../component/DividerL';
-import TextBold from '../../../component/text/TextBold';
 import ImageCover from '../../../component/ImageCover';
-import {useDispatch} from 'react-redux';
-import {setCurrentStoreCode} from '../../../store/reducers/CartReducer';
+import ReviewSimple from '../../../component/reviews/ReviewSimple';
+import TextBold from '../../../component/text/TextBold';
+import TextRegular from '../../../component/text/TextRegular';
+import { setCurrentStoreCode } from '../../../store/reducers/CartReducer';
+import colors from '../../../styles/colors';
 
 // 2.1 : 1
-const StoreItems = ({navigation, route}) => {
+const StoreItems = ({ navigation, route }) => {
   const dummy = [
     {
       isOpen: true,
@@ -33,35 +29,30 @@ const StoreItems = ({navigation, route}) => {
           storeCode: 1,
           tip: 1000,
           review: 999,
-          isOpen: true,
         },
         {
           name: '롯데리아 부산대점',
           storeCode: 2,
           tip: 1000,
           review: 999,
-          isOpen: true,
         },
         {
           name: '맥도날드 부산대점',
           storeCode: 3,
           tip: 1000,
           review: 999,
-          isOpen: true,
         },
         {
           name: '인앤아웃 부산대점',
           storeCode: 4,
           tip: 1000,
           review: 999,
-          isOpen: true,
         },
         {
           name: '고든램지 버거',
           storeCode: 5,
           tip: 1000,
           review: 999,
-          isOpen: true,
         },
       ],
     },
@@ -73,35 +64,30 @@ const StoreItems = ({navigation, route}) => {
           storeCode: 6,
           tip: 1000,
           review: 999,
-          isOpen: false,
         },
         {
           name: '버거킹 구서점',
           storeCode: 7,
           tip: 1000,
           review: 999,
-          isOpen: false,
         },
         {
           name: 'KFC 구서점',
           storeCode: 8,
           tip: 1000,
           review: 999,
-          isOpen: false,
         },
         {
           name: '버거킹 부산대점',
           storeCode: 9,
           tip: 1000,
           review: 999,
-          isOpen: false,
         },
         {
           name: '버거킹 부산대점',
           storeCode: 10,
           tip: 1000,
           review: 999,
-          isOpen: false,
         },
       ],
     },
@@ -116,6 +102,7 @@ const StoreItems = ({navigation, route}) => {
   //368 88 279
   const renderItem = item => {
     const storeCode = item.item.storeCode;
+    console.log('item', item);
     return (
       <Pressable
         onPress={() => {
@@ -147,7 +134,7 @@ const StoreItems = ({navigation, route}) => {
             <FastImage
               source={require('~/assets/dummy/CK_tica114m19040077_l.jpg')}
               resizeMode={FastImage.resizeMode.cover}
-              style={{flex: 1}}
+              style={{ flex: 1 }}
             />
           </View>
           <View
@@ -166,7 +153,7 @@ const StoreItems = ({navigation, route}) => {
               <FastImage
                 source={require('~/assets/dummy/CK_tica114m19040204_l.jpg')}
                 resizeMode={FastImage.resizeMode.cover}
-                style={{flex: 1}}
+                style={{ flex: 1 }}
               />
             </View>
             <View
@@ -180,7 +167,7 @@ const StoreItems = ({navigation, route}) => {
               <FastImage
                 source={require('~/assets/dummy/CK_tica114m19040043_l.jpg')}
                 resizeMode={FastImage.resizeMode.cover}
-                style={{flex: 1}}
+                style={{ flex: 1 }}
               />
             </View>
           </View>
@@ -191,16 +178,16 @@ const StoreItems = ({navigation, route}) => {
             justifyContent: 'flex-end',
             marginTop: 22,
           }}>
-          <View style={{marginBottom: 9}}>
+          <View style={{ marginBottom: 9 }}>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <View style={{flex: 1}} clip>
+              <View style={{ flex: 1 }} clip>
                 <Text
-                  style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
+                  style={{ fontFamily: 'Pretendard-Medium', fontSize: 16 }}
                   ellipsizeMode="tail"
                   numberOfLines={1}>
                   {item.item.name} {route.params.cate}
@@ -209,15 +196,15 @@ const StoreItems = ({navigation, route}) => {
               <ReviewSimple />
             </View>
             <View
-              style={{flexDirection: 'row', flexWrap: 'wrap', marginTop: 9}}>
+              style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 9 }}>
               <View
                 style={{
                   flexDirection: 'row',
                 }}>
-                <TextRegular style={{color: colors.fontColorA2}}>
+                <TextRegular style={{ color: colors.fontColorA2 }}>
                   배달팁{' '}
                 </TextRegular>
-                <TextRegular style={{color: colors.fontColor6}}>
+                <TextRegular style={{ color: colors.fontColor6 }}>
                   0원~3,000원
                 </TextRegular>
                 <Dot />
@@ -230,14 +217,14 @@ const StoreItems = ({navigation, route}) => {
                 }}>
                 <Image
                   source={require('~/assets/time.png')}
-                  style={{width: 14, height: 14}}
+                  style={{ width: 14, height: 14 }}
                 />
                 <TextRegular> 30분~</TextRegular>
                 <TextRegular>40분</TextRegular>
                 <Dot />
               </View>
-              <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                <TextRegular style={{color: colors.fontColorA2}}>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                <TextRegular style={{ color: colors.fontColorA2 }}>
                   최소 주문{' '}
                 </TextRegular>
                 <TextRegular>8,000원</TextRegular>
@@ -250,13 +237,13 @@ const StoreItems = ({navigation, route}) => {
     );
   };
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <SectionList
         sections={dummy}
         keyExtractor={(item, index) => item + index}
         renderItem={item => renderItem(item)}
-        renderSectionHeader={({section: {isOpen}}) =>
-          !isOpen && <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
+        renderSectionHeader={({ section: { isOpen } }) =>
+          !isOpen && <TextBold style={{ fontSize: 20 }}>준비중이에요</TextBold>
         }
         showsVerticalScrollIndicator={false}
       />

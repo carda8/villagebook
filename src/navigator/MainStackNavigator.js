@@ -37,6 +37,9 @@ import WriteReview from '../screens/orderList/WriteReview';
 import Cart from '../screens/menu/cart/Cart';
 import EditSummit from '../screens/mypage/edit/EditSummit';
 import PushList from '../screens/home/PushList';
+import CheckTerms from '../screens/signIn/CheckTerms';
+import SignForm from '../screens/signIn/SignForm';
+import Policy from '../screens/signIn/Policy';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,9 +47,13 @@ const MainStackNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Main"
+        initialRouteName="Login"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="CheckTerms" component={CheckTerms} />
+        <Stack.Screen name="Policy" component={Policy} />
+        <Stack.Screen name="SignForm" component={SignForm} />
+
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="CategoryView" component={CategoryView} />
         <Stack.Screen name="StoreList" component={StoreList} />
