@@ -42,13 +42,14 @@ const DiscountMain = ({navigation}) => {
 
       <FlatList
         ListFooterComponent={() => (
-          <Pagination
-            total={10}
-            numberOfItems={3}
-            selectedPage={page}
-            handlePage={handlePage}
-            marginVertical={30}
-          />
+          <></>
+          // <Pagination
+          //   total={10}
+          //   numberOfItems={3}
+          //   selectedPage={page}
+          //   handlePage={handlePage}
+          //   marginVertical={30}
+          // />
         )}
         ListHeaderComponent={() => (
           <>

@@ -144,7 +144,11 @@ const Header = ({
 
         <View style={{flexDirection: 'row', marginLeft: 'auto'}}>
           {(showNoti || showLike) && (
-            <Pressable hitSlop={10} onPress={() => {}}>
+            <Pressable
+              hitSlop={10}
+              onPress={() => {
+                if (showNoti) navigation.navigate('PushList');
+              }}>
               <Image
                 source={
                   showNoti
@@ -163,7 +167,11 @@ const Header = ({
           )}
 
           {(showCart || showShare) && (
-            <Pressable hitSlop={10} onPress={() => {}}>
+            <Pressable
+              hitSlop={10}
+              onPress={() => {
+                if (showCart) navigation.navigate('Cart');
+              }}>
               <Image
                 source={
                   showCart

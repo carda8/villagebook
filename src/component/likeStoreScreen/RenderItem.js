@@ -4,7 +4,7 @@ import FastImage from 'react-native-fast-image';
 import TextMedium from '../text/TextMedium';
 import colors from '../../styles/colors';
 
-const RenderItem = ({item, remove}) => {
+const RenderItem = ({item, remove, navigation}) => {
   const [temp, setTemp] = useState(false);
   return (
     <View
@@ -23,6 +23,7 @@ const RenderItem = ({item, remove}) => {
           style={{flexDirection: 'row', flex: 1}}
           onPress={() => {
             if (remove) setTemp(!temp);
+            if (!remove) navigation.navigate('MenuDetail');
           }}>
           {remove && (
             <Image

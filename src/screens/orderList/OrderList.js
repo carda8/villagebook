@@ -71,6 +71,9 @@ const OrderList = ({navigation}) => {
             marginBottom: 15,
           }}>
           <Pressable
+            onPress={() => {
+              navigation.navigate('MenuDetail');
+            }}
             style={{
               flex: 1,
               borderWidth: 1,

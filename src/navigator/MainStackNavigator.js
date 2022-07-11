@@ -17,7 +17,7 @@ import DiscountMain from '../screens/discount/DiscountMain';
 import MyPage from '../screens/mypage/MyPage';
 import CategoryView from '../screens/home/CategoryView';
 import StoreList from '../screens/home/CategoryStore/StoreList';
-import EditInfo from '../screens/mypage/EditInfo';
+import EditInfo from '../screens/mypage/edit/EditInfo';
 import Notice from '../screens/mypage/Notice';
 import FAQ from '../screens/mypage/FAQ';
 import PointCoupon from '../screens/mypage/PointCoupon';
@@ -29,12 +29,15 @@ import FAQDetail from '../screens/mypage/FAQDetail';
 import EventBoard from '../screens/mypage/EventBoard';
 import EventDetail from '../screens/mypage/EventDetail';
 import OptionSelect from '../screens/menu/OptionSelect';
-import CartMain from '../screens/menu/cart/CartMain';
+import SummitOrder from '../screens/menu/cart/SummitOrder';
 import WriteOrderForm from '../screens/menu/orderDetail/WriteOrderForm';
 import PaymentMethod from '../screens/menu/orderDetail/PaymentMethod';
 import OrderSumary from '../screens/menu/orderDetail/OrderSumary';
 import OrderFinish from '../screens/menu/orderDetail/OrderFinish';
 import WriteReview from '../screens/orderList/WriteReview';
+import Cart from '../screens/menu/cart/Cart';
+import EditSummit from '../screens/mypage/edit/EditSummit';
+import PushList from '../screens/home/PushList';
 
 const Stack = createNativeStackNavigator();
 
@@ -57,7 +60,7 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MenuStore" component={MenuStroe} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen name="OptionSelect" component={OptionSelect} />
-        <Stack.Screen name="CartMain" component={CartMain} />
+        <Stack.Screen name="SummitOrder" component={SummitOrder} />
         <Stack.Screen name="WriteOrderForm" component={WriteOrderForm} />
         <Stack.Screen
           name="PaymentMethod"
@@ -66,10 +69,14 @@ const MainStackNavigator = () => {
         />
         <Stack.Screen name="OrderSumary" component={OrderSumary} />
         <Stack.Screen name="OrderFinish" component={OrderFinish} />
+        <Stack.Screen name="Cart" component={Cart} />
+        <Stack.Screen name="PushList" component={PushList} />
 
         <Stack.Screen name="Map" component={Map} />
         <Stack.Screen name="AddressSearch" component={AddressSearch} />
         <Stack.Screen name="EditInfo" component={EditInfo} />
+        <Stack.Screen name="EditSummit" component={EditSummit} />
+
         <Stack.Screen name="Notice" component={Notice} />
         <Stack.Screen name="NoticeDetail" component={NoticeDetail} />
         <Stack.Screen name="FAQ" component={FAQ} />

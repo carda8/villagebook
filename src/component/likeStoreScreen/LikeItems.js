@@ -19,7 +19,7 @@ import TextBold from '../text/TextBold';
 import RenderItem from './RenderItem';
 
 // 2.1 : 1
-const LikeItems = ({data}) => {
+const LikeItems = ({data, navigation}) => {
   const arr = [1, 2, 3, 4, 5, 6, 7, 8];
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
@@ -71,7 +71,9 @@ const LikeItems = ({data}) => {
         )}
         data={data}
         showsVerticalScrollIndicator={false}
-        renderItem={item => <RenderItem item={item} remove={remove} />}
+        renderItem={item => (
+          <RenderItem item={item} remove={remove} navigation={navigation} />
+        )}
         keyExtractor={(item, index) => index}
         onEndReached={() => {}}
       />

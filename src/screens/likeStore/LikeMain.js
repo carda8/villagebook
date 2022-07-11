@@ -81,17 +81,17 @@ const LikeMain = ({navigation}) => {
 
       {tabIdx === 0 && (
         <View style={{flex: 1, paddingHorizontal: 22}}>
-          <LikeItems data={[1, 2, 3]}></LikeItems>
+          <LikeItems navigation={navigation} data={[1, 2, 3]}></LikeItems>
         </View>
       )}
       {tabIdx === 1 && (
         <View style={{flex: 1, paddingHorizontal: 22}}>
-          <LikeItems data={[1, 2, 3, 4]}></LikeItems>
+          <LikeItems navigation={navigation} data={[1, 2, 3, 4]}></LikeItems>
         </View>
       )}
       {tabIdx === 2 && (
         <View style={{flex: 1, paddingHorizontal: 22}}>
-          <LikeItems data={[1, 2, 3, 4, 5]}></LikeItems>
+          <LikeItems navigation={navigation} data={[1, 2, 3, 4, 5]}></LikeItems>
         </View>
       )}
       {/* <BottomBar navigation={navigation} /> */}

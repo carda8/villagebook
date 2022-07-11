@@ -7,13 +7,13 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
 import TextBold from '../../component/text/TextBold';
 import colors from '../../styles/colors';
 import {_setRating} from '../../config/utils/modules';
-import {AirbnbRating, Rating} from 'react-native-ratings';
+import SetRating from '../../component/SetRating';
 
 const WriteReview = ({navigation}) => {
   const ratingCompleted = rating => {
@@ -29,7 +29,8 @@ const WriteReview = ({navigation}) => {
               주문은 어떠셨나요?
             </TextBold>
             <View style={{flexDirection: 'row', marginTop: 20}}>
-              {_setRating(false, {width: 40, height: 40})}
+              {/* {_setRating(false, {width: 40, height: 40})} */}
+              <SetRating />
             </View>
           </View>
           <TextInput

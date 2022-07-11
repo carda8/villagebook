@@ -13,7 +13,7 @@ const CartButton = ({navigation, goTo}) => {
   console.log('store', cartStore);
 
   const _goToCart = () => {
-    navigation.navigate('CartMain');
+    navigation.navigate('SummitOrder');
   };
 
   const _getMoreItem = () => {

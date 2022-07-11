@@ -12,7 +12,7 @@ import DividerL from '../../../component/DividerL';
 import Divider from '../../../component/Divider';
 import CartButton from '../CartButton';
 
-const CartMain = ({navigation}) => {
+const SummitOrder = ({navigation}) => {
   const [isDelivery, setIsDelivery] = useState(true);
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -148,4 +148,4 @@ const CartMain = ({navigation}) => {
   );
 };
 
-export default CartMain;
+export default SummitOrder;

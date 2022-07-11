@@ -1,11 +1,12 @@
 import {View, Text, SafeAreaView, Pressable, StyleSheet} from 'react-native';
 import React from 'react';
-import Header from '../../component/Header';
-import commonStyles from '../../styles/commonStyle';
-import TextBold from '../../component/text/TextBold';
-import TextMedium from '../../component/text/TextMedium';
-import colors from '../../styles/colors';
-import TextRegular from '../../component/text/TextRegular';
+import Header from '../../../component/Header';
+import commonStyles from '../../../styles/commonStyle';
+import TextBold from '../../../component/text/TextBold';
+import TextMedium from '../../../component/text/TextMedium';
+import colors from '../../../styles/colors';
+import TextRegular from '../../../component/text/TextRegular';
+import EditConfig from './EditConfig';
 
 const EditInfo = ({navigation}) => {
   return (
@@ -49,7 +50,9 @@ const EditInfo = ({navigation}) => {
           <View style={{justifyContent: 'space-evenly', width: 40}}>
             <Pressable
               onPress={() => {
-                navigation.navigate('');
+                navigation.navigate('EditSummit', {
+                  target: EditConfig.target.nickname,
+                });
               }}
               hitSlop={10}
               style={{
@@ -61,7 +64,9 @@ const EditInfo = ({navigation}) => {
             </Pressable>
             <Pressable
               onPress={() => {
-                navigation.navigate('');
+                navigation.navigate('EditSummit', {
+                  target: EditConfig.target.email,
+                });
               }}
               hitSlop={10}
               style={{
@@ -73,7 +78,9 @@ const EditInfo = ({navigation}) => {
             </Pressable>
             <Pressable
               onPress={() => {
-                navigation.navigate('');
+                navigation.navigate('EditSummit', {
+                  target: EditConfig.target.phone,
+                });
               }}
               hitSlop={10}
               style={{
@@ -85,7 +92,9 @@ const EditInfo = ({navigation}) => {
             </Pressable>
             <Pressable
               onPress={() => {
-                navigation.navigate('');
+                navigation.navigate('EditSummit', {
+                  target: EditConfig.target.password,
+                });
               }}
               hitSlop={10}
               style={{
