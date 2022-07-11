@@ -5,7 +5,6 @@ import {View, Animated, Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header';
 import commonStyles from '../../styles/commonStyle';
-import CallMain from '../call/CallMain';
 import MenuMain from './MenuMain';
 
 const Tab = createMaterialTopTabNavigator();

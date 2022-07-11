@@ -48,6 +48,7 @@ const Splash = () => {
       <SafeAreaView style={{...styles.container}}>
         <Image
           source={require('../assets/splash.png')}
+          style={{width: '100%', height: '100%'}}
           resizeMode="center"></Image>
       </SafeAreaView>
     </Animated.View>

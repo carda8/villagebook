@@ -4,7 +4,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Main from '../screens/home/Main';
-import CallTopNavigator from './CallTopNavigator';
 import MenuStroe from '../screens/menu/MenuStore';
 import MenuDetail from '../screens/menu/MenuDetail';
 import Map from '../screens/map/Map';
@@ -56,7 +55,6 @@ const MainStackNavigator = () => {
         <Stack.Screen name="WriteReview" component={WriteReview} />
         <Stack.Screen name="DiscountMain" component={DiscountMain} />
         <Stack.Screen name="MyPage" component={MyPage} />
-        <Stack.Screen name="CallTopNavigator" component={CallTopNavigator} />
         <Stack.Screen name="MenuStore" component={MenuStroe} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen name="OptionSelect" component={OptionSelect} />
