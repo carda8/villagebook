@@ -40,6 +40,8 @@ import PushList from '../screens/home/PushList';
 import CheckTerms from '../screens/signIn/CheckTerms';
 import SignForm from '../screens/signIn/SignForm';
 import Policy from '../screens/signIn/Policy';
+import FindUserAccount from '../screens/login/FindUserAccount';
+import ResetAccount from '../screens/login/ResetAccount';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,8 +53,14 @@ const MainStackNavigator = () => {
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
-        <Stack.Screen name="Policy" component={Policy} />
+        <Stack.Screen
+          name="Policy"
+          component={Policy}
+          options={{animation: 'slide_from_bottom'}}
+        />
         <Stack.Screen name="SignForm" component={SignForm} />
+        <Stack.Screen name="FindUserAccount" component={FindUserAccount} />
+        <Stack.Screen name="ResetAccount" component={ResetAccount} />
 
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="CategoryView" component={CategoryView} />

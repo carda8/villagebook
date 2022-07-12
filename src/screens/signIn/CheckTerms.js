@@ -1,4 +1,4 @@
-import {View, Text, ScrollView, Image, Pressable} from 'react-native';
+import {View, Text, ScrollView, Image, Pressable, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
@@ -39,13 +39,21 @@ const CheckTerms = ({navigation}) => {
       <Pressable
         onPress={() => {
           navigation.navigate('Policy', {
-            target: policyConfig.target[target],
+            target: target,
           });
         }}
         style={{marginLeft: 'auto'}}>
         <TextRegular style={{color: colors.fontColorA}}>자세히</TextRegular>
       </Pressable>
     );
+  };
+
+  const _vaildation = () => {
+    if (!policy.checkLocation || !policy.checkPersonal || !policy.checkUse)
+      Alert.alert('약관 동의 필요', '필수 약관에 동의하셔야 합니다.', [
+        {text: '확인'},
+      ]);
+    else navigation.navigate('SignForm');
   };
 
   return (
@@ -141,7 +149,7 @@ const CheckTerms = ({navigation}) => {
 
           <Pressable
             onPress={() => {
-              navigation.navigate('SignForm');
+              _vaildation();
             }}
             style={{marginTop: 80}}>
             <View

@@ -5,11 +5,11 @@ import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
 
 const Policy = ({navigation, route}) => {
-  const routeData = route.params;
+  const routeData = route.params?.target;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={''} />
-      <Text>Policy</Text>
+      <Header title={routeData} navigation={navigation} />
+      <View style={{padding: 22}}></View>
     </SafeAreaView>
   );
 };
