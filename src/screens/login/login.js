@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Pressable,
@@ -21,25 +21,43 @@ import commonStyles from '../../styles/commonStyle';
 import {TEST_ID, TEST_PW} from '@env';
 import {_reqAPI} from '../../api/apiModule';
 import loginConfig from './loginConfig';
+import {useMutation, useQueryClient} from 'react-query';
+import authAPI from '../../api/modules/authAPI';
+import Loading from '../../component/Loading';
+import {useDispatch} from 'react-redux';
+import {setUserInfo} from '../../store/reducers/AuthReducer';
 
 const Login = ({navigation}) => {
+  const qc = useQueryClient();
   const layout = useWindowDimensions();
-  const Divider = () => {
-    return (
-      <View style={{width: 1, height: 20, backgroundColor: colors.colorE3}} />
-    );
-  };
+  const dispatch = useDispatch();
+
+  const mutate = useMutation(authAPI._login, {
+    onMutate: () => {
+      navigation.navigate('Main');
+    },
+    onSuccess: e => {
+      dispatch(setUserInfo(e.data.arrItems));
+    },
+  });
 
   const _login = async () => {
     const data = {
       mt_id: TEST_ID,
       mt_pwd: TEST_PW,
     };
-    const reqData = await _reqAPI('proc_member_login.php', data);
+    mutate.mutate(data);
   };
+
+  const Divider = () => {
+    return (
+      <View style={{width: 1, height: 20, backgroundColor: colors.colorE3}} />
+    );
+  };
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <FastImage
           style={{width: '100%', height: layout.height * 0.4}}
           source={require('../../assets/login_img.png')}
@@ -55,8 +73,8 @@ const Login = ({navigation}) => {
           <Input />
           <Pressable
             onPress={() => {
-              // _login();
-              navigation.navigate('Main');
+              _login();
+              // navigation.navigate('Main');
             }}
             style={{
               width: '100%',

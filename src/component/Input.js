@@ -8,10 +8,20 @@ export const Input = ({
   marginBottom,
   secureTextEntry,
   placeholder,
+  formik,
+  value,
+  keyboardType,
 }) => {
   return (
     <TextInput
       autoCapitalize="none"
+      value={formik.values[value]}
+      onChangeText={
+        // val.replace(/\s/g, '');
+        formik.handleChange(value)
+      }
+      onBlur={formik.handleBlur(value)}
+      error={formik.errors}
       style={{
         ...styles.input,
         flex: flex,
@@ -19,7 +29,8 @@ export const Input = ({
         marginBottom,
       }}
       placeholder={placeholder}
-      secureTextEntry
+      secureTextEntry={secureTextEntry}
+      keyboardType={keyboardType ?? null}
     />
   );
 };

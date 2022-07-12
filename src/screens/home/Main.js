@@ -21,10 +21,14 @@ import TextJua from '../../component/text/TextJua';
 import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
-import {API_KEY} from '@env';
+import {useSelector} from 'react-redux';
+import Loading from '../../component/Loading';
 
 const Main = ({navigation}) => {
-  console.log(API_KEY);
+  const {userInfo} = useSelector(state => state.authReducer);
+
+  if (!userInfo) return <Loading />;
+  console.log('::: USER INFO', userInfo);
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header
