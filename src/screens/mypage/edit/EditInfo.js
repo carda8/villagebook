@@ -1,5 +1,12 @@
-import {View, Text, SafeAreaView, Pressable, StyleSheet} from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Pressable,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import React, {useState} from 'react';
 import Header from '../../../component/Header';
 import commonStyles from '../../../styles/commonStyle';
 import TextBold from '../../../component/text/TextBold';
@@ -7,8 +14,75 @@ import TextMedium from '../../../component/text/TextMedium';
 import colors from '../../../styles/colors';
 import TextRegular from '../../../component/text/TextRegular';
 import EditConfig from './EditConfig';
+import AuthStorage from '../../../store/localStorage/AuthStorageModuel';
+import {useSelector} from 'react-redux';
+import {useMutation} from 'react-query';
+import authAPI from '../../../api/modules/authAPI';
+import Loading from '../../../component/Loading';
 
 const EditInfo = ({navigation}) => {
+  const {userInfo} = useSelector(state => state.authReducer);
+  const [loading, setLoading] = useState(false);
+
+  const _removeReset = async () => {
+    await AuthStorage._removeUserTokenID(() => {});
+    await AuthStorage._removeItemAutoLogin(() => {
+      navigation.reset({
+        routes: [{name: 'Login'}],
+      });
+    });
+  };
+
+  const mutateSignOut = useMutation(authAPI._signOut, {
+    onSuccess: e => {
+      console.log('mutateSignOut', e);
+      setLoading(false);
+      _removeReset();
+    },
+  });
+
+  const _pressLogout = () => {
+    Alert.alert('로그아웃', '로그아웃 하시겠습니까?', [
+      {
+        text: '로그아웃',
+        onPress: () => {
+          _removeReset();
+        },
+      },
+      {
+        text: '취소',
+        onPress: () => {},
+      },
+    ]);
+  };
+
+  const _handleSignOut = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+      mt_pwd: userInfo.mt_pwd,
+      act: 'retire',
+    };
+    setLoading(true);
+    mutateSignOut.mutate(data);
+  };
+
+  const _pressSignOut = () => {
+    Alert.alert('회원탈퇴', '회원탈퇴 하시겠습니까?', [
+      {
+        text: '회원탈퇴',
+        onPress: () => {
+          _handleSignOut();
+        },
+      },
+      {
+        text: '취소',
+        onPress: () => {},
+      },
+    ]);
+  };
+
+  if (loading) return <Loading />;
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'개인정보수정'} navigation={navigation} showCart={true} />
@@ -30,6 +104,7 @@ const EditInfo = ({navigation}) => {
             height: 220,
             flexDirection: 'row',
           }}>
+          {/* 리스트 항목 */}
           <View style={{justifyContent: 'space-evenly'}}>
             <TextMedium style={{color: colors.fontColorA}}>닉네임</TextMedium>
             <TextMedium style={{color: colors.fontColorA}}>이메일</TextMedium>
@@ -38,14 +113,22 @@ const EditInfo = ({navigation}) => {
             </TextMedium>
             <TextMedium style={{color: colors.fontColorA}}>비밀번호</TextMedium>
           </View>
+
+          {/* 해당 항목 유저 정보 */}
           <View
             style={{justifyContent: 'space-evenly', marginLeft: 40, flex: 1}}>
-            <TextMedium style={{color: colors.fontColor2}}>닉네임</TextMedium>
-            <TextMedium style={{color: colors.fontColor2}}>이메일</TextMedium>
             <TextMedium style={{color: colors.fontColor2}}>
-              휴대폰번호
+              {userInfo.mt_nickname}
             </TextMedium>
-            <TextMedium style={{color: colors.fontColor2}}>비밀번호</TextMedium>
+            <TextMedium style={{color: colors.fontColor2}}>
+              {userInfo.mt_email}
+            </TextMedium>
+            <TextMedium style={{color: colors.fontColor2}}>
+              {userInfo.mt_hp}
+            </TextMedium>
+            <TextMedium style={{color: colors.fontColor2}}>
+              {'************'}
+            </TextMedium>
           </View>
           <View style={{justifyContent: 'space-evenly', width: 40}}>
             <Pressable
@@ -119,12 +202,20 @@ const EditInfo = ({navigation}) => {
             marginTop: 20,
             paddingHorizontal: 22,
           }}>
-          <Pressable onPress={() => {}} style={{marginRight: 20}}>
+          <Pressable
+            onPress={() => {
+              _pressLogout();
+            }}
+            style={{marginRight: 20}}>
             <TextRegular style={{fontSize: 12, color: colors.fontColorA2}}>
               로그아웃
             </TextRegular>
           </Pressable>
-          <Pressable onPress={() => {}} style={{marginRight: 20}}>
+          <Pressable
+            onPress={() => {
+              _pressSignOut();
+            }}
+            style={{marginRight: 20}}>
             <TextRegular style={{fontSize: 12, color: colors.fontColorA2}}>
               회원탈퇴
             </TextRegular>

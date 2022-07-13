@@ -1,15 +1,16 @@
+import {useFormik} from 'formik';
 import React, {useState} from 'react';
 import {TextInput} from 'react-native';
 import colors from '../../styles/colors';
 
-const Input = () => {
-  const [id, setId] = useState('');
-  const [pw, setPw] = useState('');
+const Input = ({fm}) => {
   return (
     <>
       <TextInput
-        value={id}
-        onChangeText={setId}
+        value={fm.values.mt_id}
+        onChangeText={fm.handleChange('mt_id')}
+        onBlur={fm.handleBlur('mt_id')}
+        error={fm.errors}
         style={{
           width: '100%',
           height: 50,
@@ -22,11 +23,13 @@ const Input = () => {
           marginBottom: 4,
         }}
         autoCapitalize="none"
-        placeholder={'아이디 또는 이메일을 입력하세요'}
+        placeholder={'아이디를 입력하세요'}
       />
       <TextInput
-        value={pw}
-        onChangeText={setPw}
+        value={fm.values.mt_pwd}
+        onChangeText={fm.handleChange('mt_pwd')}
+        onBlur={fm.handleBlur('mt_pwd')}
+        error={fm.errors}
         style={{
           width: '100%',
           height: 50,

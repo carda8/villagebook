@@ -1,6 +1,7 @@
 import React from 'react';
-import {Pressable} from 'react-native';
+import {ActivityIndicator, Pressable} from 'react-native';
 import colors from '../styles/colors';
+import Loading from './Loading';
 import TextRegular from './text/TextRegular';
 
 export const Button = ({
@@ -10,10 +11,13 @@ export const Button = ({
   marginTop,
   marginBottom,
   onPress,
+  hitSlop,
+  isLoading,
 }) => {
   return (
     <Pressable
-      onPress={onPress}
+      hitSlop={hitSlop}
+      onPress={isLoading ? null : onPress}
       style={{
         flex,
         height: 50,
@@ -28,9 +32,13 @@ export const Button = ({
         borderWidth,
         borderColor: colors.borderColor,
       }}>
-      <TextRegular style={{color: borderWidth ? colors.fontColor2 : 'white'}}>
-        {text}
-      </TextRegular>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <TextRegular style={{color: borderWidth ? colors.fontColor2 : 'white'}}>
+          {text}
+        </TextRegular>
+      )}
     </Pressable>
   );
 };

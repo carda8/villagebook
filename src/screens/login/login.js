@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -26,25 +27,56 @@ import authAPI from '../../api/modules/authAPI';
 import Loading from '../../component/Loading';
 import {useDispatch} from 'react-redux';
 import {setUserInfo} from '../../store/reducers/AuthReducer';
+import {useFormik} from 'formik';
+import * as yup from 'yup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import localStorageConfig from '../../store/localStorage/localStorageConfig';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 
 const Login = ({navigation}) => {
-  const qc = useQueryClient();
   const layout = useWindowDimensions();
   const dispatch = useDispatch();
+  const [logading, setLoading] = useState(false);
 
   const mutate = useMutation(authAPI._login, {
-    onMutate: () => {
-      navigation.navigate('Main');
-    },
-    onSuccess: e => {
-      dispatch(setUserInfo(e.data.arrItems));
+    onSuccess: async e => {
+      console.log('login mutate', e);
+      if (e.result === 'false') {
+        Alert.alert(
+          '로그인 실패',
+          '아이디 혹은 비밀번호가 일치하지 않습니다.',
+          [
+            {
+              text: '확인',
+              onPress: () => {
+                setLoading(false);
+                navigation.reset({
+                  routes: [{name: 'Login'}],
+                });
+              },
+            },
+          ],
+        );
+      } else {
+        console.log('login e', e);
+        await AuthStorageModuel._setItemAutoLogin(
+          localStorageConfig.state.true,
+        );
+        await AuthStorageModuel._setItemUserToken(e.data.arrItems.mt_app_token);
+        await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
+
+        dispatch(setUserInfo(e.data.arrItems));
+        navigation.reset({
+          routes: [{name: 'Main'}],
+        });
+      }
     },
   });
 
-  const _login = async () => {
+  const _login = async e => {
     const data = {
-      mt_id: TEST_ID,
-      mt_pwd: TEST_PW,
+      mt_id: e.mt_id,
+      mt_pwd: e.mt_pwd,
     };
     mutate.mutate(data);
   };
@@ -55,6 +87,25 @@ const Login = ({navigation}) => {
     );
   };
 
+  const fm = useFormik({
+    initialValues: {
+      mt_id: '',
+      mt_pwd: '',
+    },
+    validationSchema: yup.object({
+      mt_id: yup.string().required('아이디를 입력해주세요.'),
+      mt_pwd: yup.string().required('비밀번호를 입력해주세요.'),
+    }),
+    onSubmit: info => handleSubmit(info),
+  });
+
+  const handleSubmit = e => {
+    console.log('e', e);
+    setLoading(true);
+    _login(e);
+  };
+
+  if (logading) return <Loading />;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -63,18 +114,18 @@ const Login = ({navigation}) => {
           source={require('../../assets/login_img.png')}
           resizeMode={FastImage.resizeMode.cover}
         />
-        <AutoLogin />
+        {/* <AutoLogin /> */}
         <View
           style={{
             alignItems: 'center',
             paddingHorizontal: 22,
-            paddingTop: 13,
+            paddingTop: 33,
           }}>
-          <Input />
+          <Input fm={fm} />
           <Pressable
             onPress={() => {
-              _login();
-              // navigation.navigate('Main');
+              if (Object.keys(fm.errors).length === 0) fm.handleSubmit();
+              else Alert.alert('알림', fm.errors[Object.keys(fm.errors)[0]]);
             }}
             style={{
               width: '100%',

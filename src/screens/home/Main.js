@@ -27,7 +27,8 @@ import Loading from '../../component/Loading';
 const Main = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
 
-  if (!userInfo) return <Loading />;
+  // if (!userInfo) return <Loading />;
+
   console.log('::: USER INFO', userInfo);
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -142,7 +143,7 @@ const Main = ({navigation}) => {
           <Pressable
             onPress={() => {
               navigation.navigate('CategoryView', {
-                selectedCategory: 'convenience',
+                selectedCategory: 'lifestyle',
               });
             }}
             style={{

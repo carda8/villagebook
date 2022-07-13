@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -42,14 +42,57 @@ import SignForm from '../screens/signIn/SignForm';
 import Policy from '../screens/signIn/Policy';
 import FindUserAccount from '../screens/login/FindUserAccount';
 import ResetAccount from '../screens/login/ResetAccount';
+import AuthStorage from '../store/localStorage/AuthStorageModuel';
+import localStorageConfig from '../store/localStorage/localStorageConfig';
+import Loading from '../component/Loading';
+import {useMutation} from 'react-query';
+import authAPI from '../api/modules/authAPI';
+import {useDispatch} from 'react-redux';
+import {setUserInfo} from '../store/reducers/AuthReducer';
 
 const Stack = createNativeStackNavigator();
 
 const MainStackNavigator = () => {
+  const [initRoute, setInitRoute] = useState();
+  const dispatch = useDispatch();
+
+  const mutateAutoLogin = useMutation(authAPI._autoLogin, {
+    onSuccess: e => {
+      console.log('e', e);
+      const userInfo = e.data.arrItems;
+      dispatch(setUserInfo(userInfo));
+      setInitRoute('Main');
+    },
+  });
+
+  const _autoLogin = (token, id) => {
+    const data = {
+      mt_id: id,
+      mt_app_token: token,
+    };
+    mutateAutoLogin.mutate(data);
+  };
+
+  const _initRoute = async () => {
+    const auto = await AuthStorage._getItemAutoLogin();
+    const token = await AuthStorage._getItemUserToken();
+    const userId = await AuthStorage._getItemUserId();
+
+    if (auto === localStorageConfig.state.true && token && userId)
+      _autoLogin(token, userId);
+    else setInitRoute('Login');
+  };
+
+  useEffect(() => {
+    _initRoute();
+  }, []);
+
+  if (!initRoute) return <Loading />;
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="SignForm"
+        initialRouteName={initRoute}
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />

@@ -1,55 +1,47 @@
-import React from 'react';
-import {FlatList, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, Image, Text} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useMutation} from 'react-query';
+import mainAPI from '../../api/modules/mainAPI';
 import Header from '../../component/Header';
+import Loading from '../../component/Loading';
 import MainBanner from '../../component/MainBanner';
 import SearchBox from '../../component/mainScreen/SearchBox';
 import TextEBold from '../../component/text/TextEBold';
 import TextMedium from '../../component/text/TextMedium';
-import Category from '../../config/Category';
-import IconPath from '../../config/IconPath';
 import commonStyles from '../../styles/commonStyle';
 
 const CategoryView = ({navigation, route}) => {
   const selectedCategory = route.params?.selectedCategory;
-  let arr;
-  if (selectedCategory) {
-    switch (selectedCategory) {
-      case 'food':
-        arr = Category.food;
-        break;
-      case 'market':
-        arr = Category.market;
-        break;
-      case 'convenience':
-        arr = Category.convenience;
-        break;
-      default:
-        break;
-    }
-  }
+  const [categoryData, setCategoryData] = useState();
+  const mutateCategory = useMutation(mainAPI._getCategory, {
+    onSuccess: e => {
+      console.log('e', e);
+      setCategoryData(e.data.arrItems);
+    },
+  });
+
+  const _init = () => {
+    const data = {
+      ca_type: selectedCategory,
+    };
+    mutateCategory.mutate(data);
+  };
+
+  useEffect(() => {
+    _init();
+  }, []);
+
   const renderItem = item => {
-    let idxNum = 1;
-    switch (selectedCategory) {
-      case 'food':
-        idxNum = idxNum;
-        break;
-      case 'market':
-        idxNum = 19;
-        break;
-      case 'convenience':
-        idxNum = 37;
-        break;
-      default:
-        break;
-    }
+    console.log('item', item);
     return (
       <Pressable
         onPress={() => {
           navigation.navigate('StoreList', {
-            routeIdx: item.item,
-            category: selectedCategory,
+            routeIdx: item.item.ca_name,
+            // category: selectedCategory,
+            categoryData: categoryData,
           });
         }}
         style={{
@@ -58,11 +50,17 @@ const CategoryView = ({navigation, route}) => {
           // marginHorizontal: 10,
         }}>
         <Image
-          source={IconPath[item.index + idxNum]}
+          source={{uri: item.item.ca_img}}
           style={{width: 46, height: 46}}
           resizeMode="contain"
         />
-        <TextMedium style={{fontSize: 13}}>{item.item}</TextMedium>
+        <TextMedium
+          style={{
+            textAlign: 'center',
+            fontSize: 13,
+          }}>
+          {item.item.ca_name}
+        </TextMedium>
       </Pressable>
     );
   };
@@ -78,8 +76,10 @@ const CategoryView = ({navigation, route}) => {
       />
 
       <FlatList
-        data={arr}
+        data={categoryData}
         scrollEnabled
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => <Loading />}
         ListHeaderComponent={() => (
           <>
             <Pressable

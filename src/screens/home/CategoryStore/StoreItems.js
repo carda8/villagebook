@@ -6,20 +6,51 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import FastImage from 'react-native-fast-image';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import Chip from '../../../component/Chip';
 import Dot from '../../../component/Dot';
 import ImageCover from '../../../component/ImageCover';
 import ReviewSimple from '../../../component/reviews/ReviewSimple';
 import TextBold from '../../../component/text/TextBold';
 import TextRegular from '../../../component/text/TextRegular';
-import { setCurrentStoreCode } from '../../../store/reducers/CartReducer';
+import {setCurrentStoreCode} from '../../../store/reducers/CartReducer';
 import colors from '../../../styles/colors';
+import {useMutation} from 'react-query';
+import Loading from '../../../component/Loading';
+import mainAPI from '../../../api/modules/mainAPI';
 
 // 2.1 : 1
-const StoreItems = ({ navigation, route }) => {
+const StoreItems = ({navigation, route}) => {
+  const routeData = route.params;
+  const [storeList, setStoreList] = useState();
+  const mutateGetStoreList = useMutation(mainAPI._getStoreList, {
+    onSuccess: e => {
+      const data = e.data.arrItems
+      console.log('e', e);
+      console.log('data', data)
+      setStoreList(data)
+      // setCategoryData(e.data.arrItems);
+    },
+  });
+
+  const _init = async () => {
+    const data = {
+      mb_ca_code: routeData.ca_code,
+      item_count: '0',
+      limit_count: '10',
+      mb_jumju_type: 'food',
+      mb_ca_sort: '0',
+    };
+    console.log('data', data);
+    mutateGetStoreList.mutate(data);
+  };
+
+  useEffect(() => {
+    _init();
+  }, []);
+
   const dummy = [
     {
       isOpen: true,
@@ -93,7 +124,7 @@ const StoreItems = ({ navigation, route }) => {
     },
   ];
 
-  console.log('items cate route', route.params);
+  console.log('dummy', dummy)
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
@@ -102,7 +133,7 @@ const StoreItems = ({ navigation, route }) => {
   //368 88 279
   const renderItem = item => {
     const storeCode = item.item.storeCode;
-    console.log('item', item);
+    // console.log('item', item);
     return (
       <Pressable
         onPress={() => {
@@ -134,7 +165,7 @@ const StoreItems = ({ navigation, route }) => {
             <FastImage
               source={require('~/assets/dummy/CK_tica114m19040077_l.jpg')}
               resizeMode={FastImage.resizeMode.cover}
-              style={{ flex: 1 }}
+              style={{flex: 1}}
             />
           </View>
           <View
@@ -153,7 +184,7 @@ const StoreItems = ({ navigation, route }) => {
               <FastImage
                 source={require('~/assets/dummy/CK_tica114m19040204_l.jpg')}
                 resizeMode={FastImage.resizeMode.cover}
-                style={{ flex: 1 }}
+                style={{flex: 1}}
               />
             </View>
             <View
@@ -167,7 +198,7 @@ const StoreItems = ({ navigation, route }) => {
               <FastImage
                 source={require('~/assets/dummy/CK_tica114m19040043_l.jpg')}
                 resizeMode={FastImage.resizeMode.cover}
-                style={{ flex: 1 }}
+                style={{flex: 1}}
               />
             </View>
           </View>
@@ -178,16 +209,16 @@ const StoreItems = ({ navigation, route }) => {
             justifyContent: 'flex-end',
             marginTop: 22,
           }}>
-          <View style={{ marginBottom: 9 }}>
+          <View style={{marginBottom: 9}}>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <View style={{ flex: 1 }} clip>
+              <View style={{flex: 1}} clip>
                 <Text
-                  style={{ fontFamily: 'Pretendard-Medium', fontSize: 16 }}
+                  style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
                   ellipsizeMode="tail"
                   numberOfLines={1}>
                   {item.item.name} {route.params.cate}
@@ -196,15 +227,15 @@ const StoreItems = ({ navigation, route }) => {
               <ReviewSimple />
             </View>
             <View
-              style={{ flexDirection: 'row', flexWrap: 'wrap', marginTop: 9 }}>
+              style={{flexDirection: 'row', flexWrap: 'wrap', marginTop: 9}}>
               <View
                 style={{
                   flexDirection: 'row',
                 }}>
-                <TextRegular style={{ color: colors.fontColorA2 }}>
+                <TextRegular style={{color: colors.fontColorA2}}>
                   배달팁{' '}
                 </TextRegular>
-                <TextRegular style={{ color: colors.fontColor6 }}>
+                <TextRegular style={{color: colors.fontColor6}}>
                   0원~3,000원
                 </TextRegular>
                 <Dot />
@@ -217,14 +248,14 @@ const StoreItems = ({ navigation, route }) => {
                 }}>
                 <Image
                   source={require('~/assets/time.png')}
-                  style={{ width: 14, height: 14 }}
+                  style={{width: 14, height: 14}}
                 />
                 <TextRegular> 30분~</TextRegular>
                 <TextRegular>40분</TextRegular>
                 <Dot />
               </View>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                <TextRegular style={{ color: colors.fontColorA2 }}>
+              <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                <TextRegular style={{color: colors.fontColorA2}}>
                   최소 주문{' '}
                 </TextRegular>
                 <TextRegular>8,000원</TextRegular>
@@ -236,14 +267,17 @@ const StoreItems = ({ navigation, route }) => {
       </Pressable>
     );
   };
+  console.log('keys', Object.values(storeList))
+  return <Loading/>
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <SectionList
-        sections={dummy}
+        sections={storeList}
         keyExtractor={(item, index) => item + index}
         renderItem={item => renderItem(item)}
-        renderSectionHeader={({ section: { isOpen } }) =>
-          !isOpen && <TextBold style={{ fontSize: 20 }}>준비중이에요</TextBold>
+        renderSectionHeader={({section: {isOpen}}) =>
+          !isOpen && <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
         }
         showsVerticalScrollIndicator={false}
       />

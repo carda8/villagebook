@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const authSlice = createSlice({
   name: 'menu',
-  initialState: {userInfo: ''},
+  initialState: {userInfo: '', autoLogin: ''},
   reducers: {
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;

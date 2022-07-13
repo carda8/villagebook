@@ -17,8 +17,14 @@ export const Input = ({
       autoCapitalize="none"
       value={formik.values[value]}
       onChangeText={
+        e => {
+          if (value === 'mt_id') formik.setFieldValue('mt_idChecked', false);
+          if (value === 'mt_nickname')
+            formik.setFieldValue('mt_nickNameChecked', false);
+          formik.setFieldValue(value, e);
+          // formik.handleChange(value, e);
+        }
         // val.replace(/\s/g, '');
-        formik.handleChange(value)
       }
       onBlur={formik.handleBlur(value)}
       error={formik.errors}
@@ -31,6 +37,7 @@ export const Input = ({
       placeholder={placeholder}
       secureTextEntry={secureTextEntry}
       keyboardType={keyboardType ?? null}
+      numberOfLines={1}
     />
   );
 };

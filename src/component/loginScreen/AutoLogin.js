@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import {Image} from 'react-native';
 import {Pressable} from 'react-native';
+import {useDispatch} from 'react-redux';
 import TextRegular from '../text/TextRegular';
 
 const AutoLogin = () => {
   const [isAuto, setIsAuto] = useState(false);
+  const dispatch = useDispatch();
   return (
     <Pressable
       onPress={() => setIsAuto(!isAuto)}
