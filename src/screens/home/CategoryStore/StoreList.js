@@ -10,34 +10,48 @@ import {
 } from 'react-native';
 import {color} from 'react-native-reanimated';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useDispatch} from 'react-redux';
 import Header from '../../../component/Header';
-import TextBold from '../../../component/text/TextBold';
-import TextMedium from '../../../component/text/TextMedium';
 import TextRegular from '../../../component/text/TextRegular';
 import TextSBold from '../../../component/text/TextSBold';
+import Category from '../../../config/Category';
+import Filter from '../../../config/Filter';
+import {
+  setcurrentCategory,
+  setcurrentFilter,
+} from '../../../store/reducers/CategoryReducer';
 import colors from '../../../styles/colors';
 import commonStyles from '../../../styles/commonStyle';
+import FilterView from './FilterView';
 import StoreItems from './StoreItems';
 
 const Tab = createMaterialTopTabNavigator();
 
 const StoreList = ({navigation, route}) => {
-  const tabRef = useRef(0);
-  const layout = useWindowDimensions();
-  const routeIdx = route.params?.routteIdx ?? 'Menu1';
-  const arr = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-  const [selectedFilter, setSelectedFilter] = useState(0);
+  const routeIdx = route.params?.routeIdx ?? '메뉴';
+  const cate = route.params?.category;
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log('sel', selectedFilter);
-  }, [selectedFilter]);
+  const tabRef = useRef(0);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={String(routeIdx)} navigation={navigation} />
-
+      <Header category={true} navigation={navigation} />
+      <FilterView />
       <Tab.Navigator
+        backBehavior="none"
         initialRouteName={routeIdx}
+        screenListeners={{
+          state: e => {
+            // console.log('state e', e.target, e.data);
+          },
+          focus: e => {
+            let temp = e.target.split('-');
+            dispatch(setcurrentCategory(temp[0]));
+            dispatch(setcurrentFilter(0));
+            // setHeaderTitle(temp[0])
+          },
+        }}
         sceneContainerStyle={{
           flex: 1,
           backgroundColor: 'white',
@@ -47,7 +61,9 @@ const StoreList = ({navigation, route}) => {
         style={{flex: 1}}
         screenOptions={({route}) => ({
           lazy: true,
-          tabBarStyle: {paddingLeft: 22},
+          tabBarStyle: {
+            paddingLeft: 22,
+          },
           tabBarLabel: props => (
             <View
               style={{
@@ -105,9 +121,9 @@ const StoreList = ({navigation, route}) => {
             let animation = new Animated.Value(_getToValue(tabRef.current));
             Animated.spring(animation, {
               toValue: _getToValue(index),
-              duration: 200,
+              duration: 800,
               friction: 10,
-              tension: 100,
+              tension: 20,
               useNativeDriver: true,
             }).start();
             return (
@@ -126,16 +142,14 @@ const StoreList = ({navigation, route}) => {
           },
         })}
       >
-        <Tab.Screen
-          name="1인분"
-          component={StoreItems}
-          initialParams={{cate: '1인분'}}
-        />
-        <Tab.Screen name="돈까스/회/일식" component={StoreItems} />
-        <Tab.Screen name="중식" component={StoreItems} />
-        <Tab.Screen name="치킨" component={StoreItems} />
-        <Tab.Screen name="카페/디저트" component={StoreItems} />
-        <Tab.Screen name="일식" component={StoreItems} />
+        {Category[cate].map((item, index) => (
+          <Tab.Screen
+            key={item + index}
+            name={item}
+            component={StoreItems}
+            initialParams={{cate: item}}
+          />
+        ))}
       </Tab.Navigator>
       <View
         style={{

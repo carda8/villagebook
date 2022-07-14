@@ -29,13 +29,19 @@ import TextNotoR from '../../component/text/TextNotoR';
 import TextNotoB from '../../component/text/TextNotoB';
 import DividerL from '../../component/DividerL';
 import {Slider} from '@miblanchard/react-native-slider';
-import {launchCamera} from 'react-native-image-picker';
+import ImagePicker, {launchCamera} from 'react-native-image-picker';
 
 const MenuDetail = ({navigation}) => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const arr = ['토스트', '음료', '토스트', '음료', '토스트', '주류', 8, 9];
-  const arrTop = [1, 2, 3];
+  const arr = ['토스트', '음료', '토스트', '음료', '사이드', '주류', 8, 9];
+  const arrTop = [
+    {name: '싸이버거 1', price: 1000, desc: '싸이버거 입니다', itemCode: 1},
+    {name: '싸이버거 2', price: 2000, desc: '싸이버거 입니다', itemCode: 2},
+    {name: '싸이버거 3', price: 3000, desc: '싸이버거 입니다', itemCode: 3},
+    {name: '싸이버거 4', price: 40000, desc: '싸이버거 입니다', itemCode: 4},
+    {name: '싸이버거 5', price: 50000, desc: '싸이버거 입니다', itemCode: 5},
+  ];
   const [routes] = useState([
     {key: 'first', title: 'First'},
     {key: 'second', title: 'Second'},
@@ -121,10 +127,10 @@ const MenuDetail = ({navigation}) => {
       <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
         <View
           style={{
-            zIndex: trigger ? 1000 : -1,
             top: 50,
             position: 'absolute',
-            opacity: trigger ? 1 : 0,
+            opacity: trigger && index === 0 ? 1 : 0,
+            zIndex: trigger && index === 0 ? 1000 : -1,
             backgroundColor: 'white',
           }}>
           <ScrollView
@@ -134,7 +140,7 @@ const MenuDetail = ({navigation}) => {
             showsHorizontalScrollIndicator={false}>
             {arr.map((item, index) => (
               <Pressable
-                disabled={!trigger}
+                disabled={!trigger && index === 0}
                 key={index}
                 ref={el => (chipTarget.current[index] = el)}
                 onPress={() => {
@@ -155,7 +161,6 @@ const MenuDetail = ({navigation}) => {
                       console.log('widht', width);
                       scrollRefSub.current.scrollTo({
                         x: left - layout.width / 3 - 10,
-
                         animated: true,
                       });
                     },
@@ -358,7 +363,10 @@ const MenuDetail = ({navigation}) => {
                   </View>
                   <View style={{flex: 1}}>
                     {arrTop.map((item, index) => (
-                      <View
+                      <Pressable
+                        onPress={() => {
+                          navigation.navigate('OptionSelect', {data: item});
+                        }}
                         key={index}
                         style={{
                           flex: 1,
@@ -389,11 +397,11 @@ const MenuDetail = ({navigation}) => {
                           <View style={{flex: 1}}>
                             <TextMedium
                               style={{fontSize: 17, color: colors.fontColor2}}>
-                              맵달맵달 리챔
+                              {item.name}
                             </TextMedium>
                             <TextMedium
                               style={{fontSize: 15, color: colors.fontColor8}}>
-                              계란+콘+모짜렐라치즈+리챔3장+ 핫스모크소스
+                              {item.desc}
                             </TextMedium>
                           </View>
                         </View>
@@ -403,7 +411,7 @@ const MenuDetail = ({navigation}) => {
                             3,700원
                           </TextBold>
                         </View>
-                      </View>
+                      </Pressable>
                     ))}
                   </View>
                 </View>
@@ -415,7 +423,6 @@ const MenuDetail = ({navigation}) => {
                         height: 50,
                         paddingVertical: 15,
                         paddingHorizontal: 22,
-                        borderTopWidth: 1,
                         borderBottomWidth: 1,
                         borderColor: colors.borderColor,
                       }}>
@@ -425,12 +432,15 @@ const MenuDetail = ({navigation}) => {
                       key={index}
                       ref={el => (focusTarget.current[index] = el)}
                       style={{
-                        height: 400,
+                        flex: 1,
                         backgroundColor: 'white',
                       }}>
                       <View style={{flex: 1}}>
                         {arrTop.map((item, index) => (
-                          <View
+                          <Pressable
+                            onPress={() => {
+                              navigation.navigate('OptionSelect', {data: item});
+                            }}
                             key={index}
                             style={{
                               flex: 1,
@@ -484,7 +494,7 @@ const MenuDetail = ({navigation}) => {
                                 </TextBold>
                               </View>
                             </View>
-                          </View>
+                          </Pressable>
                         ))}
                       </View>
                     </View>
@@ -682,6 +692,7 @@ const MenuDetail = ({navigation}) => {
                     resizeMode="contain"
                   />
                   <View>
+                    {/* 카메라 돌아 저장 시 돌아감  */}
                     <Pressable
                       onPress={async () => {
                         await PermissionsAndroid.request(
@@ -689,13 +700,11 @@ const MenuDetail = ({navigation}) => {
                         );
                         const result = await launchCamera(
                           {
-                            quality: 0.99,
                             mediaType: 'photo',
-                            saveToPhotos: true,
+                            // saveToPhotos: true,
                           },
                           res => {
-                            const {originalRotation} = res;
-                            console.log('result::', originalRotation);
+                            console.log('result::', res);
                           },
                         );
                         console.log('result', result);
@@ -719,6 +728,51 @@ const MenuDetail = ({navigation}) => {
                   맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
                   맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
                 </TextRegular>
+                <FastImage
+                  source={require('~/assets/dummy/CK_tc01560002923_l.jpg')}
+                  resizeMode={FastImage.resizeMode.cover}
+                  style={{
+                    flex: 1,
+                    height: 245,
+                    marginTop: 20,
+                    marginBottom: 8,
+                    borderRadius: 10,
+                  }}
+                />
+                <View
+                  style={{
+                    borderRadius: 15,
+                    borderTopLeftRadius: 0,
+                    backgroundColor: colors.storeIcon,
+                    paddingVertical: 16,
+                    paddingHorizontal: 13,
+                  }}>
+                  <View
+                    style={{flexDirection: 'row', alignItems: 'flex-start'}}>
+                    <Image
+                      source={require('~/assets/no_use_img.png')}
+                      style={{width: 38, height: 38, borderRadius: 38 / 2}}
+                      resizeMode="cover"
+                    />
+                    <View style={{marginLeft: 15, flex: 1}}>
+                      <TextBold style={{fontSize: 16, color: colors.primary}}>
+                        맛나버거 부산대점
+                      </TextBold>
+                      <TextRegular
+                        style={{fontSize: 13, color: colors.fontColorA2}}>
+                        {Date()}
+                      </TextRegular>
+                      <TextRegular
+                        style={{
+                          fontSize: 15,
+                          color: colors.fontColor2,
+                          marginTop: 7,
+                        }}>
+                        맛있다고 하시니 다행입니다. 많이 이용해주세요
+                      </TextRegular>
+                    </View>
+                  </View>
+                </View>
               </View>
             </View>
           )}

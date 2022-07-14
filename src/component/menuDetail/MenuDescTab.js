@@ -2,6 +2,7 @@ import {View, Text, Pressable, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import colors from '../../styles/colors';
 import TextRegular from '../text/TextRegular';
+import TextNotoM from '../text/TextNotoM';
 
 const MenuDescTab = () => {
   const [tabIdx, setTabIdx] = useState(0);
@@ -106,9 +107,25 @@ const MenuDescTab = () => {
               <TextRegular style={{color: colors.fontColor3}}>
                 30분~60분 소요 예상
               </TextRegular>
-              <TextRegular style={{color: colors.fontColor3}}>
-                0원~3,000원
-              </TextRegular>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TextRegular style={{color: colors.fontColor3}}>
+                  0원~3,000원
+                </TextRegular>
+                <Pressable
+                  style={{
+                    width: 52,
+                    height: 24,
+                    borderRadius: 12,
+                    backgroundColor: colors.dividerL,
+                    marginLeft: 7,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <TextNotoM style={{fontSize: 12, color: colors.fontColor2}}>
+                    자세히
+                  </TextNotoM>
+                </Pressable>
+              </View>
             </View>
           </>
         )}

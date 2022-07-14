@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Image,
   PermissionsAndroid,
   Pressable,
   Text,
@@ -14,6 +15,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Header from '../../component/Header';
 import {View} from 'react-native';
 import {TextInput} from 'react-native';
+import colors from '../../styles/colors';
 
 const Map = ({navigation, route}) => {
   const routeData = route.params?.data ?? 'no data';
@@ -102,14 +104,23 @@ const Map = ({navigation, route}) => {
           _convertCoor({lon: e.longitude, lat: e.latitude});
           // setPosition({latitude: e.latitude, longitude: e.longitude});
         }}>
-        <Marker
-          animateToCoordinate={e => {
-            console.log('anime', e);
-          }}
+        {/* <Marker
           coordinate={position}
           onClick={() => console.log('onClick! p0')}
-        />
+        /> */}
       </NaverMapView>
+      <Image
+        source={require('~/assets/ico_map.png')}
+        style={{
+          tintColor: colors.primary,
+          width: 55,
+          height: 55,
+          top: (layout.height - 190) / 2,
+          zIndex: 200,
+          position: 'absolute',
+          alignSelf: 'center',
+        }}
+      />
       <View
         style={{
           width: '100%',

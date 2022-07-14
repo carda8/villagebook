@@ -1,5 +1,12 @@
 import React from 'react';
-import {Image, Pressable, Text, useWindowDimensions, View} from 'react-native';
+import {
+  Image,
+  Linking,
+  Pressable,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import colors from '../../styles/colors';
 import Divider from '../Divider';
@@ -68,7 +75,9 @@ const MenuDesc = () => {
 
           <View style={{}}>
             <Pressable
-              onPress={() => {}}
+              onPress={() => {
+                Linking.openURL('tel:01042613948');
+              }}
               style={{
                 width: 51,
                 height: 51,

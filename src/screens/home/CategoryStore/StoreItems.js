@@ -6,6 +6,7 @@ import {
   useWindowDimensions,
   Image,
   Pressable,
+  SectionList,
 } from 'react-native';
 import React from 'react';
 import FastImage from 'react-native-fast-image';
@@ -15,21 +16,113 @@ import TextMedium from '../../../component/text/TextMedium';
 import TextRegular from '../../../component/text/TextRegular';
 import Dot from '../../../component/Dot';
 import ReviewSimple from '../../../component/reviews/ReviewSimple';
+import DividerL from '../../../component/DividerL';
+import TextBold from '../../../component/text/TextBold';
+import ImageCover from '../../../component/ImageCover';
+import {useDispatch} from 'react-redux';
+import {setCurrentStoreCode} from '../../../store/reducers/CartReducer';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
-  const arr = [1, 2, 3, 4, 5, 6, 7, 8];
-  console.log('subs rendered');
-  console.log('params', route.params);
+  const dummy = [
+    {
+      isOpen: true,
+      data: [
+        {
+          name: '버거킹 부산대점',
+          storeCode: 1,
+          tip: 1000,
+          review: 999,
+          isOpen: true,
+        },
+        {
+          name: '롯데리아 부산대점',
+          storeCode: 2,
+          tip: 1000,
+          review: 999,
+          isOpen: true,
+        },
+        {
+          name: '맥도날드 부산대점',
+          storeCode: 3,
+          tip: 1000,
+          review: 999,
+          isOpen: true,
+        },
+        {
+          name: '인앤아웃 부산대점',
+          storeCode: 4,
+          tip: 1000,
+          review: 999,
+          isOpen: true,
+        },
+        {
+          name: '고든램지 버거',
+          storeCode: 5,
+          tip: 1000,
+          review: 999,
+          isOpen: true,
+        },
+      ],
+    },
+    {
+      isOpen: false,
+      data: [
+        {
+          name: '버거킹 부산대점',
+          storeCode: 6,
+          tip: 1000,
+          review: 999,
+          isOpen: false,
+        },
+        {
+          name: '버거킹 구서점',
+          storeCode: 7,
+          tip: 1000,
+          review: 999,
+          isOpen: false,
+        },
+        {
+          name: 'KFC 구서점',
+          storeCode: 8,
+          tip: 1000,
+          review: 999,
+          isOpen: false,
+        },
+        {
+          name: '버거킹 부산대점',
+          storeCode: 9,
+          tip: 1000,
+          review: 999,
+          isOpen: false,
+        },
+        {
+          name: '버거킹 부산대점',
+          storeCode: 10,
+          tip: 1000,
+          review: 999,
+          isOpen: false,
+        },
+      ],
+    },
+  ];
+
+  console.log('items cate route', route.params);
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
+  const dispatch = useDispatch();
 
   //368 88 279
   const renderItem = item => {
+    const storeCode = item.item.storeCode;
     return (
       <Pressable
-        onPress={() => navigation.navigate('MenuDetail')}
+        onPress={() => {
+          console.log('code', storeCode);
+          dispatch(setCurrentStoreCode(storeCode));
+          navigation.navigate('MenuDetail');
+        }}
         style={{
           flex: 1,
           // height: IMG_CONTAINER,
@@ -50,6 +143,7 @@ const StoreItems = ({navigation, route}) => {
               borderBottomLeftRadius: 10,
               overflow: 'hidden',
             }}>
+            {!item?.section?.isOpen && <ImageCover />}
             <FastImage
               source={require('~/assets/dummy/CK_tica114m19040077_l.jpg')}
               resizeMode={FastImage.resizeMode.cover}
@@ -68,6 +162,7 @@ const StoreItems = ({navigation, route}) => {
                 marginBottom: 1,
                 overflow: 'hidden',
               }}>
+              {!item?.section?.isOpen && <ImageCover />}
               <FastImage
                 source={require('~/assets/dummy/CK_tica114m19040204_l.jpg')}
                 resizeMode={FastImage.resizeMode.cover}
@@ -81,6 +176,7 @@ const StoreItems = ({navigation, route}) => {
                 backgroundColor: 'orange',
                 overflow: 'hidden',
               }}>
+              {!item?.section?.isOpen && <ImageCover />}
               <FastImage
                 source={require('~/assets/dummy/CK_tica114m19040043_l.jpg')}
                 resizeMode={FastImage.resizeMode.cover}
@@ -102,7 +198,14 @@ const StoreItems = ({navigation, route}) => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <TextMedium style={{fontSize: 16}}>맛나분식 부산대점</TextMedium>
+              <View style={{flex: 1}} clip>
+                <Text
+                  style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
+                  ellipsizeMode="tail"
+                  numberOfLines={1}>
+                  {item.item.name} {route.params.cate}
+                </Text>
+              </View>
               <ReviewSimple />
             </View>
             <View
@@ -148,13 +251,22 @@ const StoreItems = ({navigation, route}) => {
   };
   return (
     <View style={{flex: 1}}>
-      <FlatList
-        data={arr}
+      <SectionList
+        sections={dummy}
+        keyExtractor={(item, index) => item + index}
+        renderItem={item => renderItem(item)}
+        renderSectionHeader={({section: {isOpen}}) =>
+          !isOpen && <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
+        }
+        showsVerticalScrollIndicator={false}
+      />
+      {/* <FlatList
+        data={dummy}
         showsVerticalScrollIndicator={false}
         renderItem={item => renderItem(item)}
         keyExtractor={(item, index) => index}
         onEndReached={() => {}}
-      />
+      /> */}
     </View>
   );
 };
