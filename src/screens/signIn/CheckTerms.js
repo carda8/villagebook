@@ -37,6 +37,7 @@ const CheckTerms = ({navigation}) => {
   const PolicyDetail = ({target}) => {
     return (
       <Pressable
+        hitSlop={5}
         onPress={() => {
           navigation.navigate('Policy', {
             target: target,

@@ -32,6 +32,7 @@ import * as yup from 'yup';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import localStorageConfig from '../../store/localStorage/localStorageConfig';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
+import SNSLogin from './SNSLogin';
 
 const Login = ({navigation}) => {
   const layout = useWindowDimensions();
@@ -40,7 +41,6 @@ const Login = ({navigation}) => {
 
   const mutate = useMutation(authAPI._login, {
     onSuccess: async e => {
-      console.log('login mutate', e);
       if (e.result === 'false') {
         Alert.alert(
           '로그인 실패',
@@ -58,7 +58,6 @@ const Login = ({navigation}) => {
           ],
         );
       } else {
-        console.log('login e', e);
         await AuthStorageModuel._setItemAutoLogin(
           localStorageConfig.state.true,
         );
@@ -100,7 +99,6 @@ const Login = ({navigation}) => {
   });
 
   const handleSubmit = e => {
-    console.log('e', e);
     setLoading(true);
     _login(e);
   };
@@ -222,7 +220,7 @@ const Login = ({navigation}) => {
             </Pressable>
             {/* 카카오 */}
             <Pressable
-              onPress={() => {}}
+              onPress={() => SNSLogin._KakaoLogin()}
               style={{
                 ...style.snsButton,
               }}>

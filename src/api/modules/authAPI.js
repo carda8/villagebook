@@ -30,4 +30,8 @@ export default {
     const result = await _reqAPI('proc_member_leave.php', data);
     return result;
   },
+  _getTermsOfPolicy: async data => {
+    const result = await _reqAPI('proc_agree.php', data);
+    return result;
+  },
 };

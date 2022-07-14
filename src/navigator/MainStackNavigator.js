@@ -58,7 +58,6 @@ const MainStackNavigator = () => {
 
   const mutateAutoLogin = useMutation(authAPI._autoLogin, {
     onSuccess: e => {
-      console.log('e', e);
       const userInfo = e.data.arrItems;
       dispatch(setUserInfo(userInfo));
       setInitRoute('Main');

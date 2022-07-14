@@ -3,9 +3,11 @@ import React, {useEffect, useState} from 'react';
 import colors from '../../styles/colors';
 import TextRegular from '../text/TextRegular';
 import TextNotoM from '../text/TextNotoM';
+import {replaceString} from '../../config/utils/Price';
 
-const MenuDescTab = () => {
+const MenuDescTab = ({info}) => {
   const [tabIdx, setTabIdx] = useState(0);
+
   useEffect(() => {
     console.log('idx', tabIdx);
   }, [tabIdx]);
@@ -102,14 +104,14 @@ const MenuDescTab = () => {
 
             <View style={{marginLeft: 22, justifyContent: 'space-between'}}>
               <TextRegular style={{color: colors.fontColor3}}>
-                12,000
+                {replaceString(info.minPrice)}
               </TextRegular>
               <TextRegular style={{color: colors.fontColor3}}>
                 30분~60분 소요 예상
               </TextRegular>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextRegular style={{color: colors.fontColor3}}>
-                  0원~3,000원
+                  {replaceString(info.tipFrom)}원~{replaceString(info.tipTo)}원
                 </TextRegular>
                 <Pressable
                   style={{
