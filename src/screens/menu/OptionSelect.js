@@ -29,15 +29,30 @@ import {
   setMainCount,
   setSubMenu,
 } from '../../store/reducers/CartReducer';
+import {useuseCustomMutation} from '../../hooks/useCustomMutation';
+import Loading from '../../component/Loading';
 
 const OptionSelect = ({navigation, route}) => {
-  const data = route.params.data;
-  console.log('data', data);
+  const routeData = route.params;
+  console.log('routeData', routeData);
+  const {mutateMenuDetail} = useuseCustomMutation();
+  const [convertedData, setConvertedData] = useState([]);
   const {optionHeader, currentStoreCode} = useSelector(
     state => state.menuReducer,
   );
   const dispatch = useDispatch();
+
   const storeCode = 1;
+
+  const _getMenuDetail = () => {
+    const data = {
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+      it_id: routeData.it_id,
+    };
+    mutateMenuDetail.mutate(data);
+  };
+
   const arr = [
     {
       option: '매운맛 선택',
@@ -129,33 +144,68 @@ const OptionSelect = ({navigation, route}) => {
     },
   ];
   const layout = useWindowDimensions();
-  const _getReqiredItem = () => {
-    const temp = arr.filter((item, index) => item.required === true);
-    console.log('get temp', temp);
-    dispatch(
-      initOption({
-        count: 1,
-        mainItemCode: data.itemCode,
-        price: data.price,
-        mainReqired: temp,
-      }),
-    );
+
+  // const _getReqiredItem = () => {
+  //   const temp = arr.filter((item, index) => item.required === true);
+  //   console.log('get temp', temp);
+  //   dispatch(
+  //     initOption({
+  //       count: 1,
+  //       mainItemCode: data.itemCode,
+  //       price: data.price,
+  //       mainReqired: temp,
+  //     }),
+  //   );
+  // };
+
+  const _convertData = info => {
+    let arr = [];
+    info.option.map((item, index) => {
+      arr.push({...item, required: true, data: item.option_data});
+      delete arr[index].option_data;
+    });
+    info.supply.map((item, index) => {
+      arr.push({...item, required: false, data: item.supply_option});
+      delete arr[index].supply_option;
+    });
+    setConvertedData(arr);
+    console.log('DetailInfo', arr);
   };
+
   useEffect(() => {
-    _getReqiredItem();
+    if (mutateMenuDetail?.data?.data.arrItems) {
+      const info = mutateMenuDetail?.data?.data.arrItems;
+      _convertData(info);
+    }
+  }, [mutateMenuDetail.data]);
+
+  useEffect(() => {
+    _getMenuDetail();
+    // _getReqiredItem();
   }, []);
+
+  if (convertedData.length === 0 || mutateMenuDetail?.data?.data?.arrItems)
+    return <Loading />;
+  const DetailInfo = mutateMenuDetail?.data?.data.arrItems;
+  console.log('DetailInfo', DetailInfo);
+  console.log('convertedData', convertedData);
+  console.log('arr', arr);
+
+  // return <Loading />;
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header
         title={''}
-        fadeTitle={data.name}
+        fadeTitle={DetailInfo.it_name}
         navigation={navigation}
         style={{position: 'absolute', zIndex: 500}}
         isOption={true}
       />
       <CartButton navigation={navigation} />
-      <SectionList
+      <SectionList sections={convertedData} renderItem={item => <></>} />
+
+      {/* <SectionList
         onScroll={e => {
           let positionY = e.nativeEvent.contentOffset.y;
           if (positionY > layout.width && optionHeader !== true)
@@ -172,15 +222,11 @@ const OptionSelect = ({navigation, route}) => {
             />
             <View style={{paddingHorizontal: 22, paddingTop: 10}}>
               <TextBold style={{fontSize: 20, color: colors.fontColor2}}>
-                {data?.name}
+                {DetailInfo.name}
               </TextBold>
               <View style={{marginVertical: 10}}>
                 <TextMedium style={{color: colors.fontColorA}}>
-                  {data?.desc}
-                  {data?.desc}
-                  {data?.desc}
-                  {data?.desc}
-                  {data?.desc}
+                  {DetailInfo.desc}
                 </TextMedium>
               </View>
             </View>
@@ -202,7 +248,7 @@ const OptionSelect = ({navigation, route}) => {
                   가격
                 </TextBold>
                 <TextBold style={{color: colors.fontColor2}}>
-                  {replaceString(data?.price)}원
+                  {replaceString(DetailInfo.it_price)}원
                 </TextBold>
               </View>
             </View>
@@ -224,11 +270,13 @@ const OptionSelect = ({navigation, route}) => {
             <OptionCount data={data} />
           </View>
         )}
-        sections={arr}
+        sections={convertedData}
         contentContainerStyle={{paddingBottom: 100}}
         keyExtractor={(item, index) => item + index}
-        renderItem={item => <OptionRenderItem item={item} data={data} />}
-        renderSectionHeader={({section: {option, required}}) => (
+        renderItem={item => (
+          <OptionRenderItem item={item} data={convertedData} />
+        )}
+        renderSectionHeader={({section: {option_subject, required}}) => (
           <View
             style={{
               borderTopWidth: 1,
@@ -238,12 +286,12 @@ const OptionSelect = ({navigation, route}) => {
               paddingVertical: 15,
             }}>
             <TextBold style={{color: colors.fontColor2}}>
-              {option}
+              {option_subject}
               {required ? ' (필수)' : ' (선택)'}
             </TextBold>
           </View>
         )}
-      />
+      /> */}
     </SafeAreaView>
   );
 };

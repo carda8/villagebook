@@ -31,10 +31,14 @@ const StoreList = ({navigation, route}) => {
         backBehavior="none"
         initialRouteName={routeIdx}
         screenListeners={{
+          state: e => {
+            // console.log('state e', e.target, e.data);
+          },
           focus: e => {
             let temp = e.target.split('-');
             dispatch(setcurrentCategory(temp[0]));
             dispatch(setcurrentFilter(0));
+            // setHeaderTitle(temp[0])
           },
         }}
         sceneContainerStyle={{
@@ -55,15 +59,13 @@ const StoreList = ({navigation, route}) => {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontFamily: 'Pretendard-Bold',
                   // : 'Pretendard-Medium',
                   color: props.focused ? colors.primary : colors.fontColor2,
-                }}
-              >
+                }}>
                 {route.name}
               </Text>
             </View>
@@ -103,9 +105,7 @@ const StoreList = ({navigation, route}) => {
               }
               return temp;
             };
-
             let animation = new Animated.Value(_getToValue(tabRef.current));
-
             Animated.spring(animation, {
               toValue: _getToValue(index),
               duration: 800,
@@ -127,8 +127,7 @@ const StoreList = ({navigation, route}) => {
               </>
             );
           },
-        })}
-      >
+        })}>
         {categoryData.map((item, index) => (
           <Tab.Screen
             key={item.ca_name + index}

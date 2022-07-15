@@ -10,13 +10,15 @@ import {
   setMainRequired,
   setSubMenu,
 } from '../../store/reducers/CartReducer';
+import Loading from '../../component/Loading';
 
 const OptionRenderItem = ({item, data}) => {
   const cartStore = useSelector(state => state.cartReducer);
   const [check, setCheck] = useState(false);
   const dispatch = useDispatch();
-  const item2 = item.item;
+  // const item2 = item.item;
 
+  return <Loading />;
   return (
     <View
       style={{

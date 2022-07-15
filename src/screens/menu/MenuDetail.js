@@ -35,56 +35,14 @@ import storeAPI from '../../api/modules/storeAPI';
 import Loading from '../../component/Loading';
 import {useuseCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
+import {replaceString} from '../../config/utils/Price';
 
 const MenuDetail = ({navigation, route}) => {
-  const {mutateTopMenu, mutateStoreInfo} = useuseCustomMutation();
-
+  const {mutateTopMenu, mutateStoreInfo, mutateAllMunu, mutateServiceTime} =
+    useuseCustomMutation();
   const routeData = route.params;
-
-  const _init = () => {
-    const data = {
-      jumju_id: routeData.jumju_id,
-      jumju_code: routeData.jumju_code,
-    };
-    console.log('_init data', data);
-    mutateStoreInfo.mutate(data);
-  };
-
-  const _getTopMenu = () => {
-    const data = {
-      jumju_id: routeData.jumju_id,
-      jumju_code: routeData.jumju_code,
-    };
-    const result = mutateTopMenu.mutate(data);
-    console.log('result', result);
-  };
-
-  useEffect(() => {
-    _init();
-    _getTopMenu();
-  }, [routeData]);
-
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-
-  const arr = [
-    '토스트 토스트 토스트',
-    '음료',
-    '토스트',
-    '음료',
-    '사이드',
-    '주류',
-    8,
-    9,
-  ];
-
-  const arrTop = [
-    {name: '싸이버거 1', price: 1000, desc: '싸이버거 입니다', itemCode: 1},
-    {name: '싸이버거 2', price: 2000, desc: '싸이버거 입니다', itemCode: 2},
-    {name: '싸이버거 3', price: 3000, desc: '싸이버거 입니다', itemCode: 3},
-    {name: '싸이버거 4', price: 40000, desc: '싸이버거 입니다', itemCode: 4},
-    {name: '싸이버거 5', price: 50000, desc: '싸이버거 입니다', itemCode: 5},
-  ];
 
   const [temp, setTemp] = useState();
   const [headerTrigger, setHeaderTrigger] = useState(false);
@@ -141,8 +99,46 @@ const MenuDetail = ({navigation, route}) => {
     return temp2;
   };
 
+  const _init = () => {
+    const data = {
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+    };
+    console.log('_init data', data);
+    mutateStoreInfo.mutate(data);
+  };
+
+  //Menu 데이터 임시
+  //API 개발 완료시 수정 필요
+  const _getTopMenu = () => {
+    const data = {
+      jumju_id: 'dnb_0006',
+      jumju_code: 'P20220700008',
+    };
+    mutateTopMenu.mutate(data);
+  };
+
+  const _getAllMenu = () => {
+    const data = {
+      jumju_id: 'dnb_0006',
+      jumju_code: 'P20220700008',
+    };
+    mutateAllMunu.mutate(data);
+  };
+
+  const _getServiceTime = () => {
+    const data = {
+      jumju_id: 'dnb_0006',
+      jumju_code: 'P20220700008',
+    };
+    mutateServiceTime.mutate(data);
+  };
+
   useEffect(() => {
+    _init();
     _getTopMenu();
+    _getAllMenu();
+    _getServiceTime();
   }, []);
 
   useEffect(() => {
@@ -160,7 +156,20 @@ const MenuDetail = ({navigation, route}) => {
     }
   }, [selected]);
 
-  if (mutateStoreInfo.isLoading || !mutateStoreInfo.data) return <Loading />;
+  if (
+    mutateStoreInfo.isLoading ||
+    mutateTopMenu.isLoading ||
+    mutateAllMunu.isLoading ||
+    !mutateStoreInfo.data ||
+    !mutateTopMenu.data ||
+    !mutateAllMunu.data
+  )
+    return <Loading />;
+
+  const StoreInfo = mutateStoreInfo.data.data.arrItems;
+  const StoreAllMenu = mutateAllMunu.data.data.arrItems;
+  const StoreTopMenu = mutateTopMenu.data.data.arrItems;
+  const StoreServiceTime = mutateServiceTime?.data?.data?.arrItems;
 
   return (
     <>
@@ -172,13 +181,14 @@ const MenuDetail = ({navigation, route}) => {
             opacity: trigger && index === 0 ? 1 : 0,
             zIndex: trigger && index === 0 ? 1000 : -1,
             backgroundColor: 'white',
+            minWidth: layout.width,
           }}>
           <ScrollView
             horizontal
             hitSlop={20}
             ref={scrollRefSub}
             showsHorizontalScrollIndicator={false}>
-            {arr.map((item, index) => (
+            {mutateAllMunu.data.data.arrItems.map((item, index) => (
               <Pressable
                 disabled={!trigger && index === 0}
                 key={index}
@@ -222,7 +232,7 @@ const MenuDetail = ({navigation, route}) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <TextMedium style={{fontSize: 14}}>{item}</TextMedium>
+                <TextMedium style={{fontSize: 14}}>{item.ca_name}</TextMedium>
               </Pressable>
             ))}
           </ScrollView>
@@ -249,7 +259,7 @@ const MenuDetail = ({navigation, route}) => {
             if (positionY >= temp && trigger === false) setTrigger(true);
             if (positionY <= temp && trigger === true) setTrigger(false);
             if (selected.isScrolling && index === 0) {
-              arr.map((item, index) => {
+              mutateAllMunu.data.data.arrItems.map((item, index) => {
                 focusTarget.current[index].measureLayout(
                   scrollRef.current,
                   (left, top, width, height) => {
@@ -406,10 +416,15 @@ const MenuDetail = ({navigation, route}) => {
                   </View>
                   <View style={{flex: 1}}>
                     {/* 대표메뉴 */}
-                    {arrTop.map((item, index) => (
+                    {/* OptionSelect route data 추후 수정 필요 */}
+                    {StoreTopMenu.map((item, index) => (
                       <Pressable
                         onPress={() => {
-                          navigation.navigate('OptionSelect', {data: item});
+                          navigation.navigate('OptionSelect', {
+                            it_id: item.it_id,
+                            jumju_id: 'dnb_0006', // 추후 수정 필요
+                            jumju_code: 'P20220700008', // 추후 수정 필요
+                          });
                         }}
                         key={index}
                         style={{
@@ -441,18 +456,19 @@ const MenuDetail = ({navigation, route}) => {
                           <View style={{flex: 1}}>
                             <TextMedium
                               style={{fontSize: 17, color: colors.fontColor2}}>
-                              {item.name}
+                              {item.it_name}
                             </TextMedium>
                             <TextMedium
+                              numberOfLines={2}
                               style={{fontSize: 15, color: colors.fontColor8}}>
-                              {item.desc}
+                              {item.it_explan}
                             </TextMedium>
                           </View>
                         </View>
                         <View style={{alignItems: 'flex-end'}}>
                           <TextBold
                             style={{fontSize: 17, color: colors.fontColor2}}>
-                            3,700원
+                            {replaceString(item.it_price)}원
                           </TextBold>
                         </View>
                       </Pressable>
@@ -460,7 +476,7 @@ const MenuDetail = ({navigation, route}) => {
                   </View>
                 </View>
 
-                {arr.map((item, index) => (
+                {StoreAllMenu.map((item, index) => (
                   <View key={index}>
                     <View
                       style={{
@@ -470,7 +486,9 @@ const MenuDetail = ({navigation, route}) => {
                         borderBottomWidth: 1,
                         borderColor: colors.borderColor,
                       }}>
-                      <Text style={{color: colors.fontColor2}}>{item}</Text>
+                      <Text style={{color: colors.fontColor2}}>
+                        {item.ca_name}
+                      </Text>
                     </View>
                     <View
                       key={index}
@@ -481,10 +499,12 @@ const MenuDetail = ({navigation, route}) => {
                       }}>
                       {/* ALL */}
                       <View style={{flex: 1}}>
-                        {arrTop.map((item, index) => (
+                        {item.menus.map((item, index) => (
                           <Pressable
                             onPress={() => {
-                              navigation.navigate('OptionSelect', {data: item});
+                              navigation.navigate('OptionSelect', {
+                                it_id: item.it_id,
+                              });
                             }}
                             key={index}
                             style={{
@@ -521,21 +541,22 @@ const MenuDetail = ({navigation, route}) => {
                                     fontSize: 17,
                                     color: colors.fontColor2,
                                   }}>
-                                  맵달맵달 리챔
+                                  {item.it_name}
                                 </TextMedium>
                                 <TextMedium
+                                  numberOfLines={2}
                                   style={{
                                     fontSize: 15,
                                     color: colors.fontColor8,
                                   }}>
-                                  계란+콘+모짜렐라치즈+리챔3장+ 핫스모크소스
+                                  {item.it_explan}
                                 </TextMedium>
                                 <TextBold
                                   style={{
                                     fontSize: 17,
                                     color: colors.fontColor2,
                                   }}>
-                                  3,700원
+                                  {replaceString(item.it_price)}
                                 </TextBold>
                               </View>
                             </View>
@@ -586,26 +607,26 @@ const MenuDetail = ({navigation, route}) => {
                     </TextRegular>
                   </View>
 
-                  <View style={{marginLeft: 22}}>
+                  <View style={{marginLeft: 22, flex: 1}}>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      맛나버거 부산대점
+                      {StoreInfo.mb_biz_name}
                     </TextRegular>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      김맛나
+                      {StoreInfo.mb_name}
                     </TextRegular>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      010-1234-5678
+                      {StoreInfo.mb_hp}
                     </TextRegular>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      123-45-67890
+                      {StoreInfo.mb_biz_no}
                     </TextRegular>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      부산광역시 금정구 금정로 225
+                      {StoreInfo.mb_addr1 + ' ' + StoreInfo.mb_addr2}
                     </TextRegular>
                   </View>
                 </View>
@@ -626,12 +647,12 @@ const MenuDetail = ({navigation, route}) => {
                   <View style={{}}>
                     <TextRegular
                       style={{color: colors.fontColor99, marginBottom: 11}}>
-                      평일
+                      영업시간
                     </TextRegular>
-                    <TextRegular
+                    {/* <TextRegular
                       style={{color: colors.fontColor99, marginBottom: 11}}>
                       토요일
-                    </TextRegular>
+                    </TextRegular> */}
                     <TextRegular
                       style={{color: colors.fontColor99, marginBottom: 11}}>
                       BREAK TIME
@@ -645,18 +666,21 @@ const MenuDetail = ({navigation, route}) => {
                   <View style={{marginLeft: 22}}>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      10시~21시
+                      {StoreServiceTime.serviceTime[0] ??
+                        '해당 정보가 없습니다.'}
                     </TextRegular>
+                    {/* <TextRegular
+                      style={{color: colors.fontColor3, marginBottom: 11}}>
+                      {StoreServiceTime.serviceTime ?? '해당 정보가 없습니다.'}
+                    </TextRegular> */}
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      10시~21시
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      10시~21시
+                      {StoreServiceTime.serviceBreakTime[0] ??
+                        '해당 정보가 없습니다.'}
                     </TextRegular>
                     <TextRegular style={{color: colors.fontColor3}}>
-                      매월 둘째 월요일
+                      {StoreServiceTime.serviceHoilday ??
+                        '해당 정보가 없습니다.'}
                     </TextRegular>
                   </View>
                 </View>

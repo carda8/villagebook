@@ -5,6 +5,7 @@ import storeAPI from '../api/modules/storeAPI';
 import {customAlert} from '../component/CustomAlert';
 
 export const useuseCustomMutation = () => {
+  //Auth
   const mutateFindId = useMutation(authAPI._findId, {
     onSuccess: e => {
       if (e.result === 'false') {
@@ -35,17 +36,51 @@ export const useuseCustomMutation = () => {
     },
   });
 
+  //Store
   const mutateTopMenu = useMutation(storeAPI._getTopMenu, {
     onSuccess: e => {
       console.log('mutateTopMenu', e);
       // customAlert('')
+      return e;
+    },
+  });
+
+  const mutateAllMunu = useMutation(storeAPI._getAllMenu, {
+    onSuccess: e => {
+      console.log('mutateAllMunu', e);
+      // customAlert('')
+      return e;
     },
   });
 
   const mutateStoreInfo = useMutation(storeAPI._getStoreInfo, {
     onSuccess: e => {
       console.log('mutateStoreInfo', e);
+      return e;
     },
   });
-  return {mutateFindId, mutateSendCode, mutateTopMenu, mutateStoreInfo};
+
+  const mutateServiceTime = useMutation(storeAPI._getServiceTime, {
+    onSuccess: e => {
+      console.log('mutateStoreInfo', e);
+      return e;
+    },
+  });
+
+  const mutateMenuDetail = useMutation(storeAPI._getMenuDetail, {
+    onSuccess: e => {
+      console.log('mutateMenuDetail', e);
+      return e;
+    },
+  });
+
+  return {
+    mutateFindId,
+    mutateSendCode,
+    mutateTopMenu,
+    mutateStoreInfo,
+    mutateAllMunu,
+    mutateServiceTime,
+    mutateMenuDetail,
+  };
 };
