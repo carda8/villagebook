@@ -3,8 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 
-const ImageSwipe = () => {
-  console.log('image swipe rendered');
+const ImageSwipe = ({images}) => {
   return (
     <Swiper
       loop
@@ -12,21 +11,15 @@ const ImageSwipe = () => {
       showsPagination={false}
       removeClippedSubviews={false}
       style={{height: 300}}>
-      <FastImage
-        source={require('~/assets/dummy/CK_tica1140001256_l.jpg')}
-        style={{flex: 1}}
-        resizeMode={FastImage.resizeMode.cover}
-      />
-      <FastImage
-        source={require('~/assets/dummy/CK_tis101e15040160_l.jpg')}
-        style={{flex: 1}}
-        resizeMode={FastImage.resizeMode.cover}
-      />
-      <FastImage
-        source={require('~/assets/dummy/CK_tis034d14110158_l.jpg')}
-        style={{flex: 1}}
-        resizeMode={FastImage.resizeMode.cover}
-      />
+      {images.map((item, index) => (
+        <View style={{flex: 1}} key={index}>
+          <FastImage
+            source={{uri: item}}
+            style={{flex: 1}}
+            resizeMode={FastImage.resizeMode.cover}
+          />
+        </View>
+      ))}
     </Swiper>
   );
 };

@@ -14,8 +14,12 @@ import colors from '../../styles/colors';
 import TextBold from '../../component/text/TextBold';
 import TextRegular from '../../component/text/TextRegular';
 import {replaceString} from '../../config/utils/Price';
+import {useSelector} from 'react-redux';
+import {useMutation} from 'react-query';
 
 const MyPage = ({navigation}) => {
+  const {userInfo} = useSelector(state => state.authReducer);
+
   const arr = [
     '개인정보 수정',
     '공지사항',
@@ -25,6 +29,7 @@ const MyPage = ({navigation}) => {
     '리뷰 관리',
     '알림 설정',
   ];
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'마이페이지'} navigation={navigation} showCart={true} />
@@ -46,15 +51,19 @@ const MyPage = ({navigation}) => {
             />
             <View style={{flex: 1, marginLeft: 20}}>
               <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
-                <TextBold style={{color: colors.fontColor2}}>유저1</TextBold>
+                <TextBold style={{color: colors.fontColor2}}>
+                  {userInfo.mt_nickname}
+                </TextBold>
                 <TextRegular style={{fontSize: 12, color: colors.fontColor2}}>
                   님
                 </TextRegular>
                 <TextBold style={{color: colors.fontColor2}}> / </TextBold>
-                <TextBold style={{color: colors.fontColor2}}>testID</TextBold>
+                <TextBold style={{color: colors.fontColor2}}>
+                  {userInfo.mt_id}
+                </TextBold>
               </View>
               <TextRegular style={{color: colors.fontColor2}}>
-                {'dmonster@naver.com'}
+                {userInfo.mt_email}
               </TextRegular>
               <Pressable
                 onPress={() => {
@@ -92,13 +101,13 @@ const MyPage = ({navigation}) => {
             </View>
             <View style={{flex: 1, alignItems: 'center'}}>
               <TextBold style={{color: '#D91313'}}>
-                {replaceString(3000)}
+                {replaceString(userInfo.mt_point)}
               </TextBold>
               <TextBold style={{color: '#D91313'}}>P</TextBold>
             </View>
             <View style={{flex: 1, alignItems: 'center'}}>
               <TextBold style={{color: colors.fontColorA, fontSize: 18}}>
-                {'0'}
+                {userInfo.mt_coupon ?? 0}
               </TextBold>
               <TextBold style={{color: colors.fontColor2}}>쿠폰</TextBold>
             </View>

@@ -1,21 +1,15 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {
   View,
   Animated,
-  Pressable,
-  ScrollView,
   Text,
   useWindowDimensions,
+  ScrollView,
 } from 'react-native';
-import {color} from 'react-native-reanimated';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 import Header from '../../../component/Header';
-import TextRegular from '../../../component/text/TextRegular';
-import TextSBold from '../../../component/text/TextSBold';
-import Category from '../../../config/Category';
-import Filter from '../../../config/Filter';
 import {
   setcurrentCategory,
   setcurrentFilter,
@@ -29,7 +23,9 @@ const Tab = createMaterialTopTabNavigator();
 
 const StoreList = ({navigation, route}) => {
   const routeIdx = route.params?.routeIdx ?? '메뉴';
-  const cate = route.params?.category;
+  const layout = useWindowDimensions();
+  // const cate = route.params?.category;
+  const categoryData = route.params?.categoryData;
   const dispatch = useDispatch();
 
   const tabRef = useRef(0);
@@ -42,14 +38,10 @@ const StoreList = ({navigation, route}) => {
         backBehavior="none"
         initialRouteName={routeIdx}
         screenListeners={{
-          state: e => {
-            // console.log('state e', e.target, e.data);
-          },
           focus: e => {
             let temp = e.target.split('-');
             dispatch(setcurrentCategory(temp[0]));
             dispatch(setcurrentFilter(0));
-            // setHeaderTitle(temp[0])
           },
         }}
         sceneContainerStyle={{
@@ -118,7 +110,9 @@ const StoreList = ({navigation, route}) => {
               }
               return temp;
             };
+
             let animation = new Animated.Value(_getToValue(tabRef.current));
+
             Animated.spring(animation, {
               toValue: _getToValue(index),
               duration: 800,
@@ -142,12 +136,12 @@ const StoreList = ({navigation, route}) => {
           },
         })}
       >
-        {Category[cate].map((item, index) => (
+        {categoryData.map((item, index) => (
           <Tab.Screen
-            key={item + index}
-            name={item}
+            key={item.ca_name + index}
+            name={item.ca_name}
             component={StoreItems}
-            initialParams={{cate: item}}
+            initialParams={{cate: item.ca_name, ca_code: item.ca_code}}
           />
         ))}
       </Tab.Navigator>

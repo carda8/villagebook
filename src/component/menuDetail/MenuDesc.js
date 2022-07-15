@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Image,
   Linking,
+  Platform,
   Pressable,
   Text,
   useWindowDimensions,
@@ -14,33 +15,9 @@ import ReviewSimple2 from '../reviews/ReviewSimple2';
 import TextLight from '../text/TextLight';
 import MenuDescTab from './MenuDescTab';
 
-const MenuDesc = () => {
-  const layout = useWindowDimensions();
+const MenuDesc = ({info}) => {
+  const storeInfo = info.data.arrItems;
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    {key: 'first', title: 'First'},
-    {key: 'second', title: 'Second'},
-  ]);
-
-  const FirstRoute = () => (
-    <View style={{flexGrow: 1, backgroundColor: '#ff4081'}}>
-      <Text>123</Text>
-    </View>
-  );
-
-  const SecondRoute = () => (
-    <View style={{flex: 1, backgroundColor: '#673ab7'}}>
-      <Text>123</Text>
-    </View>
-  );
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
-
-  console.log('MenuDesc rendered');
   return (
     <>
       <View
@@ -50,14 +27,31 @@ const MenuDesc = () => {
           height: 81,
           marginHorizontal: 22,
           borderRadius: 30,
+          borderWidth: 2,
+          borderColor: 'white',
           backgroundColor: colors.storeIcon,
           alignItems: 'center',
           justifyContent: 'center',
+          overflow: 'hidden',
+          ...Platform.select({
+            ios: {
+              shadowColor: '#00000029',
+              shadowRadius: 5,
+              shadowOpacity: 0.6,
+              shadowOffset: {
+                height: 6,
+                width: 0,
+              },
+            },
+            android: {
+              elevation: 6,
+            },
+          }),
         }}>
         <Image
-          source={require('~/assets/ico_star_on.png')}
+          source={{uri: storeInfo.store_logo}}
           resizeMode="contain"
-          style={{flex: 1}}
+          style={{width: 81, height: 81}}
         />
       </View>
       <View style={{top: -27}}>
@@ -69,14 +63,14 @@ const MenuDesc = () => {
             paddingHorizontal: 22,
           }}>
           <View>
-            <Text style={{fontSize: 22}}>맛나버거 부산대점(test)</Text>
-            <ReviewSimple2 />
+            <Text style={{fontSize: 22}}>{storeInfo.mb_biz_name}</Text>
+            <ReviewSimple2 info={storeInfo} />
           </View>
 
           <View style={{}}>
             <Pressable
               onPress={() => {
-                Linking.openURL('tel:01042613948');
+                Linking.openURL(`tel:${storeInfo.mb_tel}`);
               }}
               style={{
                 width: 51,
@@ -111,7 +105,7 @@ const MenuDesc = () => {
             이 매장의 할인 쿠폰받기
           </Text>
         </Pressable>
-        <MenuDescTab />
+        <MenuDescTab info={storeInfo} />
       </View>
     </>
   );

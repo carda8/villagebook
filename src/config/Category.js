@@ -39,7 +39,7 @@ export default {
     '자동차/자전거/오토바이용품',
     '반려동물 용품',
   ],
-  convenience: [
+  lifestyle: [
     '학원',
     '독서실',
     '병원',

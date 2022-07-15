@@ -30,11 +30,44 @@ import TextNotoB from '../../component/text/TextNotoB';
 import DividerL from '../../component/DividerL';
 import {Slider} from '@miblanchard/react-native-slider';
 import ImagePicker, {launchCamera} from 'react-native-image-picker';
+import {useMutation} from 'react-query';
+import storeAPI from '../../api/modules/storeAPI';
+import Loading from '../../component/Loading';
 
-const MenuDetail = ({navigation}) => {
+const MenuDetail = ({navigation, route}) => {
+  const routeData = route.params;
+
+  const mutateStoreInfo = useMutation(storeAPI._getStoreInfo, {
+    onSuccess: e => {
+      console.log('eee', e);
+    },
+  });
+
+  const _init = () => {
+    const data = {
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+    };
+    console.log('data', data);
+    mutateStoreInfo.mutate(data);
+  };
+
+  useState(() => {
+    _init();
+  }, [routeData]);
+
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const arr = ['토스트', '음료', '토스트', '음료', '사이드', '주류', 8, 9];
+  const arr = [
+    '토스트 토스트 토스트',
+    '음료',
+    '토스트',
+    '음료',
+    '사이드',
+    '주류',
+    8,
+    9,
+  ];
   const arrTop = [
     {name: '싸이버거 1', price: 1000, desc: '싸이버거 입니다', itemCode: 1},
     {name: '싸이버거 2', price: 2000, desc: '싸이버거 입니다', itemCode: 2},
@@ -42,10 +75,10 @@ const MenuDetail = ({navigation}) => {
     {name: '싸이버거 4', price: 40000, desc: '싸이버거 입니다', itemCode: 4},
     {name: '싸이버거 5', price: 50000, desc: '싸이버거 입니다', itemCode: 5},
   ];
-  const [routes] = useState([
-    {key: 'first', title: 'First'},
-    {key: 'second', title: 'Second'},
-  ]);
+  // const [routes] = useState([
+  //   {key: 'first', title: 'First'},
+  //   {key: 'second', title: 'Second'},
+  // ]);
   const [temp, setTemp] = useState();
   const [headerTrigger, setHeaderTrigger] = useState(false);
   const [trigger, setTrigger] = useState(false);
@@ -55,8 +88,6 @@ const MenuDetail = ({navigation}) => {
   const scrollRefSub = useRef();
   const focusTarget = useRef([]);
   const chipTarget = useRef([]);
-
-  const chipWidth = 80;
 
   const _setRating = isTotal => {
     const temp = 5;
@@ -122,6 +153,8 @@ const MenuDetail = ({navigation}) => {
     }
   }, [selected]);
 
+  if (mutateStoreInfo.isLoading || !mutateStoreInfo.data) return <Loading />;
+
   return (
     <>
       <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -168,19 +201,21 @@ const MenuDetail = ({navigation}) => {
                   setSelected({idx: index, isScrolling: false});
                 }}
                 style={{
-                  height: 50,
+                  height: 40,
                   // width: chipWidth,
-                  minWidth: 87,
+                  minWidth: 67,
                   backgroundColor: 'white',
                   borderWidth: 1,
                   borderColor:
                     selected.idx === index ? colors.chipBorder : colors.colorE3,
-                  margin: 10,
+                  marginVertical: 10,
+                  paddingHorizontal: 5,
+                  marginHorizontal: 5,
                   borderRadius: 30,
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}>
-                <TextMedium style={{fontSize: 17}}>{item}</TextMedium>
+                <TextMedium style={{fontSize: 14}}>{item}</TextMedium>
               </Pressable>
             ))}
           </ScrollView>
@@ -188,6 +223,7 @@ const MenuDetail = ({navigation}) => {
         <ScrollView
           ref={scrollRef}
           stickyHeaderIndices={[3]}
+          showsVerticalScrollIndicator={false}
           // contentOffset={{x: 0, y: 100}}
           // scrollEnabled={false}
           scrollEventThrottle={100}
@@ -235,8 +271,8 @@ const MenuDetail = ({navigation}) => {
             }}
           />
 
-          <ImageSwipe />
-          <MenuDesc />
+          <ImageSwipe images={mutateStoreInfo.data.data.arrItems.store_image} />
+          <MenuDesc info={mutateStoreInfo.data} />
           <View>
             {/* 메뉴, 정보, 리뷰 탭 */}
             <View
@@ -262,7 +298,7 @@ const MenuDetail = ({navigation}) => {
                 onPress={() => {
                   setIndex(0);
                 }}>
-                <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
+                <TextMedium style={{fontSize: 14}}>메뉴</TextMedium>
               </Pressable>
               <Pressable
                 style={{
@@ -283,7 +319,7 @@ const MenuDetail = ({navigation}) => {
                 onPress={() => {
                   setIndex(1);
                 }}>
-                <TextMedium style={{fontSize: 17}}>정보</TextMedium>
+                <TextMedium style={{fontSize: 14}}>정보</TextMedium>
               </Pressable>
               <Pressable
                 style={{
@@ -302,7 +338,7 @@ const MenuDetail = ({navigation}) => {
                 onPress={() => {
                   setIndex(2);
                 }}>
-                <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
+                <TextMedium style={{fontSize: 14}}>리뷰</TextMedium>
               </Pressable>
             </View>
           </View>
@@ -693,7 +729,7 @@ const MenuDetail = ({navigation}) => {
                   />
                   <View>
                     {/* 카메라 돌아 저장 시 돌아감  */}
-                    <Pressable
+                    {/* <Pressable
                       onPress={async () => {
                         await PermissionsAndroid.request(
                           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -709,7 +745,7 @@ const MenuDetail = ({navigation}) => {
                         );
                         console.log('result', result);
                       }}
-                      style={{height: 20, backgroundColor: 'gray'}}></Pressable>
+                      style={{height: 20, backgroundColor: 'gray'}}></Pressable> */}
                     <TextBold style={{fontSize: 15, color: colors.fontColor2}}>
                       맛집대동여지도
                     </TextBold>

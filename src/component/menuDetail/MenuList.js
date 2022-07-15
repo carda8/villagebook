@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {View} from 'react-native';
 
 const MenuList = ({focusTarget, scrollRef, arr}) => {
-  console.log('MenuList rendered');
   const [index, setIndex] = useState();
   const FirstRoute = () => {
     return (

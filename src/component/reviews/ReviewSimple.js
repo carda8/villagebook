@@ -2,7 +2,7 @@ import {View, Text, Image} from 'react-native';
 import React from 'react';
 import TextRegular from '../text/TextRegular';
 
-const ReviewSimple = () => {
+const ReviewSimple = ({star, review}) => {
   return (
     <View
       style={{
@@ -16,7 +16,9 @@ const ReviewSimple = () => {
         style={{width: 17, height: 17}}
         resizeMode="contain"
       />
-      <TextRegular> 4.8(999)</TextRegular>
+      <TextRegular>
+        {star}({Number(review) > 999 ? '999' : review})
+      </TextRegular>
     </View>
   );
 };

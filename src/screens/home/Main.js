@@ -21,8 +21,16 @@ import TextJua from '../../component/text/TextJua';
 import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
+import {useSelector} from 'react-redux';
+import Loading from '../../component/Loading';
+import policyConfig from '../signIn/policyConfig';
 
 const Main = ({navigation}) => {
+  const {userInfo} = useSelector(state => state.authReducer);
+
+  // if (!userInfo) return <Loading />;
+
+  console.log('::: USER INFO', userInfo);
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header
@@ -87,9 +95,8 @@ const Main = ({navigation}) => {
               source={require('~/assets/main_ico01.png')}
               style={{
                 flex: 1,
-                width: 85,
+                width: 120,
                 alignSelf: 'flex-end',
-                marginRight: 5,
               }}
               resizeMode="contain"
             />
@@ -119,9 +126,8 @@ const Main = ({navigation}) => {
               source={require('~/assets/main_ico02.png')}
               style={{
                 flex: 1,
-                width: 85,
+                width: 120,
                 alignSelf: 'flex-end',
-                marginRight: 10,
               }}
               resizeMode="contain"
             />
@@ -138,7 +144,7 @@ const Main = ({navigation}) => {
           <Pressable
             onPress={() => {
               navigation.navigate('CategoryView', {
-                selectedCategory: 'convenience',
+                selectedCategory: 'lifestyle',
               });
             }}
             style={{
@@ -164,7 +170,7 @@ const Main = ({navigation}) => {
             <Image
               source={require('~/assets/main_ico03.png')}
               style={{
-                width: 140,
+                width: 150,
                 height: 139,
               }}
               resizeMode="contain"
@@ -176,37 +182,50 @@ const Main = ({navigation}) => {
         <MainBanner navigation={navigation} style={{marginBottom: 60}} />
 
         {/* 약관 */}
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Pressable onPress={() => {}}>
-            <TextRegular style={{color: colors.fontColor8}}>
-              이용약관
-            </TextRegular>
-          </Pressable>
-          <Divider style={{marginHorizontal: 10}} />
-          <Pressable onPress={() => {}}>
-            <TextRegular style={{color: colors.fontColor8}}>
-              전자금융거래 이용약관
-            </TextRegular>
-          </Pressable>
-        </View>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: 10,
-            marginBottom: 15,
+            marginBottom: 10,
           }}>
-          <Pressable onPress={() => {}}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Policy', {
+                target: policyConfig.target.location,
+              });
+            }}>
             <TextRegular style={{color: colors.fontColor8}}>
               위치기반 서비스 이용약관
             </TextRegular>
           </Pressable>
           <Divider style={{marginHorizontal: 10}} />
-          <Pressable onPress={() => {}}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Policy', {
+                target: policyConfig.target.personal,
+              });
+            }}>
             <TextBold style={{color: colors.fontColor8}}>
               개인정보 처리방침
             </TextBold>
           </Pressable>
+        </View>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Policy', {target: policyConfig.target.use});
+            }}>
+            <TextRegular style={{color: colors.fontColor8}}>
+              이용약관
+            </TextRegular>
+          </Pressable>
+          {/* <Divider style={{marginHorizontal: 10}} />
+          <Pressable onPress={() => {}}>
+            <TextRegular style={{color: colors.fontColor8}}>
+              전자금융거래 이용약관
+            </TextRegular>
+          </Pressable> */}
         </View>
 
         <View
@@ -217,9 +236,8 @@ const Main = ({navigation}) => {
             marginBottom: 20,
           }}>
           <TextRegular style={{color: colors.fontColor8}}>
-            오늘의 주문은 통신판매 중개자로서 통신판매의 당사자가 아닙니다.
-            따라서 오늘의 주문은 상품거래정보 및 거래에 대한 책임을 지지
-            않습니다.
+            동네북은 통신판매 중개자로서 통신판매의 당사자가 아닙니다. 따라서
+            오늘의 주문은 상품거래정보 및 거래에 대한 책임을 지지 않습니다.
           </TextRegular>
         </View>
         <View

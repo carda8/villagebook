@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -37,17 +37,74 @@ import WriteReview from '../screens/orderList/WriteReview';
 import Cart from '../screens/menu/cart/Cart';
 import EditSummit from '../screens/mypage/edit/EditSummit';
 import PushList from '../screens/home/PushList';
+import CheckTerms from '../screens/signIn/CheckTerms';
+import SignForm from '../screens/signIn/SignForm';
+import Policy from '../screens/signIn/Policy';
+import FindUserAccount from '../screens/login/FindUserAccount';
+import ResetAccount from '../screens/login/ResetAccount';
+import AuthStorage from '../store/localStorage/AuthStorageModuel';
+import localStorageConfig from '../store/localStorage/localStorageConfig';
+import Loading from '../component/Loading';
+import {useMutation} from 'react-query';
+import authAPI from '../api/modules/authAPI';
+import {useDispatch} from 'react-redux';
+import {setUserInfo} from '../store/reducers/AuthReducer';
 
 const Stack = createNativeStackNavigator();
 
 const MainStackNavigator = () => {
+  const [initRoute, setInitRoute] = useState();
+  const dispatch = useDispatch();
+
+  const mutateAutoLogin = useMutation(authAPI._autoLogin, {
+    onSuccess: e => {
+      const userInfo = e.data.arrItems;
+      dispatch(setUserInfo(userInfo));
+      setInitRoute('Main');
+    },
+  });
+
+  const _autoLogin = (token, id) => {
+    const data = {
+      mt_id: id,
+      mt_app_token: token,
+    };
+    mutateAutoLogin.mutate(data);
+  };
+
+  const _initRoute = async () => {
+    const auto = await AuthStorage._getItemAutoLogin();
+    const token = await AuthStorage._getItemUserToken();
+    const userId = await AuthStorage._getItemUserId();
+
+    if (auto === localStorageConfig.state.true && token && userId)
+      _autoLogin(token, userId);
+    else setInitRoute('Login');
+  };
+
+  useEffect(() => {
+    _initRoute();
+  }, []);
+
+  if (!initRoute) return <Loading />;
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Main"
+        initialRouteName={initRoute}
         screenOptions={{headerShown: false}}
       >
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="CheckTerms" component={CheckTerms} />
+        <Stack.Screen
+          name="Policy"
+          component={Policy}
+          options={{animation: 'slide_from_bottom'}}
+        />
+        <Stack.Screen name="SignForm" component={SignForm} />
+        <Stack.Screen name="FindUserAccount" component={FindUserAccount} />
+        <Stack.Screen name="ResetAccount" component={ResetAccount} />
+
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="CategoryView" component={CategoryView} />
         <Stack.Screen name="StoreList" component={StoreList} />
