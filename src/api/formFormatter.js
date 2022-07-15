@@ -9,7 +9,6 @@ export default (data, isIndex = true) => {
         } else {
           formData.append(`${key}[]`, item);
         }
-
         index++;
       }
     } else {

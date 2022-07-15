@@ -22,37 +22,50 @@ import * as yup from 'yup';
 import {useMutation} from 'react-query';
 import authAPI from '../../api/modules/authAPI';
 import {APP_TOKEN} from '@env';
+import {Errorhandler} from '../../config/ErrorHandler';
 
 const SignForm = ({navigation}) => {
   const mutateCheckId = useMutation(authAPI._checkId, {
     onSuccess: e => {
-      console.log('e', e);
-      if (!fm.values.mt_id.trim())
-        Alert.alert('알림', `아이디를 입력해주세요.`);
-      else if (e.result === 'true') fm.setFieldValue('mt_idChecked', true);
-      Alert.alert('알림', `${e.msg}`);
+      if (e.result === 'false') {
+        Errorhandler(e.msg);
+      } else {
+        console.log('e', e);
+        if (!fm.values.mt_id.trim())
+          Alert.alert('알림', `아이디를 입력해주세요.`);
+        else if (e.result === 'true') fm.setFieldValue('mt_idChecked', true);
+        Alert.alert('알림', `${e.msg}`);
+      }
     },
   });
 
   const mutateCheckNickName = useMutation(authAPI._checkNickName, {
     onSuccess: e => {
-      if (!fm.values.mt_nickname.trim())
-        Alert.alert('알림', `닉네임을 입력해주세요.`);
-      else if (e.result === 'true') {
-        fm.setFieldValue('mt_nickNameChecked', true);
+      if (e.result === 'false') {
+        Alert.alert('알림', `${e.msg}`);
+      } else {
+        if (!fm.values.mt_nickname.trim())
+          Alert.alert('알림', `닉네임을 입력해주세요.`);
+        else if (e.result === 'true') {
+          fm.setFieldValue('mt_nickNameChecked', true);
+        }
+        Alert.alert('알림', `${e.msg}`);
       }
-      Alert.alert('알림', `${e.msg}`);
     },
   });
 
   const mutateSendCode = useMutation(authAPI._sendCode, {
     onSuccess: e => {
-      Alert.alert(
-        '알림',
-        `인증번호가 발송 되었습니다.\n받은 번호를 입력 후 인증확인을 해주세요.`,
-      );
-      console.log('e', e);
-      fm.setFieldValue('mt_certify_check', String(e.data.arrItems.certno));
+      if (e.result === 'false') {
+        Alert.alert('알림', `${e.msg}`);
+      } else {
+        Alert.alert(
+          '알림',
+          `인증번호가 발송 되었습니다.\n받은 번호를 입력 후 인증확인을 해주세요.`,
+        );
+        console.log('e', e);
+        fm.setFieldValue('mt_certify_check', String(e.data.arrItems.certno));
+      }
     },
   });
 
@@ -147,7 +160,9 @@ const SignForm = ({navigation}) => {
 
   const _sendCode = () => {
     const data = {mt_hp: fm.values.mt_hp};
-    mutateSendCode.mutate(data);
+    if (!data.mt_hp.trim() || fm.errors.mt_hp)
+      Errorhandler('올바른 휴대폰 번호를 입력해주세요.');
+    else mutateSendCode.mutate(data);
   };
 
   const _vaildateCode = () => {

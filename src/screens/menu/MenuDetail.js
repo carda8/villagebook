@@ -33,31 +33,40 @@ import ImagePicker, {launchCamera} from 'react-native-image-picker';
 import {useMutation} from 'react-query';
 import storeAPI from '../../api/modules/storeAPI';
 import Loading from '../../component/Loading';
+import {useuseCustomMutation} from '../../hooks/useCustomMutation';
+import {customAlert} from '../../component/CustomAlert';
 
 const MenuDetail = ({navigation, route}) => {
-  const routeData = route.params;
+  const {mutateTopMenu, mutateStoreInfo} = useuseCustomMutation();
 
-  const mutateStoreInfo = useMutation(storeAPI._getStoreInfo, {
-    onSuccess: e => {
-      console.log('eee', e);
-    },
-  });
+  const routeData = route.params;
 
   const _init = () => {
     const data = {
       jumju_id: routeData.jumju_id,
       jumju_code: routeData.jumju_code,
     };
-    console.log('data', data);
+    console.log('_init data', data);
     mutateStoreInfo.mutate(data);
   };
 
-  useState(() => {
+  const _getTopMenu = () => {
+    const data = {
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+    };
+    const result = mutateTopMenu.mutate(data);
+    console.log('result', result);
+  };
+
+  useEffect(() => {
     _init();
+    _getTopMenu();
   }, [routeData]);
 
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+
   const arr = [
     '토스트 토스트 토스트',
     '음료',
@@ -68,6 +77,7 @@ const MenuDetail = ({navigation, route}) => {
     8,
     9,
   ];
+
   const arrTop = [
     {name: '싸이버거 1', price: 1000, desc: '싸이버거 입니다', itemCode: 1},
     {name: '싸이버거 2', price: 2000, desc: '싸이버거 입니다', itemCode: 2},
@@ -75,10 +85,7 @@ const MenuDetail = ({navigation, route}) => {
     {name: '싸이버거 4', price: 40000, desc: '싸이버거 입니다', itemCode: 4},
     {name: '싸이버거 5', price: 50000, desc: '싸이버거 입니다', itemCode: 5},
   ];
-  // const [routes] = useState([
-  //   {key: 'first', title: 'First'},
-  //   {key: 'second', title: 'Second'},
-  // ]);
+
   const [temp, setTemp] = useState();
   const [headerTrigger, setHeaderTrigger] = useState(false);
   const [trigger, setTrigger] = useState(false);
@@ -135,8 +142,8 @@ const MenuDetail = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    console.log('index', selected);
-  }, [selected]);
+    _getTopMenu();
+  }, []);
 
   useEffect(() => {
     if (chipTarget.current[selected.idx]) {
@@ -398,6 +405,7 @@ const MenuDetail = ({navigation, route}) => {
                     />
                   </View>
                   <View style={{flex: 1}}>
+                    {/* 대표메뉴 */}
                     {arrTop.map((item, index) => (
                       <Pressable
                         onPress={() => {
@@ -471,6 +479,7 @@ const MenuDetail = ({navigation, route}) => {
                         flex: 1,
                         backgroundColor: 'white',
                       }}>
+                      {/* ALL */}
                       <View style={{flex: 1}}>
                         {arrTop.map((item, index) => (
                           <Pressable

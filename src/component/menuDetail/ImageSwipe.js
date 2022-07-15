@@ -6,8 +6,8 @@ import Swiper from 'react-native-swiper';
 const ImageSwipe = ({images}) => {
   return (
     <Swiper
-      loop
       autoplay
+      autoplayTimeout={5}
       showsPagination={false}
       removeClippedSubviews={false}
       style={{height: 300}}>

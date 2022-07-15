@@ -138,7 +138,6 @@ const StoreItems = ({navigation, route}) => {
   const renderItem = item => {
     const storeCode = item.item.storeCode;
     const storeInfo = item.item;
-    console.log('item', item);
     return (
       <Pressable
         onPress={() => {

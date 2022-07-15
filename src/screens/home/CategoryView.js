@@ -34,7 +34,6 @@ const CategoryView = ({navigation, route}) => {
   }, []);
 
   const renderItem = item => {
-    console.log('item', item);
     return (
       <Pressable
         onPress={() => {

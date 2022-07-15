@@ -34,4 +34,8 @@ export default {
     const result = await _reqAPI('proc_agree.php', data);
     return result;
   },
+  _findId: async data => {
+    const result = await _reqAPI('proc_member_find_id.php', data);
+    return result;
+  },
 };
