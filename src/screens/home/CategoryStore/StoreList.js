@@ -1,12 +1,6 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React, {useRef} from 'react';
-import {
-  View,
-  Animated,
-  Text,
-  useWindowDimensions,
-  ScrollView,
-} from 'react-native';
+import {View, Animated, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 import Header from '../../../component/Header';
@@ -23,7 +17,6 @@ const Tab = createMaterialTopTabNavigator();
 
 const StoreList = ({navigation, route}) => {
   const routeIdx = route.params?.routeIdx ?? '메뉴';
-  const layout = useWindowDimensions();
   // const cate = route.params?.category;
   const categoryData = route.params?.categoryData;
   const dispatch = useDispatch();
@@ -145,54 +138,6 @@ const StoreList = ({navigation, route}) => {
           />
         ))}
       </Tab.Navigator>
-      <View
-        style={{
-          flex: 1,
-          height: 40,
-          zIndex: 100,
-          top: 110,
-          position: 'absolute',
-          minWidth: layout.width,
-        }}
-      >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{alignItems: 'center', marginLeft: 22}}
-        >
-          {arr.map((item, index) => (
-            <Pressable
-              key={index}
-              onPress={() => {
-                setSelectedFilter(index);
-              }}
-              style={{
-                height: 30,
-                backgroundColor:
-                  selectedFilter === index ? colors.primary : 'white',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 18,
-                paddingHorizontal: 13,
-                marginRight: 10,
-              }}
-            >
-              {selectedFilter === index ? (
-                <TextSBold
-                  style={{
-                    color:
-                      selectedFilter === index ? 'white' : colors.fontColorA2,
-                  }}
-                >
-                  기본순
-                </TextSBold>
-              ) : (
-                <TextRegular>기본순</TextRegular>
-              )}
-            </Pressable>
-          ))}
-        </ScrollView>
-      </View>
     </SafeAreaView>
   );
 };

@@ -12,6 +12,7 @@ import TextRegular from '../../../component/text/TextRegular';
 import colors from '../../../styles/colors';
 import {useDispatch, useSelector} from 'react-redux';
 import {setcurrentFilter} from '../../../store/reducers/CategoryReducer';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const FilterView = () => {
   const layout = useWindowDimensions();
@@ -28,11 +29,12 @@ const FilterView = () => {
         flex: 1,
         height: 40,
         zIndex: 100,
-        top: 110,
         marginLeft: 22,
+        top: 110,
         position: 'absolute',
         minWidth: layout.width,
-      }}>
+      }}
+    >
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -40,7 +42,8 @@ const FilterView = () => {
         contentContainerStyle={{
           alignItems: 'center',
           paddingRight: 22,
-        }}>
+        }}
+      >
         {Filter.filter.map((item, index) => (
           <Pressable
             ref={filterRef[index]}
@@ -57,12 +60,14 @@ const FilterView = () => {
               justifyContent: 'center',
               borderRadius: 18,
               paddingHorizontal: 13,
-            }}>
+            }}
+          >
             {currentFilter === index ? (
               <TextSBold
                 style={{
                   color: currentFilter === index ? 'white' : colors.fontColorA2,
-                }}>
+                }}
+              >
                 {item}
               </TextSBold>
             ) : (
