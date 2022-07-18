@@ -36,10 +36,14 @@ import Loading from '../../component/Loading';
 import {useuseCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
 import {replaceString} from '../../config/utils/Price';
+import {useDispatch, useSelector} from 'react-redux';
+import {setStoreLogo} from '../../store/reducers/CartReducer';
 
 const MenuDetail = ({navigation, route}) => {
   const {mutateTopMenu, mutateStoreInfo, mutateAllMunu, mutateServiceTime} =
     useuseCustomMutation();
+  const dispatch = useDispatch();
+  const {storeLogoUrl} = useSelector(state => state.cartReducer);
   const routeData = route.params;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
@@ -156,6 +160,14 @@ const MenuDetail = ({navigation, route}) => {
     }
   }, [selected]);
 
+  useEffect(() => {
+    if (mutateStoreInfo.data && !storeLogoUrl)
+      dispatch(setStoreLogo(mutateStoreInfo.data.data.arrItems.store_logo));
+    return () => {
+      dispatch(setStoreLogo(null));
+    };
+  }, [mutateStoreInfo.data]);
+
   if (
     mutateStoreInfo.isLoading ||
     mutateTopMenu.isLoading ||
@@ -241,6 +253,8 @@ const MenuDetail = ({navigation, route}) => {
           ref={scrollRef}
           stickyHeaderIndices={[3]}
           showsVerticalScrollIndicator={false}
+          bounces={false}
+          alwaysBounceVertical={false}
           // contentOffset={{x: 0, y: 100}}
           // scrollEnabled={false}
           scrollEventThrottle={100}
@@ -460,7 +474,7 @@ const MenuDetail = ({navigation, route}) => {
                             </TextMedium>
                             <TextMedium
                               numberOfLines={2}
-                              style={{fontSize: 15, color: colors.fontColor8}}>
+                              style={{fontSize: 12, color: colors.fontColor8}}>
                               {item.it_explan}
                             </TextMedium>
                           </View>
@@ -504,6 +518,8 @@ const MenuDetail = ({navigation, route}) => {
                             onPress={() => {
                               navigation.navigate('OptionSelect', {
                                 it_id: item.it_id,
+                                jumju_id: 'dnb_0006', // 추후 수정 필요
+                                jumju_code: 'P20220700008', // 추후 수정 필요
                               });
                             }}
                             key={index}
@@ -546,7 +562,7 @@ const MenuDetail = ({navigation, route}) => {
                                 <TextMedium
                                   numberOfLines={2}
                                   style={{
-                                    fontSize: 15,
+                                    fontSize: 12,
                                     color: colors.fontColor8,
                                   }}>
                                   {item.it_explan}

@@ -27,10 +27,12 @@ import CartButton from './CartButton';
 import {
   initOption,
   setMainCount,
+  setRequiredCount,
   setSubMenu,
 } from '../../store/reducers/CartReducer';
 import {useuseCustomMutation} from '../../hooks/useCustomMutation';
 import Loading from '../../component/Loading';
+import {configureStore} from '@reduxjs/toolkit';
 
 const OptionSelect = ({navigation, route}) => {
   const routeData = route.params;
@@ -53,96 +55,6 @@ const OptionSelect = ({navigation, route}) => {
     mutateMenuDetail.mutate(data);
   };
 
-  const arr = [
-    {
-      option: '매운맛 선택',
-      required: true,
-      data: [
-        {
-          name: '매운맛 추가 x',
-          price: 0,
-        },
-        {
-          name: '신라면 정도',
-          price: 500,
-        },
-        {
-          name: '불닭 정도',
-          price: 1000,
-        },
-        {
-          name: '불닭 x3',
-          price: 1500,
-        },
-      ],
-    },
-    {
-      option: '사이드 선택',
-      required: true,
-      data: [
-        {
-          name: '사이드1',
-          price: 2000,
-        },
-        {
-          name: '사이드2',
-          price: 2200,
-        },
-        {
-          name: '사이드3',
-          price: 2300,
-        },
-        {
-          name: '사이드4',
-          price: 2400,
-        },
-      ],
-    },
-    {
-      option: '추가 선택',
-      required: false,
-      data: [
-        {
-          name: '추가1',
-          price: 2000,
-        },
-        {
-          name: '추가2',
-          price: 2200,
-        },
-        {
-          name: '추가3',
-          price: 2300,
-        },
-        {
-          name: '추가4',
-          price: 2400,
-        },
-      ],
-    },
-    {
-      option: '음료 선택',
-      required: false,
-      data: [
-        {
-          name: '음료1',
-          price: 1000,
-        },
-        {
-          name: '음료2',
-          price: 1200,
-        },
-        {
-          name: '음료3',
-          price: 1300,
-        },
-        {
-          name: '음료4',
-          price: 1400,
-        },
-      ],
-    },
-  ];
   const layout = useWindowDimensions();
 
   // const _getReqiredItem = () => {
@@ -168,13 +80,24 @@ const OptionSelect = ({navigation, route}) => {
       arr.push({...item, required: false, data: item.supply_option});
       delete arr[index].supply_option;
     });
+    const required = arr.filter(item => item['required'] === true);
+    dispatch(setRequiredCount(required.length));
     setConvertedData(arr);
-    console.log('DetailInfo', arr);
+
+    // console.log('DetailInfo', arr);
   };
 
   useEffect(() => {
     if (mutateMenuDetail?.data?.data.arrItems) {
       const info = mutateMenuDetail?.data?.data.arrItems;
+      dispatch(
+        initOption({
+          count: 1,
+          mainItemCode: routeData.it_id,
+          manuName: info.it_name,
+          price: Number(info.it_price),
+        }),
+      );
       _convertData(info);
     }
   }, [mutateMenuDetail.data]);
@@ -184,12 +107,12 @@ const OptionSelect = ({navigation, route}) => {
     // _getReqiredItem();
   }, []);
 
-  if (convertedData.length === 0 || mutateMenuDetail?.data?.data?.arrItems)
+  // console.log('convertedData', convertedData);
+
+  if (convertedData.length === 0 || !mutateMenuDetail?.data?.data?.arrItems)
     return <Loading />;
   const DetailInfo = mutateMenuDetail?.data?.data.arrItems;
-  console.log('DetailInfo', DetailInfo);
-  console.log('convertedData', convertedData);
-  console.log('arr', arr);
+  // console.log('DetailInfo', DetailInfo);
 
   // return <Loading />;
 
@@ -197,15 +120,15 @@ const OptionSelect = ({navigation, route}) => {
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header
         title={''}
-        fadeTitle={DetailInfo.it_name}
         navigation={navigation}
+        fadeTitle={DetailInfo.it_name}
         style={{position: 'absolute', zIndex: 500}}
         isOption={true}
       />
       <CartButton navigation={navigation} />
-      <SectionList sections={convertedData} renderItem={item => <></>} />
+      {/* <SectionList sections={convertedData} renderItem={item => <></>} /> */}
 
-      {/* <SectionList
+      <SectionList
         onScroll={e => {
           let positionY = e.nativeEvent.contentOffset.y;
           if (positionY > layout.width && optionHeader !== true)
@@ -222,11 +145,11 @@ const OptionSelect = ({navigation, route}) => {
             />
             <View style={{paddingHorizontal: 22, paddingTop: 10}}>
               <TextBold style={{fontSize: 20, color: colors.fontColor2}}>
-                {DetailInfo.name}
+                {DetailInfo.it_name}
               </TextBold>
               <View style={{marginVertical: 10}}>
                 <TextMedium style={{color: colors.fontColorA}}>
-                  {DetailInfo.desc}
+                  {DetailInfo.it_explan}
                 </TextMedium>
               </View>
             </View>
@@ -267,7 +190,7 @@ const OptionSelect = ({navigation, route}) => {
               alignItems: 'center',
             }}>
             <TextBold style={{color: colors.fontColor2}}>수량</TextBold>
-            <OptionCount data={data} />
+            <OptionCount price={DetailInfo.it_price} />
           </View>
         )}
         sections={convertedData}
@@ -276,7 +199,9 @@ const OptionSelect = ({navigation, route}) => {
         renderItem={item => (
           <OptionRenderItem item={item} data={convertedData} />
         )}
-        renderSectionHeader={({section: {option_subject, required}}) => (
+        renderSectionHeader={({
+          section: {option_subject, supply_subject, required},
+        }) => (
           <View
             style={{
               borderTopWidth: 1,
@@ -286,12 +211,12 @@ const OptionSelect = ({navigation, route}) => {
               paddingVertical: 15,
             }}>
             <TextBold style={{color: colors.fontColor2}}>
-              {option_subject}
+              {option_subject || supply_subject}
               {required ? ' (필수)' : ' (선택)'}
             </TextBold>
           </View>
         )}
-      /> */}
+      />
     </SafeAreaView>
   );
 };

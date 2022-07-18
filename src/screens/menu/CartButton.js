@@ -6,6 +6,7 @@ import colors from '../../styles/colors';
 import TextMedium from '../../component/text/TextMedium';
 import {replaceString} from '../../config/utils/Price';
 import {saveItem} from '../../store/reducers/CartReducer';
+import {customAlert} from '../../component/CustomAlert';
 
 const CartButton = ({navigation, goTo}) => {
   const dispatch = useDispatch();
@@ -13,6 +14,19 @@ const CartButton = ({navigation, goTo}) => {
   console.log('store', cartStore);
 
   const _goToCart = () => {
+    dispatch(
+      saveItem({
+        storeCode: cartStore.currentStoreCode,
+        items: {
+          main: {
+            ...cartStore.mainCount,
+            option: {...cartStore.selectedMainOption},
+          },
+          sub: cartStore.subItems,
+          totalPrice: cartStore.totalPrice,
+        },
+      }),
+    );
     navigation.navigate('SummitOrder');
   };
 
@@ -21,8 +35,12 @@ const CartButton = ({navigation, goTo}) => {
       saveItem({
         storeCode: cartStore.currentStoreCode,
         items: {
-          main: [cartStore.mainCount, cartStore.selectedMainOption],
+          main: {
+            ...cartStore.mainCount,
+            option: {...cartStore.selectedMainOption},
+          },
           sub: cartStore.subItems,
+          totalPrice: cartStore.totalPrice,
         },
       }),
     );
@@ -51,13 +69,20 @@ const CartButton = ({navigation, goTo}) => {
   };
 
   const _router = () => {
-    switch (goTo) {
-      case 'OrderPage':
-        _goToOrderPage();
-        break;
-      default:
-        _pressSaveCartButton();
-        break;
+    if (
+      cartStore.requiredCount !==
+      Object.keys(cartStore.selectedMainOption).length
+    ) {
+      customAlert('알림', '필수 옵션을 선택해주세요.');
+    } else {
+      switch (goTo) {
+        case 'OrderPage':
+          _goToOrderPage();
+          break;
+        default:
+          _pressSaveCartButton();
+          break;
+      }
     }
   };
 

@@ -1,4 +1,4 @@
-import {View, Text, Image, ScrollView, Pressable} from 'react-native';
+import {View, Image, ScrollView, Pressable} from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../../styles/commonStyle';
@@ -9,11 +9,39 @@ import colors from '../../../styles/colors';
 import TextRegular from '../../../component/text/TextRegular';
 import OptionCount from '../OptionCount';
 import DividerL from '../../../component/DividerL';
-import Divider from '../../../component/Divider';
 import CartButton from '../CartButton';
+import {useSelector} from 'react-redux';
+import {replaceString} from '../../../config/utils/Price';
 
 const SummitOrder = ({navigation}) => {
+  const cartStore = useSelector(state => state.cartReducer);
+  console.log('summit cart store', cartStore);
+  console.log('item main option');
   const [isDelivery, setIsDelivery] = useState(true);
+
+  const _filterOption = prop => {
+    const temp = Object.keys(prop.main.option);
+    const temp2 = prop.main.option;
+    const temp3 = temp.length;
+
+    let arr = [];
+
+    temp.map((item, index) => {
+      arr.push(temp[index], ' : ', prop.main.option[temp[index]].name, ', ');
+      // console.log('temp', temp[index], prop.main.option[temp[index]].name);
+    });
+
+    return arr;
+  };
+
+  const _getTotalPrice = () => {
+    let temp = 0;
+    cartStore.savedItem.savedItems.map((item, index) => {
+      temp += item.totalPrice;
+    });
+    return replaceString(temp);
+  };
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'카트'} navigation={navigation} />
@@ -26,43 +54,81 @@ const SummitOrder = ({navigation}) => {
             paddingTop: 20,
           }}>
           <Image
-            source={require('~/assets/no_use_img.png')}
-            style={{width: 130, height: 130, borderRadius: 10}}
+            source={{uri: cartStore.storeLogoUrl}}
+            style={{
+              width: 130,
+              height: 130,
+              borderRadius: 10,
+              borderWidth: 1,
+              borderColor: colors.borderColor,
+            }}
           />
           <View style={{marginVertical: 10}}>
-            <TextMedium style={{fontSize: 18}}>{'가게명'}</TextMedium>
+            <TextMedium style={{fontSize: 18}}>
+              {cartStore.currentStoreCode.storeName}
+            </TextMedium>
           </View>
-          <View
-            style={{
-              width: '100%',
-              borderWidth: 1,
-              borderRadius: 5,
-              borderColor: colors.borderColor,
-              padding: 10,
-            }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{flex: 1}}>
-                <TextBold>양념치킨+후라이드</TextBold>
-              </View>
-              <Image
-                source={require('~/assets/pop_close.png')}
-                style={{width: 20, height: 20}}
-              />
-            </View>
-            <TextRegular>
-              사이드 메뉴 추가선택 : 갈릭치즈볼 5개 추가(5,000)원
-            </TextRegular>
+          {cartStore.savedItem.savedItems.map((item, index) => (
             <View
+              key={index}
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginTop: 10,
+                width: '100%',
+                borderWidth: 1,
+                borderRadius: 5,
+                padding: 10,
+                borderColor: colors.borderColor,
+                marginBottom: 10,
               }}>
-              <TextBold>21,500</TextBold>
-              <OptionCount isTest />
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                  <TextBold>
+                    {item.main.menuName}
+                    {'  '}
+                  </TextBold>
+                  <TextRegular style={{color: colors.fontColorA}}>
+                    {_filterOption(item)}
+                  </TextRegular>
+                  {/* <TextRegular>{item.main.option}</TextRegular> */}
+                </View>
+                <Pressable>
+                  <Image
+                    source={require('~/assets/pop_close.png')}
+                    style={{width: 20, height: 20}}
+                  />
+                </Pressable>
+              </View>
+              <TextRegular>사이드 메뉴 추가선택 : </TextRegular>
+              {item.sub.length !== 0 ? (
+                item.sub.map((item, index) => (
+                  <TextRegular
+                    key={index}
+                    style={{fontSize: 12, color: colors.fontColorA}}>
+                    {item.itemCategory +
+                      ' / ' +
+                      item.itemName +
+                      ' / ' +
+                      replaceString(item.itemPrice)}
+                    원
+                  </TextRegular>
+                ))
+              ) : (
+                <TextRegular style={{fontSize: 12, color: colors.fontColorA}}>
+                  없음
+                </TextRegular>
+              )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginTop: 10,
+                }}>
+                <TextBold>{replaceString(item.totalPrice)}</TextBold>
+                <OptionCount isTest savedItem={item} />
+              </View>
             </View>
-          </View>
+          ))}
+
           <Pressable
             style={{
               flexDirection: 'row',
@@ -139,7 +205,7 @@ const SummitOrder = ({navigation}) => {
                 marginTop: 20,
               }}>
               <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
-              <TextBold style={{fontSize: 18}}>20,000원</TextBold>
+              <TextBold style={{fontSize: 18}}>{_getTotalPrice()}</TextBold>
             </View>
           </View>
         </View>

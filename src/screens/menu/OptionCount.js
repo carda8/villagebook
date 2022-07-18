@@ -9,10 +9,12 @@ import {
   setMainCount,
 } from '../../store/reducers/CartReducer';
 
-const OptionCount = ({data, isTest}) => {
+const OptionCount = ({price, isTest, savedItem}) => {
   const [count, setCount] = useState(1);
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
+  console.log('cartStore', cartStore);
+  console.log('savedItem', savedItem);
   return (
     <View
       style={{
@@ -30,12 +32,11 @@ const OptionCount = ({data, isTest}) => {
               dispatch(
                 setMainCount({
                   count: cartStore.mainCount.count - 1,
-                  mainItemCode: cartStore.currentStoreCode,
-                  price: cartStore.totalPrice - data.price,
+                  mainItemCode: cartStore.mainCount.mainItemCode,
+                  price: cartStore.totalPrice - Number(price),
                 }),
               );
-            }
-            // setCount(count - 1);
+            } else setCount(count - 1);
           }
         }}>
         <Image
@@ -61,11 +62,11 @@ const OptionCount = ({data, isTest}) => {
             dispatch(
               setMainCount({
                 count: cartStore.mainCount.count + 1,
-                mainItemCode: cartStore.currentStoreCode,
-                price: cartStore.totalPrice + data.price,
+                mainItemCode: cartStore.mainCount.mainItemCode,
+                price: cartStore.totalPrice + Number(price),
               }),
             );
-          }
+          } else setCount(count + 1);
         }}>
         <Image
           source={require('~/assets/ico_plus.png')}

@@ -16,9 +16,13 @@ const OptionRenderItem = ({item, data}) => {
   const cartStore = useSelector(state => state.cartReducer);
   const [check, setCheck] = useState(false);
   const dispatch = useDispatch();
-  // const item2 = item.item;
+  const item2 = item.item;
+  console.log('item2,', item2);
+  console.log('item', item);
+  // console.log('cartStore requiredCount', cartStore.requiredCount);
+  // console.log('cartStore selected', cartStore.selectedMainOption);
 
-  return <Loading />;
+  // return <Loading />;
   return (
     <View
       style={{
@@ -35,13 +39,16 @@ const OptionRenderItem = ({item, data}) => {
             setCheck(!check);
             if (item.section.required) {
               if (
-                cartStore.selectedMainOption[item.section.option] !== item2.name
+                cartStore.selectedMainOption[item.section.option] !== item2.idx
               ) {
                 dispatch(
                   setMainRequired({
-                    key: item.section.option,
-                    value: item2.name,
-                    price: item.item.price,
+                    key:
+                      item.section.option_subject ||
+                      item.section.supply_subject,
+                    value: item2.idx,
+                    name: item2.pst_value || item2.pot_value,
+                    price: Number(item2.pot_price || item2.pst_price),
                   }),
                 );
               }
@@ -50,9 +57,13 @@ const OptionRenderItem = ({item, data}) => {
               if (!check)
                 dispatch(
                   setSubMenu({
-                    itemCode: 1,
-                    itemCount: 1,
-                    itemPrice: item2.price ?? 0,
+                    itemCategory:
+                      item.section.option_subject ||
+                      item.section.supply_subject,
+                    itemCode: item2.idx,
+                    itemName: item2.pst_value || item2.pot_value,
+                    // itemCount: 1,
+                    itemPrice: Number(item2.pst_price ?? item2.pot_price),
                   }),
                 );
 
@@ -60,9 +71,8 @@ const OptionRenderItem = ({item, data}) => {
               if (check)
                 dispatch(
                   removeSubMenu({
-                    itemCode: 1,
-                    itemCount: 1,
-                    itemPrice: item2.price ?? 0,
+                    itemCode: item2.idx,
+                    itemPrice: Number(item2.pst_price ?? item2.pot_price),
                   }),
                 );
             }
@@ -76,8 +86,9 @@ const OptionRenderItem = ({item, data}) => {
             <Image
               source={
                 item.section.required
-                  ? cartStore.selectedMainOption[item.section.option]?.val ===
-                    item2.name
+                  ? cartStore.selectedMainOption[
+                      item.section.option_subject || item.section.supply_subject
+                    ]?.value === item2.idx
                     ? require('~/assets/top_ic_map_on.png')
                     : require('~/assets/top_ic_map_off.png')
                   : check
@@ -86,10 +97,12 @@ const OptionRenderItem = ({item, data}) => {
               }
               style={{width: 20, height: 20, marginRight: 10}}
             />
-            <TextRegular>{item2.name}</TextRegular>
+            <TextRegular>{item2.pot_value ?? item2.pst_value}</TextRegular>
           </View>
 
-          <TextRegular>+{replaceString(item2.price ?? 0)}원</TextRegular>
+          <TextRegular>
+            +{replaceString((item2.pot_price || item2.pst_price) ?? 0)}원
+          </TextRegular>
         </Pressable>
       </View>
     </View>

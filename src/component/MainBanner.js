@@ -13,6 +13,9 @@ const MainBanner = ({navigation, style}) => {
     <>
       <Swiper
         autoplay
+        loop
+        autoplayDirection={true}
+        autoplayTimeout={5}
         style={{height: 184}}
         containerStyle={style}
         removeClippedSubviews={false}

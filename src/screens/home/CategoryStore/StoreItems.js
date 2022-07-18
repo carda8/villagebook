@@ -56,79 +56,6 @@ const StoreItems = ({navigation, route}) => {
     console.log('storeList', storeList);
   }, [storeList]);
 
-  // const dummy = [
-  //   {
-  //     isOpen: true,
-  //     data: [
-  //       {
-  //         name: '버거킹 부산대점',
-  //         storeCode: 1,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //       {
-  //         name: '롯데리아 부산대점',
-  //         storeCode: 2,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //       {
-  //         name: '맥도날드 부산대점',
-  //         storeCode: 3,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //       {
-  //         name: '인앤아웃 부산대점',
-  //         storeCode: 4,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //       {
-  //         name: '고든램지 버거',
-  //         storeCode: 5,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     isOpen: false,
-  //     data: [
-  //       {
-  //         name: '버거킹 부산대점',
-  //         storeCode: 6,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //       {
-  //         name: '버거킹 구서점',
-  //         storeCode: 7,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //       {
-  //         name: 'KFC 구서점',
-  //         storeCode: 8,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //       {
-  //         name: '버거킹 부산대점',
-  //         storeCode: 9,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //       {
-  //         name: '버거킹 부산대점',
-  //         storeCode: 10,
-  //         tip: 1000,
-  //         review: 999,
-  //       },
-  //     ],
-  //   },
-  // ];
-
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
@@ -138,11 +65,17 @@ const StoreItems = ({navigation, route}) => {
   const renderItem = item => {
     const storeCode = item.item.storeCode;
     const storeInfo = item.item;
+    console.log('itemssss', item);
     return (
       <Pressable
         onPress={() => {
-          console.log('code', storeCode);
-          dispatch(setCurrentStoreCode(storeCode));
+          console.log('code', storeInfo.mb_jumju_code);
+          dispatch(
+            setCurrentStoreCode({
+              code: storeInfo.mb_jumju_code,
+              storeName: storeInfo.mb_company,
+            }),
+          );
           navigation.navigate('MenuDetail', {
             jumju_id: storeInfo.mb_id,
             jumju_code: storeInfo.mb_jumju_code,
@@ -170,11 +103,12 @@ const StoreItems = ({navigation, route}) => {
             }}>
             {!item?.section?.isOpen && <ImageCover />}
             <FastImage
-              source={{uri: item.item.image}}
+              source={{uri: item.item.store_image[0]}}
               resizeMode={FastImage.resizeMode.cover}
               style={{flex: 1}}
             />
           </View>
+
           <View
             style={{
               width: layout.width * 0.24,
@@ -183,27 +117,34 @@ const StoreItems = ({navigation, route}) => {
               style={{
                 flex: 1,
                 borderTopRightRadius: 10,
-                backgroundColor: 'teal',
                 marginBottom: 1,
                 overflow: 'hidden',
               }}>
               {!item?.section?.isOpen && <ImageCover />}
               <FastImage
-                source={require('~/assets/no_img.png')}
+                source={
+                  storeInfo.store_image[1]
+                    ? {uri: storeInfo.store_image[1]}
+                    : require('~/assets/no_img.png')
+                }
                 resizeMode={FastImage.resizeMode.cover}
                 style={{flex: 1}}
               />
             </View>
+
             <View
               style={{
                 flex: 1,
                 borderBottomRightRadius: 10,
-                backgroundColor: 'orange',
                 overflow: 'hidden',
               }}>
               {!item?.section?.isOpen && <ImageCover />}
               <FastImage
-                source={require('~/assets/no_img.png')}
+                source={
+                  storeInfo.store_image[2]
+                    ? {uri: storeInfo.store_image[2]}
+                    : storeInfo.store_image[2] ?? require('~/assets/no_img.png')
+                }
                 resizeMode={FastImage.resizeMode.cover}
                 style={{flex: 1}}
               />
