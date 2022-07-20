@@ -1,5 +1,5 @@
 import {View, Image, ScrollView, Pressable} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../../styles/commonStyle';
 import Header from '../../../component/Header';
@@ -10,42 +10,80 @@ import TextRegular from '../../../component/text/TextRegular';
 import OptionCount from '../OptionCount';
 import DividerL from '../../../component/DividerL';
 import CartButton from '../CartButton';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {replaceString} from '../../../config/utils/Price';
+import {removeItem} from '../../../store/reducers/CartReducer';
+import {useCustomMutation} from '../../../hooks/useCustomMutation';
+import Loading from '../../../component/Loading';
 
 const SummitOrder = ({navigation}) => {
+  const {mutateDeliveryFee} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
+  const dispatch = useDispatch();
   console.log('summit cart store', cartStore);
   console.log('item main option');
   const [isDelivery, setIsDelivery] = useState(true);
 
   const _filterOption = prop => {
-    const temp = Object.keys(prop.main.option);
-    const temp2 = prop.main.option;
-    const temp3 = temp.length;
-
+    console.log('props', prop);
+    const temp = prop.main.option;
+    console.log('temp', temp);
     let arr = [];
 
     temp.map((item, index) => {
-      arr.push(temp[index], ' : ', prop.main.option[temp[index]].name, ', ');
+      arr.push(item.name, ' : ', item.value, ', ');
       // console.log('temp', temp[index], prop.main.option[temp[index]].name);
     });
 
     return arr;
   };
 
-  const _getTotalPrice = () => {
+  const _getTotalPrice = isSummit => {
     let temp = 0;
     cartStore.savedItem.savedItems.map((item, index) => {
       temp += item.totalPrice;
     });
-    return replaceString(temp);
+    if (isSummit) {
+      const DeliveryData = mutateDeliveryFee.data.data.arrItems[0];
+      if (!isDelivery) {
+        let calc = temp - DeliveryData.take_out_discount;
+        return calc;
+      } else {
+        let calc = temp + DeliveryData.send_cost + DeliveryData.send_cost2;
+        return replaceString(calc);
+      }
+    } else return replaceString(temp);
   };
+
+  const _getDeliveryFee = () => {
+    const data = {
+      jumju_id: cartStore.currentStoreCode.jumju_id,
+      jumju_code: cartStore.currentStoreCode.code,
+      total_price: _getTotalPrice(),
+    };
+    console.log('data', data);
+    mutateDeliveryFee.mutate(data);
+  };
+
+  useEffect(() => {
+    _getDeliveryFee();
+  }, []);
+
+  if (!mutateDeliveryFee.data || mutateDeliveryFee.isLoading)
+    return <Loading />;
+  console.log('mutate data', mutateDeliveryFee.data);
+  const DeliveryData = mutateDeliveryFee.data.data.arrItems[0];
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'카트'} navigation={navigation} />
-      <CartButton navigation={navigation} goTo={'OrderPage'} />
+      <Header title={'카트'} navigation={navigation} isSummit />
+      <CartButton
+        navigation={navigation}
+        goTo={'OrderPage'}
+        isDelivery={isDelivery}
+        lastPrice={_getTotalPrice(true)}
+        deliveryData={DeliveryData}
+      />
       <ScrollView contentContainerStyle={{paddingBottom: 100}}>
         <View
           style={{
@@ -90,7 +128,15 @@ const SummitOrder = ({navigation}) => {
                   </TextRegular>
                   {/* <TextRegular>{item.main.option}</TextRegular> */}
                 </View>
-                <Pressable>
+                <Pressable
+                  hitSlop={12}
+                  onPress={() => {
+                    // const temp = cartStore.savedItem.savedItems.filter(
+                    //   (item, index2) => index2 !== index,
+                    // );
+                    // console.log('temp arr', temp);
+                    dispatch(removeItem({index: index}));
+                  }}>
                   <Image
                     source={require('~/assets/pop_close.png')}
                     style={{width: 20, height: 20}}
@@ -123,13 +169,29 @@ const SummitOrder = ({navigation}) => {
                   justifyContent: 'space-between',
                   marginTop: 10,
                 }}>
-                <TextBold>{replaceString(item.totalPrice)}</TextBold>
-                <OptionCount isTest savedItem={item} />
+                <TextBold>
+                  {replaceString(
+                    cartStore.savedItem.savedItems[index].totalPrice,
+                  )}
+                </TextBold>
+                <OptionCount
+                  isTest
+                  price={cartStore.mainCount.mainPrice}
+                  savedItem={item}
+                  index={index}
+                  isSummit
+                />
               </View>
             </View>
           ))}
 
           <Pressable
+            onPress={() => {
+              navigation.navigate('MenuDetail', {
+                jumju_id: cartStore.currentStoreCode.jumju_id,
+                jumju_code: cartStore.currentStoreCode.code,
+              });
+            }}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -165,6 +227,7 @@ const SummitOrder = ({navigation}) => {
               </TextBold>
             </Pressable>
             <Pressable
+              disabled={DeliveryData.take_out === 'true' ? false : true}
               onPress={() => setIsDelivery(false)}
               style={{
                 flex: 1,
@@ -182,20 +245,46 @@ const SummitOrder = ({navigation}) => {
             </Pressable>
           </View>
           <View style={{marginTop: 10}}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <TextRegular>배달팁</TextRegular>
-              <TextRegular>2,000원</TextRegular>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginVertical: 10,
-              }}>
-              <TextRegular>추가 배달팁</TextRegular>
-              <TextRegular>2,000원</TextRegular>
-            </View>
+            {isDelivery ? (
+              <>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <TextRegular>배달팁</TextRegular>
+                  <TextRegular>
+                    {replaceString(DeliveryData.send_cost)}원
+                  </TextRegular>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginVertical: 10,
+                  }}>
+                  <TextRegular>추가 배달팁</TextRegular>
+                  <TextRegular>
+                    {replaceString(DeliveryData.send_cost2)}원
+                  </TextRegular>
+                </View>
+              </>
+            ) : (
+              <>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginVertical: 10,
+                  }}>
+                  <TextRegular>포장할인</TextRegular>
+                  <TextRegular>
+                    {replaceString(DeliveryData.take_out_discount)}원
+                  </TextRegular>
+                </View>
+              </>
+            )}
+
             <View
               style={{height: 1, backgroundColor: colors.borderColor}}></View>
             <View
@@ -205,7 +294,7 @@ const SummitOrder = ({navigation}) => {
                 marginTop: 20,
               }}>
               <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
-              <TextBold style={{fontSize: 18}}>{_getTotalPrice()}</TextBold>
+              <TextBold style={{fontSize: 18}}>{_getTotalPrice(true)}</TextBold>
             </View>
           </View>
         </View>

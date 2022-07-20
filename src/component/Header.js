@@ -20,9 +20,11 @@ const Header = ({
   category,
   isOption,
   isPayment,
+  isSummit,
 }) => {
   const {currentCategory} = useSelector(state => state.categoryReducer);
   const {optionHeader} = useSelector(state => state.menuReducer);
+  const {currentStoreCode} = useSelector(state => state.cartReducer);
 
   // fadeAnim will be used as the value for opacity. Initial Value: 0
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -85,7 +87,14 @@ const Header = ({
         <Pressable
           hitSlop={15}
           onPress={() => {
-            if (!showLogo) navigation.goBack();
+            if (isSummit) {
+              navigation.navigate('MenuDetail', {
+                jumju_id: currentStoreCode.jumju_id,
+                jumju_code: currentStoreCode.code,
+              });
+            } else {
+              if (!showLogo) navigation.goBack();
+            }
           }}>
           {showLogo ? (
             <Image

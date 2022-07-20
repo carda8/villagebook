@@ -33,7 +33,7 @@ import ImagePicker, {launchCamera} from 'react-native-image-picker';
 import {useMutation} from 'react-query';
 import storeAPI from '../../api/modules/storeAPI';
 import Loading from '../../component/Loading';
-import {useuseCustomMutation} from '../../hooks/useCustomMutation';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
 import {replaceString} from '../../config/utils/Price';
 import {useDispatch, useSelector} from 'react-redux';
@@ -41,7 +41,7 @@ import {setStoreLogo} from '../../store/reducers/CartReducer';
 
 const MenuDetail = ({navigation, route}) => {
   const {mutateTopMenu, mutateStoreInfo, mutateAllMunu, mutateServiceTime} =
-    useuseCustomMutation();
+    useCustomMutation();
   const dispatch = useDispatch();
   const {storeLogoUrl} = useSelector(state => state.cartReducer);
   const routeData = route.params;

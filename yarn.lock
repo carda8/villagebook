@@ -3642,6 +3642,11 @@ human-signals@^1.1.1:
   resolved "https://registry.npmjs.org/human-signals/-/human-signals-1.1.1.tgz"
   integrity sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==
 
+iamport-react-native@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/iamport-react-native/-/iamport-react-native-2.0.1.tgz#b4c96a53c80b3c59604af3bc65135c1d13c1ec14"
+  integrity sha512-YAZpuRUl9IyzDVcWR5KtNohX+bfLATc73KCt9BpM0jq+kOndEaNzGk4hxdvXv6ZduD4PUmjusRXjqFYjoMwahQ==
+
 iconv-lite@0.4.24:
   version "0.4.24"
   resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz"
@@ -5979,10 +5984,10 @@ react-native-tab-view@^3.1.1:
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-3.1.1.tgz#1f8d7a835ab4f5b1b1407ec8dddc1053b53fa3c6"
   integrity sha512-M5pRN6utQfytKWoKlKVzg5NbkYu308qNoW1khGTtEOTs1k14p2dHJ/BWOJoJYHKbPVUyZldbG9MFT7gUl4YHnw==
 
-react-native-webview@^11.22.3:
-  version "11.22.3"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.22.3.tgz#193fb7f74385f29f75da577b9e60e8765d3091b5"
-  integrity sha512-+JUgOZUN1l8PTbuOXv+wl+PN/YkGwj3qPCqVt5ucmck1PTSNKWvFUBDU7Rh5wmqy+grcyGgEB+8/+RIRJG0FIA==
+react-native-webview@^11.22.7:
+  version "11.22.7"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.22.7.tgz#bf0d1755473af6e1af8486e862668fc7530149b4"
+  integrity sha512-IYMElB4fFS6S8LbhivAQfAlW95HorqCK4T3mFKmWsV24iPVTfYoaiA1TNzkRnjw2mMgXDk/QnMeH9IbjBVs1Ag==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"

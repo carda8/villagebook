@@ -17,6 +17,7 @@ const PaymentMethod = ({navigation, route}) => {
     if (routeData?.useCoupon) return '쿠폰 선택';
     else return '결제 수단';
   };
+
   const dispatch = useDispatch();
 
   return (

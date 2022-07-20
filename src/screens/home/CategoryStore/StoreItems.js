@@ -73,6 +73,7 @@ const StoreItems = ({navigation, route}) => {
           dispatch(
             setCurrentStoreCode({
               code: storeInfo.mb_jumju_code,
+              jumju_id: storeInfo.mb_id,
               storeName: storeInfo.mb_company,
             }),
           );

@@ -49,6 +49,7 @@ import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
 import {useDispatch} from 'react-redux';
 import {setUserInfo} from '../store/reducers/AuthReducer';
+import PaymentMain from '../screens/payment/PaymentMain';
 
 const Stack = createNativeStackNavigator();
 
@@ -92,8 +93,7 @@ const MainStackNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName={initRoute}
-        screenOptions={{headerShown: false}}
-      >
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
@@ -123,6 +123,8 @@ const MainStackNavigator = () => {
           component={PaymentMethod}
           options={{animation: 'slide_from_bottom'}}
         />
+        <Stack.Screen name="PaymentMain" component={PaymentMain} />
+
         <Stack.Screen name="OrderSumary" component={OrderSumary} />
         <Stack.Screen name="OrderFinish" component={OrderFinish} />
         <Stack.Screen name="Cart" component={Cart} />

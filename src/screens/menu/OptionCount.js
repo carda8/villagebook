@@ -1,20 +1,102 @@
-import {View, Text, Pressable, Image} from 'react-native';
+import {View, Pressable, Image} from 'react-native';
 import React, {useState} from 'react';
 import colors from '../../styles/colors';
 import TextBold from '../../component/text/TextBold';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  addMainCount,
-  removeMainCount,
   setMainCount,
+  setMainCountFromCart,
 } from '../../store/reducers/CartReducer';
+import Loading from '../../component/Loading';
 
-const OptionCount = ({price, isTest, savedItem}) => {
+const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
   const [count, setCount] = useState(1);
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
+
   console.log('cartStore', cartStore);
   console.log('savedItem', savedItem);
+  console.log('isSummit', isSummit, '//', 'index', index);
+
+  const _getSubItemsPrice = () => {
+    let subPrice = 0;
+
+    cartStore.subItems.map((item, index) => {
+      subPrice += item.itemPrice;
+    });
+
+    return subPrice;
+  };
+
+  const _countUp = () => {
+    const subPrice = _getSubItemsPrice();
+
+    let mainOptionsPrice = 0;
+    cartStore.selectedMainOption.map((item, index) => {
+      mainOptionsPrice += item.price;
+    });
+
+    if (isSummit) {
+      console.log('temp', cartStore.savedItem.savedItems[index].totalPrice);
+      console.log('price', price);
+      let temp =
+        cartStore.savedItem.savedItems[index].totalPrice + Number(price);
+      dispatch(
+        setMainCountFromCart({
+          index: index,
+          count: cartStore.savedItem.savedItems[index].main.count + 1,
+          price: temp + subPrice + mainOptionsPrice,
+        }),
+      );
+    } else {
+      dispatch(
+        setMainCount({
+          count: cartStore.mainCount.count + 1,
+          mainItemCode: cartStore.mainCount.mainItemCode,
+          price:
+            cartStore.totalPrice + Number(price) + subPrice + mainOptionsPrice,
+        }),
+      );
+    }
+  };
+
+  const _countDown = () => {
+    const subPrice = _getSubItemsPrice();
+
+    let mainOptionsPrice = 0;
+    cartStore.selectedMainOption.map((item, index) => {
+      mainOptionsPrice += item.price;
+    });
+
+    if (isSummit) {
+      if (cartStore.savedItem.savedItems[index].main.count > 1) {
+        let temp =
+          cartStore.savedItem.savedItems[index].totalPrice - Number(price);
+        dispatch(
+          setMainCountFromCart({
+            index: index,
+            count: cartStore.savedItem.savedItems[index].main.count - 1,
+            price: temp - subPrice - mainOptionsPrice,
+          }),
+        );
+      }
+    } else {
+      if (cartStore.mainCount.count > 1) {
+        dispatch(
+          setMainCount({
+            count: cartStore.mainCount.count - 1,
+            mainItemCode: cartStore.mainCount.mainItemCode,
+            price:
+              cartStore.totalPrice -
+              Number(price) -
+              subPrice -
+              mainOptionsPrice,
+          }),
+        );
+      }
+    }
+  };
+
   return (
     <View
       style={{
@@ -27,17 +109,7 @@ const OptionCount = ({price, isTest, savedItem}) => {
       <Pressable
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
         onPress={() => {
-          if (cartStore.mainCount.count > 1) {
-            if (!isTest) {
-              dispatch(
-                setMainCount({
-                  count: cartStore.mainCount.count - 1,
-                  mainItemCode: cartStore.mainCount.mainItemCode,
-                  price: cartStore.totalPrice - Number(price),
-                }),
-              );
-            } else setCount(count - 1);
-          }
+          _countDown();
         }}>
         <Image
           source={require('~/assets/ico_minus.png')}
@@ -53,20 +125,18 @@ const OptionCount = ({price, isTest, savedItem}) => {
           borderRightWidth: 1,
           borderColor: colors.borderColor,
         }}>
-        <TextBold>{cartStore.mainCount.count}</TextBold>
+        {isSummit ? (
+          <TextBold>
+            {cartStore.savedItem.savedItems[index].main.count}
+          </TextBold>
+        ) : (
+          <TextBold>{cartStore.mainCount.count}</TextBold>
+        )}
       </View>
       <Pressable
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
         onPress={() => {
-          if (!isTest) {
-            dispatch(
-              setMainCount({
-                count: cartStore.mainCount.count + 1,
-                mainItemCode: cartStore.mainCount.mainItemCode,
-                price: cartStore.totalPrice + Number(price),
-              }),
-            );
-          } else setCount(count + 1);
+          _countUp();
         }}>
         <Image
           source={require('~/assets/ico_plus.png')}

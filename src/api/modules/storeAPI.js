@@ -21,4 +21,8 @@ export default {
     const result = await _reqAPI('proc_item_detail.php', data);
     return result;
   },
+  _getDeliveryFee: async data => {
+    const result = await _reqAPI('proc_cart_send_cost.php', data);
+    return result;
+  },
 };

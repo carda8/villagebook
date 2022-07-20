@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {baseURL, SECRETKEY, APP_TOKEN} from '@env';
+import {baseURL, SECRETKEY, APP_TOKEN, IAM_API_KEY, IAM_SECRET} from '@env';
 import formFormatter from './formFormatter';
 import jwtDecode from 'jwt-decode';
 import jwtEncode from 'jwt-encode';
@@ -14,7 +14,7 @@ export const API = axios.create({
   transformRequest: (data, headers) => {
     data.mt_app_token = APP_TOKEN;
     data.encodeJson = true;
-
+    console.log('transformRequest', data);
     const jwt_data = jwtEncode(data, SECRETKEY);
     const result = formFormatter({
       secretKey: SECRETKEY,
@@ -24,24 +24,31 @@ export const API = axios.create({
   },
 
   transformResponse: data => {
-    try {
-      const parsedData = JSON.parse(data);
-      const resData = parsedData.encodeJson;
-      return {
-        result:
-          resData?.resultItem.result ??
-          jwtDecode(parsedData.jwt).resultItem.result,
-        msg: resData?.resultItem.message ?? parsedData?.message,
-        data: resData ?? jwtDecode(parsedData.jwt),
-        origin: parsedData,
-      };
-    } catch (error) {
-      if (LOGON) {
-        console.log('API Error :::', error);
-        console.log('API ErrorData :::', data);
+    if (data) {
+      try {
+        const parsedData = JSON.parse(data);
+        const resData = parsedData.encodeJson;
+        return {
+          result:
+            resData?.resultItem.result ??
+            jwtDecode(parsedData.jwt).resultItem.result,
+          msg: resData?.resultItem.message ?? parsedData?.message,
+          data: resData ?? jwtDecode(parsedData.jwt),
+          origin: parsedData,
+        };
+      } catch (error) {
+        if (LOGON) {
+          console.log('API Error :::', error);
+          console.log('API ErrorData :::', data);
+        }
+        return parsedData;
       }
-
-      return parsedData;
     }
   },
+});
+
+export const IAM_API = axios.create({
+  timeout: 5000,
+  timeoutErrorMessage: '###### IAM_API REQ/REP TIMEOUT',
+  headers: {'Content-Type': 'application/json'},
 });

@@ -1,14 +1,5 @@
-import {
-  View,
-  Text,
-  useWindowDimensions,
-  ScrollView,
-  Image,
-  Pressable,
-  SectionList,
-  Animated,
-} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import {View, useWindowDimensions, SectionList} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
@@ -24,20 +15,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setOptionHeader} from '../../store/reducers/MenuReducer';
 import OptionCount from './OptionCount';
 import CartButton from './CartButton';
-import {
-  initOption,
-  setMainCount,
-  setRequiredCount,
-  setSubMenu,
-} from '../../store/reducers/CartReducer';
-import {useuseCustomMutation} from '../../hooks/useCustomMutation';
+import {initOption, setRequiredCount} from '../../store/reducers/CartReducer';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
 import Loading from '../../component/Loading';
-import {configureStore} from '@reduxjs/toolkit';
 
 const OptionSelect = ({navigation, route}) => {
   const routeData = route.params;
   console.log('routeData', routeData);
-  const {mutateMenuDetail} = useuseCustomMutation();
+  const {mutateMenuDetail} = useCustomMutation();
   const [convertedData, setConvertedData] = useState([]);
   const {optionHeader, currentStoreCode} = useSelector(
     state => state.menuReducer,
@@ -72,16 +57,23 @@ const OptionSelect = ({navigation, route}) => {
 
   const _convertData = info => {
     let arr = [];
-    info.option.map((item, index) => {
-      arr.push({...item, required: true, data: item.option_data});
-      delete arr[index].option_data;
-    });
-    info.supply.map((item, index) => {
-      arr.push({...item, required: false, data: item.supply_option});
-      delete arr[index].supply_option;
-    });
+    if (info.option.length > 0) {
+      info.option.map((item, index) => {
+        arr.push({...item, required: true, data: item.option_data});
+        delete arr[index].option_data;
+      });
+    }
+
+    if (info.supply.length > 0) {
+      info.supply.map((item, index) => {
+        arr.push({...item, required: false, data: item.supply_option});
+        delete arr[index].supply_option;
+      });
+    }
+
     const required = arr.filter(item => item['required'] === true);
     dispatch(setRequiredCount(required.length));
+    console.log('arr', arr);
     setConvertedData(arr);
 
     // console.log('DetailInfo', arr);
@@ -90,11 +82,13 @@ const OptionSelect = ({navigation, route}) => {
   useEffect(() => {
     if (mutateMenuDetail?.data?.data.arrItems) {
       const info = mutateMenuDetail?.data?.data.arrItems;
+      console.log('INFO', info);
       dispatch(
         initOption({
           count: 1,
           mainItemCode: routeData.it_id,
           manuName: info.it_name,
+          mainPrice: Number(info.it_price),
           price: Number(info.it_price),
         }),
       );
@@ -109,8 +103,7 @@ const OptionSelect = ({navigation, route}) => {
 
   // console.log('convertedData', convertedData);
 
-  if (convertedData.length === 0 || !mutateMenuDetail?.data?.data?.arrItems)
-    return <Loading />;
+  if (!mutateMenuDetail?.data?.data?.arrItems) return <Loading />;
   const DetailInfo = mutateMenuDetail?.data?.data.arrItems;
   // console.log('DetailInfo', DetailInfo);
 

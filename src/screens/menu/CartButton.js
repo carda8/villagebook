@@ -8,10 +8,24 @@ import {replaceString} from '../../config/utils/Price';
 import {saveItem} from '../../store/reducers/CartReducer';
 import {customAlert} from '../../component/CustomAlert';
 
-const CartButton = ({navigation, goTo}) => {
+const CartButton = ({
+  navigation,
+  goTo,
+  lastPrice,
+  deliveryData,
+  isDelivery,
+}) => {
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
   console.log('store', cartStore);
+
+  const _getTotalPrice = () => {
+    let temp = 0;
+    cartStore.savedItem.savedItems.map((item, index) => {
+      temp += item.totalPrice;
+    });
+    return replaceString(temp);
+  };
 
   const _goToCart = () => {
     dispatch(
@@ -20,7 +34,7 @@ const CartButton = ({navigation, goTo}) => {
         items: {
           main: {
             ...cartStore.mainCount,
-            option: {...cartStore.selectedMainOption},
+            option: cartStore.selectedMainOption,
           },
           sub: cartStore.subItems,
           totalPrice: cartStore.totalPrice,
@@ -37,7 +51,7 @@ const CartButton = ({navigation, goTo}) => {
         items: {
           main: {
             ...cartStore.mainCount,
-            option: {...cartStore.selectedMainOption},
+            option: cartStore.selectedMainOption,
           },
           sub: cartStore.subItems,
           totalPrice: cartStore.totalPrice,
@@ -65,10 +79,19 @@ const CartButton = ({navigation, goTo}) => {
   };
 
   const _goToOrderPage = () => {
-    navigation.navigate('WriteOrderForm');
+    navigation.navigate('WriteOrderForm', {
+      isDelivery: isDelivery,
+      deliveryData: deliveryData,
+      lastPrice,
+    });
   };
 
   const _router = () => {
+    console.log(
+      'whatthe',
+      cartStore.requiredCount,
+      Object.keys(cartStore.selectedMainOption).length,
+    );
     if (
       cartStore.requiredCount !==
       Object.keys(cartStore.selectedMainOption).length
@@ -104,7 +127,9 @@ const CartButton = ({navigation, goTo}) => {
 
         <View style={{flex: 1, alignItems: 'center'}}>
           <TextMedium style={{color: 'white', fontSize: 16}}>
-            {' ' + replaceString(cartStore.totalPrice)}원
+            {goTo === 'OrderPage'
+              ? lastPrice
+              : ' ' + replaceString(cartStore.totalPrice) + '원'}
           </TextMedium>
         </View>
       </View>

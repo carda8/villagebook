@@ -17,7 +17,7 @@ const OptionRenderItem = ({item, data}) => {
   const [check, setCheck] = useState(false);
   const dispatch = useDispatch();
   const item2 = item.item;
-  console.log('item2,', item2);
+  // console.log('item2,', item2);
   console.log('item', item);
   // console.log('cartStore requiredCount', cartStore.requiredCount);
   // console.log('cartStore selected', cartStore.selectedMainOption);
@@ -38,17 +38,19 @@ const OptionRenderItem = ({item, data}) => {
           onPress={() => {
             setCheck(!check);
             if (item.section.required) {
-              if (
-                cartStore.selectedMainOption[item.section.option] !== item2.idx
-              ) {
+              {
+                // console.log('cartStore', cartStore);
                 dispatch(
                   setMainRequired({
-                    key:
-                      item.section.option_subject ||
-                      item.section.supply_subject,
-                    value: item2.idx,
-                    name: item2.pst_value || item2.pot_value,
-                    price: Number(item2.pot_price || item2.pst_price),
+                    index: item.section.option_idx - 1,
+                    data: {
+                      idx: item2.idx,
+                      name:
+                        item.section.option_subject ||
+                        item.section.supply_subject,
+                      value: item2.pst_value || item2.pot_value,
+                      price: Number(item2.pot_price || item2.pst_price),
+                    },
                   }),
                 );
               }
@@ -86,9 +88,8 @@ const OptionRenderItem = ({item, data}) => {
             <Image
               source={
                 item.section.required
-                  ? cartStore.selectedMainOption[
-                      item.section.option_subject || item.section.supply_subject
-                    ]?.value === item2.idx
+                  ? cartStore.selectedMainOption[item.section.option_idx - 1]
+                      ?.value === item2.pot_value
                     ? require('~/assets/top_ic_map_on.png')
                     : require('~/assets/top_ic_map_off.png')
                   : check

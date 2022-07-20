@@ -10,12 +10,12 @@ import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {useMutation} from 'react-query';
 import authAPI from '../../api/modules/authAPI';
-import {useuseCustomMutation} from '../../hooks/useCustomMutation';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {Errorhandler} from '../../config/ErrorHandler';
 import loginConfig from './loginConfig';
 
 const FindUserAccount = ({navigation, route}) => {
-  const {mutateFindId, mutateSendCode} = useuseCustomMutation();
+  const {mutateFindId, mutateSendCode} = useCustomMutation();
 
   const routeData = route.params?.target;
 

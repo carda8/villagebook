@@ -1,10 +1,12 @@
 import {Alert} from 'react-native';
 import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
+import cartAPI from '../api/modules/cartAPI';
+import paymentAPI from '../api/modules/paymentAPI';
 import storeAPI from '../api/modules/storeAPI';
 import {customAlert} from '../component/CustomAlert';
 
-export const useuseCustomMutation = () => {
+export const useCustomMutation = () => {
   //Auth
   const mutateFindId = useMutation(authAPI._findId, {
     onSuccess: e => {
@@ -74,6 +76,27 @@ export const useuseCustomMutation = () => {
     },
   });
 
+  const mutateDeliveryFee = useMutation(storeAPI._getDeliveryFee, {
+    onSuccess: e => {
+      console.log('mutateDeliveryFee', e);
+      return e;
+    },
+  });
+
+  const mutateFinishTransaction = useMutation(paymentAPI._finishTransaction, {
+    onSuccess: e => {
+      console.log('mutateFinishTransaction', e);
+      return e;
+    },
+  });
+
+  const mutateSaveItemInCart = useMutation(cartAPI._saveItemInCart, {
+    onSuccess: e => {
+      console.log('mutateSaveItemInCart', e);
+      return e;
+    },
+  });
+
   return {
     mutateFindId,
     mutateSendCode,
@@ -82,5 +105,8 @@ export const useuseCustomMutation = () => {
     mutateAllMunu,
     mutateServiceTime,
     mutateMenuDetail,
+    mutateDeliveryFee,
+    mutateFinishTransaction,
+    mutateSaveItemInCart,
   };
 };

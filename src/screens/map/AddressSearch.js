@@ -3,14 +3,19 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
 import Postcode from '@actbase/react-daum-postcode';
 
-const AddressSearch = ({navigation}) => {
+const AddressSearch = ({navigation, route}) => {
+  const fromOrder = route.params?.fromWriteOrder;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Postcode
         style={{flex: 1}}
         jsOptions={{animation: true}}
         onSelected={data => {
-          navigation.navigate('Map', {data: data});
+          if (fromOrder) {
+            navigation.navigate('WriteOrderForm', {addData: data});
+          } else {
+            navigation.navigate('Map', {data: data});
+          }
         }}
       />
     </SafeAreaView>
