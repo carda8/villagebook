@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, Pressable} from 'react-native';
 import React from 'react';
 import IMP from 'iamport-react-native';
 import Loading from '../../component/Loading';
@@ -6,29 +6,53 @@ import axios from 'axios';
 import {IAM_API_KEY, IAM_SECRET} from '@env';
 import {Errorhandler} from '../../config/ErrorHandler';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import PaymentList from '../../config/PaymentList';
+import OrderFinish from '../menu/orderDetail/OrderFinish';
+import {API} from '../../api/API';
+import {resetSavedItem} from '../../store/reducers/CartReducer';
+import {setOrderResult} from '../../store/reducers/PaymentReducer';
 
 const PaymentMain = ({navigation, route}) => {
   const isDelivery = route.params?.isDelivery;
   const orderForm = route.params?.orderForm;
   const totalSellPrice = route.params?.totalSellPrice;
+  const dispatch = useDispatch();
 
   const {mutateFinishTransaction} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
-  //   const {userInfo} = useSelector(state => state.userReducer);
+  const paymentStore = useSelector(state => state.paymentReducer);
+  const {userInfo} = useSelector(state => state.authReducer);
+  console.log('userinfo', userInfo);
+  console.log('orderForm', orderForm);
+
+  const _deleteCount = () => {
+    return {savedItems: cartStore.savedItem.savedItems};
+  };
+
+  const _getMethod = () => {
+    let method = paymentStore.paymentMethod;
+    if (method === PaymentList.card) return 'card';
+    else {
+      if (method === PaymentList.offlineCard) return 'card-face';
+      if (method === PaymentList.offlineCash) return 'cash';
+    }
+  };
 
   const _finishTransaction = paymentForm => {
+    const method = _getMethod();
+    const menuData = _deleteCount();
     const data = {
       jumju_id: cartStore.currentStoreCode.jumju_id,
       jumju_code: cartStore.currentStoreCode.code,
-      //   mt_id: userInfo.mt_id,
-      //   mt_name: userInfo.nickname,
+      mt_id: userInfo.mt_id,
+      mt_name: orderForm.mt_name,
       od_method: isDelivery ? 'delivery' : 'wrap',
-      od_pay_method: 'card',
+      od_pay_method: method, // 결제방법 선택시 선택된 값을 넘김 (카트, 만나서 카드 or 현금) [card, card-face, cash]
       od_zip: orderForm.od_zip,
       od_addr1: orderForm.od_addr1,
       od_addr2: orderForm.od_addr2,
-      od_addr3: orderForm.od_addr3,
+      od_addr3: orderForm.od_addr3 ?? '',
       od_addr_jibeon: orderForm.od_addr_jibeon,
 
       od_hp: orderForm.od_hp,
@@ -47,11 +71,28 @@ const PaymentMain = ({navigation, route}) => {
       od_coupon_price_store: '',
       od_total_sell_price: totalSellPrice,
       od_total_order_price: totalSellPrice,
-      od_pg_data: paymentForm,
-      od_menu_data: cartStore.savedItem.savedItems,
+
+      od_pg_data: JSON.stringify(paymentForm),
+      od_menu_data: JSON.stringify(menuData),
     };
-    console.log('data', data);
-    mutateFinishTransaction.mutate(data);
+
+    // console.log('_finishTransaction data Obj', data);
+
+    API.post('proc_order_update.php', data)
+      .then(result => {
+        dispatch(resetSavedItem());
+        dispatch(
+          setOrderResult({orderResultData: result.data, summitedData: data}),
+        );
+        navigation.reset({
+          routes: [{name: 'OrderFinish'}],
+        });
+      })
+      .catch(e => {
+        Errorhandler(e);
+        console.error(e);
+      });
+    // mutateFinishTransaction.mutate(data);
   };
 
   const _getIamInfo = async res => {
@@ -82,10 +123,12 @@ const PaymentMain = ({navigation, route}) => {
       console.log('paymentData', paymentData);
 
       const paymentForm = {
+        od_pg_imp_uid: imp_uid,
+        od_pg_merchant_uid: merchant_uid,
         od_pg_tid: paymentData.pg_tid,
         od_pg_apply_num: paymentData.apply_num,
         od_pg_card_name: paymentData.card_name,
-        od_pay_method: paymentData.pay_method,
+        // od_pay_method: paymentData.pay_method, //pg 에서 받은 값 대신 별도의 값으로 대체(결제 방법창에서 선택한 방법으로)
         od_pg_card_code: paymentData.card_code,
         od_pg_card_number: paymentData.card_number,
       };
@@ -117,6 +160,21 @@ const PaymentMain = ({navigation, route}) => {
     console.log('res', res);
     // navigation.navigate('OrderFinish', res);
   };
+
+  if (_getMethod() !== 'card')
+    return (
+      <View style={{flex: 1}}>
+        <Pressable
+          onPress={() => {
+            _finishTransaction();
+          }}
+          style={{
+            height: 60,
+            width: '100%',
+            backgroundColor: 'teal',
+          }}></Pressable>
+      </View>
+    );
 
   return (
     <IMP.Payment

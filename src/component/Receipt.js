@@ -4,8 +4,47 @@ import colors from '../styles/colors';
 import TextBold from './text/TextBold';
 import TextRegular from './text/TextRegular';
 import DividerL from './DividerL';
+import {replaceString} from '../config/utils/Price';
 
-const Receipt = () => {
+const Receipt = ({orderResult}) => {
+  const menuData = orderResult
+    ? JSON.parse(orderResult.orderResultData.data.arrItems.od_menu_data)
+    : null;
+  const orderData = orderResult
+    ? orderResult.orderResultData.data.arrItems
+    : null;
+  const summitedData = orderResult.summitedData ?? null;
+
+  const menuDetail = menuData?.savedItems ?? null;
+
+  // console.log('menuDetail', menuDetail);
+  // console.log('orderData', orderData);
+  // console.log('summitedData', summitedData);
+
+  const _calcTotalPrice = () => {
+    if (menuDetail) {
+      let temp = 0;
+      menuDetail.map((item, index) => {
+        temp += item.totalPrice;
+      });
+      return temp;
+    }
+  };
+
+  const _calcLastPrice = () => {
+    const totalItemPrice = _calcTotalPrice();
+    let temp = 0;
+
+    temp =
+      totalItemPrice -
+      (Number(summitedData.od_coupon_price_store) +
+        Number(summitedData.od_coupon_price_system) +
+        Number(summitedData.od_send_cost) +
+        Number(summitedData.od_send_cost));
+
+    return temp;
+  };
+
   return (
     <View
       style={{
@@ -29,7 +68,9 @@ const Receipt = () => {
           <TextRegular style={{color: colors.fontColor99}}>
             총 주문금액
           </TextRegular>
-          <TextRegular style={{color: colors.fontColor3}}>3,000원</TextRegular>
+          <TextRegular style={{color: colors.fontColor3}}>
+            {replaceString(_calcTotalPrice())}원
+          </TextRegular>
         </View>
 
         <View
@@ -39,7 +80,9 @@ const Receipt = () => {
             justifyContent: 'space-between',
           }}>
           <TextRegular style={{color: colors.fontColor99}}>배달팁</TextRegular>
-          <TextRegular style={{color: colors.fontColor3}}>3,000원</TextRegular>
+          <TextRegular style={{color: colors.fontColor3}}>
+            {replaceString(summitedData?.od_send_cost)}원
+          </TextRegular>
         </View>
 
         <View
@@ -51,26 +94,49 @@ const Receipt = () => {
           <TextRegular style={{color: colors.fontColor99}}>
             추가배달팁
           </TextRegular>
-          <TextRegular style={{color: colors.fontColor3}}>3,000원</TextRegular>
+          <TextRegular style={{color: colors.fontColor3}}>
+            {replaceString(summitedData?.od_send_cost2)}원
+          </TextRegular>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: 11,
+          }}>
+          <TextRegular style={{color: colors.fontColor99}}>
+            포장 할인
+          </TextRegular>
+          <TextRegular style={{color: colors.primary}}>
+            - {replaceString(summitedData?.od_takeout_discount)}원
+          </TextRegular>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginBottom: 11,
+          }}>
+          <TextRegular style={{color: colors.fontColor99}}>
+            점주쿠폰 할인
+          </TextRegular>
+          <TextRegular style={{color: colors.primary}}>
+            - {replaceString(summitedData.od_coupon_price_store)}원
+          </TextRegular>
         </View>
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TextRegular style={{color: colors.fontColor99}}>
-            할인 금액
+            동네북쿠폰 할인
           </TextRegular>
-          <TextRegular style={{color: colors.primary}}>- 3,000원</TextRegular>
+          <TextRegular style={{color: colors.primary}}>
+            - {replaceString(summitedData.od_coupon_price_system)}원
+          </TextRegular>
         </View>
 
         <DividerL style={{height: 1, marginVertical: 20}} />
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
-            총 결제금액
-          </TextBold>
-
-          <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
-            {'10,900'}원
-          </TextBold>
-        </View>
 
         <View
           style={{
@@ -79,12 +145,37 @@ const Receipt = () => {
             marginTop: 10,
           }}>
           <TextRegular style={{color: colors.fontColor99}}>
+            {'주문방법'}
+          </TextRegular>
+          <TextRegular style={{color: colors.primary}}>
+            {orderData?.od_method_value}
+          </TextRegular>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginVertical: 10,
+            marginBottom: 20,
+          }}>
+          <TextRegular style={{color: colors.fontColor99}}>
             {'결제방법'}
           </TextRegular>
           <TextRegular style={{color: colors.primary}}>
-            {'만나서 카드결제'}
+            {orderData?.od_pay_method_value}
           </TextRegular>
         </View>
+      </View>
+
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
+          총 결제금액
+        </TextBold>
+
+        <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
+          {replaceString(_calcLastPrice())}원
+        </TextBold>
       </View>
     </View>
   );

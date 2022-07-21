@@ -21,7 +21,7 @@ import Loading from '../../component/Loading';
 
 const OptionSelect = ({navigation, route}) => {
   const routeData = route.params;
-  console.log('routeData', routeData);
+  // console.log('routeData', routeData);
   const {mutateMenuDetail} = useCustomMutation();
   const [convertedData, setConvertedData] = useState([]);
   const {optionHeader, currentStoreCode} = useSelector(
@@ -133,7 +133,11 @@ const OptionSelect = ({navigation, route}) => {
         ListHeaderComponent={() => (
           <>
             <FastImage
-              source={require('~/assets/dummy/CK_tica114m19040077_l.jpg')}
+              source={
+                routeData.it_img1
+                  ? {uri: routeData.it_img1}
+                  : require('~/assets/no_img.png')
+              }
               style={{width: layout.width, height: layout.width / 1.2}}
             />
             <View style={{paddingHorizontal: 22, paddingTop: 10}}>

@@ -47,7 +47,6 @@ const MenuDetail = ({navigation, route}) => {
   const routeData = route.params;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-
   const [temp, setTemp] = useState();
   const [headerTrigger, setHeaderTrigger] = useState(false);
   const [trigger, setTrigger] = useState(false);
@@ -116,24 +115,24 @@ const MenuDetail = ({navigation, route}) => {
   //API 개발 완료시 수정 필요
   const _getTopMenu = () => {
     const data = {
-      jumju_id: 'dnb_0006',
-      jumju_code: 'P20220700008',
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
     };
     mutateTopMenu.mutate(data);
   };
 
   const _getAllMenu = () => {
     const data = {
-      jumju_id: 'dnb_0006',
-      jumju_code: 'P20220700008',
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
     };
     mutateAllMunu.mutate(data);
   };
 
   const _getServiceTime = () => {
     const data = {
-      jumju_id: 'dnb_0006',
-      jumju_code: 'P20220700008',
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
     };
     mutateServiceTime.mutate(data);
   };
@@ -163,9 +162,6 @@ const MenuDetail = ({navigation, route}) => {
   useEffect(() => {
     if (mutateStoreInfo.data && !storeLogoUrl)
       dispatch(setStoreLogo(mutateStoreInfo.data.data.arrItems.store_logo));
-    return () => {
-      dispatch(setStoreLogo(null));
-    };
   }, [mutateStoreInfo.data]);
 
   if (
@@ -182,6 +178,9 @@ const MenuDetail = ({navigation, route}) => {
   const StoreAllMenu = mutateAllMunu.data.data.arrItems;
   const StoreTopMenu = mutateTopMenu.data.data.arrItems;
   const StoreServiceTime = mutateServiceTime?.data?.data?.arrItems;
+
+  // console.log('StoreTopMenu', StoreTopMenu);
+  // console.log('StoreTopMenu', StoreAllMenu);
 
   return (
     <>
@@ -200,7 +199,7 @@ const MenuDetail = ({navigation, route}) => {
             hitSlop={20}
             ref={scrollRefSub}
             showsHorizontalScrollIndicator={false}>
-            {mutateAllMunu.data.data.arrItems.map((item, index) => (
+            {mutateAllMunu.data.data.arrItems?.map((item, index) => (
               <Pressable
                 disabled={!trigger && index === 0}
                 key={index}
@@ -273,7 +272,7 @@ const MenuDetail = ({navigation, route}) => {
             if (positionY >= temp && trigger === false) setTrigger(true);
             if (positionY <= temp && trigger === true) setTrigger(false);
             if (selected.isScrolling && index === 0) {
-              mutateAllMunu.data.data.arrItems.map((item, index) => {
+              mutateAllMunu.data.data.arrItems?.map((item, index) => {
                 focusTarget.current[index].measureLayout(
                   scrollRef.current,
                   (left, top, width, height) => {
@@ -431,13 +430,15 @@ const MenuDetail = ({navigation, route}) => {
                   <View style={{flex: 1}}>
                     {/* 대표메뉴 */}
                     {/* OptionSelect route data 추후 수정 필요 */}
-                    {StoreTopMenu.map((item, index) => (
+                    {/* 수정 완료 07/21 j */}
+                    {StoreTopMenu?.map((item, index) => (
                       <Pressable
                         onPress={() => {
                           navigation.navigate('OptionSelect', {
                             it_id: item.it_id,
-                            jumju_id: 'dnb_0006', // 추후 수정 필요
-                            jumju_code: 'P20220700008', // 추후 수정 필요
+                            jumju_id: routeData.jumju_id,
+                            jumju_code: routeData.jumju_code,
+                            it_img1: item.it_img1,
                           });
                         }}
                         key={index}
@@ -460,9 +461,14 @@ const MenuDetail = ({navigation, route}) => {
                               marginRight: 15,
                               borderColor: colors.borderColor,
                               overflow: 'hidden',
+                              elevation: 5,
                             }}>
                             <FastImage
-                              source={require('~/assets/dummy/CK_tica114m19040204_l.jpg')}
+                              source={
+                                item.it_img1
+                                  ? {uri: item.it_img1}
+                                  : '~/assets/no_img.png'
+                              }
                               resizeMode={FastImage.resizeMode.cover}
                               style={{flex: 1}}
                             />
@@ -490,7 +496,7 @@ const MenuDetail = ({navigation, route}) => {
                   </View>
                 </View>
 
-                {StoreAllMenu.map((item, index) => (
+                {StoreAllMenu?.map((item, index) => (
                   <View key={index}>
                     <View
                       style={{
@@ -518,8 +524,9 @@ const MenuDetail = ({navigation, route}) => {
                             onPress={() => {
                               navigation.navigate('OptionSelect', {
                                 it_id: item.it_id,
-                                jumju_id: 'dnb_0006', // 추후 수정 필요
-                                jumju_code: 'P20220700008', // 추후 수정 필요
+                                jumju_id: routeData.jumju_id,
+                                jumju_code: routeData.jumju_code,
+                                it_img1: item.it_img1,
                               });
                             }}
                             key={index}
@@ -546,7 +553,11 @@ const MenuDetail = ({navigation, route}) => {
                                   overflow: 'hidden',
                                 }}>
                                 <FastImage
-                                  source={require('~/assets/dummy/CK_tica114m19040204_l.jpg')}
+                                  source={
+                                    item.it_img1
+                                      ? {uri: item.it_img1}
+                                      : require('~/assets/no_img.png')
+                                  }
                                   resizeMode={FastImage.resizeMode.cover}
                                   style={{flex: 1}}
                                 />
@@ -767,7 +778,7 @@ const MenuDetail = ({navigation, route}) => {
                     marginBottom: 15,
                   }}>
                   <Image
-                    source={require('~/assets/no_use_img.png')}
+                    source={require('~/assets/no_img.png')}
                     style={{
                       width: 38,
                       height: 38,
@@ -835,7 +846,7 @@ const MenuDetail = ({navigation, route}) => {
                   <View
                     style={{flexDirection: 'row', alignItems: 'flex-start'}}>
                     <Image
-                      source={require('~/assets/no_use_img.png')}
+                      source={require('~/assets/no_img.png')}
                       style={{width: 38, height: 38, borderRadius: 38 / 2}}
                       resizeMode="cover"
                     />

@@ -15,6 +15,12 @@ import {replaceString} from '../../../config/utils/Price';
 import {removeItem} from '../../../store/reducers/CartReducer';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
 import Loading from '../../../component/Loading';
+import {
+  setDeliveryData,
+  setIsDeliveryStore,
+  setLastPrice,
+} from '../../../store/reducers/PaymentReducer';
+import Cart from './Cart';
 
 const SummitOrder = ({navigation}) => {
   const {mutateDeliveryFee} = useCustomMutation();
@@ -69,10 +75,19 @@ const SummitOrder = ({navigation}) => {
     _getDeliveryFee();
   }, []);
 
+  useEffect(() => {
+    if (mutateDeliveryFee.data) {
+      dispatch(setDeliveryData(mutateDeliveryFee.data.data.arrItems[0]));
+    }
+  }, [mutateDeliveryFee.data]);
+
   if (!mutateDeliveryFee.data || mutateDeliveryFee.isLoading)
     return <Loading />;
   console.log('mutate data', mutateDeliveryFee.data);
   const DeliveryData = mutateDeliveryFee.data.data.arrItems[0];
+
+  if (cartStore.savedItem.savedItems.length === 0)
+    return <Cart navigation={navigation} />;
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -116,9 +131,11 @@ const SummitOrder = ({navigation}) => {
                 padding: 10,
                 borderColor: colors.borderColor,
                 marginBottom: 10,
+                flex: 1,
               }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={{flex: 1, flexDirection: 'row'}}>
+              <View
+                style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+                <View style={{flex: 1}}>
                   <TextBold>
                     {item.main.menuName}
                     {'  '}
@@ -209,7 +226,10 @@ const SummitOrder = ({navigation}) => {
           <TextBold>배달/포장 선택</TextBold>
           <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
             <Pressable
-              onPress={() => setIsDelivery(true)}
+              onPress={() => {
+                setIsDelivery(true);
+                dispatch(setIsDeliveryStore(true));
+              }}
               style={{
                 flex: 1,
                 borderRadius: 7,
@@ -228,7 +248,10 @@ const SummitOrder = ({navigation}) => {
             </Pressable>
             <Pressable
               disabled={DeliveryData.take_out === 'true' ? false : true}
-              onPress={() => setIsDelivery(false)}
+              onPress={() => {
+                setIsDelivery(false);
+                dispatch(setIsDeliveryStore(false));
+              }}
               style={{
                 flex: 1,
                 borderRadius: 7,

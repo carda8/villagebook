@@ -7,6 +7,7 @@ import TextMedium from '../../component/text/TextMedium';
 import {replaceString} from '../../config/utils/Price';
 import {saveItem} from '../../store/reducers/CartReducer';
 import {customAlert} from '../../component/CustomAlert';
+import {setLastPrice} from '../../store/reducers/PaymentReducer';
 
 const CartButton = ({
   navigation,
@@ -17,6 +18,8 @@ const CartButton = ({
 }) => {
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
+  // const payStore = useSelector(state => state.paymentReducer);
+
   console.log('store', cartStore);
 
   const _getTotalPrice = () => {
@@ -32,6 +35,7 @@ const CartButton = ({
       saveItem({
         storeCode: cartStore.currentStoreCode,
         items: {
+          count: cartStore.mainCount.count,
           main: {
             ...cartStore.mainCount,
             option: cartStore.selectedMainOption,
@@ -49,6 +53,7 @@ const CartButton = ({
       saveItem({
         storeCode: cartStore.currentStoreCode,
         items: {
+          count: cartStore.mainCount.count,
           main: {
             ...cartStore.mainCount,
             option: cartStore.selectedMainOption,
@@ -88,7 +93,6 @@ const CartButton = ({
 
   const _router = () => {
     console.log(
-      'whatthe',
       cartStore.requiredCount,
       Object.keys(cartStore.selectedMainOption).length,
     );

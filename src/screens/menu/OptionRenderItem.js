@@ -18,7 +18,7 @@ const OptionRenderItem = ({item, data}) => {
   const dispatch = useDispatch();
   const item2 = item.item;
   // console.log('item2,', item2);
-  console.log('item', item);
+  // console.log('item', item);
   // console.log('cartStore requiredCount', cartStore.requiredCount);
   // console.log('cartStore selected', cartStore.selectedMainOption);
 
@@ -89,7 +89,7 @@ const OptionRenderItem = ({item, data}) => {
               source={
                 item.section.required
                   ? cartStore.selectedMainOption[item.section.option_idx - 1]
-                      ?.value === item2.pot_value
+                      ?.idx === item2.idx
                     ? require('~/assets/top_ic_map_on.png')
                     : require('~/assets/top_ic_map_off.png')
                   : check

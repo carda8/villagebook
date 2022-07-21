@@ -12,19 +12,21 @@ export const API = axios.create({
   headers: {'Content-Type': 'multipart/form-data;charset=UTF-8'},
 
   transformRequest: (data, headers) => {
-    data.mt_app_token = APP_TOKEN;
+    // data.mt_app_token = APP_TOKEN;
     data.encodeJson = true;
-    console.log('transformRequest', data);
+    // console.log('transformRequest', data);
     const jwt_data = jwtEncode(data, SECRETKEY);
     const result = formFormatter({
       secretKey: SECRETKEY,
       jwt_data: jwt_data,
     });
+    // console.log('transform jwt data', result);
     return result;
   },
 
   transformResponse: data => {
     if (data) {
+      // console.log('## ORIGIN API RES DATA ::', data);
       try {
         const parsedData = JSON.parse(data);
         const resData = parsedData.encodeJson;
@@ -37,6 +39,7 @@ export const API = axios.create({
           origin: parsedData,
         };
       } catch (error) {
+        const parsedData = JSON.parse(data);
         if (LOGON) {
           console.log('API Error :::', error);
           console.log('API ErrorData :::', data);

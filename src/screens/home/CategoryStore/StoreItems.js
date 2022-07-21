@@ -26,7 +26,7 @@ import DividerL from '../../../component/DividerL';
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
   const routeData = route.params;
-  console.log('roueteData', routeData);
+  // console.log('roueteData', routeData);
   const [storeList, setStoreList] = useState('');
   const mutateGetStoreList = useMutation(mainAPI._getStoreList, {
     onSuccess: e => {
@@ -65,7 +65,7 @@ const StoreItems = ({navigation, route}) => {
   const renderItem = item => {
     const storeCode = item.item.storeCode;
     const storeInfo = item.item;
-    console.log('itemssss', item);
+    // console.log('itemssss', item);
     return (
       <Pressable
         onPress={() => {

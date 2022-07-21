@@ -179,7 +179,7 @@ const Header = ({
             <Pressable
               hitSlop={10}
               onPress={() => {
-                if (showCart) navigation.navigate('Cart');
+                if (showCart) navigation.navigate('SummitOrder');
               }}>
               <Image
                 source={

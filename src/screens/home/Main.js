@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Image, ScrollView, View} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BottomBar from '../../component/BottomBar';
@@ -22,7 +14,6 @@ import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 import {useSelector} from 'react-redux';
-import Loading from '../../component/Loading';
 import policyConfig from '../signIn/policyConfig';
 
 const Main = ({navigation}) => {

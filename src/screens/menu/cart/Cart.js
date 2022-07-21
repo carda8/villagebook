@@ -7,7 +7,7 @@ import Header from '../../../component/Header';
 const Cart = ({navigation}) => {
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'쇼핑카트'} navigation={navigation} />
+      <Header title={'카트'} navigation={navigation} />
       <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
         <Image
           source={require('~/assets/no_cart.png')}

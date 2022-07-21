@@ -7,7 +7,7 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../../styles/commonStyle';
 import Header from '../../../component/Header';
@@ -19,20 +19,28 @@ import {useSelector} from 'react-redux';
 import {replaceString} from '../../../config/utils/Price';
 import Loading from '../../../component/Loading';
 import ImageCover from '../../../component/ImageCover';
+import {customAlert} from '../../../component/CustomAlert';
+import PaymentList from '../../../config/PaymentList';
 
 const WriteOrderForm = ({navigation, route}) => {
+  const [datas, setDatas] = useState();
   const addData = route.params?.addData;
-  const deliveryData = route.params?.deliveryData;
+  console.log('addData', addData);
+  // const deliveryData = route.params?.deliveryData;
   const lastPrice = route.params?.lastPrice;
-  const isDelivery = route.params?.isDelivery;
+  // const isDelivery = route.params?.isDelivery;
 
-  console.log('last', lastPrice, deliveryData);
+  // console.log('last', lastPrice, deliveryData);
   const {userInfo} = useSelector(state => state.authReducer);
   const cartStore = useSelector(state => state.cartReducer);
-  const payStore = useSelector(state => state.paymentReducer);
+  const {isDelivery, paymentMethod, deliveryData} = useSelector(
+    state => state.paymentReducer,
+  );
 
-  const [safeNumber, setSafeNumber] = useState(false);
+  console.log('issisisi', isDelivery);
+
   const [noSpoon, setNoSpoon] = useState(false);
+  const [safeNumber, setSafeNumber] = useState(false);
   const [agreement, setAgreement] = useState(false);
 
   const _calcSummary = () => {
@@ -58,22 +66,48 @@ const WriteOrderForm = ({navigation, route}) => {
     od_to_officer: '', // 가게 사장님
     od_to_seller: '', //배달 기사님
 
-    od_safety_number: true,
+    od_safety_chk: true,
     od_send_cost: '',
     od_send_cost2: '',
     od_receipt_point: 0,
     od_takeout_discount: 0,
 
     od_no_spoon: false,
-    od_coupon_id_system: null, //관리자 발행 쿠폰번호
+    od_coupon_id_system: '', //관리자 발행 쿠폰번호
     od_coupon_id_store: '', //점주 발행 쿠폰번호 GQ2B-J4VZ-KJRQ-C1H4
 
     od_coupon_price_system: 0, //관리자 뱔행 쿠폰금액
     od_coupon_price_store: '', //점주 발생 쿠폰금액
 
-    od_pg_data: '', //pg 데이터
-    od_menu_data: '', //메뉴 데이터
+    // od_pg_data: '', //pg 데이터
+    // od_menu_data: '', //메뉴 데이터
   });
+
+  useEffect(() => {
+    if (addData) {
+      setOrderForm({
+        ...orderForm,
+        od_addr1: addData.address,
+        od_zip: addData.zonecode,
+        od_addr_jibeon: addData.jibunAddress ?? addData.autoJibunAddress,
+      });
+    }
+  }, [route.params]);
+
+  const _checkForm = () => {
+    // if (isDelivery && !orderForm.od_addr1 && !orderForm.od_addr2) {
+    //   return customAlert('알림', '배달정보를 확인해주세요.');
+    // }
+    if (!paymentMethod) {
+      return customAlert('알림', '결제방법을 선택해주세요..');
+    }
+    console.log('orderForm', orderForm);
+    navigation.navigate('PaymentMain', {
+      isDelivery,
+      orderForm,
+      totalSellPrice: _calcSummary(),
+    });
+  };
   // return <Loading />;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -134,6 +168,7 @@ const WriteOrderForm = ({navigation, route}) => {
 
           <View style={{flexDirection: 'row'}}>
             <TextInput
+              editable={false}
               style={{...styles.inputContainer, marginRight: 10}}
               placeholder={'휴대폰 번호(숫자만 입력)'}
               defaultValue={userInfo.mt_hp}
@@ -244,7 +279,7 @@ const WriteOrderForm = ({navigation, route}) => {
                 flexDirection: 'row',
               }}>
               <TextRegular style={{color: colors.fontColorA2}}>
-                {payStore.paymentMethod ?? '결제방법을 선택해주세요'}
+                {paymentMethod ? paymentMethod : '결제방법을 선택해주세요'}
               </TextRegular>
               <Pressable
                 onPress={() => navigation.navigate('PaymentMethod')}
@@ -337,7 +372,9 @@ const WriteOrderForm = ({navigation, route}) => {
               <TextRegular style={{color: colors.fontColorA}}>
                 주문금액
               </TextRegular>
-              <TextRegular style={{}}>{_calcSummary()}원</TextRegular>
+              <TextRegular style={{}}>
+                {replaceString(_calcSummary())}원
+              </TextRegular>
             </View>
             {isDelivery && (
               <>
@@ -390,7 +427,9 @@ const WriteOrderForm = ({navigation, route}) => {
               justifyContent: 'space-between',
             }}>
             <TextBold style={{fontSize: 16}}>총 결제금액</TextBold>
-            <TextBold style={{fontSize: 16}}>{'36,000'}</TextBold>
+            <TextBold style={{fontSize: 16}}>
+              {replaceString(_calcSummary())}
+            </TextBold>
           </View>
 
           <Pressable
@@ -418,12 +457,7 @@ const WriteOrderForm = ({navigation, route}) => {
           <Pressable
             disabled={!agreement}
             onPress={() => {
-              console.log('orderForm', orderForm);
-              navigation.navigate('PaymentMain', {
-                isDelivery,
-                orderForm,
-                totalSellPrice: _calcSummary(),
-              });
+              _checkForm();
               // navigation.navigate('OrderFinish');
             }}
             style={{
@@ -435,7 +469,7 @@ const WriteOrderForm = ({navigation, route}) => {
               justifyContent: 'center',
             }}>
             <TextBold style={{fontSize: 18, color: 'white'}}>
-              {'36,000'}원 결제하기
+              {replaceString(_calcSummary())}원 결제하기
             </TextBold>
           </Pressable>
           {/* END 결제금액 */}
