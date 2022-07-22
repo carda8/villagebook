@@ -95,7 +95,7 @@ const cartSlice = createSlice({
       state.savedItem.savedItems = temp;
     },
     resetSavedItem: (state, action) => {
-      state.savedItem = {savedStoreCode: '', savedItems: []};
+      state.savedItem = {savedStoreCode: {}, savedItems: []};
     },
   },
 });

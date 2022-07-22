@@ -28,20 +28,30 @@ const StoreItems = ({navigation, route}) => {
   const routeData = route.params;
   // console.log('roueteData', routeData);
   const [storeList, setStoreList] = useState('');
+
+  const _fliterList = data => {
+    return data.filter((item, index) => item !== null);
+  };
+
   const mutateGetStoreList = useMutation(mainAPI._getStoreList, {
     onSuccess: e => {
       console.log('ee', e);
-      setStoreList(e.data.arrItems);
+      console.log('eee', e.data.arrItems);
+      const temp = _fliterList(e.data.arrItems);
+      console.log('temp e', temp);
+      setStoreList(temp);
       // setCategoryData(e.data.arrItems);
     },
   });
 
   const _init = code => {
+    console.log('storeitem', routeData);
     const data = {
       mb_ca_code: route.params.ca_code,
       item_count: '0',
       limit_count: '10',
-      mb_jumju_type: 'food',
+      mb_jumju_type:
+        routeData.category === 'lifestyle' ? 'food' : routeData.category,
       mb_ca_sort: '0',
     };
     console.log('data', data);
@@ -63,9 +73,9 @@ const StoreItems = ({navigation, route}) => {
 
   //368 88 279
   const renderItem = item => {
+    console.log('itemssss', item);
     const storeCode = item.item.storeCode;
     const storeInfo = item.item;
-    // console.log('itemssss', item);
     return (
       <Pressable
         onPress={() => {
@@ -226,13 +236,12 @@ const StoreItems = ({navigation, route}) => {
   };
 
   if (!storeList) return <Loading />;
-
+  // storeList[0] !== null && storeList[1] !== null ? storeList : []
+  console.log('storeligttt', storeList);
   return (
     <View style={{flex: 1}}>
       <SectionList
-        sections={
-          storeList[0] !== null && storeList[1] !== null ? storeList : []
-        }
+        sections={storeList}
         ListEmptyComponent={() => (
           <View>
             <TextBold>검색결과가 없습니다</TextBold>

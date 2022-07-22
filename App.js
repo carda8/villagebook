@@ -9,6 +9,8 @@ import {Provider} from 'react-redux';
 import Splash from './src/component/Splash';
 import MainStackNavigator from './src/navigator/MainStackNavigator';
 import store from './src/store/store';
+import messaging from '@react-native-firebase/messaging';
+import {Alert} from 'react-native';
 
 const qeuryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -31,6 +33,22 @@ const qeuryClient = new QueryClient({
 
 const App = () => {
   const [isSplash, setIsSplash] = useState(true);
+
+  const _getToken = async () => {
+    const temp = await messaging().getToken();
+    console.log('FCM TOKEN', temp);
+  };
+
+  useEffect(() => {
+    _getToken();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {

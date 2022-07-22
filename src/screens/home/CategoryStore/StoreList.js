@@ -19,9 +19,11 @@ const StoreList = ({navigation, route}) => {
   const routeIdx = route.params?.routeIdx ?? '메뉴';
   // const cate = route.params?.category;
   const categoryData = route.params?.categoryData;
+  const category = route.params?.category;
   const dispatch = useDispatch();
-
   const tabRef = useRef(0);
+
+  console.log('route', route.params?.category);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -133,7 +135,11 @@ const StoreList = ({navigation, route}) => {
             key={item.ca_name + index}
             name={item.ca_name}
             component={StoreItems}
-            initialParams={{cate: item.ca_name, ca_code: item.ca_code}}
+            initialParams={{
+              cate: item.ca_name,
+              ca_code: item.ca_code,
+              category: category,
+            }}
           />
         ))}
       </Tab.Navigator>

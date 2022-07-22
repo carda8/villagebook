@@ -40,7 +40,7 @@ const Receipt = ({orderResult}) => {
       (Number(summitedData.od_coupon_price_store) +
         Number(summitedData.od_coupon_price_system) +
         Number(summitedData.od_send_cost) +
-        Number(summitedData.od_send_cost));
+        Number(summitedData.od_send_cost2));
 
     return temp;
   };

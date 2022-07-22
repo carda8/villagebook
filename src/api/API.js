@@ -12,7 +12,7 @@ export const API = axios.create({
   headers: {'Content-Type': 'multipart/form-data;charset=UTF-8'},
 
   transformRequest: (data, headers) => {
-    // data.mt_app_token = APP_TOKEN;
+    data.mt_app_token = APP_TOKEN;
     data.encodeJson = true;
     // console.log('transformRequest', data);
     const jwt_data = jwtEncode(data, SECRETKEY);

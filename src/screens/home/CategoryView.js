@@ -39,7 +39,7 @@ const CategoryView = ({navigation, route}) => {
         onPress={() => {
           navigation.navigate('StoreList', {
             routeIdx: item.item.ca_name,
-            // category: selectedCategory,
+            category: selectedCategory,
             categoryData: categoryData,
           });
         }}

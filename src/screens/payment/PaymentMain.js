@@ -67,16 +67,15 @@ const PaymentMain = ({navigation, route}) => {
       od_takeout_discount: orderForm.od_takeout_discount,
       od_coupon_id_system: '',
       od_coupon_id_store: '',
-      od_coupon_price_system: '',
-      od_coupon_price_store: '',
-      od_total_sell_price: totalSellPrice,
-      od_total_order_price: totalSellPrice,
+      od_coupon_price_system: orderForm.od_coupon_price_system,
+      od_coupon_price_store: orderForm.od_coupon_price_store,
+      od_total_sell_price: orderForm.od_total_sell_price,
+      od_total_order_price: orderForm.od_total_order_price,
 
       od_pg_data: JSON.stringify(paymentForm),
       od_menu_data: JSON.stringify(menuData),
     };
-
-    // console.log('_finishTransaction data Obj', data);
+    console.log('_finishTransaction data Obj', data);
 
     API.post('proc_order_update.php', data)
       .then(result => {

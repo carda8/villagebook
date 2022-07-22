@@ -5,7 +5,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import colors from '../../styles/colors';
 import TextMedium from '../../component/text/TextMedium';
 import {replaceString} from '../../config/utils/Price';
-import {saveItem} from '../../store/reducers/CartReducer';
+import {
+  removeSavedItem,
+  resetSavedItem,
+  saveItem,
+} from '../../store/reducers/CartReducer';
 import {customAlert} from '../../component/CustomAlert';
 import {setLastPrice} from '../../store/reducers/PaymentReducer';
 
@@ -30,7 +34,21 @@ const CartButton = ({
     return replaceString(temp);
   };
 
+  const _isDiffStore = () => {
+    const savedStoreCode = cartStore.savedItem?.savedStoreCode.code;
+    const currentStoreCode = cartStore.currentStoreCode?.code;
+    console.log('savedStoreCode', savedStoreCode);
+    console.log('currentStoreCode', currentStoreCode);
+    if (savedStoreCode && currentStoreCode) {
+      if (savedStoreCode !== currentStoreCode) {
+        dispatch(resetSavedItem());
+      }
+    }
+  };
+
   const _goToCart = () => {
+    console.log('currrent cart', cartStore.currentStoreCode);
+    _isDiffStore();
     dispatch(
       saveItem({
         storeCode: cartStore.currentStoreCode,
@@ -49,6 +67,8 @@ const CartButton = ({
   };
 
   const _getMoreItem = () => {
+    console.log('currrent cart', cartStore.currentStoreCode);
+    _isDiffStore();
     dispatch(
       saveItem({
         storeCode: cartStore.currentStoreCode,
@@ -69,7 +89,7 @@ const CartButton = ({
   const _pressSaveCartButton = () => {
     Alert.alert(
       '카트에 메뉴를 담았습니다.',
-      '다른 가게의 메뉴를 담으면 현재 담겨있는 메뉴는 없어집니다.',
+      '다른 가게의 메뉴를 담으면 카트에 담겨있는 메뉴는 없어집니다.',
       [
         {
           text: '카트로 이동',

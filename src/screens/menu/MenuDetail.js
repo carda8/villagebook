@@ -44,6 +44,8 @@ const MenuDetail = ({navigation, route}) => {
     useCustomMutation();
   const dispatch = useDispatch();
   const {storeLogoUrl} = useSelector(state => state.cartReducer);
+  const {savedItem} = useSelector(state => state.cartReducer);
+
   const routeData = route.params;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
@@ -137,6 +139,14 @@ const MenuDetail = ({navigation, route}) => {
     mutateServiceTime.mutate(data);
   };
 
+  const _calcTotalPrice = () => {
+    let temp = 0;
+    savedItem.savedItems.map((item, index) => {
+      temp += item.totalPrice;
+    });
+    return temp;
+  };
+
   useEffect(() => {
     _init();
     _getTopMenu();
@@ -160,7 +170,7 @@ const MenuDetail = ({navigation, route}) => {
   }, [selected]);
 
   useEffect(() => {
-    if (mutateStoreInfo.data && !storeLogoUrl)
+    if (mutateStoreInfo.data)
       dispatch(setStoreLogo(mutateStoreInfo.data.data.arrItems.store_logo));
   }, [mutateStoreInfo.data]);
 
@@ -256,6 +266,7 @@ const MenuDetail = ({navigation, route}) => {
           alwaysBounceVertical={false}
           // contentOffset={{x: 0, y: 100}}
           // scrollEnabled={false}
+          contentContainerStyle={{paddingBottom: 60}}
           scrollEventThrottle={100}
           onScrollBeginDrag={e => {
             if (selected.isScrolling !== true) {
@@ -989,6 +1000,68 @@ const MenuDetail = ({navigation, route}) => {
             </>
           )}
         </ScrollView>
+
+        {/* 장바구니 아이템 존재시 카트 버튼 표시 */}
+        {savedItem.savedItems.length > 0 && (
+          <Pressable
+            onPress={() => {
+              navigation.navigate('SummitOrder');
+            }}
+            style={{
+              position: 'absolute',
+              top: layout.height - 60,
+              height: 60,
+              width: '100%',
+              backgroundColor: colors.primary,
+              justifyContent: 'center',
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'flex-start',
+                  justifyContent: 'center',
+                }}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    width: 30,
+                    height: 30,
+                    borderRadius: 30 / 2,
+                    marginLeft: 30,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <TextBold
+                    style={{
+                      fontSize: 16,
+                      color: colors.primary,
+                      includeFontPadding: false,
+                    }}>
+                    {savedItem.savedItems.length > 9
+                      ? '9+'
+                      : savedItem.savedItems.length}
+                  </TextBold>
+                </View>
+              </View>
+              <View style={{flex: 1, alignItems: 'center'}}>
+                <TextBold style={{fontSize: 16, color: 'white'}}>
+                  카트 확인하기
+                </TextBold>
+              </View>
+              <View style={{flex: 1, alignItems: 'center'}}>
+                <TextBold style={{fontSize: 16, color: 'white'}}>
+                  {replaceString(_calcTotalPrice())}원
+                </TextBold>
+              </View>
+            </View>
+          </Pressable>
+        )}
       </SafeAreaView>
     </>
   );

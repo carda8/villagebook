@@ -21,6 +21,7 @@ import Loading from '../../../component/Loading';
 import ImageCover from '../../../component/ImageCover';
 import {customAlert} from '../../../component/CustomAlert';
 import PaymentList from '../../../config/PaymentList';
+import {set} from 'react-native-reanimated';
 
 const WriteOrderForm = ({navigation, route}) => {
   const [datas, setDatas] = useState();
@@ -37,20 +38,11 @@ const WriteOrderForm = ({navigation, route}) => {
     state => state.paymentReducer,
   );
 
-  console.log('issisisi', isDelivery);
+  console.log('isDelivery', isDelivery);
 
   const [noSpoon, setNoSpoon] = useState(false);
   const [safeNumber, setSafeNumber] = useState(false);
   const [agreement, setAgreement] = useState(false);
-
-  const _calcSummary = () => {
-    let calcTotal = 0;
-    cartStore.savedItem.savedItems.map((item, index) => {
-      calcTotal += item.totalPrice;
-    });
-    return calcTotal;
-  };
-
   const [orderForm, setOrderForm] = useState({
     jumju_id: cartStore.currentStoreCode.jumju_id,
     jumju_code: cartStore.currentStoreCode.code,
@@ -67,21 +59,44 @@ const WriteOrderForm = ({navigation, route}) => {
     od_to_seller: '', //배달 기사님
 
     od_safety_chk: true,
-    od_send_cost: '',
-    od_send_cost2: '',
+    od_send_cost: 0,
+    od_send_cost2: 0,
     od_receipt_point: 0,
     od_takeout_discount: 0,
 
     od_no_spoon: false,
     od_coupon_id_system: '', //관리자 발행 쿠폰번호
     od_coupon_id_store: '', //점주 발행 쿠폰번호 GQ2B-J4VZ-KJRQ-C1H4
-
     od_coupon_price_system: 0, //관리자 뱔행 쿠폰금액
-    od_coupon_price_store: '', //점주 발생 쿠폰금액
+    od_coupon_price_store: 0, //점주 발생 쿠폰금액
 
+    od_total_order_price: 0,
+    od_total_sell_price: 0,
     // od_pg_data: '', //pg 데이터
     // od_menu_data: '', //메뉴 데이터
   });
+
+  const _calcSummary = () => {
+    let calcTotal = 0;
+    cartStore.savedItem.savedItems.map((item, index) => {
+      calcTotal += item.totalPrice;
+    });
+    return calcTotal;
+  };
+
+  const _calcLastPrice = () => {
+    const totalItemPrice = _calcSummary();
+    let temp = 0;
+
+    temp =
+      totalItemPrice -
+      (Number(orderForm.od_coupon_price_store) +
+        Number(orderForm.od_coupon_price_system) +
+        Number(orderForm.od_send_cost) +
+        Number(orderForm.od_send_cost2));
+
+    return temp;
+  };
 
   useEffect(() => {
     if (addData) {
@@ -93,6 +108,14 @@ const WriteOrderForm = ({navigation, route}) => {
       });
     }
   }, [route.params]);
+
+  useEffect(() => {
+    setOrderForm({
+      ...orderForm,
+      od_total_order_price: _calcSummary(),
+      od_total_sell_price: _calcLastPrice(),
+    });
+  }, []);
 
   const _checkForm = () => {
     // if (isDelivery && !orderForm.od_addr1 && !orderForm.od_addr2) {
@@ -106,6 +129,7 @@ const WriteOrderForm = ({navigation, route}) => {
       isDelivery,
       orderForm,
       totalSellPrice: _calcSummary(),
+      totalOrderPrice: _calcSummary(),
     });
   };
   // return <Loading />;

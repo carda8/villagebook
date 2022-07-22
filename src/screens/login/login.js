@@ -54,6 +54,7 @@ const Login = ({navigation}) => {
           ],
         );
       } else {
+        console.log('login e', e);
         await AuthStorageModuel._setItemAutoLogin(
           localStorageConfig.state.true,
         );
