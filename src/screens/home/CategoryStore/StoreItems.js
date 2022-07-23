@@ -80,16 +80,17 @@ const StoreItems = ({navigation, route}) => {
       <Pressable
         onPress={() => {
           console.log('code', storeInfo.mb_jumju_code);
-          dispatch(
-            setCurrentStoreCode({
-              code: storeInfo.mb_jumju_code,
-              jumju_id: storeInfo.mb_id,
-              storeName: storeInfo.mb_company,
-            }),
-          );
+          // dispatch(
+          //   setCurrentStoreCode({
+          //     code: storeInfo.mb_jumju_code,
+          //     jumju_id: storeInfo.mb_id,
+          //     storeName: storeInfo.mb_company,
+          //   }),
+          // );
           navigation.navigate('MenuDetail', {
             jumju_id: storeInfo.mb_id,
             jumju_code: storeInfo.mb_jumju_code,
+            mb_company: storeInfo.mb_company,
           });
         }}
         style={{

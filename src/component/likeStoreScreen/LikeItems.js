@@ -25,14 +25,14 @@ const LikeItems = ({data, navigation}) => {
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
   const [remove, setRemove] = useState(false);
-  console.log('rendered food');
+  console.log('rendered food', data);
 
   return (
     <View style={{flex: 1}}>
       <FlatList
         ListHeaderComponent={() => (
           <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}>
-            {remove && (
+            {/* {remove && (
               <Pressable
                 onPress={() => {
                   setRemove(!remove);
@@ -49,8 +49,8 @@ const LikeItems = ({data, navigation}) => {
                 }}>
                 <TextRegular style={{color: 'white'}}>선택 삭제</TextRegular>
               </Pressable>
-            )}
-            <Pressable
+            )} */}
+            {/* <Pressable
               onPress={() => {
                 setRemove(!remove);
               }}
@@ -66,10 +66,20 @@ const LikeItems = ({data, navigation}) => {
               <TextRegular style={{color: 'white'}}>
                 {remove ? '취소' : '삭제'}
               </TextRegular>
-            </Pressable>
+            </Pressable> */}
           </View>
         )}
         data={data}
+        ListEmptyComponent={
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginVertical: 25,
+            }}>
+            <TextBold>찜내역이 없습니다.</TextBold>
+          </View>
+        }
         showsVerticalScrollIndicator={false}
         renderItem={item => (
           <RenderItem item={item} remove={remove} navigation={navigation} />

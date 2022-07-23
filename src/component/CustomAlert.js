@@ -8,5 +8,8 @@ export const customAlert = (
   btnSubTitle,
   btnSubPress,
 ) => {
-  Alert.alert(title, text, [{btnTitle: btnPress, btnSubTitle: btnSubPress}]);
+  Alert.alert(title, text, [
+    {text: btnTitle, onPress: btnPress},
+    {text: btnSubTitle, onPress: btnSubPress},
+  ]);
 };

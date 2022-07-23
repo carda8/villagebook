@@ -47,9 +47,12 @@ import localStorageConfig from '../store/localStorage/localStorageConfig';
 import Loading from '../component/Loading';
 import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
-import {useDispatch} from 'react-redux';
-import {setUserInfo} from '../store/reducers/AuthReducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {setFcmToken, setUserInfo} from '../store/reducers/AuthReducer';
 import PaymentMain from '../screens/payment/PaymentMain';
+import messaging from '@react-native-firebase/messaging';
+import {Errorhandler} from '../config/ErrorHandler';
+import {customAlert} from '../component/CustomAlert';
 
 const Stack = createNativeStackNavigator();
 
@@ -57,11 +60,30 @@ const MainStackNavigator = () => {
   const [initRoute, setInitRoute] = useState();
   const dispatch = useDispatch();
 
+  const _getFcmToken = async () => {
+    try {
+      const fcmToken = await messaging().getToken();
+      console.log('fcm', fcmToken);
+      if (fcmToken) {
+        dispatch(setFcmToken(fcmToken));
+        return fcmToken;
+      }
+    } catch (err) {
+      Errorhandler(err);
+    }
+  };
+
   const mutateAutoLogin = useMutation(authAPI._autoLogin, {
     onSuccess: e => {
       const userInfo = e.data.arrItems;
-      dispatch(setUserInfo(userInfo));
-      setInitRoute('Main');
+      if (userInfo) {
+        dispatch(setUserInfo(userInfo));
+        setInitRoute('Main');
+      } else
+        customAlert(
+          '알림',
+          '로그인중 문제가 발생하였습니다. 다시 로그인 해주세요.',
+        );
     },
   });
 
@@ -74,13 +96,18 @@ const MainStackNavigator = () => {
   };
 
   const _initRoute = async () => {
-    const auto = await AuthStorage._getItemAutoLogin();
-    const token = await AuthStorage._getItemUserToken();
-    const userId = await AuthStorage._getItemUserId();
+    try {
+      const fcmToken = await _getFcmToken();
+      const auto = await AuthStorage._getItemAutoLogin();
+      const token = await AuthStorage._getItemUserToken();
+      const userId = await AuthStorage._getItemUserId();
 
-    if (auto === localStorageConfig.state.true && token && userId)
-      _autoLogin(token, userId);
-    else setInitRoute('Login');
+      if (auto === localStorageConfig.state.true && token && userId)
+        _autoLogin(token, userId);
+      else setInitRoute('Login');
+    } catch (err) {
+      Errorhandler(err);
+    }
   };
 
   useEffect(() => {

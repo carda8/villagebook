@@ -77,28 +77,38 @@ const OrderFinish = ({navigation, route}) => {
           {menuData.savedItems?.map((item, index) => (
             <View
               key={index}
-              style={{alignSelf: 'flex-start', paddingHorizontal: 10}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextBold style={{fontSize: 16, color: colors.primary}}>
-                  {item.main.menuName}
-                  {'  '}
-                </TextBold>
-                {item.main.option?.map((item2, index) => (
-                  <View key={item2 + '_' + index}>
-                    <TextRegular style={{color: colors.fontColorA}}>
-                      {item2.name} : {item2.value}{' '}
-                      {index + 1 !== item.main.option.length}
-                    </TextRegular>
-                  </View>
-                ))}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: colors.borderColor,
+                paddingBottom: 10,
+                paddingHorizontal: 10,
+              }}>
+              <View style={{alignItems: 'center', flex: 1}}>
+                <View style={{marginVertical: 10}}>
+                  <TextBold style={{fontSize: 16, color: colors.primary}}>
+                    {item.main.menuName}
+                  </TextBold>
+                </View>
+                <View style={{flex: 1}}>
+                  {item.main.option?.map((item2, index) => (
+                    <View key={item2 + '_' + index}>
+                      <TextRegular style={{color: colors.fontColorA}}>
+                        {item2.name} : {item2.value}{' '}
+                        {index + 1 !== item.main.option.length}
+                      </TextRegular>
+                    </View>
+                  ))}
+                </View>
               </View>
               <View
                 style={{
                   marginVertical: 10,
-                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}>
-                <TextRegular>추가선택{'  '}</TextRegular>
-                <View style={{}}>
+                <TextRegular style={{color: colors.fontColor2, fontSize: 12}}>
+                  {'<추가선택>'}
+                </TextRegular>
+                <View style={{flex: 1}}>
                   {item.sub.length > 0 ? (
                     item.sub.map((item, index) => (
                       <View key={item + '_' + index}>
@@ -117,7 +127,7 @@ const OrderFinish = ({navigation, route}) => {
                 </View>
               </View>
 
-              <View style={{marginTop: 10}}>
+              <View style={{marginTop: 10, alignSelf: 'flex-end'}}>
                 <TextBold style={{color: colors.fontColorA}}>
                   {replaceString(item.totalPrice)}원
                 </TextBold>

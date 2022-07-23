@@ -1,5 +1,5 @@
 import {View, Text, Pressable} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import IMP from 'iamport-react-native';
 import Loading from '../../component/Loading';
 import axios from 'axios';
@@ -49,11 +49,11 @@ const PaymentMain = ({navigation, route}) => {
       mt_name: orderForm.mt_name,
       od_method: isDelivery ? 'delivery' : 'wrap',
       od_pay_method: method, // 결제방법 선택시 선택된 값을 넘김 (카트, 만나서 카드 or 현금) [card, card-face, cash]
-      od_zip: orderForm.od_zip,
-      od_addr1: orderForm.od_addr1,
-      od_addr2: orderForm.od_addr2,
+      od_zip: orderForm.od_zip ?? '',
+      od_addr1: orderForm.od_addr1 ?? '',
+      od_addr2: orderForm.od_addr2 ?? '',
       od_addr3: orderForm.od_addr3 ?? '',
-      od_addr_jibeon: orderForm.od_addr_jibeon,
+      od_addr_jibeon: orderForm.od_addr_jibeon ?? '',
 
       od_hp: orderForm.od_hp,
       od_to_officer: orderForm.od_to_officer,
@@ -72,7 +72,7 @@ const PaymentMain = ({navigation, route}) => {
       od_total_sell_price: orderForm.od_total_sell_price,
       od_total_order_price: orderForm.od_total_order_price,
 
-      od_pg_data: JSON.stringify(paymentForm),
+      od_pg_data: method === 'card' ? JSON.stringify(paymentForm) : null,
       od_menu_data: JSON.stringify(menuData),
     };
     console.log('_finishTransaction data Obj', data);
@@ -160,30 +160,36 @@ const PaymentMain = ({navigation, route}) => {
     // navigation.navigate('OrderFinish', res);
   };
 
-  if (_getMethod() !== 'card')
+  if (_getMethod() !== 'card') {
+    useEffect(() => {
+      _finishTransaction();
+    }, []);
+    return <Loading />;
+  } else {
     return (
-      <View style={{flex: 1}}>
-        <Pressable
-          onPress={() => {
-            _finishTransaction();
-          }}
-          style={{
-            height: 60,
-            width: '100%',
-            backgroundColor: 'teal',
-          }}></Pressable>
-      </View>
+      <IMP.Payment
+        userCode={'imp72538339'} // 가맹점 식별코드
+        //tierCode={'AAA'} // 티어 코드: agency 기능 사용자에 한함
+        loading={<Loading />} // 로딩 컴포넌트
+        data={data} // 결제 데이터
+        callback={_callback} // 결제 종료 후 콜백
+      />
     );
+  }
 
-  return (
-    <IMP.Payment
-      userCode={'imp72538339'} // 가맹점 식별코드
-      //tierCode={'AAA'} // 티어 코드: agency 기능 사용자에 한함
-      loading={<Loading />} // 로딩 컴포넌트
-      data={data} // 결제 데이터
-      callback={_callback} // 결제 종료 후 콜백
-    />
-  );
+  // return (
+  //   <View style={{flex: 1}}>
+  //     <Pressable
+  //       onPress={() => {
+  //         _finishTransaction();
+  //       }}
+  //       style={{
+  //         height: 60,
+  //         width: '100%',
+  //         backgroundColor: 'teal',
+  //       }}></Pressable>
+  //   </View>
+  // );
 };
 
 export default PaymentMain;

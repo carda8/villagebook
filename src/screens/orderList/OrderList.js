@@ -1,5 +1,5 @@
 import {View, Text, FlatList, Pressable} from 'react-native';
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
@@ -7,11 +7,67 @@ import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import FastImage from 'react-native-fast-image';
 import dayjs from 'dayjs';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useSelector} from 'react-redux';
+import Loading from '../../component/Loading';
+import {customAlert} from '../../component/CustomAlert';
+import TextBold from '../../component/text/TextBold';
+import NoHistory from '../../component/NoHistory';
 
 const OrderList = ({navigation}) => {
-  const arr = [1, 2, 3, 4, 5, 6];
+  const [history, setHistory] = useState();
+  const {mutateOrderHistory} = useCustomMutation();
+  const {userInfo} = useSelector(state => state.authReducer);
+
+  const itemLimit = useRef(0);
+  const arrHistory = useRef([]);
+
+  const _getHistory = () => {
+    const data = {
+      item_count: itemLimit.current,
+      limit_count: 20,
+      mt_id: userInfo.mt_id,
+    };
+
+    mutateOrderHistory.mutate(data);
+  };
+
+  const _getMoreHistory = () => {
+    itemLimit.current += 20;
+    const data = {
+      item_count: itemLimit.current,
+      limit_count: 20,
+      mt_id: userInfo.mt_id,
+    };
+    mutateOrderHistory.mutate(data);
+  };
+
+  useEffect(() => {
+    _getHistory();
+    return () => {};
+  }, []);
+
+  useEffect(() => {
+    if (history && mutateOrderHistory.data?.result === 'false') {
+      customAlert('알림', '이전 주문내역이 없습니다.');
+    } else if (
+      mutateOrderHistory.status === 'success' &&
+      mutateOrderHistory.data.data.arrItems
+    ) {
+      const temp = mutateOrderHistory.data.data.arrItems;
+      console.log('temp', temp);
+      if (history) {
+        console.log('history', history);
+        setHistory(prev => prev.concat(temp));
+      } else setHistory(temp);
+    }
+  }, [mutateOrderHistory.status]);
 
   const renderItem = item => {
+    // od_process_status : 신규주문 / 접수완료 / 배달중 / 배달완료
+    const data = item.item;
+    const isDeliveried = data.od_process_status === '배달완료' ? true : false;
+    console.log('item', item);
     return (
       <View
         style={{
@@ -29,20 +85,20 @@ const OrderList = ({navigation}) => {
             flexDirection: 'row',
           }}>
           <View style={{flex: 1}}>
-            <TextRegular>
-              주문일자 : {dayjs().format('YYYY-MM-DD HH:mm')}
-            </TextRegular>
+            <TextRegular>주문일자 : {data.od_time}</TextRegular>
           </View>
           <View
             style={{
-              width: 110,
-              height: 20,
+              width: 90,
+              height: 25,
               borderRadius: 20,
-              backgroundColor: '#D91313',
+              backgroundColor: colors.primary,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <TextRegular style={{color: 'white'}}>배달 / 주문누락</TextRegular>
+            <TextRegular style={{color: 'white'}}>
+              {data.od_process_status}
+            </TextRegular>
           </View>
         </View>
         <View
@@ -55,12 +111,16 @@ const OrderList = ({navigation}) => {
             alignItems: 'center',
           }}>
           <FastImage
-            source={require('~/assets/no_use_img.png')}
+            source={
+              data.store_logo
+                ? {uri: data.store_logo}
+                : require('~/assets/no_use_img.png')
+            }
             style={{width: 70, height: 70, borderRadius: 20}}
           />
           <View style={{marginLeft: 10, flex: 1}}>
-            <TextRegular style={{fontSize: 16}}>맛나버거 부산대점</TextRegular>
-            <TextRegular>메뉴 100원</TextRegular>
+            <TextRegular style={{fontSize: 16}}>{data.mb_company}</TextRegular>
+            <TextRegular>{data.od_good_name}</TextRegular>
           </View>
         </View>
         <View
@@ -72,7 +132,11 @@ const OrderList = ({navigation}) => {
           }}>
           <Pressable
             onPress={() => {
-              navigation.navigate('MenuDetail');
+              navigation.navigate('MenuDetail', {
+                jumju_id: data.jumju_id,
+                jumju_code: data.jumju_code,
+                mb_company: data.mb_company,
+              });
             }}
             style={{
               flex: 1,
@@ -89,7 +153,14 @@ const OrderList = ({navigation}) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('OrderSumary');
+              navigation.navigate('OrderSumary', {
+                orderData: {
+                  mt_id: userInfo.mt_id,
+                  od_id: data.od_id,
+                  jumju_id: data.jumju_id,
+                  jumju_code: data.jumju_code,
+                },
+              });
             }}
             style={{
               flex: 1,
@@ -106,17 +177,23 @@ const OrderList = ({navigation}) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              navigation.navigate('WriteReview');
+              isDeliveried
+                ? navigation.navigate('WriteReview')
+                : customAlert('알림', '배달완료된 주문만 리뷰작성 가능합니다');
             }}
             style={{
               flex: 1,
               borderWidth: 1,
+              backgroundColor: isDeliveried ? 'white' : colors.inputBoxBG,
               borderColor: colors.borderColor,
               borderRadius: 10,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <TextRegular style={{color: colors.fontColor2}}>
+            <TextRegular
+              style={{
+                color: isDeliveried ? colors.fontColor2 : colors.fontColorA,
+              }}>
               리뷰쓰기
             </TextRegular>
           </Pressable>
@@ -130,9 +207,39 @@ const OrderList = ({navigation}) => {
       <Header title={'주문내역'} navigation={navigation} showCart={true} />
 
       <FlatList
-        data={arr}
+        data={history}
+        ListEmptyComponent={() => <NoHistory />}
         renderItem={item => renderItem(item)}
         keyExtractor={(item, index) => index}
+        ListFooterComponentStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginVertical: 20,
+        }}
+        ListFooterComponent={e =>
+          mutateOrderHistory.isLoading && history ? (
+            <Loading />
+          ) : (
+            <Pressable
+              onPress={() => {
+                _getMoreHistory();
+              }}
+              style={{
+                width: 150,
+                height: 50,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: colors.primary,
+              }}>
+              <TextBold style={{color: 'white'}}>더보기</TextBold>
+            </Pressable>
+          )
+        }
+        // onEndReached={() => {
+        //   _getMoreHistory();
+        // }}
+        // onEndReachedThreshold={1}
       />
     </SafeAreaView>
   );

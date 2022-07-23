@@ -2,11 +2,27 @@ import {Alert} from 'react-native';
 import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
 import cartAPI from '../api/modules/cartAPI';
+import mainAPI from '../api/modules/mainAPI';
 import paymentAPI from '../api/modules/paymentAPI';
 import storeAPI from '../api/modules/storeAPI';
 import {customAlert} from '../component/CustomAlert';
 
 export const useCustomMutation = () => {
+  //Main
+  const mutateOrderHistory = useMutation(mainAPI._getOrderHistory, {
+    onSuccess: e => {
+      console.log('mutateOrderHistory', e);
+      return e;
+    },
+  });
+
+  const mutateOrderDetail = useMutation(mainAPI._getOrderDetail, {
+    onSuccess: e => {
+      console.log('mutateOrderDetail', e);
+      return e;
+    },
+  });
+
   //Auth
   const mutateFindId = useMutation(authAPI._findId, {
     onSuccess: e => {
@@ -64,7 +80,7 @@ export const useCustomMutation = () => {
 
   const mutateServiceTime = useMutation(storeAPI._getServiceTime, {
     onSuccess: e => {
-      console.log('mutateStoreInfo', e);
+      console.log('mutateServiceTime', e);
       return e;
     },
   });
@@ -97,6 +113,20 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mutateGetLikeList = useMutation(storeAPI._getLikeList, {
+    onSuccess: e => {
+      console.log('mutateSaveItemInCart', e);
+      return e;
+    },
+  });
+
+  const mutateSetLikeStore = useMutation(storeAPI._setLikeStore, {
+    onSuccess: e => {
+      console.log('mutateSaveItemInCart', e);
+      return e;
+    },
+  });
+
   return {
     mutateFindId,
     mutateSendCode,
@@ -108,5 +138,9 @@ export const useCustomMutation = () => {
     mutateDeliveryFee,
     mutateFinishTransaction,
     mutateSaveItemInCart,
+    mutateOrderHistory,
+    mutateOrderDetail,
+    mutateSetLikeStore,
+    mutateGetLikeList,
   };
 };

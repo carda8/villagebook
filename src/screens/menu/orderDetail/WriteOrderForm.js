@@ -50,9 +50,9 @@ const WriteOrderForm = ({navigation, route}) => {
     mt_name: userInfo.mt_nickname,
 
     od_zip: addData?.zonecode,
-    od_addr1: addData?.address,
+    od_addr1: addData?.address ?? '',
     od_addr2: '',
-    od_addr2: '',
+    od_addr3: '',
     od_addr_jibeon: addData?.jibunAddress,
     od_hp: userInfo.mt_hp,
     od_to_officer: '', // 가게 사장님

@@ -9,6 +9,8 @@ import {
   removeSavedItem,
   resetSavedItem,
   saveItem,
+  setCurrentStoreCode,
+  setStoreLogo,
 } from '../../store/reducers/CartReducer';
 import {customAlert} from '../../component/CustomAlert';
 import {setLastPrice} from '../../store/reducers/PaymentReducer';
@@ -19,13 +21,14 @@ const CartButton = ({
   lastPrice,
   deliveryData,
   isDelivery,
+  data,
 }) => {
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
   // const payStore = useSelector(state => state.paymentReducer);
 
   console.log('store', cartStore);
-
+  console.log('datadatadatadata', data);
   const _getTotalPrice = () => {
     let temp = 0;
     cartStore.savedItem.savedItems.map((item, index) => {
@@ -34,11 +37,21 @@ const CartButton = ({
     return replaceString(temp);
   };
 
+  const _goToCart = () => {
+    console.log('currrent cart', cartStore.currentStoreCode);
+    navigation.navigate('SummitOrder', {data: data});
+  };
+
+  const _getMoreItem = () => {
+    console.log('currrent cart', cartStore.currentStoreCode);
+    navigation.goBack();
+  };
+
   const _isDiffStore = () => {
     const savedStoreCode = cartStore.savedItem?.savedStoreCode.code;
-    const currentStoreCode = cartStore.currentStoreCode?.code;
-    console.log('savedStoreCode', savedStoreCode);
-    console.log('currentStoreCode', currentStoreCode);
+    const currentStoreCode = data.jumju_code;
+    console.log('savedStoreCode 2222', cartStore.savedItem);
+    console.log('currentStoreCode  2222', currentStoreCode);
     if (savedStoreCode && currentStoreCode) {
       if (savedStoreCode !== currentStoreCode) {
         dispatch(resetSavedItem());
@@ -46,47 +59,39 @@ const CartButton = ({
     }
   };
 
-  const _goToCart = () => {
-    console.log('currrent cart', cartStore.currentStoreCode);
-    _isDiffStore();
-    dispatch(
-      saveItem({
-        storeCode: cartStore.currentStoreCode,
-        items: {
-          count: cartStore.mainCount.count,
-          main: {
-            ...cartStore.mainCount,
-            option: cartStore.selectedMainOption,
-          },
-          sub: cartStore.subItems,
-          totalPrice: cartStore.totalPrice,
-        },
-      }),
-    );
-    navigation.navigate('SummitOrder');
-  };
-
-  const _getMoreItem = () => {
-    console.log('currrent cart', cartStore.currentStoreCode);
-    _isDiffStore();
-    dispatch(
-      saveItem({
-        storeCode: cartStore.currentStoreCode,
-        items: {
-          count: cartStore.mainCount.count,
-          main: {
-            ...cartStore.mainCount,
-            option: cartStore.selectedMainOption,
-          },
-          sub: cartStore.subItems,
-          totalPrice: cartStore.totalPrice,
-        },
-      }),
-    );
-    navigation.goBack();
-  };
-
   const _pressSaveCartButton = () => {
+    console.log('data222', data);
+    dispatch(
+      setCurrentStoreCode({
+        code: data.jumju_code,
+        jumju_id: data.jumju_id,
+        storeName: data.mb_company,
+      }),
+    );
+
+    dispatch(
+      saveItem({
+        storeCode: {
+          code: data.jumju_code,
+          jumju_id: data.jumju_id,
+          storeName: data.mb_company,
+        },
+        items: {
+          count: cartStore.mainCount.count,
+          main: {
+            ...cartStore.mainCount,
+            option: cartStore.selectedMainOption,
+          },
+          sub: cartStore.subItems,
+          totalPrice: cartStore.totalPrice,
+        },
+      }),
+    );
+
+    dispatch(setStoreLogo(data.store_logo));
+
+    // _isDiffStore();
+
     Alert.alert(
       '카트에 메뉴를 담았습니다.',
       '다른 가게의 메뉴를 담으면 카트에 담겨있는 메뉴는 없어집니다.',
@@ -136,6 +141,7 @@ const CartButton = ({
   return (
     <Pressable
       onPress={() => {
+        _isDiffStore();
         _router();
       }}
       style={{...style.btnContainer}}>

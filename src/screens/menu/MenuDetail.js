@@ -1,5 +1,6 @@
 import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   Image,
   PermissionsAndroid,
   Pressable,
@@ -10,17 +11,13 @@ import {
   View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Swiper from 'react-native-swiper';
-import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Header from '../../component/Header';
 import ImageSwipe from '../../component/menuDetail/ImageSwipe';
-import MenuList from '../../component/menuDetail/MenuList';
 import MenuDesc from '../../component/menuDetail/MenuDesc';
 import commonStyles from '../../styles/commonStyle';
 import colors from '../../styles/colors';
 import TextRegular from '../../component/text/TextRegular';
 import Dot from '../../component/Dot';
-import {color} from 'react-native-reanimated';
 import FastImage from 'react-native-fast-image';
 import TextMedium from '../../component/text/TextMedium';
 import TextBold from '../../component/text/TextBold';
@@ -29,22 +26,17 @@ import TextNotoR from '../../component/text/TextNotoR';
 import TextNotoB from '../../component/text/TextNotoB';
 import DividerL from '../../component/DividerL';
 import {Slider} from '@miblanchard/react-native-slider';
-import ImagePicker, {launchCamera} from 'react-native-image-picker';
-import {useMutation} from 'react-query';
-import storeAPI from '../../api/modules/storeAPI';
 import Loading from '../../component/Loading';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
 import {replaceString} from '../../config/utils/Price';
 import {useDispatch, useSelector} from 'react-redux';
-import {setStoreLogo} from '../../store/reducers/CartReducer';
 
 const MenuDetail = ({navigation, route}) => {
   const {mutateTopMenu, mutateStoreInfo, mutateAllMunu, mutateServiceTime} =
     useCustomMutation();
-  const dispatch = useDispatch();
-  const {storeLogoUrl} = useSelector(state => state.cartReducer);
   const {savedItem} = useSelector(state => state.cartReducer);
+  const {userInfo} = useSelector(state => state.authReducer);
 
   const routeData = route.params;
   const layout = useWindowDimensions();
@@ -105,9 +97,11 @@ const MenuDetail = ({navigation, route}) => {
   };
 
   const _init = () => {
+    console.log('_init data1', routeData);
     const data = {
       jumju_id: routeData.jumju_id,
       jumju_code: routeData.jumju_code,
+      mt_id: userInfo.mt_id,
     };
     console.log('_init data', data);
     mutateStoreInfo.mutate(data);
@@ -152,7 +146,7 @@ const MenuDetail = ({navigation, route}) => {
     _getTopMenu();
     _getAllMenu();
     _getServiceTime();
-  }, []);
+  }, [route.params]);
 
   useEffect(() => {
     if (chipTarget.current[selected.idx]) {
@@ -170,8 +164,8 @@ const MenuDetail = ({navigation, route}) => {
   }, [selected]);
 
   useEffect(() => {
-    if (mutateStoreInfo.data)
-      dispatch(setStoreLogo(mutateStoreInfo.data.data.arrItems.store_logo));
+    if (mutateStoreInfo.data) {
+    }
   }, [mutateStoreInfo.data]);
 
   if (
@@ -189,8 +183,22 @@ const MenuDetail = ({navigation, route}) => {
   const StoreTopMenu = mutateTopMenu.data.data.arrItems;
   const StoreServiceTime = mutateServiceTime?.data?.data?.arrItems;
 
+  console.log('StoreInfo', StoreInfo);
   // console.log('StoreTopMenu', StoreTopMenu);
   // console.log('StoreTopMenu', StoreAllMenu);
+
+  const _pressMenu = item => {
+    if (StoreInfo.isOpen === 'N')
+      return customAlert('알림', '현재 가게는 오픈 준비중 입니다.');
+    navigation.navigate('OptionSelect', {
+      it_id: item.it_id,
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+      mb_company: routeData.mb_company,
+      it_img1: item.it_img1,
+      store_logo: StoreInfo.store_logo,
+    });
+  };
 
   return (
     <>
@@ -303,6 +311,7 @@ const MenuDetail = ({navigation, route}) => {
             navigation={navigation}
             showLike={true}
             showShare={true}
+            storeInfo={StoreInfo}
             iconColor={'white'}
             title={''}
             style={{
@@ -392,9 +401,7 @@ const MenuDetail = ({navigation, route}) => {
                 }}>
                 <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
                   <TextRegular style={{fontSize: 15}}>
-                    수제버거 맛나버거가 부산에 상륙했습니다! 소고기 패티에
-                    신선한 야채와 치즈의 만남! 리뷰이벤트준비했으니 많이많이
-                    참여해주세요!
+                    {StoreInfo.store_service?.do_jumju_introduction}
                   </TextRegular>
                 </View>
                 <View
@@ -441,16 +448,10 @@ const MenuDetail = ({navigation, route}) => {
                   <View style={{flex: 1}}>
                     {/* 대표메뉴 */}
                     {/* OptionSelect route data 추후 수정 필요 */}
-                    {/* 수정 완료 07/21 j */}
                     {StoreTopMenu?.map((item, index) => (
                       <Pressable
                         onPress={() => {
-                          navigation.navigate('OptionSelect', {
-                            it_id: item.it_id,
-                            jumju_id: routeData.jumju_id,
-                            jumju_code: routeData.jumju_code,
-                            it_img1: item.it_img1,
-                          });
+                          _pressMenu(item);
                         }}
                         key={index}
                         style={{
@@ -533,12 +534,7 @@ const MenuDetail = ({navigation, route}) => {
                         {item.menus.map((item, index) => (
                           <Pressable
                             onPress={() => {
-                              navigation.navigate('OptionSelect', {
-                                it_id: item.it_id,
-                                jumju_id: routeData.jumju_id,
-                                jumju_code: routeData.jumju_code,
-                                it_img1: item.it_img1,
-                              });
+                              _pressMenu(item);
                             }}
                             key={index}
                             style={{

@@ -25,4 +25,12 @@ export default {
     const result = await _reqAPI('proc_cart_send_cost.php', data);
     return result;
   },
+  _getLikeList: async data => {
+    const result = await _reqAPI('proc_wish_store_list.php', data);
+    return result;
+  },
+  _setLikeStore: async data => {
+    const result = await _reqAPI('proc_wish_store_input.php', data);
+    return result;
+  },
 };

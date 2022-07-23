@@ -1,12 +1,14 @@
 import {View, Text} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import colors from '../styles/colors';
 import TextBold from './text/TextBold';
 import TextRegular from './text/TextRegular';
 import DividerL from './DividerL';
 import {replaceString} from '../config/utils/Price';
+import {useCustomMutation} from '../hooks/useCustomMutation';
+import {useSelector} from 'react-redux';
 
-const Receipt = ({orderResult}) => {
+const Receipt = ({orderResult, isSummary}) => {
   const menuData = orderResult
     ? JSON.parse(orderResult.orderResultData.data.arrItems.od_menu_data)
     : null;
@@ -81,7 +83,7 @@ const Receipt = ({orderResult}) => {
           }}>
           <TextRegular style={{color: colors.fontColor99}}>배달팁</TextRegular>
           <TextRegular style={{color: colors.fontColor3}}>
-            {replaceString(summitedData?.od_send_cost)}원
+            {/* {replaceString(summitedData?.od_send_cost)}원 */}
           </TextRegular>
         </View>
 
@@ -95,7 +97,7 @@ const Receipt = ({orderResult}) => {
             추가배달팁
           </TextRegular>
           <TextRegular style={{color: colors.fontColor3}}>
-            {replaceString(summitedData?.od_send_cost2)}원
+            {/* {replaceString(summitedData?.od_send_cost2)}원 */}
           </TextRegular>
         </View>
 
@@ -109,7 +111,7 @@ const Receipt = ({orderResult}) => {
             포장 할인
           </TextRegular>
           <TextRegular style={{color: colors.primary}}>
-            - {replaceString(summitedData?.od_takeout_discount)}원
+            {/* - {replaceString(summitedData?.od_takeout_discount)}원 */}
           </TextRegular>
         </View>
 
@@ -123,7 +125,7 @@ const Receipt = ({orderResult}) => {
             점주쿠폰 할인
           </TextRegular>
           <TextRegular style={{color: colors.primary}}>
-            - {replaceString(summitedData.od_coupon_price_store)}원
+            {/* - {replaceString(summitedData.od_coupon_price_store)}원 */}
           </TextRegular>
         </View>
 
@@ -132,7 +134,7 @@ const Receipt = ({orderResult}) => {
             동네북쿠폰 할인
           </TextRegular>
           <TextRegular style={{color: colors.primary}}>
-            - {replaceString(summitedData.od_coupon_price_system)}원
+            {/* - {replaceString(summitedData.od_coupon_price_system)}원 */}
           </TextRegular>
         </View>
 

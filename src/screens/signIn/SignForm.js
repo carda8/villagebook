@@ -135,7 +135,7 @@ const SignForm = ({navigation}) => {
       mt_id: e.mt_id,
       mt_pwd: e.mt_pwd,
       mt_pwd_re: e.mt_pwd_re,
-      // mt_name: e.mt_name,
+      mt_name: e.mt_nickname,
       mt_nickname: e.mt_nickname,
       mt_hp: e.mt_hp,
       mt_certify: e.mt_certify,

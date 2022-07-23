@@ -22,7 +22,7 @@ import loginConfig from './loginConfig';
 import {useMutation} from 'react-query';
 import authAPI from '../../api/modules/authAPI';
 import Loading from '../../component/Loading';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setUserInfo} from '../../store/reducers/AuthReducer';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
@@ -34,6 +34,7 @@ const Login = ({navigation}) => {
   const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const [logading, setLoading] = useState(false);
+  const {fcmToken} = useSelector(state => state.authReducer);
 
   const mutate = useMutation(authAPI._login, {
     onSuccess: async e => {
@@ -58,7 +59,7 @@ const Login = ({navigation}) => {
         await AuthStorageModuel._setItemAutoLogin(
           localStorageConfig.state.true,
         );
-        await AuthStorageModuel._setItemUserToken(e.data.arrItems.mt_app_token);
+        await AuthStorageModuel._setItemUserToken(fcmToken);
         await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
 
         dispatch(setUserInfo(e.data.arrItems));
@@ -73,6 +74,7 @@ const Login = ({navigation}) => {
     const data = {
       mt_id: e.mt_id,
       mt_pwd: e.mt_pwd,
+      mt_app_token: fcmToken,
     };
     mutate.mutate(data);
   };

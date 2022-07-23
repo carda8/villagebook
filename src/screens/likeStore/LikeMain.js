@@ -1,5 +1,5 @@
 import {View, Text, Pressable, StyleSheet} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
 import BottomBar from '../../component/BottomBar';
@@ -7,9 +7,38 @@ import Header from '../../component/Header';
 import colors from '../../styles/colors';
 import LikeItems from '../../component/likeStoreScreen/LikeItems';
 import {encode} from 'jwt-simple';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useSelector} from 'react-redux';
+import Loading from '../../component/Loading';
 
 const LikeMain = ({navigation}) => {
   const [tabIdx, setTabIdx] = useState(0);
+  const {mutateGetLikeList} = useCustomMutation();
+  const {userInfo} = useSelector(state => state.authReducer);
+  const [list, setList] = useState();
+  const itemLimit = useRef(0);
+
+  const _getList = type => {
+    const data = {
+      item_count: itemLimit.current,
+      limit_count: 20,
+      mt_id: userInfo.mt_id,
+      jumju_type: type,
+    };
+    console.log('data', data);
+    mutateGetLikeList.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') setList(e.data.arrItems);
+        else setList([]);
+      },
+    });
+  };
+
+  useEffect(() => {
+    _getList('food');
+  }, []);
+
+  if (!list) return <Loading />;
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -24,6 +53,7 @@ const LikeMain = ({navigation}) => {
           }}
           onPress={() => {
             setTabIdx(0);
+            _getList('food');
           }}>
           <View
             style={{
@@ -44,6 +74,7 @@ const LikeMain = ({navigation}) => {
           }}
           onPress={() => {
             setTabIdx(1);
+            _getList('market');
           }}>
           <View
             style={{
@@ -58,7 +89,7 @@ const LikeMain = ({navigation}) => {
             </Text>
           </View>
         </Pressable>
-        <Pressable
+        {/* <Pressable
           style={{
             ...styles.tabItemContainer,
           }}
@@ -77,24 +108,24 @@ const LikeMain = ({navigation}) => {
               편의
             </Text>
           </View>
-        </Pressable>
+        </Pressable> */}
       </View>
 
       {tabIdx === 0 && (
         <View style={{flex: 1, paddingHorizontal: 22}}>
-          <LikeItems navigation={navigation} data={[1, 2, 3]}></LikeItems>
+          <LikeItems navigation={navigation} data={list}></LikeItems>
         </View>
       )}
       {tabIdx === 1 && (
         <View style={{flex: 1, paddingHorizontal: 22}}>
-          <LikeItems navigation={navigation} data={[1, 2, 3, 4]}></LikeItems>
+          <LikeItems navigation={navigation} data={list}></LikeItems>
         </View>
       )}
-      {tabIdx === 2 && (
+      {/* {tabIdx === 2 && (
         <View style={{flex: 1, paddingHorizontal: 22}}>
           <LikeItems navigation={navigation} data={[1, 2, 3, 4, 5]}></LikeItems>
         </View>
-      )}
+      )} */}
       {/* <BottomBar navigation={navigation} /> */}
     </SafeAreaView>
   );

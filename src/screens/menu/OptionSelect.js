@@ -28,9 +28,7 @@ const OptionSelect = ({navigation, route}) => {
     state => state.menuReducer,
   );
   const dispatch = useDispatch();
-
-  const storeCode = 1;
-
+  console.log('## route', routeData);
   const _getMenuDetail = () => {
     const data = {
       jumju_id: routeData.jumju_id,
@@ -118,7 +116,7 @@ const OptionSelect = ({navigation, route}) => {
         style={{position: 'absolute', zIndex: 500}}
         isOption={true}
       />
-      <CartButton navigation={navigation} />
+      <CartButton navigation={navigation} data={routeData} />
       {/* <SectionList sections={convertedData} renderItem={item => <></>} /> */}
 
       <SectionList

@@ -8,5 +8,13 @@ export default {
   _getCategory: async data => {
     const result = await _reqAPI('proc_category_list.php', data);
     return result;
-  }
+  },
+  _getOrderHistory: async data => {
+    const result = await _reqAPI('proc_order_list.php', data);
+    return result;
+  },
+  _getOrderDetail: async data => {
+    const result = await _reqAPI('proc_order_detail.php', data);
+    return result;
+  },
 };

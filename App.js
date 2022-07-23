@@ -34,15 +34,6 @@ const qeuryClient = new QueryClient({
 const App = () => {
   const [isSplash, setIsSplash] = useState(true);
 
-  const _getToken = async () => {
-    const temp = await messaging().getToken();
-    console.log('FCM TOKEN', temp);
-  };
-
-  useEffect(() => {
-    _getToken();
-  }, []);
-
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));

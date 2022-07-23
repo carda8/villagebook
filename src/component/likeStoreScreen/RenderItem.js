@@ -3,9 +3,31 @@ import React, {useState} from 'react';
 import FastImage from 'react-native-fast-image';
 import TextMedium from '../text/TextMedium';
 import colors from '../../styles/colors';
+import {customAlert} from '../CustomAlert';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useSelector} from 'react-redux';
 
 const RenderItem = ({item, remove, navigation}) => {
   const [temp, setTemp] = useState(false);
+  const {mutateSetLikeStore} = useCustomMutation();
+  const {userInfo} = useSelector(state => state.authReducer);
+
+  const _setLikeStore = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+      jumju_id: item.item.jumju_id,
+      jumju_code: item.item.jumju_code,
+    };
+    console.log('data', data);
+    mutateSetLikeStore.mutate(data, {
+      onSuccess: e => {
+        console.log('ee', e);
+      },
+    });
+  };
+
+  console.log('item', item);
+  const data = item.item;
   return (
     <View
       key={item.idx}
@@ -13,7 +35,7 @@ const RenderItem = ({item, remove, navigation}) => {
         flex: 1,
         backgroundColor: 'white',
         borderBottomWidth: 1,
-        paddingVertical: 10,
+        paddingVertical: 25,
         borderBottomColor: colors.borderColor,
         marginBottom: 10,
         borderRadius: 12,
@@ -22,20 +44,12 @@ const RenderItem = ({item, remove, navigation}) => {
         <Pressable
           style={{flexDirection: 'row', flex: 1}}
           onPress={() => {
-            if (remove) setTemp(!temp);
-            if (!remove) navigation.navigate('MenuDetail');
+            navigation.navigate('MenuDetail', {
+              jumju_id: data.jumju_id,
+              jumju_code: data.jumju_code,
+              mb_company: data.mb_company,
+            });
           }}>
-          {remove && (
-            <Image
-              source={
-                temp
-                  ? require('~/assets/top_ic_map_on.png')
-                  : require('~/assets/top_ic_map_off.png')
-              }
-              style={{width: 20, height: 20, marginRight: 5}}
-            />
-          )}
-
           <View
             style={{
               width: 100,
@@ -47,14 +61,18 @@ const RenderItem = ({item, remove, navigation}) => {
               overflow: 'hidden',
             }}>
             <FastImage
-              source={require('~/assets/dummy/CK_tica114m19040204_l.jpg')}
+              source={
+                data.store_logo
+                  ? {uri: data.store_logo}
+                  : require('~/assets/no_img.png')
+              }
               resizeMode={FastImage.resizeMode.cover}
               style={{flex: 1}}
             />
           </View>
           <View style={{flex: 1}}>
             <TextMedium style={{fontSize: 17, color: colors.fontColor2}}>
-              {'백종원 짬뽕'}
+              {data.mb_company}
             </TextMedium>
             <View
               style={{
@@ -66,13 +84,36 @@ const RenderItem = ({item, remove, navigation}) => {
                 style={{width: 15, height: 15}}
               />
               <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
-                {'(4.7)'}
+                {data.stars}
               </TextMedium>
             </View>
             <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
-              {'최소주문 10,000 배달팁 4,000원'}
+              {'최소주문 ' + data.minPrice}
+            </TextMedium>
+            <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
+              {'배달팁' + data.tipFrom + '~' + data.tipTo + '원'}
             </TextMedium>
           </View>
+          <Pressable
+            hitSlop={10}
+            onPress={() => {
+              customAlert(
+                '찜 삭제',
+                '단골찜에서 삭제하시겠습니까?',
+                '확인',
+                () => {
+                  _setLikeStore();
+                },
+                '취소',
+                () => {},
+              );
+            }}
+            style={{alignItems: 'center', justifyContent: 'center'}}>
+            <Image
+              source={require('~/assets/top_heart_w.png')}
+              style={{width: 30, height: 30, tintColor: colors.primary}}
+            />
+          </Pressable>
         </Pressable>
       </View>
     </View>

@@ -12,7 +12,7 @@ import DividerL from '../../../component/DividerL';
 import CartButton from '../CartButton';
 import {useDispatch, useSelector} from 'react-redux';
 import {replaceString} from '../../../config/utils/Price';
-import {removeItem} from '../../../store/reducers/CartReducer';
+import {removeItem, resetSavedItem} from '../../../store/reducers/CartReducer';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
 import Loading from '../../../component/Loading';
 import {
@@ -22,12 +22,13 @@ import {
 } from '../../../store/reducers/PaymentReducer';
 import Cart from './Cart';
 
-const SummitOrder = ({navigation}) => {
+const SummitOrder = ({navigation, route}) => {
   const {mutateDeliveryFee} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
   const dispatch = useDispatch();
   console.log('summit cart store', cartStore);
   console.log('item main option');
+  console.log('summit route data', route.params);
   const [isDelivery, setIsDelivery] = useState(true);
 
   const _filterOption = prop => {
@@ -76,28 +77,39 @@ const SummitOrder = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (mutateDeliveryFee.data) {
+    if (mutateDeliveryFee.data?.arrItems) {
       dispatch(setDeliveryData(mutateDeliveryFee.data.data.arrItems[0]));
     }
   }, [mutateDeliveryFee.data]);
+
+  if (cartStore.savedItem.savedItems.length === 0)
+    return (
+      <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
+        <Header title={'카트'} navigation={navigation} />
+        <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+          <Image
+            source={require('~/assets/no_cart.png')}
+            style={{width: 300, height: 300}}
+          />
+        </View>
+      </SafeAreaView>
+    );
 
   if (!mutateDeliveryFee.data || mutateDeliveryFee.isLoading)
     return <Loading />;
   console.log('mutate data', mutateDeliveryFee.data);
   const DeliveryData = mutateDeliveryFee.data.data.arrItems[0];
 
-  if (cartStore.savedItem.savedItems.length === 0)
-    return <Cart navigation={navigation} />;
-
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'카트'} navigation={navigation} isSummit />
+      <Header title={'카트'} navigation={navigation} />
       <CartButton
         navigation={navigation}
         goTo={'OrderPage'}
         isDelivery={isDelivery}
         lastPrice={_getTotalPrice(true)}
         deliveryData={DeliveryData}
+        data={route.params?.data}
       />
       <ScrollView contentContainerStyle={{paddingBottom: 100}}>
         <View
@@ -204,6 +216,7 @@ const SummitOrder = ({navigation}) => {
 
           <Pressable
             onPress={() => {
+              console.log('path1', cartStore.currentStoreCode);
               navigation.navigate('MenuDetail', {
                 jumju_id: cartStore.currentStoreCode.jumju_id,
                 jumju_code: cartStore.currentStoreCode.code,
