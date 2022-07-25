@@ -77,7 +77,6 @@ const Header = ({
     }
     // console.log('optionHeader', optionHeader);
   }, [optionHeader]);
-  console.log('info', storeInfo);
 
   return (
     <>

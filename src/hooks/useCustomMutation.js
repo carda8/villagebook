@@ -9,6 +9,14 @@ import {customAlert} from '../component/CustomAlert';
 
 export const useCustomMutation = () => {
   //Main
+  const mutateSignIn = useMutation(authAPI._submitForm, {
+    onSuccess: e => {
+      // Alert.alert('알림', `인증번호가 발송 되었습니다.`);
+      console.log('mutateSignIn', e);
+      return e;
+    },
+  });
+
   const mutateOrderHistory = useMutation(mainAPI._getOrderHistory, {
     onSuccess: e => {
       console.log('mutateOrderHistory', e);
@@ -24,6 +32,12 @@ export const useCustomMutation = () => {
   });
 
   //Auth
+  const mutateSNSlogin = useMutation(authAPI._snsLogin, {
+    onSuccess: e => {
+      console.log('e', e);
+    },
+  });
+
   const mutateFindId = useMutation(authAPI._findId, {
     onSuccess: e => {
       if (e.result === 'false') {
@@ -115,19 +129,35 @@ export const useCustomMutation = () => {
 
   const mutateGetLikeList = useMutation(storeAPI._getLikeList, {
     onSuccess: e => {
-      console.log('mutateSaveItemInCart', e);
+      console.log('mutateGetLikeList', e);
       return e;
     },
   });
 
   const mutateSetLikeStore = useMutation(storeAPI._setLikeStore, {
     onSuccess: e => {
-      console.log('mutateSaveItemInCart', e);
+      console.log('mutateSetLikeStore', e);
+      return e;
+    },
+  });
+
+  const mutateGetCoupon = useMutation(mainAPI._getCoupon, {
+    onSuccess: e => {
+      console.log('mutateGetCoupon', e);
+      return e;
+    },
+  });
+
+  const mutateGetUseInfo = useMutation(mainAPI._getUseInfo, {
+    onSuccess: e => {
+      console.log('mutateGetUseInfo', e);
       return e;
     },
   });
 
   return {
+    mutateSignIn,
+    mutateSNSlogin,
     mutateFindId,
     mutateSendCode,
     mutateTopMenu,
@@ -142,5 +172,7 @@ export const useCustomMutation = () => {
     mutateOrderDetail,
     mutateSetLikeStore,
     mutateGetLikeList,
+    mutateGetCoupon,
+    mutateGetUseInfo,
   };
 };

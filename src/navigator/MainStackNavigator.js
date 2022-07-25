@@ -52,13 +52,15 @@ import {setFcmToken, setUserInfo} from '../store/reducers/AuthReducer';
 import PaymentMain from '../screens/payment/PaymentMain';
 import messaging from '@react-native-firebase/messaging';
 import {Errorhandler} from '../config/ErrorHandler';
-import {customAlert} from '../component/CustomAlert';
+import UseInfo from '../screens/policy/UseInfo';
+import {useCustomMutation} from '../hooks/useCustomMutation';
 
 const Stack = createNativeStackNavigator();
 
 const MainStackNavigator = () => {
   const [initRoute, setInitRoute] = useState();
   const dispatch = useDispatch();
+  const {mutateSNSlogin} = useCustomMutation();
 
   const _getFcmToken = async () => {
     try {
@@ -79,20 +81,18 @@ const MainStackNavigator = () => {
       if (userInfo) {
         dispatch(setUserInfo(userInfo));
         setInitRoute('Main');
-      } else
-        customAlert(
-          '알림',
-          '로그인중 문제가 발생하였습니다. 다시 로그인 해주세요.',
-        );
+      } else setInitRoute('Login');
     },
   });
 
-  const _autoLogin = (token, id) => {
+  const _autoLogin = (token, id, type) => {
     const data = {
       mt_id: id,
       mt_app_token: token,
     };
-    mutateAutoLogin.mutate(data);
+    if (type === localStorageConfig.loginType.sns) {
+      mutateSNSlogin.mutate(data);
+    } else mutateAutoLogin.mutate(data);
   };
 
   const _initRoute = async () => {
@@ -101,9 +101,10 @@ const MainStackNavigator = () => {
       const auto = await AuthStorage._getItemAutoLogin();
       const token = await AuthStorage._getItemUserToken();
       const userId = await AuthStorage._getItemUserId();
+      const loginType = await AuthStorage._getItemLoginType();
 
       if (auto === localStorageConfig.state.true && token && userId)
-        _autoLogin(token, userId);
+        _autoLogin(token, userId, loginType);
       else setInitRoute('Login');
     } catch (err) {
       Errorhandler(err);
@@ -156,6 +157,12 @@ const MainStackNavigator = () => {
         <Stack.Screen name="OrderFinish" component={OrderFinish} />
         <Stack.Screen name="Cart" component={Cart} />
         <Stack.Screen name="PushList" component={PushList} />
+
+        <Stack.Screen
+          name="UseInfo"
+          component={UseInfo}
+          options={{animation: 'slide_from_bottom'}}
+        />
 
         <Stack.Screen name="Map" component={Map} />
         <Stack.Screen name="AddressSearch" component={AddressSearch} />

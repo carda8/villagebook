@@ -6,6 +6,10 @@ export default {
     const result = await _reqAPI('proc_member_login.php', data);
     return result;
   },
+  _snsLogin: async data => {
+    const result = await _reqAPI('proc_member_login_social.php', data);
+    return result;
+  },
   _autoLogin: async data => {
     const result = await _reqAPI('proc_member_login_chk.php', data);
     return result;

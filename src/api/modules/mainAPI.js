@@ -17,4 +17,12 @@ export default {
     const result = await _reqAPI('proc_order_detail.php', data);
     return result;
   },
+  _getCoupon: async data => {
+    const result = await _reqAPI('proc_coupon_list.php', data);
+    return result;
+  },
+  _getUseInfo: async data => {
+    const result = await _reqAPI('proc_info_use.php', data);
+    return result;
+  },
 };

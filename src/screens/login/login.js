@@ -29,12 +29,14 @@ import * as yup from 'yup';
 import localStorageConfig from '../../store/localStorage/localStorageConfig';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import SNSLogin from './SNSLogin';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
 
 const Login = ({navigation}) => {
   const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const [logading, setLoading] = useState(false);
   const {fcmToken} = useSelector(state => state.authReducer);
+  const {mutateSNSlogin} = useCustomMutation();
 
   const mutate = useMutation(authAPI._login, {
     onSuccess: async e => {
@@ -60,6 +62,9 @@ const Login = ({navigation}) => {
           localStorageConfig.state.true,
         );
         await AuthStorageModuel._setItemUserToken(fcmToken);
+        await AuthStorageModuel._setItemLoginType(
+          localStorageConfig.loginType.local,
+        );
         await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
 
         dispatch(setUserInfo(e.data.arrItems));
@@ -100,6 +105,46 @@ const Login = ({navigation}) => {
   const handleSubmit = e => {
     setLoading(true);
     _login(e);
+  };
+
+  const _NaverLogin = async () => {
+    const result = await SNSLogin._NaverLogin(fcmToken);
+    const data = {
+      mt_id: result.mt_id,
+      mt_pwd: result.mt_pwd,
+      mt_app_token: result.mt_app_token,
+      mt_login_type: '2',
+      mt_image1: result.mt_image1,
+      mt_hp: result.mt_hp,
+      mt_name: result.mt_name,
+      mt_email: result.mt_email,
+      mt_nickname: result.mt_nickname,
+    };
+
+    // 로그인 하기
+    console.log('result', result);
+    console.log('data', data);
+
+    mutateSNSlogin.mutate(result, {
+      onSuccess: async e => {
+        if (e.result === 'true') {
+          console.log('login e', e);
+          await AuthStorageModuel._setItemAutoLogin(
+            localStorageConfig.state.true,
+          );
+          await AuthStorageModuel._setItemUserToken(fcmToken);
+          await AuthStorageModuel._setItemLoginType(
+            localStorageConfig.loginType.sns,
+          );
+          await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
+
+          dispatch(setUserInfo(e.data.arrItems));
+          navigation.reset({
+            routes: [{name: 'Main'}],
+          });
+        }
+      },
+    });
   };
 
   if (logading) return <Loading />;
@@ -197,7 +242,9 @@ const Login = ({navigation}) => {
             }}>
             {/* 네이버 */}
             <Pressable
-              onPress={() => {}}
+              onPress={() => {
+                _NaverLogin();
+              }}
               style={{
                 ...style.snsButton,
               }}>
@@ -207,7 +254,7 @@ const Login = ({navigation}) => {
                 resizeMode={'contain'}></Image>
             </Pressable>
             {/* 페이스북 */}
-            <Pressable
+            {/* <Pressable
               onPress={() => {}}
               style={{
                 ...style.snsButton,
@@ -216,7 +263,7 @@ const Login = ({navigation}) => {
                 source={require('../../assets/sns_facebook.png')}
                 style={{...style.snsImage}}
                 resizeMode={'contain'}></Image>
-            </Pressable>
+            </Pressable> */}
             {/* 카카오 */}
             <Pressable
               onPress={() => SNSLogin._KakaoLogin()}
