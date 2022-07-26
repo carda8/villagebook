@@ -31,6 +31,7 @@ import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
 import {replaceString} from '../../config/utils/Price';
 import {useDispatch, useSelector} from 'react-redux';
+import MenuReview from './MenuReview';
 
 const MenuDetail = ({navigation, route}) => {
   const {mutateTopMenu, mutateStoreInfo, mutateAllMunu, mutateServiceTime} =
@@ -50,51 +51,6 @@ const MenuDetail = ({navigation, route}) => {
   const scrollRefSub = useRef();
   const focusTarget = useRef([]);
   const chipTarget = useRef([]);
-
-  const _setRating = isTotal => {
-    const temp = 5;
-    let temp2 = [];
-
-    for (let i = 0; i < temp; i++) {
-      temp2.push(
-        <Image
-          key={i}
-          source={require('~/assets/ico_star_on.png')}
-          style={{width: isTotal ? 20 : 16, height: isTotal ? 20 : 16}}
-          resizeMode="contain"
-        />,
-      );
-    }
-
-    return temp2;
-  };
-
-  const _setSlider = () => {
-    const temp = 5;
-    let temp2 = [];
-    for (let i = 0; i < 5; i++) {
-      temp2.push(
-        <View key={i} style={{flexDirection: 'row'}}>
-          <Slider
-            value={1}
-            maximumValue={5}
-            disabled
-            minimumTrackTintColor={colors.primary}
-            trackStyle={{
-              backgroundColor: 'white',
-              height: 5,
-              padding: 0,
-              margin: 0,
-            }}
-            containerStyle={{width: 87, height: 20}}
-            renderThumbComponent={() => <></>}
-          />
-          <Text style={{marginLeft: 10}}>{'5점 (40)'}</Text>
-        </View>,
-      );
-    }
-    return temp2;
-  };
 
   const _init = () => {
     console.log('_init data1', routeData);
@@ -392,6 +348,7 @@ const MenuDetail = ({navigation, route}) => {
               </Pressable>
             </View>
           </View>
+          {/* 메뉴 탭 */}
           {index === 0 && (
             <>
               <View
@@ -603,7 +560,7 @@ const MenuDetail = ({navigation, route}) => {
               </View>
             </>
           )}
-
+          {/* 정보 탭 */}
           {index === 1 && (
             <View style={{flex: 1}}>
               <View
@@ -721,163 +678,12 @@ const MenuDetail = ({navigation, route}) => {
               </View>
             </View>
           )}
+
+          {/* 리뷰 탭 */}
           {index === 2 && (
-            <View style={{flex: 1}}>
-              <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
-                <TextRegular style={{fontSize: 15}}>
-                  리뷰 이벤트를 진행하시면 서비스로 OO을 드립니다. 참여시려면
-                  주문시 비고란에 리뷰 참여라고 입력 하시고 반드시 리뷰를
-                  작성해주세요~
-                </TextRegular>
-              </View>
-
-              <View
-                style={{
-                  height: 227,
-                  backgroundColor: '#F5F5F5',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingHorizontal: 22,
-                }}>
-                <View style={{flexDirection: 'row'}}>
-                  <TextBold style={{fontSize: 15}}>이 상품에 </TextBold>
-                  <TextBold style={{fontSize: 15, color: colors.primary}}>
-                    {'00명'}
-                  </TextBold>
-                  <TextBold style={{fontSize: 15}}>이</TextBold>
-                </View>
-
-                <TextBold style={{fontSize: 15}}>
-                  소중한 리뷰를 남겨주었습니다.
-                </TextBold>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: 20,
-                  }}>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                    }}>
-                    <TextBold style={{fontSize: 44, color: colors.primary}}>
-                      {''}4.3
-                    </TextBold>
-                    <View style={{flexDirection: 'row'}}>
-                      {_setRating(true)}
-                    </View>
-                  </View>
-                  <View style={{marginLeft: 30}}>{_setSlider()}</View>
-                </View>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: 'white',
-                  paddingHorizontal: 22,
-                  paddingVertical: 35,
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginBottom: 15,
-                  }}>
-                  <Image
-                    source={require('~/assets/no_img.png')}
-                    style={{
-                      width: 38,
-                      height: 38,
-                      borderRadius: 38 / 2,
-                      marginRight: 13,
-                    }}
-                    resizeMode="contain"
-                  />
-                  <View>
-                    {/* 카메라 돌아 저장 시 돌아감  */}
-                    {/* <Pressable
-                      onPress={async () => {
-                        await PermissionsAndroid.request(
-                          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                        );
-                        const result = await launchCamera(
-                          {
-                            mediaType: 'photo',
-                            // saveToPhotos: true,
-                          },
-                          res => {
-                            console.log('result::', res);
-                          },
-                        );
-                        console.log('result', result);
-                      }}
-                      style={{height: 20, backgroundColor: 'gray'}}></Pressable> */}
-                    <TextBold style={{fontSize: 15, color: colors.fontColor2}}>
-                      맛집대동여지도
-                    </TextBold>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <TextRegular
-                        style={{fontSize: 13, color: colors.fontColorA2}}>
-                        7달전
-                      </TextRegular>
-                      <View style={{flexDirection: 'row', marginLeft: 23}}>
-                        {_setRating(false)}
-                      </View>
-                    </View>
-                  </View>
-                </View>
-                <TextRegular>
-                  맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
-                  맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
-                </TextRegular>
-                <FastImage
-                  source={require('~/assets/dummy/CK_tc01560002923_l.jpg')}
-                  resizeMode={FastImage.resizeMode.cover}
-                  style={{
-                    flex: 1,
-                    height: 245,
-                    marginTop: 20,
-                    marginBottom: 8,
-                    borderRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    borderRadius: 15,
-                    borderTopLeftRadius: 0,
-                    backgroundColor: colors.storeIcon,
-                    paddingVertical: 16,
-                    paddingHorizontal: 13,
-                  }}>
-                  <View
-                    style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-                    <Image
-                      source={require('~/assets/no_img.png')}
-                      style={{width: 38, height: 38, borderRadius: 38 / 2}}
-                      resizeMode="cover"
-                    />
-                    <View style={{marginLeft: 15, flex: 1}}>
-                      <TextBold style={{fontSize: 16, color: colors.primary}}>
-                        맛나버거 부산대점
-                      </TextBold>
-                      <TextRegular
-                        style={{fontSize: 13, color: colors.fontColorA2}}>
-                        {Date()}
-                      </TextRegular>
-                      <TextRegular
-                        style={{
-                          fontSize: 15,
-                          color: colors.fontColor2,
-                          marginTop: 7,
-                        }}>
-                        맛있다고 하시니 다행입니다. 많이 이용해주세요
-                      </TextRegular>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
+            <>
+              <MenuReview storeInfo={StoreInfo} />
+            </>
           )}
 
           {index !== 2 && (

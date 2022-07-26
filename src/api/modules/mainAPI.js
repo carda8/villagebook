@@ -25,4 +25,8 @@ export default {
     const result = await _reqAPI('proc_info_use.php', data);
     return result;
   },
+  _getStoreReview: async data => {
+    const result = await _reqAPI('proc_store_review_list.php', data);
+    return result;
+  },
 };

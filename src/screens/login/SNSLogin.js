@@ -5,9 +5,10 @@ import {
 import {getProfile, NaverLogin} from '@react-native-seoul/naver-login';
 import {kConsumerKey, kConsumerSecret} from '@env';
 import {useSelector} from 'react-redux';
+import {customAlert} from '../../component/CustomAlert';
 
 export default {
-  _KakaoLogin: async () => {
+  _KakaoLogin: async fcmToken => {
     try {
       await KakaoLogin();
       const profile = await getKakaoProfile();
@@ -16,9 +17,26 @@ export default {
         email: profile.email,
         nickname: profile.nickname,
       };
+      const data = {
+        mt_id: profile.id,
+        mt_pwd: '',
+        mt_pwd_re: '',
+        mt_name: profile.nickname,
+        mt_nickname: profile.nickname,
+        mt_hp: profile?.phoneNumber.replace(/-/gi, ''),
+        mt_certify: 1,
+        mt_email: profile.email,
+        mt_level: 2,
+        mt_image1: profile.thumbnailImageUrl,
+        mb_login_type: 3,
+        mt_app_token: fcmToken,
+      };
+
       console.log('kakao ###', profile);
+      return data;
       //   handleSNSLogin('3', userInfo);
     } catch (error) {
+      // customAlert('알림', '카카오 로그인이 취소되었습니다.');
       console.error(error);
       console.log('카카오 로그인이 취소되었습니다.');
     }
@@ -54,7 +72,7 @@ export default {
           mt_pwd_re: '',
           mt_name: profileData.nickname,
           mt_nickname: profileData.nickname,
-          mt_hp: profileData.mobile.replaceAll('-', ''),
+          mt_hp: profileData.mobile.replace(/-/gi, ''),
           mt_certify: 1,
           mt_email: profileData.email,
           mt_level: 2,

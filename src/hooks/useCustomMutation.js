@@ -10,7 +10,7 @@ import {customAlert} from '../component/CustomAlert';
 export const useCustomMutation = () => {
   //Main
   const mutateSignIn = useMutation(authAPI._submitForm, {
-    onSuccess: e => {
+    onSettled: e => {
       // Alert.alert('알림', `인증번호가 발송 되었습니다.`);
       console.log('mutateSignIn', e);
       return e;
@@ -18,14 +18,14 @@ export const useCustomMutation = () => {
   });
 
   const mutateOrderHistory = useMutation(mainAPI._getOrderHistory, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateOrderHistory', e);
       return e;
     },
   });
 
   const mutateOrderDetail = useMutation(mainAPI._getOrderDetail, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateOrderDetail', e);
       return e;
     },
@@ -33,13 +33,13 @@ export const useCustomMutation = () => {
 
   //Auth
   const mutateSNSlogin = useMutation(authAPI._snsLogin, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('e', e);
     },
   });
 
   const mutateFindId = useMutation(authAPI._findId, {
-    onSuccess: e => {
+    onSettled: e => {
       if (e.result === 'false') {
         Alert.alert('알림', `${e.msg}`);
         return e;
@@ -54,7 +54,7 @@ export const useCustomMutation = () => {
   });
 
   const mutateSendCode = useMutation(authAPI._sendCode, {
-    onSuccess: e => {
+    onSettled: e => {
       if (e.result === 'false') {
         Alert.alert('알림', `${e.msg}`);
         return e;
@@ -70,7 +70,7 @@ export const useCustomMutation = () => {
 
   //Store
   const mutateTopMenu = useMutation(storeAPI._getTopMenu, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateTopMenu', e);
       // customAlert('')
       return e;
@@ -78,7 +78,7 @@ export const useCustomMutation = () => {
   });
 
   const mutateAllMunu = useMutation(storeAPI._getAllMenu, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateAllMunu', e);
       // customAlert('')
       return e;
@@ -86,71 +86,78 @@ export const useCustomMutation = () => {
   });
 
   const mutateStoreInfo = useMutation(storeAPI._getStoreInfo, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateStoreInfo', e);
       return e;
     },
   });
 
   const mutateServiceTime = useMutation(storeAPI._getServiceTime, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateServiceTime', e);
       return e;
     },
   });
 
   const mutateMenuDetail = useMutation(storeAPI._getMenuDetail, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateMenuDetail', e);
       return e;
     },
   });
 
   const mutateDeliveryFee = useMutation(storeAPI._getDeliveryFee, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateDeliveryFee', e);
       return e;
     },
   });
 
   const mutateFinishTransaction = useMutation(paymentAPI._finishTransaction, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateFinishTransaction', e);
       return e;
     },
   });
 
   const mutateSaveItemInCart = useMutation(cartAPI._saveItemInCart, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateSaveItemInCart', e);
       return e;
     },
   });
 
   const mutateGetLikeList = useMutation(storeAPI._getLikeList, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateGetLikeList', e);
       return e;
     },
   });
 
   const mutateSetLikeStore = useMutation(storeAPI._setLikeStore, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateSetLikeStore', e);
       return e;
     },
   });
 
   const mutateGetCoupon = useMutation(mainAPI._getCoupon, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateGetCoupon', e);
       return e;
     },
   });
 
   const mutateGetUseInfo = useMutation(mainAPI._getUseInfo, {
-    onSuccess: e => {
+    onSettled: e => {
       console.log('mutateGetUseInfo', e);
+      return e;
+    },
+  });
+
+  const mutateGetReview = useMutation(mainAPI._getStoreReview, {
+    onSettled: e => {
+      console.log('mutateGetReview', e);
       return e;
     },
   });
@@ -174,5 +181,6 @@ export const useCustomMutation = () => {
     mutateGetLikeList,
     mutateGetCoupon,
     mutateGetUseInfo,
+    mutateGetReview,
   };
 };

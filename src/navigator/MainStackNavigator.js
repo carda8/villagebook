@@ -91,7 +91,15 @@ const MainStackNavigator = () => {
       mt_app_token: token,
     };
     if (type === localStorageConfig.loginType.sns) {
-      mutateSNSlogin.mutate(data);
+      mutateSNSlogin.mutate(data, {
+        onSuccess: e => {
+          const userInfo = e.data.arrItems;
+          if (userInfo) {
+            dispatch(setUserInfo(userInfo));
+            setInitRoute('Main');
+          } else setInitRoute('Login');
+        },
+      });
     } else mutateAutoLogin.mutate(data);
   };
 

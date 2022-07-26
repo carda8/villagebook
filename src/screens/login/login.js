@@ -30,6 +30,8 @@ import localStorageConfig from '../../store/localStorage/localStorageConfig';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import SNSLogin from './SNSLogin';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {Errorhandler} from '../../config/ErrorHandler';
+import ImageCropPicker from 'react-native-image-crop-picker';
 
 const Login = ({navigation}) => {
   const layout = useWindowDimensions();
@@ -114,7 +116,7 @@ const Login = ({navigation}) => {
       mt_pwd: result.mt_pwd,
       mt_app_token: result.mt_app_token,
       mt_login_type: '2',
-      mt_image1: result.mt_image1,
+      mt_sns_url: result.mt_image1,
       mt_hp: result.mt_hp,
       mt_name: result.mt_name,
       mt_email: result.mt_email,
@@ -125,23 +127,70 @@ const Login = ({navigation}) => {
     console.log('result', result);
     console.log('data', data);
 
-    mutateSNSlogin.mutate(result, {
+    mutateSNSlogin.mutate(data, {
       onSuccess: async e => {
         if (e.result === 'true') {
-          console.log('login e', e);
-          await AuthStorageModuel._setItemAutoLogin(
-            localStorageConfig.state.true,
-          );
-          await AuthStorageModuel._setItemUserToken(fcmToken);
-          await AuthStorageModuel._setItemLoginType(
-            localStorageConfig.loginType.sns,
-          );
-          await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
+          try {
+            console.log('login e', e);
+            await AuthStorageModuel._setItemAutoLogin(
+              localStorageConfig.state.true,
+            );
+            await AuthStorageModuel._setItemUserToken(fcmToken);
+            await AuthStorageModuel._setItemLoginType(
+              localStorageConfig.loginType.sns,
+            );
+            await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
 
-          dispatch(setUserInfo(e.data.arrItems));
-          navigation.reset({
-            routes: [{name: 'Main'}],
-          });
+            dispatch(setUserInfo(e.data.arrItems));
+            navigation.reset({
+              routes: [{name: 'Main'}],
+            });
+          } catch (err) {
+            Errorhandler(err);
+          }
+        }
+      },
+    });
+  };
+
+  const _KakaoLogin = async () => {
+    const result = await SNSLogin._KakaoLogin(fcmToken);
+    const data = {
+      mt_id: result.mt_id,
+      mt_pwd: result.mt_pwd,
+      mt_app_token: result.mt_app_token,
+      mt_login_type: '3',
+      mt_sns_url: result.mt_image1,
+      mt_hp: result.mt_hp,
+      mt_name: result.mt_name,
+      mt_email: result.mt_email,
+      mt_nickname: result.mt_nickname,
+    };
+
+    console.log('result', result);
+    console.log('data', data);
+
+    mutateSNSlogin.mutate(data, {
+      onSuccess: async e => {
+        if (e.result === 'true') {
+          try {
+            console.log('login e', e);
+            await AuthStorageModuel._setItemAutoLogin(
+              localStorageConfig.state.true,
+            );
+            await AuthStorageModuel._setItemUserToken(fcmToken);
+            await AuthStorageModuel._setItemLoginType(
+              localStorageConfig.loginType.sns,
+            );
+            await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
+
+            dispatch(setUserInfo(e.data.arrItems));
+            navigation.reset({
+              routes: [{name: 'Main'}],
+            });
+          } catch (err) {
+            Errorhandler(err);
+          }
         }
       },
     });
@@ -266,7 +315,7 @@ const Login = ({navigation}) => {
             </Pressable> */}
             {/* 카카오 */}
             <Pressable
-              onPress={() => SNSLogin._KakaoLogin()}
+              onPress={() => _KakaoLogin()}
               style={{
                 ...style.snsButton,
               }}>

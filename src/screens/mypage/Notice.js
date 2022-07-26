@@ -47,7 +47,7 @@ const Notice = ({navigation}) => {
         data={arr}
         ListHeaderComponent={() => (
           <>
-            <View
+            {/* <View
               style={{
                 paddingHorizontal: 22,
                 paddingVertical: 10,
@@ -76,7 +76,7 @@ const Notice = ({navigation}) => {
                 }}
               />
             </View>
-            <DividerL />
+            <DividerL /> */}
           </>
         )}
         ItemSeparatorComponent={() => (

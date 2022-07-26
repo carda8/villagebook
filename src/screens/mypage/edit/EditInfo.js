@@ -111,7 +111,11 @@ const EditInfo = ({navigation}) => {
             <TextMedium style={{color: colors.fontColorA}}>
               휴대폰번호
             </TextMedium>
-            <TextMedium style={{color: colors.fontColorA}}>비밀번호</TextMedium>
+            {userInfo.mt_login_type === '1' && (
+              <TextMedium style={{color: colors.fontColorA}}>
+                비밀번호
+              </TextMedium>
+            )}
           </View>
 
           {/* 해당 항목 유저 정보 */}
@@ -126,9 +130,11 @@ const EditInfo = ({navigation}) => {
             <TextMedium style={{color: colors.fontColor2}}>
               {userInfo.mt_hp}
             </TextMedium>
-            <TextMedium style={{color: colors.fontColor2}}>
-              {'************'}
-            </TextMedium>
+            {userInfo.mt_login_type === '1' && (
+              <TextMedium style={{color: colors.fontColor2}}>
+                {'************'}
+              </TextMedium>
+            )}
           </View>
           <View style={{justifyContent: 'space-evenly', width: 40}}>
             <Pressable
@@ -173,20 +179,22 @@ const EditInfo = ({navigation}) => {
                 변경
               </TextMedium>
             </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate('EditSummit', {
-                  target: EditConfig.target.password,
-                });
-              }}
-              hitSlop={10}
-              style={{
-                ...styles.btnEdit,
-              }}>
-              <TextMedium style={{color: colors.fontColor2, fontSize: 12}}>
-                변경
-              </TextMedium>
-            </Pressable>
+            {userInfo.mt_login_type === '1' && (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('EditSummit', {
+                    target: EditConfig.target.password,
+                  });
+                }}
+                hitSlop={10}
+                style={{
+                  ...styles.btnEdit,
+                }}>
+                <TextMedium style={{color: colors.fontColor2, fontSize: 12}}>
+                  변경
+                </TextMedium>
+              </Pressable>
+            )}
           </View>
         </View>
         <View
