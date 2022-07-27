@@ -54,6 +54,7 @@ import messaging from '@react-native-firebase/messaging';
 import {Errorhandler} from '../config/ErrorHandler';
 import UseInfo from '../screens/policy/UseInfo';
 import {useCustomMutation} from '../hooks/useCustomMutation';
+import LifeStyleStoreInfo from '../screens/lifeStyle/LifeStyleStoreInfo';
 
 const Stack = createNativeStackNavigator();
 
@@ -151,6 +152,10 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen name="MenuStore" component={MenuStroe} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
+        <Stack.Screen
+          name="LifeStyleStoreInfo"
+          component={LifeStyleStoreInfo}
+        />
         <Stack.Screen name="OptionSelect" component={OptionSelect} />
         <Stack.Screen name="SummitOrder" component={SummitOrder} />
         <Stack.Screen name="WriteOrderForm" component={WriteOrderForm} />

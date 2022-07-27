@@ -30,7 +30,7 @@ import Loading from '../../component/Loading';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
 import {replaceString} from '../../config/utils/Price';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import MenuReview from './MenuReview';
 
 const MenuDetail = ({navigation, route}) => {

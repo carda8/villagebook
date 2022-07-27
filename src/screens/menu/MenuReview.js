@@ -22,7 +22,7 @@ const MenuReview = ({storeInfo}) => {
     console.log('StoreInfo2', storeInfo);
     const data = {
       item_count: itemLimit.current,
-      limit_count: 1,
+      limit_count: 20,
       bo_table: 'review',
       jumju_id: storeInfo.mb_id,
       jumju_code: storeInfo.mb_jumju_code,
@@ -41,11 +41,11 @@ const MenuReview = ({storeInfo}) => {
   };
 
   const _getMoreReview = () => {
-    itemLimit.current += 1;
+    itemLimit.current += 20;
 
     const data = {
       item_count: itemLimit.current,
-      limit_count: 1,
+      limit_count: 20,
       bo_table: 'review',
       jumju_id: storeInfo.mb_id,
       jumju_code: storeInfo.mb_jumju_code,
@@ -105,14 +105,13 @@ const MenuReview = ({storeInfo}) => {
   };
 
   const _setSlider = () => {
-    const temp = 5;
     let temp2 = [];
     for (let i = 0; i < 5; i++) {
       temp2.push(
         <View key={i} style={{flexDirection: 'row'}}>
           <Slider
-            value={1}
-            maximumValue={5}
+            value={review?.rate[`rating_per` + (i - 5) * -1]}
+            maximumValue={review?.rate.total_cnt}
             disabled
             minimumTrackTintColor={colors.primary}
             trackStyle={{
@@ -124,7 +123,9 @@ const MenuReview = ({storeInfo}) => {
             containerStyle={{width: 87, height: 20}}
             renderThumbComponent={() => <></>}
           />
-          <Text style={{marginLeft: 10}}>{`${(i - 5) * -1}점 ()`}</Text>
+          <Text style={{marginLeft: 10}}>{`${(i - 5) * -1}점 (${
+            review?.rate[`rating_cnt` + (i - 5) * -1]
+          })`}</Text>
         </View>,
       );
     }
@@ -230,7 +231,7 @@ const MenuReview = ({storeInfo}) => {
           </View>
           <TextRegular>{item.content}</TextRegular>
           {item?.pic.map((item, index) => (
-            <>
+            <View key={index}>
               {index === 0 && (
                 <FastImage
                   source={item ? {uri: item} : require('~/assets/no_img.png')}
@@ -244,7 +245,7 @@ const MenuReview = ({storeInfo}) => {
                   }}
                 />
               )}
-            </>
+            </View>
           ))}
 
           {/* 점주 댓글 */}
@@ -305,26 +306,32 @@ const MenuReview = ({storeInfo}) => {
   return (
     <>
       <View style={{flex: 1}}>
-        {/* 리뷰 정보 */}
+        {/* 리뷰탭 내부 상단 리뷰 정보*/}
         <ListHeader />
         {review.review.map((item, index) => (
           <ReviewList item={item} key={index} />
         ))}
-        <Pressable
-          onPress={() => {
-            _getMoreReview();
-          }}
-          style={{
-            width: 150,
-            height: 50,
-            borderRadius: 10,
-            alignSelf: 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: colors.primary,
-          }}>
-          <TextBold style={{color: 'white'}}>더보기</TextBold>
-        </Pressable>
+
+        {/* 더보기 버튼*/}
+        {mutateGetReview.isLoading ? (
+          <Loading />
+        ) : (
+          <Pressable
+            onPress={() => {
+              _getMoreReview();
+            }}
+            style={{
+              width: 150,
+              height: 50,
+              borderRadius: 10,
+              alignSelf: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: colors.primary,
+            }}>
+            <TextBold style={{color: 'white'}}>더보기</TextBold>
+          </Pressable>
+        )}
       </View>
     </>
   );

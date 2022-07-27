@@ -67,6 +67,7 @@ const OrderList = ({navigation}) => {
     // od_process_status : 신규주문 / 접수완료 / 배달중 / 배달완료
     const data = item.item;
     const isDeliveried = data.od_process_status === '배달완료' ? true : false;
+    const isReviewPossible = data.od_review === 'true' ? true : false;
     console.log('item', item);
     return (
       <View
@@ -177,14 +178,18 @@ const OrderList = ({navigation}) => {
           </Pressable>
           <Pressable
             onPress={() => {
+              // navigation.navigate('WriteReview', {storeInfo: data});
               isDeliveried
-                ? navigation.navigate('WriteReview')
+                ? isReviewPossible
+                  ? navigation.navigate('WriteReview')
+                  : customAlert('알림', '이미 작성된 리뷰가 있습니다.')
                 : customAlert('알림', '배달완료된 주문만 리뷰작성 가능합니다');
             }}
             style={{
               flex: 1,
               borderWidth: 1,
-              backgroundColor: isDeliveried ? 'white' : colors.inputBoxBG,
+              backgroundColor:
+                isDeliveried && isReviewPossible ? 'white' : colors.inputBoxBG,
               borderColor: colors.borderColor,
               borderRadius: 10,
               justifyContent: 'center',
@@ -205,7 +210,7 @@ const OrderList = ({navigation}) => {
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'주문내역'} navigation={navigation} showCart={true} />
-
+      {/* {console.log('his', history)} */}
       <FlatList
         data={history}
         ListEmptyComponent={() => <NoHistory />}
@@ -219,7 +224,7 @@ const OrderList = ({navigation}) => {
         ListFooterComponent={e =>
           mutateOrderHistory.isLoading && history ? (
             <Loading />
-          ) : (
+          ) : history ? (
             <Pressable
               onPress={() => {
                 _getMoreHistory();
@@ -234,6 +239,8 @@ const OrderList = ({navigation}) => {
               }}>
               <TextBold style={{color: 'white'}}>더보기</TextBold>
             </Pressable>
+          ) : (
+            <></>
           )
         }
         // onEndReached={() => {

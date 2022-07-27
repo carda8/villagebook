@@ -1,8 +1,16 @@
-import {_reqAPI} from '../apiModule';
+import {_reqAPI, _reqImageAPI} from '../apiModule';
 
 export default {
   _getStoreList: async data => {
     const result = await _reqAPI('proc_store_list.php', data);
+    return result;
+  },
+  _getLifeStyleList: async data => {
+    const result = await _reqAPI('proc_lifestyle_list.php', data);
+    return result;
+  },
+  _getLifeStyleStoreInfo: async data => {
+    const result = await _reqAPI('proc_lifestyle_view.php', data);
     return result;
   },
   _getCategory: async data => {
@@ -27,6 +35,10 @@ export default {
   },
   _getStoreReview: async data => {
     const result = await _reqAPI('proc_store_review_list.php', data);
+    return result;
+  },
+  _writeReview: async data => {
+    const result = await _reqImageAPI('proc_review_input.php', data);
     return result;
   },
 };

@@ -1,4 +1,5 @@
 import {
+  FlatList,
   Image,
   Pressable,
   SectionList,
@@ -22,12 +23,18 @@ import Loading from '../../../component/Loading';
 import mainAPI from '../../../api/modules/mainAPI';
 import {replaceString} from '../../../config/utils/Price';
 import DividerL from '../../../component/DividerL';
+import {useCustomMutation} from '../../../hooks/useCustomMutation';
+import {Errorhandler} from '../../../config/ErrorHandler';
+import {setIsLifeStyle} from '../../../store/reducers/CategoryReducer';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
   const routeData = route.params;
+  const dispatch = useDispatch();
+
   // console.log('roueteData', routeData);
-  const [storeList, setStoreList] = useState('');
+  const [storeList, setStoreList] = useState();
+  const {mutateGetLifeStyle} = useCustomMutation();
 
   const _fliterList = data => {
     return data.filter((item, index) => item !== null);
@@ -35,11 +42,12 @@ const StoreItems = ({navigation, route}) => {
 
   const mutateGetStoreList = useMutation(mainAPI._getStoreList, {
     onSuccess: e => {
-      console.log('ee', e);
-      console.log('eee', e.data.arrItems);
-      const temp = _fliterList(e.data.arrItems);
-      console.log('temp e', temp);
-      setStoreList(temp);
+      if (e.result === 'true') {
+        console.log('eee', e.data.arrItems);
+        const temp = _fliterList(e.data.arrItems);
+        setStoreList(temp);
+      }
+      // console.log('temp e', temp);
       // setCategoryData(e.data.arrItems);
     },
   });
@@ -47,20 +55,35 @@ const StoreItems = ({navigation, route}) => {
   const _init = code => {
     console.log('storeitem', routeData);
     const data = {
-      mb_ca_code: route.params.ca_code,
+      mb_ca_code: routeData.ca_code,
       item_count: '0',
-      limit_count: '10',
-      mb_jumju_type:
-        routeData.category === 'lifestyle' ? 'food' : routeData.category,
+      limit_count: '20',
+      mb_jumju_type: routeData.category,
       mb_ca_sort: '0',
     };
+
     console.log('data', data);
-    mutateGetStoreList.mutate(data);
+
+    if (routeData.category === 'lifestyle') {
+      delete data.mb_ca_sort;
+      mutateGetLifeStyle.mutate(data, {
+        onSuccess: e => {
+          if (e.result === 'true') {
+            console.log('ee', e);
+            const temp = _fliterList(e.data.arrItems);
+            console.log('temp', temp);
+            setStoreList(temp);
+          } else setStoreList([]);
+        },
+      });
+    } else {
+      mutateGetStoreList.mutate(data);
+    }
   };
 
   useEffect(() => {
     _init();
-  }, [routeData]);
+  }, [route.parmas]);
 
   useEffect(() => {
     console.log('storeList', storeList);
@@ -69,7 +92,6 @@ const StoreItems = ({navigation, route}) => {
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
-  const dispatch = useDispatch();
 
   //368 88 279
   const renderItem = item => {
@@ -87,11 +109,21 @@ const StoreItems = ({navigation, route}) => {
           //     storeName: storeInfo.mb_company,
           //   }),
           // );
-          navigation.navigate('MenuDetail', {
-            jumju_id: storeInfo.mb_id,
-            jumju_code: storeInfo.mb_jumju_code,
-            mb_company: storeInfo.mb_company,
-          });
+          if (routeData.category === 'lifestyle') {
+            dispatch(setIsLifeStyle(true));
+            navigation.navigate('LifeStyleStoreInfo', {
+              jumju_id: storeInfo.mb_id,
+              jumju_code: storeInfo.mb_jumju_code,
+              mb_company: storeInfo.mb_company,
+            });
+          } else {
+            dispatch(setIsLifeStyle(false));
+            navigation.navigate('MenuDetail', {
+              jumju_id: storeInfo.mb_id,
+              jumju_code: storeInfo.mb_jumju_code,
+              mb_company: storeInfo.mb_company,
+            });
+          }
         }}
         style={{
           flex: 1,
@@ -113,7 +145,10 @@ const StoreItems = ({navigation, route}) => {
               borderBottomLeftRadius: 10,
               overflow: 'hidden',
             }}>
-            {!item?.section?.isOpen && <ImageCover />}
+            {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
+              <ImageCover />
+            )}
+
             <FastImage
               source={{uri: item.item.store_image[0]}}
               resizeMode={FastImage.resizeMode.cover}
@@ -132,7 +167,10 @@ const StoreItems = ({navigation, route}) => {
                 marginBottom: 1,
                 overflow: 'hidden',
               }}>
-              {!item?.section?.isOpen && <ImageCover />}
+              {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
+                <ImageCover />
+              )}
+
               <FastImage
                 source={
                   storeInfo.store_image[1]
@@ -150,7 +188,11 @@ const StoreItems = ({navigation, route}) => {
                 borderBottomRightRadius: 10,
                 overflow: 'hidden',
               }}>
-              {!item?.section?.isOpen && <ImageCover />}
+              {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
+                <>
+                  <ImageCover />
+                </>
+              )}
               <FastImage
                 source={
                   storeInfo.store_image[2]
@@ -183,48 +225,66 @@ const StoreItems = ({navigation, route}) => {
                   numberOfLines={1}>
                   {storeInfo.mb_company}
                 </Text>
+                {routeData.category === 'lifestyle' && (
+                  <Text
+                    style={{
+                      fontFamily: 'Pretendard-Medium',
+                      fontSize: 12,
+                      color: colors.fontColorA,
+                    }}
+                    ellipsizeMode="tail"
+                    numberOfLines={1}>
+                    {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
+                  </Text>
+                )}
               </View>
-              <ReviewSimple
-                star={storeInfo.stars}
-                review={storeInfo.store_review}
-              />
-            </View>
-            <View
-              style={{flexDirection: 'row', flexWrap: 'wrap', marginTop: 9}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                }}>
-                <TextRegular style={{color: colors.fontColorA2}}>
-                  배달팁{' '}
-                </TextRegular>
-                <TextRegular style={{color: colors.fontColor6}}>
-                  {replaceString(storeInfo.tipFrom)}원~
-                  {replaceString(storeInfo.tipTo)}원
-                </TextRegular>
-                <Dot />
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  source={require('~/assets/time.png')}
-                  style={{width: 14, height: 14}}
+              {routeData.category !== 'lifestyle' && (
+                <ReviewSimple
+                  star={storeInfo.stars}
+                  review={storeInfo.store_review}
                 />
-                <TextRegular> 30분~</TextRegular>
-                <TextRegular>40분</TextRegular>
-                <Dot />
-              </View>
-              <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                <TextRegular style={{color: colors.fontColorA2}}>
-                  최소 주문{' '}
-                </TextRegular>
-                <TextRegular>{replaceString(storeInfo.minPrice)}원</TextRegular>
-              </View>
+              )}
             </View>
+            {routeData.category !== 'lifestyle' && (
+              <View
+                style={{flexDirection: 'row', flexWrap: 'wrap', marginTop: 9}}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                  }}>
+                  <TextRegular style={{color: colors.fontColorA2}}>
+                    배달팁{' '}
+                  </TextRegular>
+                  <TextRegular style={{color: colors.fontColor6}}>
+                    {replaceString(storeInfo.tipFrom)}원~
+                    {replaceString(storeInfo.tipTo)}원
+                  </TextRegular>
+                  <Dot />
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={require('~/assets/time.png')}
+                    style={{width: 14, height: 14}}
+                  />
+                  <TextRegular> 30분~</TextRegular>
+                  <TextRegular>40분</TextRegular>
+                  <Dot />
+                </View>
+                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                  <TextRegular style={{color: colors.fontColorA2}}>
+                    최소 주문{' '}
+                  </TextRegular>
+                  <TextRegular>
+                    {replaceString(storeInfo.minPrice)}원
+                  </TextRegular>
+                </View>
+              </View>
+            )}
           </View>
           <Chip
             coupon={storeInfo.coupon}
@@ -236,38 +296,44 @@ const StoreItems = ({navigation, route}) => {
     );
   };
 
-  if (!storeList) return <Loading />;
+  if (mutateGetLifeStyle.isLoading || !storeList) return <Loading />;
   // storeList[0] !== null && storeList[1] !== null ? storeList : []
   console.log('storeligttt', storeList);
   return (
     <View style={{flex: 1}}>
-      <SectionList
-        sections={storeList}
-        ListEmptyComponent={() => (
-          <View>
-            <TextBold>검색결과가 없습니다</TextBold>
-          </View>
-        )}
-        keyExtractor={(item, index) => item + index}
-        renderItem={item => renderItem(item)}
-        renderSectionHeader={({section: {isOpen}}) =>
-          !isOpen && (
-            <>
-              <DividerL style={{marginBottom: 20}} />
-              <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
-            </>
-          )
-        }
-        showsVerticalScrollIndicator={false}
-      />
-
-      {/* <FlatList
-        data={dummy}
-        showsVerticalScrollIndicator={false}
-        renderItem={item => renderItem(item)}
-        keyExtractor={(item, index) => index}
-        onEndReached={() => {}}
-      /> */}
+      {routeData.category === 'lifestyle' ? (
+        <FlatList
+          data={storeList}
+          keyExtractor={(item, index) => item + index}
+          renderItem={item => renderItem(item)}
+          ListEmptyComponent={() => (
+            <View>
+              <TextBold>검색결과가 없습니다</TextBold>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <SectionList
+          sections={storeList}
+          ListEmptyComponent={
+            <View>
+              <TextBold>검색결과가 없습니다</TextBold>
+            </View>
+          }
+          keyExtractor={(item, index) => item + index}
+          renderItem={item => renderItem(item)}
+          renderSectionHeader={({section: {isOpen}}) =>
+            !isOpen && (
+              <>
+                <DividerL style={{marginBottom: 20}} />
+                <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
+              </>
+            )
+          }
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 };

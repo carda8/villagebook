@@ -17,6 +17,25 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mutateGetLifeStyle = useMutation(mainAPI._getLifeStyleList, {
+    onSettled: e => {
+      console.log('mutateGetLifeStyle', e);
+      // customAlert('')
+      return e;
+    },
+  });
+
+  const mutateGetLifeStyleStoreInfo = useMutation(
+    mainAPI._getLifeStyleStoreInfo,
+    {
+      onSettled: e => {
+        console.log('mutateGetLifeStyleStoreInfo', e);
+        // customAlert('')
+        return e;
+      },
+    },
+  );
+
   const mutateOrderHistory = useMutation(mainAPI._getOrderHistory, {
     onSettled: e => {
       console.log('mutateOrderHistory', e);
@@ -27,6 +46,13 @@ export const useCustomMutation = () => {
   const mutateOrderDetail = useMutation(mainAPI._getOrderDetail, {
     onSettled: e => {
       console.log('mutateOrderDetail', e);
+      return e;
+    },
+  });
+
+  const mutateWriteReveiw = useMutation(mainAPI._writeReview, {
+    onSettled: e => {
+      console.log('mutateWriteReveiw', e);
       return e;
     },
   });
@@ -182,5 +208,8 @@ export const useCustomMutation = () => {
     mutateGetCoupon,
     mutateGetUseInfo,
     mutateGetReview,
+    mutateGetLifeStyle,
+    mutateGetLifeStyleStoreInfo,
+    mutateWriteReveiw,
   };
 };

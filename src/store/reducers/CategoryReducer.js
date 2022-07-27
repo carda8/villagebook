@@ -4,6 +4,7 @@ const CategorySlice = createSlice({
   name: 'category',
   initialState: {
     currentCategory: '',
+    isLifeStyle: false,
     currentFilter: '',
   },
   reducers: {
@@ -13,9 +14,12 @@ const CategorySlice = createSlice({
     setcurrentFilter: (state, action) => {
       state.currentFilter = action.payload;
     },
+    setIsLifeStyle: (state, action) => {
+      state.isLifeStyle = action.payload;
+    },
   },
 });
 
 const {actions, reducer} = CategorySlice;
-export const {setcurrentCategory, setcurrentFilter} = actions;
+export const {setcurrentCategory, setcurrentFilter, setIsLifeStyle} = actions;
 export const categoryReducer = reducer;

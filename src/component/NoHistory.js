@@ -5,7 +5,8 @@ import TextBold from './text/TextBold';
 
 const NoHistory = () => {
   return (
-    <View style={{alignItems: 'center', justifyContent: 'center'}}>
+    <View
+      style={{alignItems: 'center', justifyContent: 'center', marginTop: 40}}>
       <TextBold>주문내역이 없습니다</TextBold>
     </View>
   );

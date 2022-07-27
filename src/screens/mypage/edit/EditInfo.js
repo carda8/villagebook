@@ -122,7 +122,7 @@ const EditInfo = ({navigation}) => {
           <View
             style={{justifyContent: 'space-evenly', marginLeft: 40, flex: 1}}>
             <TextMedium style={{color: colors.fontColor2}}>
-              {userInfo.mt_nickname}
+              {userInfo.mt_nickname ?? userInfo.mt_name}
             </TextMedium>
             <TextMedium style={{color: colors.fontColor2}}>
               {userInfo.mt_email}

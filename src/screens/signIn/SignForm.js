@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   Modal,
+  Platform,
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -32,6 +33,7 @@ const SignForm = ({navigation}) => {
   const {fcmToken} = useSelector(state => state.authReducer);
   const [fsImage, setFsImage] = useState();
   const [modal, setModal] = useState(false);
+  const [modalPic, setModalPic] = useState(false);
 
   const mutateCheckId = useMutation(authAPI._checkId, {
     onSuccess: e => {
@@ -198,15 +200,33 @@ const SignForm = ({navigation}) => {
     ImageCropPicker.openCamera({
       cropping: true,
     }).then(image => {
+      let temp = image.path.split('.');
       const convert = {
         uri: image.path,
-        name: image.modificationDate,
+        name: image.modificationDate + '.' + temp[temp.length - 1],
         type: image.mime,
       };
       console.log('convert', convert);
       console.log('image :', image);
       fm.setFieldValue('mt_image1', convert);
       setFsImage(image.path);
+      setModalPic(!modalPic);
+    });
+  };
+
+  const _setProfileImageFromLocal = () => {
+    ImageCropPicker.openPicker({}).then(image => {
+      let temp = image.path.split('.');
+      const convert = {
+        uri: image.path,
+        name: image.modificationDate + '.' + temp[temp.length - 1],
+        type: image.mime,
+      };
+      console.log('convert', convert);
+      console.log('image :', image);
+      fm.setFieldValue('mt_image1', convert);
+      setFsImage(image.path);
+      setModalPic(!modalPic);
     });
   };
 
@@ -335,7 +355,8 @@ const SignForm = ({navigation}) => {
 
               <Pressable
                 onPress={() => {
-                  _setProfileImage();
+                  setModalPic(!modalPic);
+                  // _setProfileImage();
                 }}
                 style={{
                   width: 100,
@@ -377,6 +398,111 @@ const SignForm = ({navigation}) => {
           setModal(!modal);
         }}>
         <ImageViewer imageUrls={[{url: fsImage}]} />
+      </Modal>
+
+      <Modal
+        transparent
+        visible={modalPic}
+        onRequestClose={() => {
+          setModalPic(!modalPic);
+        }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            paddingHorizontal: 22,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              width: '100%',
+              height: 70,
+              borderRadius: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'white',
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#00000029',
+                  shadowOpacity: 0.6,
+                  shadowRadius: 50 / 2,
+                  shadowOffset: {
+                    height: 12,
+                    width: 0,
+                  },
+                },
+                android: {
+                  elevation: 5,
+                },
+              }),
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <Pressable
+                onPress={() => _setProfileImage()}
+                style={{
+                  flex: 1,
+                  height: 70,
+                  backgroundColor: colors.mainBG1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/btn_add.png')}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    tintColor: colors.fontColor2,
+                    marginRight: 10,
+                    marginLeft: 10,
+                  }}
+                  resizeMode="contain"
+                />
+                <TextBold
+                  style={{
+                    color: colors.fontColor2,
+                    includeFontPadding: false,
+                    flex: 1,
+                  }}>
+                  사진 촬영
+                </TextBold>
+              </Pressable>
+
+              <Pressable
+                onPress={() => _setProfileImageFromLocal()}
+                style={{
+                  flex: 1,
+                  height: 70,
+                  backgroundColor: colors.mainBG2,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/btn_add.png')}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    tintColor: colors.fontColor2,
+                    marginRight: 10,
+                    marginLeft: 10,
+                  }}
+                  resizeMode="contain"
+                />
+                <TextBold
+                  style={{
+                    flex: 1,
+                    color: colors.fontColor2,
+                    includeFontPadding: false,
+                  }}>
+                  갤러리 가져오기
+                </TextBold>
+              </Pressable>
+            </View>
+          </View>
+        </View>
       </Modal>
     </SafeAreaView>
   );

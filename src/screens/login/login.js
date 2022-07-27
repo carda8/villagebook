@@ -124,8 +124,8 @@ const Login = ({navigation}) => {
     };
 
     // 로그인 하기
-    console.log('result', result);
-    console.log('data', data);
+    console.log('_NaverLogin result', result);
+    console.log('_NaverLogin data', data);
 
     mutateSNSlogin.mutate(data, {
       onSuccess: async e => {
@@ -167,8 +167,8 @@ const Login = ({navigation}) => {
       mt_nickname: result.mt_nickname,
     };
 
-    console.log('result', result);
-    console.log('data', data);
+    console.log('_KakaoLogin result', result);
+    console.log('_KakaoLogin data', data);
 
     mutateSNSlogin.mutate(data, {
       onSuccess: async e => {
