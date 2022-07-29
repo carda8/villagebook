@@ -57,6 +57,34 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mutateInsertMainAddr = useMutation(mainAPI._insertMainAddr, {
+    onSettled: e => {
+      console.log('mutateInsertMainAddr', e);
+      return e;
+    },
+  });
+
+  const mutateSetMainAddr = useMutation(mainAPI._setMainAddr, {
+    onSettled: e => {
+      console.log('mutateSetMainAddr', e);
+      return e;
+    },
+  });
+
+  const mutateBoardList = useMutation(mainAPI._getBoardList, {
+    onSettled: e => {
+      console.log('mutateBoardList', e);
+      return e;
+    },
+  });
+
+  const mutateGetMyReview = useMutation(mainAPI._getMyReview, {
+    onSettled: e => {
+      console.log('mutateGetMyReview', e);
+      return e;
+    },
+  });
+
   //Auth
   const mutateSNSlogin = useMutation(authAPI._snsLogin, {
     onSettled: e => {
@@ -188,6 +216,27 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mutateGetAddress = useMutation(mainAPI._getAddress, {
+    onSettled: e => {
+      console.log('mutateGetAddress', e);
+      return e;
+    },
+  });
+
+  const mutateGetRecentAddress = useMutation(mainAPI._getRecentAddress, {
+    onSettled: e => {
+      console.log('mutateGetReview', e);
+      return e;
+    },
+  });
+
+  const mutateGetCouponPoint = useMutation(mainAPI._getCouponPoint, {
+    onSettled: e => {
+      console.log('mutateGetCouponPoint', e);
+      return e;
+    },
+  });
+
   return {
     mutateSignIn,
     mutateSNSlogin,
@@ -211,5 +260,12 @@ export const useCustomMutation = () => {
     mutateGetLifeStyle,
     mutateGetLifeStyleStoreInfo,
     mutateWriteReveiw,
+    mutateGetRecentAddress,
+    mutateSetMainAddr,
+    mutateInsertMainAddr,
+    mutateGetAddress,
+    mutateGetCouponPoint,
+    mutateBoardList,
+    mutateGetMyReview,
   };
 };

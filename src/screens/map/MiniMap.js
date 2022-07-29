@@ -9,7 +9,6 @@ const MiniMap = ({lng, lat}) => {
   return (
     <View
       style={{
-        top: -35,
         paddingHorizontal: 22,
       }}>
       <NaverMapView

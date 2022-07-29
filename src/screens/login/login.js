@@ -139,6 +139,9 @@ const Login = ({navigation}) => {
             await AuthStorageModuel._setItemLoginType(
               localStorageConfig.loginType.sns,
             );
+            await AuthStorageModuel._setItemLoginTypeNum(
+              localStorageConfig.loginTypeNum.naver,
+            );
             await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
 
             dispatch(setUserInfo(e.data.arrItems));
@@ -181,6 +184,9 @@ const Login = ({navigation}) => {
             await AuthStorageModuel._setItemUserToken(fcmToken);
             await AuthStorageModuel._setItemLoginType(
               localStorageConfig.loginType.sns,
+            );
+            await AuthStorageModuel._setItemLoginTypeNum(
+              localStorageConfig.loginTypeNum.kakao,
             );
             await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
 

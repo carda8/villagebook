@@ -10,7 +10,8 @@ import Splash from './src/component/Splash';
 import MainStackNavigator from './src/navigator/MainStackNavigator';
 import store from './src/store/store';
 import messaging from '@react-native-firebase/messaging';
-import {Alert} from 'react-native';
+import {Alert, PermissionsAndroid} from 'react-native';
+import notifee, {AndroidImportance} from '@notifee/react-native';
 
 const qeuryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -34,9 +35,28 @@ const qeuryClient = new QueryClient({
 const App = () => {
   const [isSplash, setIsSplash] = useState(true);
 
+  const onMessageReceived = async message => {
+    console.log('message', message);
+    const channelId2 = await notifee.createChannel({
+      id: 'onForeground',
+      name: 'Default Channel onForeground',
+      importance: AndroidImportance.HIGH,
+    });
+    // Display a notification
+    await notifee.displayNotification({
+      title: message.notification.title,
+      body: message.notification.body,
+      android: {
+        channelId: channelId2,
+        importance: AndroidImportance.HIGH,
+      },
+    });
+  };
+
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      onMessageReceived(remoteMessage);
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
   }, []);

@@ -8,7 +8,7 @@ import {
   Pressable,
   useWindowDimensions,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
 import colors from '../../styles/colors';
@@ -20,13 +20,64 @@ import DividerL from '../../component/DividerL';
 import dayjs from 'dayjs';
 import FastImage from 'react-native-fast-image';
 import TextLight from '../../component/text/TextLight';
-import {_setRating} from '../../config/utils/modules';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useSelector} from 'react-redux';
+import Loading from '../../component/Loading';
 
 const Review = ({navigation}) => {
   const [input, setInput] = useState();
-  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const {mutateGetMyReview} = useCustomMutation();
+  const [reviews, setReviews] = useState([]);
+  const {userInfo} = useSelector(state => state.authReducer);
   const layout = useWindowDimensions();
+
+  const itemLimit = useRef(0);
+
+  const _getMyReview = () => {
+    const data = {
+      item_count: 0,
+      limit_count: 20,
+      bo_table: 'review',
+      mt_id: userInfo.mt_id,
+    };
+    mutateGetMyReview.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0)
+          setReviews(e.data.arrItems);
+        else setReviews([]);
+        console.log('e', e);
+      },
+    });
+  };
+
+  const _setRating = (isTotal, userRate) => {
+    const temp = 5;
+    let count = userRate ?? 0;
+    let temp2 = [];
+
+    for (let i = 0; i < temp; i++) {
+      temp2.push(
+        <Image
+          key={i}
+          source={
+            count
+              ? count > i
+                ? require('~/assets/ico_star_on.png')
+                : require('~/assets/ico_star_off.png')
+              : require('~/assets/ico_star_off.png')
+          }
+          style={{width: isTotal ? 20 : 16, height: isTotal ? 20 : 16}}
+          resizeMode="contain"
+        />,
+      );
+    }
+
+    return temp2;
+  };
+
   const renderItem = item => {
+    const data = item.item;
+
     return (
       <View
         style={{
@@ -44,35 +95,55 @@ const Review = ({navigation}) => {
             alignItems: 'center',
           }}>
           <FastImage
-            source={require('~/assets/no_use_img.png')}
+            source={
+              data.mt_profile_url
+                ? {uri: mt_profile_url}
+                : require('~/assets/no_use_img.png')
+            }
             style={{width: 70, height: 70, borderRadius: 20}}
           />
           <View
             style={{marginLeft: 10, flex: 1, justifyContent: 'space-between'}}>
             <TextBold style={{fontSize: 16, color: colors.fontColor2}}>
-              맛나버거 부산대점
+              {data.mb_company}
             </TextBold>
             <TextRegular style={{color: colors.fontColor2}}>
-              싸이버거 + 휠렛버거
+              {data?.menu}
             </TextRegular>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <TextLight style={{color: colors.fontColorA}}>
-                {dayjs().format('YYYY-MM-DD')}
+                {data.datetime}
               </TextLight>
-              {/* <View style={{flexDirection: 'row'}}>{_setRating()}</View> */}
+              <View style={{flexDirection: 'row'}}>
+                {_setRating(false, data.wr_score)}
+              </View>
             </View>
           </View>
         </View>
-        <FastImage
-          source={require('~/assets/dummy/CK_tc01560002923_l.jpg')}
-          style={{width: layout.width, height: layout.width}}
-        />
+
+        {data?.pic.map((item, index) => (
+          <FastImage
+            source={{uri: item}}
+            style={{
+              borderRadius: 10,
+              alignSelf: 'center',
+              width: layout.width - 44,
+              height: layout.width - 44,
+            }}
+          />
+        ))}
         <View style={{padding: 22}}>
-          <TextRegular>잘먹었습니다!!!</TextRegular>
+          <TextRegular>{data.content}</TextRegular>
         </View>
       </View>
     );
   };
+
+  useEffect(() => {
+    _getMyReview();
+  }, []);
+
+  if (mutateGetMyReview.isLoading) return <Loading />;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header
@@ -81,10 +152,15 @@ const Review = ({navigation}) => {
         showCart={true}
       />
       <FlatList
-        data={arr}
+        data={reviews}
+        ListEmptyComponent={
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <TextRegular>리뷰가 등록되지 않았습니다.</TextRegular>
+          </View>
+        }
         ListHeaderComponent={() => (
           <>
-            <View
+            {/* <View
               style={{
                 paddingHorizontal: 22,
                 paddingVertical: 10,
@@ -113,7 +189,7 @@ const Review = ({navigation}) => {
                 }}
               />
             </View>
-            <DividerL />
+            <DividerL /> */}
           </>
         )}
         ItemSeparatorComponent={() => <View style={{marginVertical: 20}} />}

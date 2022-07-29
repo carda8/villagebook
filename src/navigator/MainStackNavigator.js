@@ -55,6 +55,11 @@ import {Errorhandler} from '../config/ErrorHandler';
 import UseInfo from '../screens/policy/UseInfo';
 import {useCustomMutation} from '../hooks/useCustomMutation';
 import LifeStyleStoreInfo from '../screens/lifeStyle/LifeStyleStoreInfo';
+import AddressMain from '../screens/home/AddressMain';
+import AddressSetDetail from '../screens/home/AddressSetDetail';
+import SNSLogin from '../screens/login/SNSLogin';
+import {customAlert} from '../component/CustomAlert';
+import {useGeoLocation} from '../hooks/useGeoLocation';
 
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +67,7 @@ const MainStackNavigator = () => {
   const [initRoute, setInitRoute] = useState();
   const dispatch = useDispatch();
   const {mutateSNSlogin} = useCustomMutation();
+  const {_getCurrentLocation, _requestPermissions} = useGeoLocation();
 
   const _getFcmToken = async () => {
     try {
@@ -86,11 +92,72 @@ const MainStackNavigator = () => {
     },
   });
 
-  const _autoLogin = (token, id, type) => {
-    const data = {
-      mt_id: id,
-      mt_app_token: token,
-    };
+  const _typeNumOfsns = async (loginTypeNum, token) => {
+    let result;
+    let data;
+    switch (loginTypeNum) {
+      case localStorageConfig.loginTypeNum.naver:
+        result = await SNSLogin._NaverLogin(token);
+        data = {
+          mt_id: result.mt_id,
+          mt_pwd: result.mt_pwd,
+          mt_app_token: result.mt_app_token,
+          mt_login_type: '2',
+          mt_sns_url: result.mt_image1,
+          mt_hp: result.mt_hp,
+          mt_name: result.mt_name,
+          mt_email: result.mt_email,
+          mt_nickname: result.mt_nickname,
+        };
+        return data;
+      case localStorageConfig.loginTypeNum.kakao:
+        result = await SNSLogin._KakaoLogin(token);
+        data = {
+          mt_id: result.mt_id,
+          mt_pwd: result.mt_pwd,
+          mt_app_token: result.mt_app_token,
+          mt_login_type: '3',
+          mt_sns_url: result.mt_image1,
+          mt_hp: result.mt_hp,
+          mt_name: result.mt_name,
+          mt_email: result.mt_email,
+          mt_nickname: result.mt_nickname,
+        };
+        return data;
+      case localStorageConfig.loginTypeNum.facebook:
+        return;
+      case localStorageConfig.loginTypeNum.apple:
+        return;
+      default:
+        return customAlert('알림', '현재 sns 로그인을 사용 할 수 없습니다.');
+    }
+  };
+
+  const _autoLogin = async (token, id, type, loginTypeNum) => {
+    let data;
+    if (type !== localStorageConfig.loginType.sns) {
+      data = {
+        mt_id: id,
+        mt_app_token: token,
+      };
+    } else {
+      data = await _typeNumOfsns(loginTypeNum, token);
+      console.log('## autoLogin data', data);
+      // const result = await SNSLogin._KakaoLogin(token);
+      // console.log('_KakaoLogin result', result);
+      // data = {
+      //   mt_id: result.mt_id,
+      //   mt_pwd: result.mt_pwd,
+      //   mt_app_token: result.mt_app_token,
+      //   mt_login_type: '3',
+      //   mt_sns_url: result.mt_image1,
+      //   mt_hp: result.mt_hp,
+      //   mt_name: result.mt_name,
+      //   mt_email: result.mt_email,
+      //   mt_nickname: result.mt_nickname,
+      // };
+    }
+
     if (type === localStorageConfig.loginType.sns) {
       mutateSNSlogin.mutate(data, {
         onSuccess: e => {
@@ -105,15 +172,18 @@ const MainStackNavigator = () => {
   };
 
   const _initRoute = async () => {
+    console.log('@@ 1');
     try {
       const fcmToken = await _getFcmToken();
       const auto = await AuthStorage._getItemAutoLogin();
       const token = await AuthStorage._getItemUserToken();
       const userId = await AuthStorage._getItemUserId();
       const loginType = await AuthStorage._getItemLoginType();
+      const loginTypeNum = await AuthStorage._getItemLoginTypeNum();
 
+      console.log('userId, loginType', userId, loginType, loginTypeNum);
       if (auto === localStorageConfig.state.true && token && userId)
-        _autoLogin(token, userId, loginType);
+        _autoLogin(token, userId, loginType, loginTypeNum);
       else setInitRoute('Login');
     } catch (err) {
       Errorhandler(err);
@@ -143,6 +213,10 @@ const MainStackNavigator = () => {
         <Stack.Screen name="ResetAccount" component={ResetAccount} />
 
         <Stack.Screen name="Main" component={Main} />
+
+        <Stack.Screen name="AddressMain" component={AddressMain} />
+        <Stack.Screen name="AddressSetDetail" component={AddressSetDetail} />
+
         <Stack.Screen name="CategoryView" component={CategoryView} />
         <Stack.Screen name="StoreList" component={StoreList} />
         <Stack.Screen name="LikeMain" component={LikeMain} />

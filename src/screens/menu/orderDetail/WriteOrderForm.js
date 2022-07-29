@@ -22,32 +22,34 @@ import ImageCover from '../../../component/ImageCover';
 import {customAlert} from '../../../component/CustomAlert';
 import PaymentList from '../../../config/PaymentList';
 import {set} from 'react-native-reanimated';
+import {useCustomMutation} from '../../../hooks/useCustomMutation';
 
 const WriteOrderForm = ({navigation, route}) => {
   const [datas, setDatas] = useState();
   const addData = route.params?.addData;
-  console.log('addData', addData);
-  // const deliveryData = route.params?.deliveryData;
+  // console.log('routeroute', route.params);
+  // console.log('addData', addData);
+  const deliveryData = route.params?.deliveryData;
   const lastPrice = route.params?.lastPrice;
   // const isDelivery = route.params?.isDelivery;
 
   // console.log('last', lastPrice, deliveryData);
+  const {mutateGetCouponPoint} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
   const cartStore = useSelector(state => state.cartReducer);
-  const {isDelivery, paymentMethod, deliveryData} = useSelector(
+  const {isDelivery, paymentMethod} = useSelector(
     state => state.paymentReducer,
   );
 
-  console.log('isDelivery', isDelivery);
-
   const [noSpoon, setNoSpoon] = useState(false);
   const [safeNumber, setSafeNumber] = useState(false);
+  const [couponPoint, setCouponPoint] = useState([]);
   const [agreement, setAgreement] = useState(false);
   const [orderForm, setOrderForm] = useState({
     jumju_id: cartStore.currentStoreCode.jumju_id,
     jumju_code: cartStore.currentStoreCode.code,
     mt_id: userInfo.mt_id,
-    mt_name: userInfo.mt_nickname,
+    mt_name: userInfo.mt_nickname ?? userInfo.mt_name,
 
     od_zip: addData?.zonecode,
     od_addr1: addData?.address ?? '',
@@ -62,7 +64,7 @@ const WriteOrderForm = ({navigation, route}) => {
     od_send_cost: 0,
     od_send_cost2: 0,
     od_receipt_point: 0,
-    od_takeout_discount: 0,
+    od_takeout_discount: isDelivery ? '0' : deliveryData.take_out_discount,
 
     od_no_spoon: false,
     od_coupon_id_system: '', //관리자 발행 쿠폰번호
@@ -70,8 +72,8 @@ const WriteOrderForm = ({navigation, route}) => {
     od_coupon_price_system: 0, //관리자 뱔행 쿠폰금액
     od_coupon_price_store: 0, //점주 발생 쿠폰금액
 
-    od_total_order_price: 0,
-    od_total_sell_price: 0,
+    // od_total_order_price: 0,
+    // od_total_sell_price: 0,
     // od_pg_data: '', //pg 데이터
     // od_menu_data: '', //메뉴 데이터
   });
@@ -81,21 +83,81 @@ const WriteOrderForm = ({navigation, route}) => {
     cartStore.savedItem.savedItems.map((item, index) => {
       calcTotal += item.totalPrice;
     });
+    calcTotal =
+      calcTotal +
+      (Number(orderForm.od_send_cost) + Number(orderForm.od_send_cost2)) -
+      (Number(orderForm.od_coupon_price_store) +
+        Number(orderForm.od_coupon_price_system) +
+        Number(orderForm.od_receipt_point));
+    if (!isDelivery) calcTotal = calcTotal - deliveryData.take_out_discount;
     return calcTotal;
   };
 
   const _calcLastPrice = () => {
-    const totalItemPrice = _calcSummary();
-    let temp = 0;
+    // const totalItemPrice = _calcSummary();
+    // let temp = 0;
+    let calcTotal = 0;
+    cartStore.savedItem.savedItems.map((item, index) => {
+      calcTotal += item.totalPrice;
+    });
+    return calcTotal;
+    // temp =
+    //   totalItemPrice -
+    //   (Number(orderForm.od_coupon_price_store) +
+    //     Number(orderForm.od_coupon_price_system) +
+    //     Number(orderForm.od_send_cost) +
+    //     Number(orderForm.od_send_cost2));
+    // return temp;
+  };
 
-    temp =
-      totalItemPrice -
-      (Number(orderForm.od_coupon_price_store) +
-        Number(orderForm.od_coupon_price_system) +
-        Number(orderForm.od_send_cost) +
-        Number(orderForm.od_send_cost2));
+  const {mutateGetAddress} = useCustomMutation();
 
-    return temp;
+  const _getAddr = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+    };
+
+    mutateGetAddress.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') {
+          const data = e.data.arrItems[0];
+          setOrderForm({
+            ...orderForm,
+            od_addr1: data.ad_addr1,
+            od_addr2: data.ad_addr2,
+            od_addr3: data.ad_addr3,
+            od_zip: data.ad_zip,
+          });
+          console.log('data', data);
+        }
+        console.log('e', e);
+      },
+    });
+  };
+
+  const _getCouponPoint = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+      jumju_id: cartStore.currentStoreCode.jumju_id,
+      jumju_code: cartStore.currentStoreCode.code,
+    };
+
+    mutateGetCouponPoint.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') {
+          setCouponPoint(e.data.arrItems);
+        } else setCouponPoint([]);
+        console.log('_getCouponPoint', e);
+      },
+    });
+  };
+
+  const _usePointAll = () => {
+    if (couponPoint.mb_point == 0)
+      return customAlert('알림', '사용가능한 포인트가 없습니다.');
+    else setOrderForm({...orderForm, od_receipt_point: couponPoint.mb_point});
+    // if (couponPoint.mb_point > 0 && couponPoint.mb_point < 500)
+    //   return customAlert('알림', '500포인트 이상 부터 사용가능합니다.');
   };
 
   useEffect(() => {
@@ -110,25 +172,27 @@ const WriteOrderForm = ({navigation, route}) => {
   }, [route.params]);
 
   useEffect(() => {
-    setOrderForm({
-      ...orderForm,
-      od_total_order_price: _calcSummary(),
-      od_total_sell_price: _calcLastPrice(),
-    });
+    _getAddr();
+    _getCouponPoint();
   }, []);
 
   const _checkForm = () => {
-    // if (isDelivery && !orderForm.od_addr1 && !orderForm.od_addr2) {
-    //   return customAlert('알림', '배달정보를 확인해주세요.');
-    // }
+    if (isDelivery && !orderForm.od_addr1 && !orderForm.od_addr2) {
+      return customAlert('알림', '배달정보를 확인해주세요.');
+    }
     if (!paymentMethod) {
       return customAlert('알림', '결제방법을 선택해주세요..');
     }
+    // setOrderForm({
+    //   ...orderForm,
+    //   od_total_order_price: _calcSummary(),
+    //   od_total_sell_price: _calcLastPrice(),
+    // });
     console.log('orderForm', orderForm);
     navigation.navigate('PaymentMain', {
       isDelivery,
       orderForm,
-      totalSellPrice: _calcSummary(),
+      totalSellPrice: _calcLastPrice(),
       totalOrderPrice: _calcSummary(),
     });
   };
@@ -157,7 +221,7 @@ const WriteOrderForm = ({navigation, route}) => {
                   style={{...styles.inputContainer, marginRight: 10}}
                   editable={false}
                   placeholder={'주소 입력'}
-                  value={addData?.address ?? null}
+                  value={orderForm.od_addr1 ?? null}
                 />
                 <Pressable
                   onPress={() => {
@@ -177,7 +241,7 @@ const WriteOrderForm = ({navigation, route}) => {
               <TextInput
                 style={{...styles.inputContainer, marginVertical: 10}}
                 placeholder={'상세주소 입력'}
-                value={orderForm.addSub}
+                value={orderForm.od_addr2 + orderForm.od_addr3}
                 onChangeText={e => {
                   setOrderForm({...orderForm, od_addr2: e});
                 }}
@@ -197,12 +261,13 @@ const WriteOrderForm = ({navigation, route}) => {
               placeholder={'휴대폰 번호(숫자만 입력)'}
               defaultValue={userInfo.mt_hp}
             />
-            <Pressable
+            {/* <Pressable
+              // onPress={()=>customAlert()}
               style={{
                 ...styles.infoBtn,
               }}>
-              <TextBold style={{fontSize: 16, color: 'white'}}>선택</TextBold>
-            </Pressable>
+              <TextBold style={{fontSize: 16, color: 'white'}}>변경</TextBold>
+            </Pressable> */}
           </View>
 
           {/* 안심번호 */}
@@ -323,10 +388,22 @@ const WriteOrderForm = ({navigation, route}) => {
             <>
               {/* 포인트 사용 */}
               <View style={{marginTop: 20}}>
-                <TextBold style={{fontSize: 16}}>포인트 사용</TextBold>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                  <TextBold style={{fontSize: 16}}>포인트 사용</TextBold>
+                  <TextRegular style={{color: colors.fontColorA}}>
+                    보유 포인트 : {couponPoint?.mb_point}
+                  </TextRegular>
+                </View>
                 <View style={{flexDirection: 'row', marginTop: 10}}>
                   <Pressable
-                    onPress={() => {}}
+                    onPress={() => {
+                      _usePointAll();
+                    }}
                     style={{
                       ...styles.infoBtn,
                     }}>
@@ -335,9 +412,22 @@ const WriteOrderForm = ({navigation, route}) => {
                     </TextBold>
                   </Pressable>
                   <TextInput
+                    editable={couponPoint.mb_point > 0}
+                    value={
+                      String(orderForm.od_receipt_point) == 0
+                        ? ''
+                        : String(orderForm.od_receipt_point)
+                    }
+                    onChangeText={e =>
+                      setOrderForm({...orderForm, od_receipt_point: e})
+                    }
                     keyboardType="numeric"
                     style={{...styles.inputContainer, marginLeft: 10}}
-                    placeholder={'500포인트 부터 사용 가능'}
+                    placeholder={
+                      couponPoint.mb_point == 0
+                        ? '사용가능한 포인트가 없습니다'
+                        : '500포인트 부터 사용 가능'
+                    }
                   />
                 </View>
               </View>
@@ -346,8 +436,9 @@ const WriteOrderForm = ({navigation, route}) => {
                 <TextBold style={{fontSize: 16}}>쿠폰 사용</TextBold>
                 <View style={{flexDirection: 'row', marginTop: 10}}>
                   <Pressable
-                    onPress={() =>
-                      navigation.navigate('PaymentMethod', {useCoupon: true})
+                    onPress={
+                      () => customAlert('준비중', '현재 준비중인 기능입니다.')
+                      // navigation.navigate('PaymentMethod', {useCoupon: true})
                     }
                     style={{
                       ...styles.infoBtn,
@@ -367,8 +458,9 @@ const WriteOrderForm = ({navigation, route}) => {
                 <TextBold style={{fontSize: 16}}>동네북 쿠폰 사용</TextBold>
                 <View style={{flexDirection: 'row', marginTop: 10}}>
                   <Pressable
-                    onPress={() =>
-                      navigation.navigate('PaymentMethod', {useCoupon: true})
+                    onPress={
+                      () => customAlert('준비중', '현재 준비중인 기능입니다.')
+                      // navigation.navigate('PaymentMethod', {useCoupon: true})
                     }
                     style={{
                       ...styles.infoBtn,
@@ -397,7 +489,7 @@ const WriteOrderForm = ({navigation, route}) => {
                 주문금액
               </TextRegular>
               <TextRegular style={{}}>
-                {replaceString(_calcSummary())}원
+                {replaceString(_calcLastPrice())}원
               </TextRegular>
             </View>
             {isDelivery && (
@@ -421,11 +513,21 @@ const WriteOrderForm = ({navigation, route}) => {
                 </View>
               </>
             )}
+            {!isDelivery && (
+              <View style={{...styles.paymentText}}>
+                <TextRegular style={{color: colors.fontColorA}}>
+                  포장할인
+                </TextRegular>
+                <TextRegular style={{}}>
+                  -{deliveryData.take_out_discount}
+                </TextRegular>
+              </View>
+            )}
             <View style={{...styles.paymentText}}>
               <TextRegular style={{color: colors.fontColorA}}>
                 할인금액
               </TextRegular>
-              <TextRegular style={{}}>-{'0'}원</TextRegular>
+              <TextRegular style={{}}>-{0}원</TextRegular>
             </View>
             {/* 
             <View style={{...styles.paymentText}}>
@@ -439,7 +541,9 @@ const WriteOrderForm = ({navigation, route}) => {
               <TextRegular style={{color: colors.fontColorA}}>
                 포인트 사용
               </TextRegular>
-              <TextRegular style={{}}>-{'0'}원</TextRegular>
+              <TextRegular style={{}}>
+                -{orderForm.od_receipt_point}원
+              </TextRegular>
             </View>
           </View>
           <View style={{height: 1, backgroundColor: colors.borderColor}} />

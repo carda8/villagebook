@@ -49,7 +49,7 @@ const OrderList = ({navigation}) => {
 
   useEffect(() => {
     if (history && mutateOrderHistory.data?.result === 'false') {
-      customAlert('알림', '이전 주문내역이 없습니다.');
+      return customAlert('알림', '이전 주문내역이 없습니다.');
     } else if (
       mutateOrderHistory.status === 'success' &&
       mutateOrderHistory.data.data.arrItems
@@ -221,28 +221,28 @@ const OrderList = ({navigation}) => {
           justifyContent: 'center',
           marginVertical: 20,
         }}
-        ListFooterComponent={e =>
-          mutateOrderHistory.isLoading && history ? (
-            <Loading />
-          ) : history ? (
-            <Pressable
-              onPress={() => {
-                _getMoreHistory();
-              }}
-              style={{
-                width: 150,
-                height: 50,
-                borderRadius: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: colors.primary,
-              }}>
-              <TextBold style={{color: 'white'}}>더보기</TextBold>
-            </Pressable>
-          ) : (
-            <></>
-          )
-        }
+        // ListFooterComponent={e =>
+        //   mutateOrderHistory.isLoading && history ? (
+        //     <Loading />
+        //   ) : history ? (
+        //     <Pressable
+        //       onPress={() => {
+        //         _getMoreHistory();
+        //       }}
+        //       style={{
+        //         width: 150,
+        //         height: 50,
+        //         borderRadius: 10,
+        //         alignItems: 'center',
+        //         justifyContent: 'center',
+        //         backgroundColor: colors.primary,
+        //       }}>
+        //       <TextBold style={{color: 'white'}}>더보기</TextBold>
+        //     </Pressable>
+        //   ) : (
+        //     <></>
+        //   )
+        // }
         // onEndReached={() => {
         //   _getMoreHistory();
         // }}

@@ -337,11 +337,10 @@ const OrderSumary = ({navigation, route}) => {
                   marginBottom: 13,
                   color: colors.fontColor3,
                 }}>
-                {orderData.data.order.order_addr1 +
-                  ' ' +
-                  orderData.data.order.order_addr2 +
-                  ' ' +
-                  orderData.data.order.order_addr3}
+                {console.log('orderData.data.order.', orderData.data.order)}
+                {orderData.data.order.order_addr1}{' '}
+                {orderData.data.order?.order_addr2}{' '}
+                {orderData.data.order?.order_addr3}
               </TextRegular>
             </View>
           </View>
@@ -385,7 +384,7 @@ const OrderSumary = ({navigation, route}) => {
                   marginBottom: 13,
                   color: colors.fontColor3,
                 }}>
-                {orderData.data.order.order_seller}
+                {orderData.data.order.order_officer}
               </TextRegular>
             </View>
           </View>
@@ -407,7 +406,7 @@ const OrderSumary = ({navigation, route}) => {
                   marginBottom: 13,
                   color: colors.fontColor3,
                 }}>
-                {orderData.data.order.order_officer}
+                {orderData.data.order.order_seller}
               </TextRegular>
             </View>
           </View>

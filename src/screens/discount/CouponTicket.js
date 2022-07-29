@@ -7,6 +7,8 @@ import colors from '../../styles/colors';
 import {Modal} from 'react-native';
 import TextBold from '../../component/text/TextBold';
 import dayjs from 'dayjs';
+import {replace} from 'formik';
+import {replaceString} from '../../config/utils/Price';
 
 const CouponTicket = ({data}) => {
   // const [modal, setModal] = useState({visible: false, data: ''});
@@ -71,7 +73,7 @@ const CouponTicket = ({data}) => {
             <TextBold style={{fontSize: 22, color: colors.primary}}>
               {/* 0: 고정금액 할인 , 1: 퍼센트 할인 */}
               {itemInfo.cp_price_type === '0'
-                ? itemInfo.cp_price + '원'
+                ? replaceString(itemInfo.cp_price) + '원'
                 : itemInfo.cp_price + '%'}
             </TextBold>
             <TextMedium style={{color: colors.fontColor2}}>

@@ -103,6 +103,7 @@ const SummitOrder = ({navigation, route}) => {
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'카트'} navigation={navigation} />
+      {console.log('sumoder data', route.params)}
       <CartButton
         navigation={navigation}
         goTo={'OrderPage'}
@@ -330,7 +331,9 @@ const SummitOrder = ({navigation, route}) => {
                 marginTop: 20,
               }}>
               <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
-              <TextBold style={{fontSize: 18}}>{_getTotalPrice(true)}</TextBold>
+              <TextBold style={{fontSize: 18}}>
+                {replaceString(_getTotalPrice(true))}
+              </TextBold>
             </View>
           </View>
         </View>

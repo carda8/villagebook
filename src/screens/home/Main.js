@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {Image, ScrollView, View} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -15,10 +15,35 @@ import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 import {useSelector} from 'react-redux';
 import policyConfig from '../signIn/policyConfig';
+import {_showAddr} from '../../config/utils/modules';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Main = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
+  const {postData} = useSelector(state => state.addressReducer);
+  const {mutateGetAddress} = useCustomMutation();
 
+  const _getAddr = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+    };
+
+    mutateGetAddress.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') {
+        }
+        console.log('e', e);
+      },
+    });
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      _getAddr();
+      return () => {};
+    }, []),
+  );
   // if (!userInfo) return <Loading />;
 
   console.log('::: USER INFO', userInfo);
@@ -35,10 +60,10 @@ const Main = ({navigation}) => {
         contentContainerStyle={{paddingHorizontal: 22, paddingBottom: 70}}>
         <Pressable
           onPress={() => {
-            navigation.navigate('Map');
+            navigation.navigate('AddressMain');
           }}
           style={{
-            width: '100%',
+            flex: 1,
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor: 'white',
@@ -46,12 +71,28 @@ const Main = ({navigation}) => {
           }}>
           <Image
             source={require('~/assets/ico_location.png')}
-            style={{width: 19, height: 19, marginRight: 8}}
+            style={{width: 19, height: 19}}
           />
-          <TextEBold style={{fontSize: 15}}>주소 검색</TextEBold>
+          <TextEBold
+            style={{
+              fontSize: 15,
+              marginHorizontal: 10,
+              color: colors.fontColor2,
+            }}>
+            {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+              '주소설정') +
+              ' ' +
+              (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ?? ' ') +
+              ' '}
+            {!mutateGetAddress?.data ?? '주소설정'}
+            {/* {_showAddr(userInfo, '주소설정')} */}
+            {/* {postData.addrMain
+              ? postData.addrMain + ' ' + postData.addrSub
+              : '주소 설정'} */}
+          </TextEBold>
         </Pressable>
 
-        <SearchBox />
+        {/* <SearchBox /> */}
 
         {/* 동네맛집 */}
         {/* 동네마켓 */}
@@ -154,7 +195,7 @@ const Main = ({navigation}) => {
               </TextJua>
               <View style={{marginTop: 8}}>
                 <TextRegular>
-                  우리동네 뫃든 시설, {'\n'}정보 검색은 한번에
+                  우리동네 모든 시설, {'\n'}정보 검색은 한번에
                 </TextRegular>
               </View>
             </View>

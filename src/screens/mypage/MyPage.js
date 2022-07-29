@@ -39,7 +39,7 @@ const MyPage = ({navigation}) => {
   const arr = [
     '개인정보 수정',
     '공지사항',
-    '1:1문의',
+    // '1:1문의',
     '포인트&쿠폰',
     '이벤트',
     '리뷰 관리',
@@ -170,19 +170,19 @@ const MyPage = ({navigation}) => {
                   case 1:
                     navigation.navigate('Notice');
                     break;
+                  // case 2:
+                  //   navigation.navigate('FAQ');
+                  //   break;
                   case 2:
-                    navigation.navigate('FAQ');
-                    break;
-                  case 3:
                     navigation.navigate('DiscountMain');
                     break;
-                  case 4:
+                  case 3:
                     navigation.navigate('EventBoard');
                     break;
-                  case 5:
+                  case 4:
                     navigation.navigate('Review');
                     break;
-                  case 6:
+                  case 5:
                     navigation.navigate('PushSetting');
                     break;
                   default:
@@ -209,7 +209,7 @@ const MyPage = ({navigation}) => {
             backgroundColor: colors.inputBoxBG,
             paddingHorizontal: 22,
           }}>
-          <TextBold style={{color: colors.fontColor2}}>주의사항</TextBold>
+          {/* <TextBold style={{color: colors.fontColor2}}>주의사항</TextBold> */}
           {/* <TextBold style={{color: colors.fontColor2}}>주문취소</TextBold>
           <TextBold style={{color: colors.fontColor2}}>업체연락처</TextBold>
           <TextBold style={{color: colors.fontColor2}}>주문누락</TextBold>

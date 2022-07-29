@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, Image, Text} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useMutation} from 'react-query';
+import {useSelector} from 'react-redux';
 import mainAPI from '../../api/modules/mainAPI';
 import Header from '../../component/Header';
 import Loading from '../../component/Loading';
@@ -10,17 +12,42 @@ import MainBanner from '../../component/MainBanner';
 import SearchBox from '../../component/mainScreen/SearchBox';
 import TextEBold from '../../component/text/TextEBold';
 import TextMedium from '../../component/text/TextMedium';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 
 const CategoryView = ({navigation, route}) => {
   const selectedCategory = route.params?.selectedCategory;
   const [categoryData, setCategoryData] = useState();
+  const {mutateGetAddress} = useCustomMutation();
+  const {userInfo} = useSelector(state => state.authReducer);
   const mutateCategory = useMutation(mainAPI._getCategory, {
     onSuccess: e => {
       console.log('e', e);
       setCategoryData(e.data.arrItems);
     },
   });
+
+  const _getAddr = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+    };
+
+    mutateGetAddress.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') {
+        }
+        console.log('e', e);
+      },
+    });
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      _getAddr();
+      return () => {};
+    }, []),
+  );
 
   const _init = () => {
     const data = {
@@ -83,7 +110,7 @@ const CategoryView = ({navigation, route}) => {
           <>
             <Pressable
               onPress={() => {
-                navigation.navigate('Map');
+                navigation.navigate('AddressMain');
               }}
               style={{
                 width: '100%',
@@ -96,10 +123,17 @@ const CategoryView = ({navigation, route}) => {
                 source={require('~/assets/ico_location.png')}
                 style={{width: 19, height: 19, marginRight: 8}}
               />
-              <TextEBold style={{fontSize: 15}}>주소 검색</TextEBold>
+              <TextEBold style={{fontSize: 15, color: colors.fontColor2}}>
+                {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+                  '주소설정') +
+                  ' ' +
+                  (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ?? ' ') +
+                  ' '}
+                {!mutateGetAddress?.data ?? '주소설정'}
+              </TextEBold>
             </Pressable>
 
-            <SearchBox />
+            {/* <SearchBox /> */}
             {/* 메인배너 */}
             <MainBanner
               navigation={navigation}

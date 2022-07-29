@@ -19,7 +19,7 @@ const MenuMain = ({navigation}) => {
   const ListHeaderComponent = () => {
     return (
       <View
-        style={{height: 50, width: '100%', backgroundColor: 'tomato'}}></View>
+        style={{height: 100, width: '100%', backgroundColor: 'tomato'}}></View>
     );
   };
   return (

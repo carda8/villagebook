@@ -74,14 +74,14 @@ export const ImageAPI = axios.create({
         imageResultObject[`rt_img` + i] = data.imgArr[i - 1];
       }
     }
-    console.log('Imgae Obj', imageResultObject);
+
     const jwt_data = jwtEncode(copyData, SECRETKEY);
     const result = formFormatter({
       secretKey: SECRETKEY,
       jwt_data: jwt_data,
       ...imageResultObject,
     });
-    console.log('transform jwt data', result);
+    // console.log('transform jwt data', result);
     return result;
   },
 

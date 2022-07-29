@@ -41,4 +41,32 @@ export default {
     const result = await _reqImageAPI('proc_review_input.php', data);
     return result;
   },
+  _getAddress: async data => {
+    const result = await _reqAPI('proc_address.php', data);
+    return result;
+  },
+  _getRecentAddress: async data => {
+    const result = await _reqAPI('proc_address_list.php', data);
+    return result;
+  },
+  _insertMainAddr: async data => {
+    const result = await _reqAPI('proc_address_insert.php', data);
+    return result;
+  },
+  _setMainAddr: async data => {
+    const result = await _reqAPI('proc_address_change.php', data);
+    return result;
+  },
+  _getCouponPoint: async data => {
+    const result = await _reqAPI('proc_coupon_count_list.php', data);
+    return result;
+  },
+  _getBoardList: async data => {
+    const result = await _reqAPI('proc_board_list.php', data);
+    return result;
+  },
+  _getMyReview: async data => {
+    const result = await _reqAPI('proc_review_list.php', data);
+    return result;
+  },
 };

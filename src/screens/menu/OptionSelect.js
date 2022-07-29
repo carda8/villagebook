@@ -116,6 +116,7 @@ const OptionSelect = ({navigation, route}) => {
         style={{position: 'absolute', zIndex: 500}}
         isOption={true}
       />
+      {console.log('option selec data', route.params)}
       <CartButton navigation={navigation} data={routeData} />
       {/* <SectionList sections={convertedData} renderItem={item => <></>} /> */}
 

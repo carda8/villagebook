@@ -7,9 +7,9 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import FastImage from 'react-native-fast-image';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Chip from '../../../component/Chip';
 import Dot from '../../../component/Dot';
 import ImageCover from '../../../component/ImageCover';
@@ -31,6 +31,8 @@ import {setIsLifeStyle} from '../../../store/reducers/CategoryReducer';
 const StoreItems = ({navigation, route}) => {
   const routeData = route.params;
   const dispatch = useDispatch();
+  const {currentLocation} = useSelector(state => state.locationReducer);
+  const {currentFilter} = useSelector(state => state.categoryReducer);
 
   // console.log('roueteData', routeData);
   const [storeList, setStoreList] = useState();
@@ -43,7 +45,7 @@ const StoreItems = ({navigation, route}) => {
   const mutateGetStoreList = useMutation(mainAPI._getStoreList, {
     onSuccess: e => {
       if (e.result === 'true') {
-        console.log('eee', e.data.arrItems);
+        console.log('mutateGetStoreList', e.data.arrItems);
         const temp = _fliterList(e.data.arrItems);
         setStoreList(temp);
       }
@@ -52,17 +54,25 @@ const StoreItems = ({navigation, route}) => {
     },
   });
 
-  const _init = code => {
-    console.log('storeitem', routeData);
+  useEffect(() => {
+    console.log('curfilter', currentFilter);
+  }, [currentFilter]);
+
+  const itemLimit = useRef(0);
+
+  const _init = more => {
+    // console.log('storeitem', routeData);
+    if (more) itemLimit.current += 20;
     const data = {
       mb_ca_code: routeData.ca_code,
-      item_count: '0',
-      limit_count: '20',
+      item_count: more ? itemLimit.current : 0,
+      limit_count: 20,
       mb_jumju_type: routeData.category,
-      mb_ca_sort: '0',
+      mb_ca_sort: currentFilter + 1,
+      mb_lat: currentLocation.lat,
+      mb_lng: currentLocation.lon,
     };
-
-    console.log('data', data);
+    console.log('mutateGetStoreList ::', data);
 
     if (routeData.category === 'lifestyle') {
       delete data.mb_ca_sort;
@@ -83,7 +93,7 @@ const StoreItems = ({navigation, route}) => {
 
   useEffect(() => {
     _init();
-  }, [route.parmas]);
+  }, [route.parma, currentFilter]);
 
   useEffect(() => {
     console.log('storeList', storeList);
@@ -95,7 +105,7 @@ const StoreItems = ({navigation, route}) => {
 
   //368 88 279
   const renderItem = item => {
-    console.log('itemssss', item);
+    // console.log('itemssss', item);
     const storeCode = item.item.storeCode;
     const storeInfo = item.item;
     return (
@@ -140,7 +150,7 @@ const StoreItems = ({navigation, route}) => {
             style={{
               flex: 1,
               marginRight: 1,
-              backgroundColor: 'gray',
+              backgroundColor: colors.inputBoxBG,
               borderTopLeftRadius: 10,
               borderBottomLeftRadius: 10,
               overflow: 'hidden',
@@ -275,13 +285,23 @@ const StoreItems = ({navigation, route}) => {
                   <TextRegular>40분</TextRegular>
                   <Dot />
                 </View>
-                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                  <TextRegular style={{color: colors.fontColorA2}}>
-                    최소 주문{' '}
-                  </TextRegular>
-                  <TextRegular>
-                    {replaceString(storeInfo.minPrice)}원
-                  </TextRegular>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                  }}>
+                  <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                    <TextRegular style={{color: colors.fontColorA2}}>
+                      최소 주문{' '}
+                    </TextRegular>
+                    <TextRegular>
+                      {replaceString(storeInfo.minPrice)}원
+                    </TextRegular>
+                  </View>
+                  <View style={{marginLeft: 10}}>
+                    <TextRegular style={{color: colors.fontColorA2}}>
+                      거리 {storeInfo.distance}
+                    </TextRegular>
+                  </View>
                 </View>
               </View>
             )}
@@ -296,9 +316,14 @@ const StoreItems = ({navigation, route}) => {
     );
   };
 
-  if (mutateGetLifeStyle.isLoading || !storeList) return <Loading />;
+  if (
+    mutateGetStoreList.isLoading ||
+    mutateGetLifeStyle.isLoading ||
+    !storeList
+  )
+    return <Loading />;
   // storeList[0] !== null && storeList[1] !== null ? storeList : []
-  console.log('storeligttt', storeList);
+  // console.log('storeligttt', storeList);
   return (
     <View style={{flex: 1}}>
       {routeData.category === 'lifestyle' ? (

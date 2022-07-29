@@ -15,6 +15,5 @@ export default (data, isIndex = true) => {
       formData.append(key, data[key]);
     }
   }
-  console.log('formData', formData);
   return formData;
 };

@@ -4,6 +4,7 @@ export default {
     USER_ID: 'USER_ID',
     USER_TOKEN: 'USER_TOKEN',
     LOGIN_TYPE: 'LOGIN_TYPE',
+    LOGIN_TYPE_NUM: 'LOGIN_TYPE_NUM',
   },
   state: {
     true: 'true',
@@ -12,5 +13,11 @@ export default {
   loginType: {
     local: 'local',
     sns: 'sns',
+  },
+  loginTypeNum: {
+    naver: '2',
+    kakao: '3',
+    facebook: '4',
+    apple: '5',
   },
 };

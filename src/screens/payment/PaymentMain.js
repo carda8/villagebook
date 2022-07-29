@@ -17,6 +17,7 @@ const PaymentMain = ({navigation, route}) => {
   const isDelivery = route.params?.isDelivery;
   const orderForm = route.params?.orderForm;
   const totalSellPrice = route.params?.totalSellPrice;
+  const totalOrderPrice = route.params?.totalOrderPrice;
   const dispatch = useDispatch();
 
   const {mutateFinishTransaction} = useCustomMutation();
@@ -25,7 +26,7 @@ const PaymentMain = ({navigation, route}) => {
   const {userInfo} = useSelector(state => state.authReducer);
   console.log('userinfo', userInfo);
   console.log('orderForm', orderForm);
-
+  console.log('route data', route.params);
   const _deleteCount = () => {
     return {savedItems: cartStore.savedItem.savedItems};
   };
@@ -69,8 +70,8 @@ const PaymentMain = ({navigation, route}) => {
       od_coupon_id_store: '',
       od_coupon_price_system: orderForm.od_coupon_price_system,
       od_coupon_price_store: orderForm.od_coupon_price_store,
-      od_total_sell_price: orderForm.od_total_sell_price,
-      od_total_order_price: orderForm.od_total_order_price,
+      od_total_sell_price: totalSellPrice,
+      od_total_order_price: totalOrderPrice,
 
       od_pg_data: method === 'card' ? JSON.stringify(paymentForm) : null,
       od_menu_data: JSON.stringify(menuData),
@@ -142,14 +143,14 @@ const PaymentMain = ({navigation, route}) => {
   const data = {
     pg: 'html5_inicis',
     pay_method: 'card',
-    name: '아임포트 결제데이터 분석',
+    name: '아임포트 결제 테스트',
     merchant_uid: `mid_${new Date().getTime()}`,
-    amount: '100',
-    buyer_name: '홍길동',
-    buyer_tel: '01012345678',
-    buyer_email: 'example@naver.com',
-    buyer_addr: '서울시 강남구 신사동 661-16',
-    buyer_postcode: '06018',
+    amount: totalOrderPrice,
+    buyer_name: orderForm.mt_name,
+    buyer_tel: orderForm.od_hp,
+    buyer_email: userInfo.mt_email,
+    buyer_addr: orderForm.od_addr1 + orderForm.od_addr2 + orderForm.od_addr3,
+    buyer_postcode: orderForm.od_zip,
     app_scheme: 'example',
     // [Deprecated v1.0.3]: m_redirect_url
   };

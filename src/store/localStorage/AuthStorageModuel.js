@@ -13,6 +13,11 @@ export default {
     const data = await AsyncStorage.getItem(key);
     return data;
   },
+  _getItemLoginTypeNum: async () => {
+    const key = localStorageConfig.key.LOGIN_TYPE_NUM;
+    const data = await AsyncStorage.getItem(key);
+    return data;
+  },
   _getItemUserToken: async () => {
     const key = localStorageConfig.key.USER_TOKEN;
     const data = await AsyncStorage.getItem(key);
@@ -35,6 +40,11 @@ export default {
     const data = await AsyncStorage.setItem(key, value);
     return data;
   },
+  _setItemLoginTypeNum: async value => {
+    const key = localStorageConfig.key.LOGIN_TYPE_NUM;
+    const data = await AsyncStorage.setItem(key, value);
+    return data;
+  },
   _setItemUserToken: async value => {
     const key = localStorageConfig.key.USER_TOKEN;
     const data = await AsyncStorage.setItem(key, value);
@@ -45,6 +55,7 @@ export default {
     const data = await AsyncStorage.setItem(key, value);
     return data;
   },
+
   //REMOVE
   _removeItemAutoLogin: async callback => {
     const key = localStorageConfig.key.AUTO_LOGIN;
@@ -55,9 +66,11 @@ export default {
     const key = localStorageConfig.key.USER_ID;
     const key2 = localStorageConfig.key.USER_TOKEN;
     const key3 = localStorageConfig.key.LOGIN_TYPE;
+    const key4 = localStorageConfig.key.LOGIN_TYPE_NUM;
     const data = await AsyncStorage.removeItem(key, callback);
     const data2 = await AsyncStorage.removeItem(key2, callback);
     const data3 = await AsyncStorage.removeItem(key3, callback);
+    const data4 = await AsyncStorage.removeItem(key4, callback);
     return [data, data2];
   },
 };

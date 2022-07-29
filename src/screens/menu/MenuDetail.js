@@ -32,6 +32,7 @@ import {customAlert} from '../../component/CustomAlert';
 import {replaceString} from '../../config/utils/Price';
 import {useSelector} from 'react-redux';
 import MenuReview from './MenuReview';
+import MiniMap from '../map/MiniMap';
 
 const MenuDetail = ({navigation, route}) => {
   const {mutateTopMenu, mutateStoreInfo, mutateAllMunu, mutateServiceTime} =
@@ -139,7 +140,7 @@ const MenuDetail = ({navigation, route}) => {
   const StoreTopMenu = mutateTopMenu.data.data.arrItems;
   const StoreServiceTime = mutateServiceTime?.data?.data?.arrItems;
 
-  console.log('StoreInfo', StoreInfo);
+  // console.log('StoreInfo', StoreInfo);
   // console.log('StoreTopMenu', StoreTopMenu);
   // console.log('StoreTopMenu', StoreAllMenu);
 
@@ -622,6 +623,9 @@ const MenuDetail = ({navigation, route}) => {
                   </View>
                 </View>
               </View>
+              <View style={{marginBottom: 20}}>
+                <MiniMap lat={StoreInfo.mb_lat} lng={StoreInfo.mb_lng} />
+              </View>
               <DividerL />
               <View
                 style={{
@@ -807,7 +811,7 @@ const MenuDetail = ({navigation, route}) => {
         {savedItem.savedItems.length > 0 && (
           <Pressable
             onPress={() => {
-              navigation.navigate('SummitOrder');
+              navigation.navigate('SummitOrder', {data: StoreInfo});
             }}
             style={{
               position: 'absolute',

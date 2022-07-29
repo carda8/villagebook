@@ -158,7 +158,7 @@ const CartButton = ({
         <View style={{flex: 1, alignItems: 'center'}}>
           <TextMedium style={{color: 'white', fontSize: 16}}>
             {goTo === 'OrderPage'
-              ? lastPrice
+              ? replaceString(lastPrice)
               : ' ' + replaceString(cartStore.totalPrice) + '원'}
           </TextMedium>
         </View>

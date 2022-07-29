@@ -5,7 +5,7 @@ const CategorySlice = createSlice({
   initialState: {
     currentCategory: '',
     isLifeStyle: false,
-    currentFilter: '',
+    currentFilter: 0,
   },
   reducers: {
     setcurrentCategory: (state, action) => {

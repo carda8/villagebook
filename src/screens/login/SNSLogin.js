@@ -12,11 +12,11 @@ export default {
     try {
       await KakaoLogin();
       const profile = await getKakaoProfile();
-      const userInfo = {
-        social_id: profile.id,
-        email: profile.email,
-        nickname: profile.nickname,
-      };
+      // const userInfo = {
+      //   social_id: profile.id,
+      //   email: profile.email,
+      //   nickname: profile.nickname,
+      // };
       const data = {
         mt_id: profile.id,
         mt_pwd: '',
@@ -87,7 +87,7 @@ export default {
     };
 
     const handleNaverLogin = () => {
-      console.log('props', initials);
+      // console.log('props', initials);
       return new Promise((resolve, reject) => {
         NaverLogin.login(initials, (err, token) => {
           console.log('Token is fetched  ::', token);

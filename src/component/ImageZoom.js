@@ -1,5 +1,6 @@
 import {View, Text, Modal} from 'react-native';
 import React from 'react';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const ImageZoom = ({image, modal, setModal}) => {
   return (
@@ -9,7 +10,7 @@ const ImageZoom = ({image, modal, setModal}) => {
       onRequestClose={() => {
         setModal(!modal);
       }}>
-      <ImageViewer imageUrls={[{url: image}]} />
+      <ImageViewer imageUrls={image} />
     </Modal>
   );
 };

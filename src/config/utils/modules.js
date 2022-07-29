@@ -25,3 +25,18 @@ export const _setRating = (isTotal, style) => {
 
   return temp2;
 };
+
+export const _showAddr = (userInfo, emtpyText) => {
+  if (userInfo?.mt_addr1) {
+    const temp = userInfo.mt_addr1
+      ? userInfo.mt_addr1 + ' ' + userInfo.mt_addr2 + ' ' + userInfo.mt_addr3
+      : userInfo.mt_jibeon +
+          ' ' +
+          userInfo.mt_addr2 +
+          ' ' +
+          userInfo.mt_addr3 ??
+        emtpyText ??
+        '';
+    return temp;
+  } else return '주소설정';
+};

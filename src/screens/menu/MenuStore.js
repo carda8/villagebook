@@ -11,7 +11,7 @@ const Tab = createMaterialTopTabNavigator();
 
 const MenuStroe = ({navigation, route}) => {
   const tabRef = useRef(0);
-  const routeIdx = route.params.routeIdx ?? 'Menu1';
+  const routeIdx = route.params?.routeIdx ?? 'Menu1';
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'MENU 메인'} navigation={navigation} />

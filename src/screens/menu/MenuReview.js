@@ -1,4 +1,13 @@
-import {View, Text, Image, FlatList, Pressable, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  Pressable,
+  ScrollView,
+  Modal,
+  ActivityIndicator,
+} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
@@ -11,10 +20,15 @@ import dayjs from 'dayjs';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import Loading from '../../component/Loading';
 import {customAlert} from '../../component/CustomAlert';
+import ImageZoom from '../../component/ImageZoom';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import Divider from '../../component/Divider';
+import DividerL from '../../component/DividerL';
 
 const MenuReview = ({storeInfo}) => {
   const {mutateGetReview} = useCustomMutation();
   const [review, setReview] = useState();
+  const [modal, setModal] = useState({visible: false, image: []});
 
   const itemLimit = useRef(0);
 
@@ -28,14 +42,14 @@ const MenuReview = ({storeInfo}) => {
       jumju_code: storeInfo.mb_jumju_code,
     };
     mutateGetReview.mutate(data, {
-      onSuccess: e => {
-        if (e.result === 'true' && e.data.arrItems.review.length > 0) {
+      onSettled: e => {
+        if (e.result === 'true') {
           setReview(e.data.arrItems);
           console.log('ee', e);
         } else {
           setReview([]);
-          console.log('e', e);
         }
+        console.log('e', e);
       },
     });
   };
@@ -106,12 +120,17 @@ const MenuReview = ({storeInfo}) => {
 
   const _setSlider = () => {
     let temp2 = [];
+    console.log('re@@@@@@@@@@@', review);
     for (let i = 0; i < 5; i++) {
       temp2.push(
         <View key={i} style={{flexDirection: 'row'}}>
           <Slider
-            value={review?.rate[`rating_per` + (i - 5) * -1]}
-            maximumValue={review?.rate.total_cnt}
+            value={
+              review?.rate[`rating_per` + (i - 5) * -1]
+                ? review?.rate[`rating_per` + (i - 5) * -1]
+                : '0'
+            }
+            maximumValue={1}
             disabled
             minimumTrackTintColor={colors.primary}
             trackStyle={{
@@ -129,14 +148,23 @@ const MenuReview = ({storeInfo}) => {
         </View>,
       );
     }
+
     return temp2;
+  };
+
+  const _convertImage = images => {
+    let temp = [];
+    images.map((item, index) => {
+      temp.push({url: item});
+    });
+    return temp;
   };
 
   const ListHeader = () => {
     return (
       <>
         <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
-          {/* <TextRegular style={{fontSize: 15}}>{review?.notice}</TextRegular> */}
+          <TextRegular style={{fontSize: 15}}>{review?.notice}</TextRegular>
         </View>
 
         <View
@@ -150,7 +178,7 @@ const MenuReview = ({storeInfo}) => {
           <View style={{flexDirection: 'row'}}>
             <TextBold style={{fontSize: 15}}>이 상품에 </TextBold>
             <TextBold style={{fontSize: 15, color: colors.primary}}>
-              {review.rate.total_cnt ?? '0'}명
+              {review.rate?.total_cnt ? review.rate?.total_cnt : '0'}명
             </TextBold>
             <TextBold style={{fontSize: 15}}>이</TextBold>
           </View>
@@ -170,10 +198,10 @@ const MenuReview = ({storeInfo}) => {
                 alignItems: 'center',
               }}>
               <TextBold style={{fontSize: 44, color: colors.primary}}>
-                {_showRateAvg(review.rate.avg)}
+                {_showRateAvg(review.rate?.avg ? review.rate?.avg : 0)}
               </TextBold>
               <View style={{flexDirection: 'row'}}>
-                {_setRating(true, review.rate.avg)}
+                {_setRating(true, review.rate?.avg ? review.rate?.avg : 0)}
               </View>
             </View>
             <View style={{marginLeft: 30}}>{_setSlider()}</View>
@@ -230,62 +258,76 @@ const MenuReview = ({storeInfo}) => {
             </View>
           </View>
           <TextRegular>{item.content}</TextRegular>
-          {item?.pic.map((item, index) => (
-            <View key={index}>
-              {index === 0 && (
-                <FastImage
-                  source={item ? {uri: item} : require('~/assets/no_img.png')}
-                  resizeMode={FastImage.resizeMode.cover}
-                  style={{
-                    flex: 1,
-                    height: 245,
-                    marginTop: 20,
-                    marginBottom: 8,
-                    borderRadius: 10,
-                  }}
-                />
-              )}
-            </View>
-          ))}
+          <Pressable
+            onPress={() => {
+              if (item.pic.length > 0)
+                setModal({visible: !modal.visible, image: item.pic});
+            }}>
+            {item?.pic.map((item, index) => (
+              <View key={index}>
+                {index === 0 && (
+                  <FastImage
+                    source={item ? {uri: item} : require('~/assets/no_img.png')}
+                    resizeMode={FastImage.resizeMode.cover}
+                    style={{
+                      flex: 1,
+                      height: 245,
+                      marginTop: 20,
+                      marginBottom: 8,
+                      borderRadius: 10,
+                    }}
+                  />
+                )}
+              </View>
+            ))}
+          </Pressable>
 
           {/* 점주 댓글 */}
-          <View
-            style={{
-              borderRadius: 15,
-              borderTopLeftRadius: 0,
-              backgroundColor: colors.storeIcon,
-              paddingVertical: 16,
-              paddingHorizontal: 13,
-            }}>
+          {item.reply && (
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'flex-start',
+                borderRadius: 15,
+                borderTopLeftRadius: 0,
+                backgroundColor: colors.storeIcon,
+                paddingVertical: 16,
+                paddingHorizontal: 13,
               }}>
-              <Image
-                source={require('~/assets/no_img.png')}
-                style={{width: 38, height: 38, borderRadius: 38 / 2}}
-                resizeMode="cover"
-              />
-              <View style={{marginLeft: 15, flex: 1}}>
-                <TextBold style={{fontSize: 16, color: colors.primary}}>
-                  맛나버거 부산대점
-                </TextBold>
-                <TextRegular style={{fontSize: 13, color: colors.fontColorA2}}>
-                  {dayjs().format('YYYY-MM-DD')}
-                </TextRegular>
-                <TextRegular
-                  style={{
-                    fontSize: 15,
-                    color: colors.fontColor2,
-                    marginTop: 7,
-                  }}>
-                  맛있다고 하시니 다행입니다. 많이 이용해주세요
-                </TextRegular>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'flex-start',
+                }}>
+                <Image
+                  source={
+                    storeInfo.store_logo
+                      ? {uri: storeInfo.store_logo}
+                      : require('~/assets/no_img.png')
+                  }
+                  style={{width: 38, height: 38, borderRadius: 38 / 2}}
+                  resizeMode="cover"
+                />
+                <View style={{marginLeft: 15, flex: 1}}>
+                  <TextBold style={{fontSize: 16, color: colors.primary}}>
+                    {storeInfo.mb_company}
+                  </TextBold>
+                  <TextRegular
+                    style={{fontSize: 13, color: colors.fontColorA2}}>
+                    {item.replayDate}
+                  </TextRegular>
+                  <TextRegular
+                    style={{
+                      fontSize: 15,
+                      color: colors.fontColor2,
+                      marginTop: 7,
+                    }}>
+                    {item.replyComment}
+                  </TextRegular>
+                </View>
               </View>
             </View>
-          </View>
+          )}
         </View>
+        <DividerL style={{height: 2}} />
       </>
     );
   };
@@ -296,6 +338,10 @@ const MenuReview = ({storeInfo}) => {
     return () => {};
   }, []);
 
+  useEffect(() => {
+    console.log('reviewvewvwevw', review);
+  }, [review]);
+
   if (!review)
     return (
       <View style={{height: 400, width: '100%'}}>
@@ -303,12 +349,15 @@ const MenuReview = ({storeInfo}) => {
       </View>
     );
 
+  if (!review.review) return <ListHeader />;
+
   return (
     <>
       <View style={{flex: 1}}>
         {/* 리뷰탭 내부 상단 리뷰 정보*/}
         <ListHeader />
-        {review.review.map((item, index) => (
+
+        {review?.review?.map((item, index) => (
           <ReviewList item={item} key={index} />
         ))}
 
@@ -328,10 +377,28 @@ const MenuReview = ({storeInfo}) => {
               alignItems: 'center',
               justifyContent: 'center',
               backgroundColor: colors.primary,
+              marginTop: 30,
             }}>
             <TextBold style={{color: 'white'}}>더보기</TextBold>
           </Pressable>
         )}
+        <Modal
+          transparent
+          visible={modal.visible}
+          onRequestClose={() => {
+            setModal({...modal, visible: !modal.visible});
+          }}>
+          {/* {console.log('modal img', modal.image)} */}
+          <ImageViewer
+            useNativeDriver
+            enablePreload
+            saveToLocalByLongPress={false}
+            imageUrls={_convertImage(modal.image)}
+            loadingRender={() => (
+              <ActivityIndicator size={'large'} color={colors.primary} />
+            )}
+          />
+        </Modal>
       </View>
     </>
   );

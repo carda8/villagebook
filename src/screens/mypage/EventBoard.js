@@ -7,7 +7,7 @@ import {
   FlatList,
   Pressable,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
 import colors from '../../styles/colors';
@@ -17,15 +17,37 @@ import TextRegular from '../../component/text/TextRegular';
 import TextBold from '../../component/text/TextBold';
 import DividerL from '../../component/DividerL';
 import dayjs from 'dayjs';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import Loading from '../../component/Loading';
 
 const EventBoard = ({navigation}) => {
   const [input, setInput] = useState();
-  const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const {mutateBoardList} = useCustomMutation();
+  const [boardList, setBoardList] = useState([]);
+
+  const _getBoardList = () => {
+    const data = {
+      bo_table: 'event',
+      item_count: 0,
+      limit_count: 20,
+    };
+    mutateBoardList.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0)
+          setBoardList(e.data.arrItems);
+        else setBoardList([]);
+        console.log('e', e);
+      },
+    });
+  };
+
   const renderItem = item => {
+    const data = item.item;
+
     return (
       <Pressable
         onPress={() => {
-          navigation.navigate('EventDetail', {boardIdx: 11});
+          navigation.navigate('EventDetail', {data});
         }}
         style={{
           height: 70,
@@ -33,21 +55,33 @@ const EventBoard = ({navigation}) => {
           paddingVertical: 10,
           justifyContent: 'space-between',
         }}>
-        <TextBold style={{color: colors.fontColor2}}>이벤트</TextBold>
+        <TextBold style={{color: colors.fontColor2}}>{data.subject}</TextBold>
         <TextRegular style={{fontSize: 11, color: colors.fontColorA2}}>
-          {dayjs().format('YYYY-MM-DD')}
+          {data.datetime}
         </TextRegular>
       </Pressable>
     );
   };
+
+  useEffect(() => {
+    _getBoardList();
+  }, []);
+
+  if (mutateBoardList.isLoading) return <Loading />;
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'이벤트'} navigation={navigation} showCart={true} />
       <FlatList
-        data={arr}
+        data={boardList}
+        ListEmptyComponent={
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <TextRegular>이벤트가 등록되지 않았습니다.</TextRegular>
+          </View>
+        }
         ListHeaderComponent={() => (
           <>
-            <View
+            {/* <View
               style={{
                 paddingHorizontal: 22,
                 paddingVertical: 10,
@@ -76,7 +110,7 @@ const EventBoard = ({navigation}) => {
                 }}
               />
             </View>
-            <DividerL />
+            <DividerL /> */}
           </>
         )}
         ItemSeparatorComponent={() => (

@@ -128,7 +128,7 @@ const EditInfo = ({navigation}) => {
               {userInfo.mt_email}
             </TextMedium>
             <TextMedium style={{color: colors.fontColor2}}>
-              {userInfo.mt_hp}
+              {userInfo.mt_hp ? userInfo.mt_hp : ''}
             </TextMedium>
             {userInfo.mt_login_type === '1' && (
               <TextMedium style={{color: colors.fontColor2}}>
