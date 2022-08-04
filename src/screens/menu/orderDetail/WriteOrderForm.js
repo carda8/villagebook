@@ -384,7 +384,15 @@ const WriteOrderForm = ({navigation, route}) => {
               </Pressable>
             </Pressable>
           </Pressable>
-          {isDelivery && (
+          {paymentMethod !== PaymentList.card && (
+            <View style={{marginTop: 10}}>
+              <TextRegular style={{color: colors.fontMain2, fontSize: 12}}>
+                - 만나서 결제는 포인트, 쿠폰 사용이 불가합니다.
+              </TextRegular>
+            </View>
+          )}
+          <TextRegular></TextRegular>
+          {isDelivery && paymentMethod === PaymentList.card && (
             <>
               {/* 포인트 사용 */}
               <View style={{marginTop: 20}}>

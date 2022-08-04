@@ -236,7 +236,27 @@ export const useCustomMutation = () => {
       return e;
     },
   });
-
+  const mutateGetStoreCoupon = useMutation(storeAPI._getStoreCoupon, {
+    onSettled: e => {
+      console.log('mutateGetCouponPoint', e);
+      return e;
+    },
+  });
+  const mutateGetDeliveryFeeInfo = useMutation(
+    storeAPI._getStoreDeliveryFeeInfo,
+    {
+      onSettled: e => {
+        console.log('mutateGetDeliveryFeeInfo', e);
+        return e;
+      },
+    },
+  );
+  const mutateGetBanner = useMutation(storeAPI._getBanner, {
+    onSettled: e => {
+      console.log('mutateGetBanner', e);
+      return e;
+    },
+  });
   return {
     mutateSignIn,
     mutateSNSlogin,
@@ -267,5 +287,8 @@ export const useCustomMutation = () => {
     mutateGetCouponPoint,
     mutateBoardList,
     mutateGetMyReview,
+    mutateGetStoreCoupon,
+    mutateGetDeliveryFeeInfo,
+    mutateGetBanner,
   };
 };

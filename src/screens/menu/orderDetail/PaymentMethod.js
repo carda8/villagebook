@@ -1,4 +1,11 @@
-import {View, Text, Image, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  FlatList,
+  useWindowDimensions,
+} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../../styles/commonStyle';
@@ -12,22 +19,43 @@ import CouponTicket from '../../discount/CouponTicket';
 
 const PaymentMethod = ({navigation, route}) => {
   const routeData = route.params;
+  const layout = useWindowDimensions();
+  console.log('routeData', routeData);
+  const dispatch = useDispatch();
 
   const _getTitle = () => {
     if (routeData?.useCoupon) return '쿠폰 선택';
     else return '결제 수단';
   };
 
-  const dispatch = useDispatch();
+  const renderItem = item => {
+    return (
+      <>
+        <CouponTicket data={item} />
+      </>
+    );
+  };
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={_getTitle()} navigation={navigation} isPayment={true} />
       {routeData?.useCoupon ? (
         <>
-          <CouponTicket />
-          <CouponTicket />
-          <CouponTicket />
+          <FlatList
+            data={routeData.storeCoupon}
+            renderItem={item => renderItem(item)}
+            keyExtractor={(item, index) => index}
+            ListEmptyComponent={
+              <View style={{marginTop: '40%', marginHorizontal: 22}}>
+                <Image
+                  source={require('~/assets/no_coupon.png')}
+                  style={{height: layout.width, width: '100%'}}
+                  resizeMode="contain"
+                />
+              </View>
+            }
+          />
+          {/* <CouponTicket data={routeData.storeCoupon} /> */}
         </>
       ) : (
         <View style={{paddingHorizontal: 22}}>

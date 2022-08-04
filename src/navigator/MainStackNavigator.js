@@ -60,6 +60,7 @@ import AddressSetDetail from '../screens/home/AddressSetDetail';
 import SNSLogin from '../screens/login/SNSLogin';
 import {customAlert} from '../component/CustomAlert';
 import {useGeoLocation} from '../hooks/useGeoLocation';
+import DeliveryTipDetail from '../screens/home/CategoryStore/DeliveryTipDetail';
 
 const Stack = createNativeStackNavigator();
 
@@ -226,6 +227,11 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen name="MenuStore" component={MenuStroe} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
+        <Stack.Screen
+          name="DeliveryTipDetail"
+          component={DeliveryTipDetail}
+          options={{animation: 'slide_from_bottom'}}
+        />
         <Stack.Screen
           name="LifeStyleStoreInfo"
           component={LifeStyleStoreInfo}

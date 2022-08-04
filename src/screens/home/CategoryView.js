@@ -12,6 +12,7 @@ import MainBanner from '../../component/MainBanner';
 import SearchBox from '../../component/mainScreen/SearchBox';
 import TextEBold from '../../component/text/TextEBold';
 import TextMedium from '../../component/text/TextMedium';
+import BannerList from '../../config/BannerList';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
@@ -27,7 +28,7 @@ const CategoryView = ({navigation, route}) => {
       setCategoryData(e.data.arrItems);
     },
   });
-
+  console.log('selectedCategory', selectedCategory);
   const _getAddr = () => {
     const data = {
       mt_id: userInfo.mt_id,
@@ -138,6 +139,7 @@ const CategoryView = ({navigation, route}) => {
             <MainBanner
               navigation={navigation}
               style={{marginTop: 17, marginBottom: 17}}
+              position={BannerList[`${selectedCategory}`]}
             />
           </>
         )}

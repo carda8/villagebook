@@ -51,12 +51,13 @@ const SummitOrder = ({navigation, route}) => {
       temp += item.totalPrice;
     });
     if (isSummit) {
-      const DeliveryData = mutateDeliveryFee.data.data.arrItems[0];
+      const DeliveryData = mutateDeliveryFee?.data?.data.arrItems[0];
+
       if (!isDelivery) {
-        let calc = temp - DeliveryData.take_out_discount;
+        let calc = temp - DeliveryData?.take_out_discount ?? 0;
         return calc;
       } else {
-        let calc = temp + DeliveryData.send_cost + DeliveryData.send_cost2;
+        let calc = temp + DeliveryData?.send_cost + DeliveryData?.send_cost2;
         return replaceString(calc);
       }
     } else return replaceString(temp);
@@ -74,7 +75,7 @@ const SummitOrder = ({navigation, route}) => {
 
   useEffect(() => {
     _getDeliveryFee();
-  }, []);
+  }, [cartStore]);
 
   useEffect(() => {
     if (mutateDeliveryFee.data?.arrItems) {
@@ -95,10 +96,10 @@ const SummitOrder = ({navigation, route}) => {
       </SafeAreaView>
     );
 
-  if (!mutateDeliveryFee.data || mutateDeliveryFee.isLoading)
-    return <Loading />;
-  console.log('mutate data', mutateDeliveryFee.data);
-  const DeliveryData = mutateDeliveryFee.data.data.arrItems[0];
+  // if (!mutateDeliveryFee.data || mutateDeliveryFee.isLoading)
+  //   return <Loading />;
+  // console.log('mutate data', mutateDeliveryFee.data);
+  const DeliveryData = mutateDeliveryFee?.data?.data?.arrItems[0];
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -109,7 +110,7 @@ const SummitOrder = ({navigation, route}) => {
         goTo={'OrderPage'}
         isDelivery={isDelivery}
         lastPrice={_getTotalPrice(true)}
-        deliveryData={DeliveryData}
+        deliveryData={DeliveryData ?? 0}
         data={route.params?.data}
       />
       <ScrollView contentContainerStyle={{paddingBottom: 100}}>
@@ -205,7 +206,6 @@ const SummitOrder = ({navigation, route}) => {
                   )}
                 </TextBold>
                 <OptionCount
-                  isTest
                   price={cartStore.mainCount.mainPrice}
                   savedItem={item}
                   index={index}
@@ -261,7 +261,7 @@ const SummitOrder = ({navigation, route}) => {
               </TextBold>
             </Pressable>
             <Pressable
-              disabled={DeliveryData.take_out === 'true' ? false : true}
+              disabled={DeliveryData?.take_out === 'true' ? false : true}
               onPress={() => {
                 setIsDelivery(false);
                 dispatch(setIsDeliveryStore(false));
@@ -291,7 +291,7 @@ const SummitOrder = ({navigation, route}) => {
                   }}>
                   <TextRegular>배달팁</TextRegular>
                   <TextRegular>
-                    {replaceString(DeliveryData.send_cost)}원
+                    {replaceString(DeliveryData?.send_cost)}원
                   </TextRegular>
                 </View>
                 <View
@@ -302,7 +302,7 @@ const SummitOrder = ({navigation, route}) => {
                   }}>
                   <TextRegular>추가 배달팁</TextRegular>
                   <TextRegular>
-                    {replaceString(DeliveryData.send_cost2)}원
+                    {replaceString(DeliveryData?.send_cost2)}원
                   </TextRegular>
                 </View>
               </>
@@ -316,7 +316,7 @@ const SummitOrder = ({navigation, route}) => {
                   }}>
                   <TextRegular>포장할인</TextRegular>
                   <TextRegular>
-                    {replaceString(DeliveryData.take_out_discount)}원
+                    {replaceString(DeliveryData?.take_out_discount)}원
                   </TextRegular>
                 </View>
               </>

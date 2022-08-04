@@ -164,7 +164,9 @@ const MenuReview = ({storeInfo}) => {
     return (
       <>
         <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
-          <TextRegular style={{fontSize: 15}}>{review?.notice}</TextRegular>
+          <TextRegular style={{fontSize: 15}}>
+            {review?.notice.noticeContent}
+          </TextRegular>
         </View>
 
         <View

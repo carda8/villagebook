@@ -66,7 +66,7 @@ const StoreItems = ({navigation, route}) => {
     const data = {
       mb_ca_code: routeData.ca_code,
       item_count: more ? itemLimit.current : 0,
-      limit_count: 20,
+      limit_count: 30,
       mb_jumju_type: routeData.category,
       mb_ca_sort: currentFilter + 1,
       mb_lat: currentLocation.lat,

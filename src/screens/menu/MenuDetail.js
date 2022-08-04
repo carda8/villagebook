@@ -279,7 +279,7 @@ const MenuDetail = ({navigation, route}) => {
           />
 
           <ImageSwipe images={mutateStoreInfo.data.data.arrItems.store_image} />
-          <MenuDesc info={mutateStoreInfo.data} />
+          <MenuDesc info={mutateStoreInfo.data} navigation={navigation} />
           <View>
             {/* 메뉴, 정보, 리뷰 탭 */}
             <View

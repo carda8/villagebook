@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Image, Linking, Platform, Pressable, Text, View} from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
 import Divider from '../Divider';
@@ -13,7 +14,8 @@ import TextNotoM from '../text/TextNotoM';
 import TextRegular from '../text/TextRegular';
 import MenuDescTab from './MenuDescTab';
 
-const MenuDesc = ({info}) => {
+const MenuDesc = ({navigation, info}) => {
+  const {mutateGetStoreCoupon} = useCustomMutation();
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const dispatch = useDispatch();
   const [more, setMore] = useState(false);
@@ -25,6 +27,24 @@ const MenuDesc = ({info}) => {
     };
   }, []);
   // return <Loading />;
+
+  const _getCoupon = () => {
+    const data = {
+      jumju_id: storeInfo.mb_id,
+      jumju_code: storeInfo.mb_jumju_code,
+    };
+    console.log('data', data);
+    mutateGetStoreCoupon.mutate(data, {
+      onSettled: e => {
+        navigation.navigate('PaymentMethod', {
+          useCoupon: true,
+          storeCoupon: e.data.arrItems ?? [],
+        });
+
+        console.log('e', e);
+      },
+    });
+  };
   return (
     <>
       <View
@@ -192,6 +212,9 @@ const MenuDesc = ({info}) => {
         {!isLifeStyle && (
           <>
             <Pressable
+              onPress={() => {
+                _getCoupon();
+              }}
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -210,7 +233,7 @@ const MenuDesc = ({info}) => {
                 이 매장의 할인 쿠폰받기
               </Text>
             </Pressable>
-            <MenuDescTab info={storeInfo} />
+            <MenuDescTab info={storeInfo} navigation={navigation} />
           </>
         )}
       </View>

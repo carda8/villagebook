@@ -1,16 +1,43 @@
-import {View, Text, Pressable, StyleSheet} from 'react-native';
+import {View, Text, Pressable, StyleSheet, Modal, Platform} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import colors from '../../styles/colors';
 import TextRegular from '../text/TextRegular';
 import TextNotoM from '../text/TextNotoM';
 import {replaceString} from '../../config/utils/Price';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {customAlert} from '../CustomAlert';
+import TextSBold from '../text/TextSBold';
+import DividerL from '../DividerL';
 
-const MenuDescTab = ({info}) => {
+const MenuDescTab = ({info, navigation}) => {
   const [tabIdx, setTabIdx] = useState(0);
+  const {mutateGetDeliveryFeeInfo} = useCustomMutation();
+  const [modal, setModal] = useState(false);
+  const [fee, setFee] = useState([]);
 
-  useEffect(() => {
-    console.log('idx', tabIdx);
-  }, [tabIdx]);
+  const _getFeeInfo = () => {
+    const data = {
+      jumju_id: info.mb_id,
+      jumju_code: info.mb_jumju_code,
+    };
+    mutateGetDeliveryFeeInfo.mutate(data, {
+      onSettled: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0) {
+          setFee(e.data.arrItems);
+          // return customAlert('알림', '현재 사용 할 수 없는 기능입니다.');
+          setModal(!modal);
+          // navigation.navigate('DeliveryTipDetail', {data: e.data.arrItems});
+        } else {
+          return customAlert('알림', '현재 사용 할 수 없는 기능입니다.');
+        }
+        console.log('e', e);
+      },
+    });
+  };
+
+  // useEffect(() => {
+  //   console.log('idx', tabIdx);
+  // }, [tabIdx]);
 
   return (
     <>
@@ -114,6 +141,9 @@ const MenuDescTab = ({info}) => {
                   {replaceString(info.tipFrom)}원~{replaceString(info.tipTo)}원
                 </TextRegular>
                 <Pressable
+                  onPress={() => {
+                    _getFeeInfo();
+                  }}
                   style={{
                     width: 52,
                     height: 24,
@@ -171,6 +201,63 @@ const MenuDescTab = ({info}) => {
           </>
         )}
       </View>
+      <Modal
+        transparent
+        visible={modal}
+        onRequestClose={() => setModal(!modal)}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              width: 300,
+              height: 300,
+              backgroundColor: 'white',
+              padding: 15,
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#00000029',
+                  shadowOpacity: 0.6,
+                  shadowRadius: 50 / 2,
+                  shadowOffset: {
+                    height: 12,
+                    width: 0,
+                  },
+                },
+                android: {
+                  elevation: 5,
+                },
+              }),
+            }}>
+            <TextSBold>배달팁 정보</TextSBold>
+            <DividerL style={{height: 1, marginVertical: 10}} />
+            <View
+              style={{
+                justifyContent: 'space-between',
+              }}>
+              <View style={{flexDirection: 'row'}}>
+                <View style={{flex: 1}}>
+                  <TextRegular>주문 금액</TextRegular>
+                </View>
+                <View style={{flex: 1}}>
+                  <TextRegular>배달팁</TextRegular>
+                </View>
+              </View>
+              {fee.map((item, index) => (
+                <View key={index} style={{flexDirection: 'row'}}>
+                  <TextRegular>
+                    {item.dd_charge_start} ~ {item.dd_charge_end}
+                  </TextRegular>
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };

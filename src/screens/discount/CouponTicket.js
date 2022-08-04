@@ -15,7 +15,7 @@ const CouponTicket = ({data}) => {
   const itemInfo = data.item;
   const _calcDate = () => {
     const date1 = dayjs().format('YYYY-MM-DD');
-    const date2 = itemInfo.cp_end;
+    const date2 = itemInfo.cp_end ?? itemInfo.cz_end;
 
     const diffDate = dayjs(date2).diff(date1, 'days');
     return diffDate;
@@ -26,7 +26,7 @@ const CouponTicket = ({data}) => {
     // 1 : 포장용 쿠폰
     // 2 : 배달용 쿠폰
 
-    const type = itemInfo.cp_type;
+    const type = itemInfo.cp_type ?? itemInfo.cz_type;
     switch (type) {
       case '0':
         return {
@@ -72,12 +72,12 @@ const CouponTicket = ({data}) => {
           <View style={{flex: 1}}>
             <TextBold style={{fontSize: 22, color: colors.primary}}>
               {/* 0: 고정금액 할인 , 1: 퍼센트 할인 */}
-              {itemInfo.cp_price_type === '0'
-                ? replaceString(itemInfo.cp_price) + '원'
-                : itemInfo.cp_price + '%'}
+              {itemInfo.cp_price_type ?? itemInfo.cz_price_type === '0'
+                ? replaceString(itemInfo.cp_price ?? itemInfo.cz_price) + '원'
+                : itemInfo.cp_price ?? itemInfo.cz_price + '%'}
             </TextBold>
             <TextMedium style={{color: colors.fontColor2}}>
-              {itemInfo.cp_subject}
+              {itemInfo.cp_subject ?? itemInfo.cz_subject}
             </TextMedium>
           </View>
           <View
@@ -102,11 +102,12 @@ const CouponTicket = ({data}) => {
         </View>
         <View style={{marginTop: 8}}>
           <TextRegular>
-            {itemInfo.cp_start} ~ {itemInfo.cp_end}
+            {itemInfo.cp_start ?? itemInfo.cz_start} ~{' '}
+            {itemInfo.cp_end ?? itemInfo.cz_end}
           </TextRegular>
           <TextRegular>
-            {itemInfo.cp_mb_company ? itemInfo.cp_mb_company : '동네북 쿠폰'} (
-            {itemInfo.cp_method_txt})
+            {itemInfo.cp_mb_company ? itemInfo.cp_mb_company : '동네북 쿠폰'}
+            {/* {itemInfo.cp_method_txt}) */}
           </TextRegular>
         </View>
       </View>

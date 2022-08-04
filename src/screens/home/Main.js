@@ -18,6 +18,7 @@ import policyConfig from '../signIn/policyConfig';
 import {_showAddr} from '../../config/utils/modules';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useFocusEffect} from '@react-navigation/native';
+import BannerList from '../../config/BannerList';
 
 const Main = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
@@ -44,6 +45,7 @@ const Main = ({navigation}) => {
       return () => {};
     }, []),
   );
+
   // if (!userInfo) return <Loading />;
 
   console.log('::: USER INFO', userInfo);
@@ -211,7 +213,11 @@ const Main = ({navigation}) => {
         </View>
 
         {/* 메인배너 */}
-        <MainBanner navigation={navigation} style={{marginBottom: 60}} />
+        <MainBanner
+          navigation={navigation}
+          style={{marginBottom: 60}}
+          position={BannerList.main}
+        />
 
         {/* 약관 */}
         <View

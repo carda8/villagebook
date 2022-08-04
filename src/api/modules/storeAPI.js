@@ -33,4 +33,16 @@ export default {
     const result = await _reqAPI('proc_wish_store_input.php', data);
     return result;
   },
+  _getStoreCoupon: async data => {
+    const result = await _reqAPI('proc_store_service_couponzone.php', data);
+    return result;
+  },
+  _getStoreDeliveryFeeInfo: async data => {
+    const result = await _reqAPI('proc_store_delivery.php', data);
+    return result;
+  },
+  _getBanner: async data => {
+    const result = await _reqAPI('proc_banner_list.php', data);
+    return result;
+  },
 };
