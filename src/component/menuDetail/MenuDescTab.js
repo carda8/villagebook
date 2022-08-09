@@ -8,6 +8,7 @@ import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../CustomAlert';
 import TextSBold from '../text/TextSBold';
 import DividerL from '../DividerL';
+import TextBold from '../text/TextBold';
 
 const MenuDescTab = ({info, navigation}) => {
   const [tabIdx, setTabIdx] = useState(0);
@@ -142,7 +143,8 @@ const MenuDescTab = ({info, navigation}) => {
                 </TextRegular>
                 <Pressable
                   onPress={() => {
-                    _getFeeInfo();
+                    navigation.navigate('DeliveryTipInfo', {data: info});
+                    // _getFeeInfo();
                   }}
                   style={{
                     width: 52,
@@ -183,7 +185,7 @@ const MenuDescTab = ({info, navigation}) => {
 
             <View style={{marginLeft: 22, justifyContent: 'space-between'}}>
               <TextRegular style={{...styles.subTitleTakeout}}>
-                12,000
+                {info.minPriceWrap}
               </TextRegular>
               <TextRegular style={{...styles.subTitleTakeout}}>
                 포장
@@ -233,28 +235,59 @@ const MenuDescTab = ({info, navigation}) => {
                 },
               }),
             }}>
-            <TextSBold>배달팁 정보</TextSBold>
+            <TextSBold style={{color: colors.fontColor2}}>
+              배달팁 정보
+            </TextSBold>
             <DividerL style={{height: 1, marginVertical: 10}} />
             <View
               style={{
                 justifyContent: 'space-between',
               }}>
-              <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 1}}>
-                  <TextRegular>주문 금액</TextRegular>
+              <View style={{flexDirection: 'row', marginBottom: 10}}>
+                <View style={{flex: 2}}>
+                  <TextSBold style={{color: colors.fontColor2}}>
+                    주문 금액
+                  </TextSBold>
                 </View>
                 <View style={{flex: 1}}>
-                  <TextRegular>배달팁</TextRegular>
+                  <TextSBold style={{color: colors.fontColor2}}>
+                    배달팁
+                  </TextSBold>
                 </View>
               </View>
               {fee.map((item, index) => (
                 <View key={index} style={{flexDirection: 'row'}}>
-                  <TextRegular>
-                    {item.dd_charge_start} ~ {item.dd_charge_end}
-                  </TextRegular>
+                  <View style={{flex: 2}}>
+                    <TextRegular style={{color: colors.fontColor2}}>
+                      {replaceString(item.dd_charge_start)}원 ~{' '}
+                      {replaceString(item.dd_charge_end)}원
+                    </TextRegular>
+                  </View>
+                  <View style={{flex: 1}}>
+                    <TextRegular style={{color: colors.fontColor2}}>
+                      {replaceString(item.dd_charge_price)}원
+                    </TextRegular>
+                  </View>
                 </View>
               ))}
             </View>
+            <Pressable
+              style={{
+                backgroundColor: colors.primary,
+                alignSelf: 'center',
+                width: 120,
+                height: 50,
+                marginTop: 'auto',
+                marginBottom: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 10,
+              }}
+              onPress={() => {
+                setModal(!modal);
+              }}>
+              <TextBold style={{color: 'white'}}>닫기</TextBold>
+            </Pressable>
           </View>
         </View>
       </Modal>

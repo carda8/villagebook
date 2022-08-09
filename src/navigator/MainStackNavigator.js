@@ -60,7 +60,8 @@ import AddressSetDetail from '../screens/home/AddressSetDetail';
 import SNSLogin from '../screens/login/SNSLogin';
 import {customAlert} from '../component/CustomAlert';
 import {useGeoLocation} from '../hooks/useGeoLocation';
-import DeliveryTipDetail from '../screens/home/CategoryStore/DeliveryTipDetail';
+import DeliveryTipInfo from '../screens/menu/DeliveryTipInfo';
+import CouponSelect from '../screens/menu/orderDetail/CouponSelect';
 
 const Stack = createNativeStackNavigator();
 
@@ -228,8 +229,8 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MenuStore" component={MenuStroe} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen
-          name="DeliveryTipDetail"
-          component={DeliveryTipDetail}
+          name="DeliveryTipInfo"
+          component={DeliveryTipInfo}
           options={{animation: 'slide_from_bottom'}}
         />
         <Stack.Screen
@@ -245,6 +246,11 @@ const MainStackNavigator = () => {
           options={{animation: 'slide_from_bottom'}}
         />
         <Stack.Screen name="PaymentMain" component={PaymentMain} />
+        <Stack.Screen
+          name="CouponSelect"
+          component={CouponSelect}
+          options={{animation: 'slide_from_bottom'}}
+        />
 
         <Stack.Screen name="OrderSumary" component={OrderSumary} />
         <Stack.Screen name="OrderFinish" component={OrderFinish} />

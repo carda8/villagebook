@@ -21,11 +21,6 @@ const MenuDesc = ({navigation, info}) => {
   const [more, setMore] = useState(false);
   const storeInfo = info?.data?.arrItems ?? info;
   console.log('info', storeInfo);
-  useEffect(() => {
-    return () => {
-      dispatch(setIsLifeStyle(false));
-    };
-  }, []);
   // return <Loading />;
 
   const _getCoupon = () => {
@@ -39,6 +34,8 @@ const MenuDesc = ({navigation, info}) => {
         navigation.navigate('PaymentMethod', {
           useCoupon: true,
           storeCoupon: e.data.arrItems ?? [],
+          download: true,
+          storeInfo: storeInfo,
         });
 
         console.log('e', e);
@@ -125,48 +122,85 @@ const MenuDesc = ({navigation, info}) => {
                 flex: 1,
                 paddingHorizontal: 22,
                 paddingTop: 20,
-                flexDirection: 'row',
               }}>
-              <View style={{justifyContent: 'space-between'}}>
-                <TextRegular style={{color: colors.fontColor99}}>
-                  대표장명
-                </TextRegular>
-                <TextRegular
-                  style={{color: colors.fontColor99, marginVertical: 11}}>
-                  주소
-                </TextRegular>
-                <TextRegular
-                  style={{
-                    color: colors.fontColor99,
-                  }}>
-                  연락처
-                </TextRegular>
-                <TextRegular
-                  style={{color: colors.fontColor99, marginVertical: 11}}>
-                  홈페이지
-                </TextRegular>
+              <View style={{flexDirection: 'row', marginBottom: 11}}>
+                <View style={{width: 100}}>
+                  <TextRegular style={{color: colors.fontColor99}}>
+                    대표장명
+                  </TextRegular>
+                </View>
+                <View style={{flex: 1}}>
+                  <TextRegular style={{color: colors.fontColor3}}>
+                    {storeInfo.mb_name}
+                  </TextRegular>
+                </View>
               </View>
 
-              <View style={{marginLeft: 22, justifyContent: 'space-between'}}>
-                <TextRegular style={{color: colors.fontColor3}}>
-                  {storeInfo.mb_name}
-                </TextRegular>
-                <TextRegular
-                  style={{color: colors.fontColor3, marginVertical: 11}}>
-                  {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
-                </TextRegular>
-                <TextRegular style={{color: colors.fontColor3}}>
-                  {storeInfo.mb_tel}
-                </TextRegular>
-                <Pressable
-                  onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}>
-                  <TextRegular
-                    style={{color: colors.fontColor3, marginVertical: 11}}>
-                    {storeInfo.mb_homepage}
+              <View style={{flexDirection: 'row', marginBottom: 11}}>
+                <View style={{width: 100}}>
+                  <TextRegular style={{color: colors.fontColor99}}>
+                    주소
                   </TextRegular>
-                </Pressable>
+                </View>
+                <View style={{flex: 1}}>
+                  <TextRegular style={{color: colors.fontColor3}}>
+                    {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
+                  </TextRegular>
+                </View>
               </View>
+
+              <View style={{flexDirection: 'row', marginBottom: 11}}>
+                <View style={{width: 100}}>
+                  <TextRegular
+                    style={{
+                      color: colors.fontColor99,
+                    }}>
+                    연락처
+                  </TextRegular>
+                </View>
+                <View style={{flex: 1}}>
+                  <TextRegular style={{color: colors.fontColor3}}>
+                    {storeInfo.mb_tel}
+                  </TextRegular>
+                </View>
+              </View>
+
+              <View style={{flexDirection: 'row', marginBottom: 11}}>
+                <View style={{width: 100}}>
+                  <TextRegular style={{color: colors.fontColor99}}>
+                    홈페이지
+                  </TextRegular>
+                </View>
+                <View style={{flex: 1}}>
+                  <Pressable
+                    onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}>
+                    <TextRegular style={{color: colors.fontColor3}}>
+                      {storeInfo.mb_homepage}
+                    </TextRegular>
+                  </Pressable>
+                </View>
+              </View>
+              {storeInfo.mb_opening_hours ? (
+                <View style={{flexDirection: 'row', marginBottom: 11}}>
+                  <View style={{width: 100}}>
+                    <TextRegular
+                      style={{
+                        color: colors.fontColor99,
+                      }}>
+                      영업 시간
+                    </TextRegular>
+                  </View>
+                  <View style={{flex: 1}}>
+                    <TextRegular style={{color: colors.fontColor3}}>
+                      {storeInfo.mb_opening_hours}
+                    </TextRegular>
+                  </View>
+                </View>
+              ) : (
+                <></>
+              )}
             </View>
+
             <DividerL />
             <View style={{padding: 22}}>
               <View style={{marginBottom: 20}}>

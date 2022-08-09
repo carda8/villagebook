@@ -4,7 +4,7 @@ import {FlatList, Image, Text} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useMutation} from 'react-query';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import mainAPI from '../../api/modules/mainAPI';
 import Header from '../../component/Header';
 import Loading from '../../component/Loading';
@@ -14,6 +14,7 @@ import TextEBold from '../../component/text/TextEBold';
 import TextMedium from '../../component/text/TextMedium';
 import BannerList from '../../config/BannerList';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 
@@ -22,6 +23,8 @@ const CategoryView = ({navigation, route}) => {
   const [categoryData, setCategoryData] = useState();
   const {mutateGetAddress} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
+
   const mutateCategory = useMutation(mainAPI._getCategory, {
     onSuccess: e => {
       console.log('e', e);
@@ -65,6 +68,8 @@ const CategoryView = ({navigation, route}) => {
     return (
       <Pressable
         onPress={() => {
+          if (selectedCategory === 'lifestyle') dispatch(setIsLifeStyle(true));
+          else dispatch(setIsLifeStyle(false));
           navigation.navigate('StoreList', {
             routeIdx: item.item.ca_name,
             category: selectedCategory,
@@ -124,7 +129,13 @@ const CategoryView = ({navigation, route}) => {
                 source={require('~/assets/ico_location.png')}
                 style={{width: 19, height: 19, marginRight: 8}}
               />
-              <TextEBold style={{fontSize: 15, color: colors.fontColor2}}>
+              <TextEBold
+                numberOfLines={1}
+                style={{
+                  fontSize: 15,
+                  color: colors.fontColor2,
+                  marginHorizontal: 10,
+                }}>
                 {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
                   '주소설정') +
                   ' ' +

@@ -9,10 +9,28 @@ import TextBold from '../../component/text/TextBold';
 import dayjs from 'dayjs';
 import {replace} from 'formik';
 import {replaceString} from '../../config/utils/Price';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useDispatch, useSelector} from 'react-redux';
+import {customAlert} from '../../component/CustomAlert';
+import {
+  setStoreCoupon,
+  setSystemCoupon,
+} from '../../store/reducers/CouponReducer';
 
-const CouponTicket = ({data}) => {
+const CouponTicket = ({
+  data,
+  download,
+  storeInfo,
+  select,
+  type,
+  navigation,
+}) => {
   // const [modal, setModal] = useState({visible: false, data: ''});
+  const {mutateDownloadCoupon} = useCustomMutation();
+  const {userInfo} = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
   const itemInfo = data.item;
+  console.log('data ::', download);
   const _calcDate = () => {
     const date1 = dayjs().format('YYYY-MM-DD');
     const date2 = itemInfo.cp_end ?? itemInfo.cz_end;
@@ -25,7 +43,6 @@ const CouponTicket = ({data}) => {
     // 0 : 모두 사용 가능
     // 1 : 포장용 쿠폰
     // 2 : 배달용 쿠폰
-
     const type = itemInfo.cp_type ?? itemInfo.cz_type;
     switch (type) {
       case '0':
@@ -50,8 +67,42 @@ const CouponTicket = ({data}) => {
         return type;
     }
   };
+
+  const _downloadCoupon = () => {
+    const info = {
+      jumju_id: storeInfo.mb_id,
+      jumju_code: storeInfo.mb_jumju_code,
+      mt_id: userInfo.mt_id,
+      cz_no: data.item.cz_no,
+    };
+    console.log('info', info);
+    mutateDownloadCoupon.mutate(info, {
+      onSettled: e => {
+        if (e.result === 'true') customAlert('알림', '쿠폰 다운로드 완료');
+        else customAlert('알림', '이미 보유한 쿠폰입니다.');
+        console.log('download', e);
+      },
+    });
+  };
+
+  const _selectCoupon = () => {
+    console.log('select', itemInfo);
+    if (type === 'store') {
+      dispatch(setStoreCoupon(itemInfo));
+      navigation.goBack();
+    }
+    if (type === 'system') {
+      dispatch(setSystemCoupon(itemInfo));
+      navigation.goBack();
+    }
+  };
+
   return (
-    <View
+    <Pressable
+      onPress={() => {
+        download && _downloadCoupon();
+        select && _selectCoupon();
+      }}
       style={{
         height: 140,
         borderWidth: 1,
@@ -129,92 +180,7 @@ const CouponTicket = ({data}) => {
           {_calcDate()}일
         </TextNotoM>
       </Pressable>
-
-      {/* <Modal
-        visible={modal.visible}
-        useNativeDriver={true}
-        transparent
-        onRequestClose={() => {
-          setModal({...modal, visible: !modal.visible});
-        }}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <View
-            style={{
-              width: 300,
-              height: 300,
-              backgroundColor: 'white',
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#00000029',
-                  shadowOpacity: 0.6,
-                  shadowRadius: 50 / 2,
-                  shadowOffset: {
-                    height: 12,
-                    width: 0,
-                  },
-                },
-                android: {
-                  elevation: 5,
-                },
-              }),
-            }}>
-            <View style={{flex: 1, padding: 10}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextBold>쿠폰명 : </TextBold>
-                <TextRegular>{modal.data.cp_subject}</TextRegular>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextBold>할인적용방법 : </TextBold>
-                <TextRegular>{modal.data.cp_method_txt}</TextRegular>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextBold>할인적용방법 : </TextBold>
-                <TextRegular>{modal.data.cp_method_txt}</TextRegular>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                }}>
-                <TextBold>사용기한 : </TextBold>
-                <TextRegular>
-                  {modal.data.cp_start} ~ {modal.data.cp_end}
-                </TextRegular>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextBold>할인적용방법 : </TextBold>
-                <TextRegular>{modal.data.cp_method_txt}</TextRegular>
-              </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextBold>할인적용방법 : </TextBold>
-                <TextRegular>{modal.data.cp_method_txt}</TextRegular>
-              </View>
-            </View>
-            <Pressable
-              style={{
-                backgroundColor: colors.primary,
-                alignSelf: 'center',
-                width: 120,
-                height: 50,
-                marginBottom: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}
-              onPress={() => setModal({...modal, visible: !modal.visible})}>
-              <TextBold style={{color: 'white'}}>닫기</TextBold>
-            </Pressable>
-          </View>
-        </View>
-      </Modal> */}
-    </View>
+    </Pressable>
   );
 };
 

@@ -85,6 +85,20 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mutateGetCompanyInfo = useMutation(mainAPI._getCompanyInfo, {
+    onSettled: e => {
+      console.log('mutateGetCompanyInfo', e);
+      return e;
+    },
+  });
+
+  const mutateCheckNickName = useMutation(authAPI._checkNickName, {
+    onSettled: e => {
+      console.log('mutateGetCompanyInfo', e);
+      return e;
+    },
+  });
+
   //Auth
   const mutateSNSlogin = useMutation(authAPI._snsLogin, {
     onSettled: e => {
@@ -257,6 +271,30 @@ export const useCustomMutation = () => {
       return e;
     },
   });
+  const mutateGetStoreService = useMutation(storeAPI._getStoreService, {
+    onSettled: e => {
+      console.log('mutateGetStoreService', e);
+      return e;
+    },
+  });
+  const mutateGetStoreList = useMutation(mainAPI._getStoreList, {
+    onSettled: e => {
+      console.log('mutateGetStoreList', e);
+      return e;
+    },
+  });
+  const mutateDownloadCoupon = useMutation(storeAPI._downloadCoupon, {
+    onSettled: e => {
+      console.log('mutateDownloadCoupon', e);
+      return e;
+    },
+  });
+  const mutateUpdataUserInfo = useMutation(mainAPI._updataUserInfo, {
+    onSettled: e => {
+      console.log('mutateUpdataUserInfo', e);
+      return e;
+    },
+  });
   return {
     mutateSignIn,
     mutateSNSlogin,
@@ -290,5 +328,11 @@ export const useCustomMutation = () => {
     mutateGetStoreCoupon,
     mutateGetDeliveryFeeInfo,
     mutateGetBanner,
+    mutateGetCompanyInfo,
+    mutateGetStoreService,
+    mutateGetStoreList,
+    mutateDownloadCoupon,
+    mutateCheckNickName,
+    mutateUpdataUserInfo,
   };
 };

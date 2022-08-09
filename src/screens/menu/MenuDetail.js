@@ -33,10 +33,16 @@ import {replaceString} from '../../config/utils/Price';
 import {useSelector} from 'react-redux';
 import MenuReview from './MenuReview';
 import MiniMap from '../map/MiniMap';
+import Caution from '../../component/Caution';
 
 const MenuDetail = ({navigation, route}) => {
-  const {mutateTopMenu, mutateStoreInfo, mutateAllMunu, mutateServiceTime} =
-    useCustomMutation();
+  const {
+    mutateTopMenu,
+    mutateStoreInfo,
+    mutateAllMunu,
+    mutateServiceTime,
+    mutateGetStoreService,
+  } = useCustomMutation();
   const {savedItem} = useSelector(state => state.cartReducer);
   const {userInfo} = useSelector(state => state.authReducer);
 
@@ -90,6 +96,18 @@ const MenuDetail = ({navigation, route}) => {
     mutateServiceTime.mutate(data);
   };
 
+  const _getStoreService = () => {
+    const data = {
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+    };
+    mutateGetStoreService.mutate(data, {
+      onSuccess: e => {
+        console.log('## service', e);
+      },
+    });
+  };
+
   const _calcTotalPrice = () => {
     let temp = 0;
     savedItem.savedItems.map((item, index) => {
@@ -103,6 +121,7 @@ const MenuDetail = ({navigation, route}) => {
     _getTopMenu();
     _getAllMenu();
     _getServiceTime();
+    _getStoreService();
   }, [route.params]);
 
   useEffect(() => {
@@ -129,9 +148,11 @@ const MenuDetail = ({navigation, route}) => {
     mutateStoreInfo.isLoading ||
     mutateTopMenu.isLoading ||
     mutateAllMunu.isLoading ||
+    mutateGetStoreService.isLoading ||
     !mutateStoreInfo.data ||
     !mutateTopMenu.data ||
-    !mutateAllMunu.data
+    !mutateAllMunu.data ||
+    !mutateGetStoreService.data
   )
     return <Loading />;
 
@@ -139,6 +160,7 @@ const MenuDetail = ({navigation, route}) => {
   const StoreAllMenu = mutateAllMunu.data.data.arrItems;
   const StoreTopMenu = mutateTopMenu.data.data.arrItems;
   const StoreServiceTime = mutateServiceTime?.data?.data?.arrItems;
+  const StoreService = mutateGetStoreService.data.data.arrItems;
 
   // console.log('StoreInfo', StoreInfo);
   // console.log('StoreTopMenu', StoreTopMenu);
@@ -714,95 +736,10 @@ const MenuDetail = ({navigation, route}) => {
                     color: colors.fontColor8,
                     includeFontPadding: false,
                   }}>
-                  햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기
-                  : 국내산)햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 :
-                  국내산, 닭고기 : 국내산)햄치즈, 햄스페셜,
-                  햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기 : 국내산)햄치즈,
-                  햄스페셜, 햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기 :
-                  국내산)
+                  {StoreInfo.store_service.do_jumju_origin}
                 </TextNotoR>
               </View>
-
-              <View
-                style={{
-                  paddingHorizontal: 22,
-                  paddingVertical: 20,
-                  backgroundColor: colors.inputBoxBG,
-                  marginTop: 20,
-                }}>
-                <TextNotoB
-                  style={{
-                    fontSize: 14,
-                    color: colors.fontColor3,
-                    includeFontPadding: false,
-                    marginBottom: 7,
-                  }}>
-                  유의사항
-                </TextNotoB>
-                <TextNotoR
-                  style={{
-                    fontSize: 13,
-                    color: colors.fontColor8,
-                    includeFontPadding: false,
-                  }}>
-                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
-                  작성되었으며 변동될 수 있습니다.
-                </TextNotoR>
-              </View>
-
-              <View
-                style={{
-                  paddingHorizontal: 22,
-                  paddingVertical: 20,
-                  backgroundColor: colors.inputBoxBG,
-                }}>
-                <TextNotoB
-                  style={{
-                    fontSize: 14,
-                    color: colors.fontColor3,
-                    includeFontPadding: false,
-                    marginBottom: 7,
-                  }}>
-                  유의사항
-                </TextNotoB>
-                <TextNotoR
-                  style={{
-                    fontSize: 13,
-                    color: colors.fontColor8,
-                    includeFontPadding: false,
-                  }}>
-                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
-                  작성되었으며 변동될 수 있습니다.
-                </TextNotoR>
-              </View>
-              <View
-                style={{
-                  paddingHorizontal: 22,
-                  paddingVertical: 20,
-                  backgroundColor: colors.inputBoxBG,
-                }}>
-                <TextNotoB
-                  style={{
-                    fontSize: 14,
-                    color: colors.fontColor3,
-                    includeFontPadding: false,
-                    marginBottom: 7,
-                  }}>
-                  유의사항
-                </TextNotoB>
-                <TextNotoR
-                  style={{
-                    fontSize: 13,
-                    color: colors.fontColor8,
-                    includeFontPadding: false,
-                  }}>
-                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
-                  작성되었으며 변동될 수 있습니다.
-                </TextNotoR>
-              </View>
+              <Caution />
             </>
           )}
         </ScrollView>

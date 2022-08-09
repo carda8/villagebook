@@ -45,4 +45,12 @@ export default {
     const result = await _reqAPI('proc_banner_list.php', data);
     return result;
   },
+  _getStoreService: async data => {
+    const result = await _reqAPI('proc_store_service.php', data);
+    return result;
+  },
+  _downloadCoupon: async data => {
+    const result = await _reqAPI('proc_coupon_download.php', data);
+    return result;
+  },
 };

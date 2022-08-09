@@ -26,6 +26,13 @@ const paymentSlice = createSlice({
     setOrderResult: (state, action) => {
       state.orderResult = action.payload;
     },
+    resetPayment: (state, action) => {
+      (state.paymentMethod = ''),
+        (state.addData = ''),
+        (state.deliveryData = ''),
+        (state.lastPrice = ''),
+        (state.isDelivery = true);
+    },
   },
 });
 
@@ -36,5 +43,6 @@ export const {
   setIsDeliveryStore,
   setDeliveryData,
   setOrderResult,
+  resetPayment,
 } = actions;
 export const paymentReducer = reducer;

@@ -21,6 +21,7 @@ import {
   setLastPrice,
 } from '../../../store/reducers/PaymentReducer';
 import Cart from './Cart';
+import Caution from '../../../component/Caution';
 
 const SummitOrder = ({navigation, route}) => {
   const {mutateDeliveryFee} = useCustomMutation();
@@ -328,7 +329,7 @@ const SummitOrder = ({navigation, route}) => {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginTop: 20,
+                marginVertical: 20,
               }}>
               <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
               <TextBold style={{fontSize: 18}}>
@@ -337,6 +338,7 @@ const SummitOrder = ({navigation, route}) => {
             </View>
           </View>
         </View>
+        <Caution />
       </ScrollView>
     </SafeAreaView>
   );

@@ -31,7 +31,14 @@ const PaymentMethod = ({navigation, route}) => {
   const renderItem = item => {
     return (
       <>
-        <CouponTicket data={item} />
+        <CouponTicket
+          data={item}
+          download={routeData.download}
+          storeInfo={routeData.storeInfo}
+          select={routeData.select}
+          type={routeData.type}
+          navigation={navigation}
+        />
       </>
     );
   };

@@ -18,41 +18,6 @@ const FAQ = ({navigation}) => {
       date: dayjs().format('YYYY-MM-DD'),
       type: '1:1 고객 문의',
     },
-    {
-      title: '답변완료',
-      date: dayjs().format('YYYY-MM-DD'),
-      type: '1:1 고객 문의',
-    },
-    {
-      title: '답변대기',
-      date: dayjs().format('YYYY-MM-DD'),
-      type: '고객 문의',
-    },
-    {
-      title: '답변대기',
-      date: dayjs().format('YYYY-MM-DD'),
-      type: '고객 문의',
-    },
-    {
-      title: '답변대기',
-      date: dayjs().format('YYYY-MM-DD'),
-      type: '고객 문의',
-    },
-    {
-      title: '답변대기',
-      date: dayjs().format('YYYY-MM-DD'),
-      type: '고객 문의',
-    },
-    {
-      title: '답변대기',
-      date: dayjs().format('YYYY-MM-DD'),
-      type: '고객 문의',
-    },
-    {
-      title: '답변대기',
-      date: dayjs().format('YYYY-MM-DD'),
-      type: '고객 문의',
-    },
   ];
 
   const renderItem = item => {

@@ -36,20 +36,14 @@ const Receipt = ({orderResult, isSummary}) => {
   const _calcLastPrice = () => {
     const totalItemPrice = _calcTotalPrice();
     let temp = 0;
-
+    console.log('totalItemPrice', totalItemPrice);
     temp =
       totalItemPrice +
-      (orderData.od_send_cost + orderData.od_send_cost2) -
-      (orderData.od_coupon_price_store +
-        orderData.od_coupon_price_system +
-        orderData.od_receipt_point);
-    // temp =
-    //   totalItemPrice -
-    //   (Number(summitedData.od_coupon_price_store) +
-    //     Number(summitedData.od_coupon_price_system) +
-    //     Number(summitedData.od_send_cost) +
-    //     Number(summitedData.od_send_cost2));
-
+      (Number(orderData.od_send_cost) + Number(orderData.od_send_cost2)) -
+      (Number(orderData.od_coupon_price_store) +
+        Number(orderData.od_coupon_price_system) +
+        Number(orderData.od_receipt_point));
+    console.log('temp', temp);
     return temp;
   };
 
@@ -135,7 +129,7 @@ const Receipt = ({orderResult, isSummary}) => {
               점주쿠폰 할인
             </TextRegular>
             <TextRegular style={{color: colors.primary}}>
-              {/* - {replaceString(summitedData.od_coupon_price_store)}원 */}
+              - {replaceString(summitedData.od_coupon_price_store)}원
             </TextRegular>
           </View>
         )}
@@ -146,7 +140,7 @@ const Receipt = ({orderResult, isSummary}) => {
               동네북쿠폰 할인
             </TextRegular>
             <TextRegular style={{color: colors.primary}}>
-              {/* - {replaceString(summitedData.od_coupon_price_system)}원 */}
+              - {replaceString(summitedData.od_coupon_price_system)}원
             </TextRegular>
           </View>
         )}

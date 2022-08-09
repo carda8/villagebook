@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Image, ScrollView, View} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -23,7 +23,8 @@ import BannerList from '../../config/BannerList';
 const Main = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
   const {postData} = useSelector(state => state.addressReducer);
-  const {mutateGetAddress} = useCustomMutation();
+  const {mutateGetAddress, mutateGetCompanyInfo} = useCustomMutation();
+  const [companyInfo, setCompanyInfo] = useState();
 
   const _getAddr = () => {
     const data = {
@@ -39,12 +40,25 @@ const Main = ({navigation}) => {
     });
   };
 
+  const _getCompanyInfo = () => {
+    const data = {};
+    mutateGetCompanyInfo.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') setCompanyInfo(e.data.arrItems);
+      },
+    });
+  };
+
   useFocusEffect(
     useCallback(() => {
       _getAddr();
       return () => {};
     }, []),
   );
+
+  useEffect(() => {
+    _getCompanyInfo();
+  }, []);
 
   // if (!userInfo) return <Loading />;
 
@@ -76,6 +90,7 @@ const Main = ({navigation}) => {
             style={{width: 19, height: 19}}
           />
           <TextEBold
+            numberOfLines={1}
             style={{
               fontSize: 15,
               marginHorizontal: 10,
@@ -274,8 +289,7 @@ const Main = ({navigation}) => {
             marginBottom: 20,
           }}>
           <TextRegular style={{color: colors.fontColor8}}>
-            동네북은 통신판매 중개자로서 통신판매의 당사자가 아닙니다. 따라서
-            오늘의 주문은 상품거래정보 및 거래에 대한 책임을 지지 않습니다.
+            {companyInfo?.de_admin_company_memo}
           </TextRegular>
         </View>
         <View
@@ -284,8 +298,10 @@ const Main = ({navigation}) => {
             alignItems: 'center',
           }}>
           <TextRegular style={{color: colors.fontColor8}}>
-            서울특별시 강남구 영동대로 1234 대표이사 : 홍길동 | 사업자등록번호 :
-            123-12-123456 통신판매업신고 : 제 2022-서울강남-12345호
+            {companyInfo?.de_admin_company_addr} 대표이사 :{' '}
+            {companyInfo?.de_admin_company_owner} | 사업자등록번호 :
+            {companyInfo?.de_admin_company_saupja_no} 통신판매업신고 :{' '}
+            {companyInfo?.de_admin_tongsin_no}
           </TextRegular>
         </View>
       </ScrollView>

@@ -19,7 +19,7 @@ const qeuryClient = new QueryClient({
       console.error('::: useQuery Error occurred', e);
     },
     onSuccess: s => {
-      console.log('::: useQuery Success', s);
+      // console.log('::: useQuery Success', s);
     },
   }),
   mutationCache: new MutationCache({
@@ -27,7 +27,7 @@ const qeuryClient = new QueryClient({
       console.error('::: useMutation Error occurred', e);
     },
     onSuccess: s => {
-      console.log('::: useMutation Success', s);
+      // console.log('::: useMutation Success', s);
     },
   }),
 });

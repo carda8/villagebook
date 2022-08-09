@@ -19,7 +19,7 @@ export const API = axios.create({
       secretKey: SECRETKEY,
       jwt_data: jwt_data,
     });
-    console.log('transform jwt data', result);
+    // console.log('transform jwt data', result);
     return result;
   },
 

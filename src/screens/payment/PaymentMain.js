@@ -11,7 +11,11 @@ import PaymentList from '../../config/PaymentList';
 import OrderFinish from '../menu/orderDetail/OrderFinish';
 import {API} from '../../api/API';
 import {resetSavedItem} from '../../store/reducers/CartReducer';
-import {setOrderResult} from '../../store/reducers/PaymentReducer';
+import {
+  resetPayment,
+  setOrderResult,
+} from '../../store/reducers/PaymentReducer';
+import {resetCoupon} from '../../store/reducers/CouponReducer';
 
 const PaymentMain = ({navigation, route}) => {
   const isDelivery = route.params?.isDelivery;
@@ -80,13 +84,15 @@ const PaymentMain = ({navigation, route}) => {
 
     API.post('proc_order_update.php', data)
       .then(result => {
-        dispatch(resetSavedItem());
         dispatch(
           setOrderResult({orderResultData: result.data, summitedData: data}),
         );
         navigation.reset({
           routes: [{name: 'OrderFinish'}],
         });
+        dispatch(resetSavedItem());
+        dispatch(resetCoupon());
+        dispatch(resetPayment());
       })
       .catch(e => {
         Errorhandler(e);

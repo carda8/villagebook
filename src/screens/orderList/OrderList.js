@@ -15,7 +15,7 @@ import TextBold from '../../component/text/TextBold';
 import NoHistory from '../../component/NoHistory';
 
 const OrderList = ({navigation}) => {
-  const [history, setHistory] = useState();
+  const [history, setHistory] = useState([]);
   const {mutateOrderHistory} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
 
@@ -29,7 +29,13 @@ const OrderList = ({navigation}) => {
       mt_id: userInfo.mt_id,
     };
 
-    mutateOrderHistory.mutate(data);
+    mutateOrderHistory.mutate(data, {
+      onSettled: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0)
+          setHistory(e.data.arrItems);
+        else setHistory([]);
+      },
+    });
   };
 
   const _getMoreHistory = () => {
@@ -39,29 +45,19 @@ const OrderList = ({navigation}) => {
       limit_count: 20,
       mt_id: userInfo.mt_id,
     };
-    mutateOrderHistory.mutate(data);
+    mutateOrderHistory.mutate(data, {
+      onSettled: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0)
+          setHistory(prev => prev.concat(e.data.arrItems));
+        else return customAlert('알림', '이전 주문내역이 없습니다.');
+      },
+    });
   };
 
   useEffect(() => {
     _getHistory();
     return () => {};
   }, []);
-
-  useEffect(() => {
-    if (history && mutateOrderHistory.data?.result === 'false') {
-      return customAlert('알림', '이전 주문내역이 없습니다.');
-    } else if (
-      mutateOrderHistory.status === 'success' &&
-      mutateOrderHistory.data.data.arrItems
-    ) {
-      const temp = mutateOrderHistory.data.data.arrItems;
-      console.log('temp', temp);
-      if (history) {
-        console.log('history', history);
-        setHistory(prev => prev.concat(temp));
-      } else setHistory(temp);
-    }
-  }, [mutateOrderHistory.status]);
 
   const renderItem = item => {
     // od_process_status : 신규주문 / 접수완료 / 배달중 / 배달완료
@@ -221,32 +217,28 @@ const OrderList = ({navigation}) => {
           justifyContent: 'center',
           marginVertical: 20,
         }}
-        // ListFooterComponent={e =>
-        //   mutateOrderHistory.isLoading && history ? (
-        //     <Loading />
-        //   ) : history ? (
-        //     <Pressable
-        //       onPress={() => {
-        //         _getMoreHistory();
-        //       }}
-        //       style={{
-        //         width: 150,
-        //         height: 50,
-        //         borderRadius: 10,
-        //         alignItems: 'center',
-        //         justifyContent: 'center',
-        //         backgroundColor: colors.primary,
-        //       }}>
-        //       <TextBold style={{color: 'white'}}>더보기</TextBold>
-        //     </Pressable>
-        //   ) : (
-        //     <></>
-        //   )
-        // }
-        // onEndReached={() => {
-        //   _getMoreHistory();
-        // }}
-        // onEndReachedThreshold={1}
+        ListFooterComponent={e =>
+          mutateOrderHistory.isLoading && history ? (
+            <Loading />
+          ) : history ? (
+            <Pressable
+              onPress={() => {
+                _getMoreHistory();
+              }}
+              style={{
+                width: 150,
+                height: 50,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: colors.primary,
+              }}>
+              <TextBold style={{color: 'white'}}>더보기</TextBold>
+            </Pressable>
+          ) : (
+            <></>
+          )
+        }
       />
     </SafeAreaView>
   );

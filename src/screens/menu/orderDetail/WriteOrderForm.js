@@ -34,9 +34,12 @@ const WriteOrderForm = ({navigation, route}) => {
   // const isDelivery = route.params?.isDelivery;
 
   // console.log('last', lastPrice, deliveryData);
-  const {mutateGetCouponPoint} = useCustomMutation();
+  const {mutateGetCouponPoint, mutateGetCoupon, mutateGetAddress} =
+    useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
   const cartStore = useSelector(state => state.cartReducer);
+  const {storeCoupon, systemCoupon} = useSelector(state => state.couponReducer);
+
   const {isDelivery, paymentMethod} = useSelector(
     state => state.paymentReducer,
   );
@@ -61,8 +64,8 @@ const WriteOrderForm = ({navigation, route}) => {
     od_to_seller: '', //배달 기사님
 
     od_safety_chk: true,
-    od_send_cost: 0,
-    od_send_cost2: 0,
+    od_send_cost: isDelivery ? deliveryData.send_cost : 0,
+    od_send_cost2: isDelivery ? deliveryData.send_cost2 : 0,
     od_receipt_point: 0,
     od_takeout_discount: isDelivery ? '0' : deliveryData.take_out_discount,
 
@@ -85,10 +88,12 @@ const WriteOrderForm = ({navigation, route}) => {
     });
     calcTotal =
       calcTotal +
-      (Number(orderForm.od_send_cost) + Number(orderForm.od_send_cost2)) -
+      (Number(deliveryData.send_cost) + Number(deliveryData.send_cost2)) -
       (Number(orderForm.od_coupon_price_store) +
         Number(orderForm.od_coupon_price_system) +
         Number(orderForm.od_receipt_point));
+    console.log('ORDER FORM', orderForm);
+    console.log('delivery', deliveryData);
     if (!isDelivery) calcTotal = calcTotal - deliveryData.take_out_discount;
     return calcTotal;
   };
@@ -109,8 +114,6 @@ const WriteOrderForm = ({navigation, route}) => {
     //     Number(orderForm.od_send_cost2));
     // return temp;
   };
-
-  const {mutateGetAddress} = useCustomMutation();
 
   const _getAddr = () => {
     const data = {
@@ -160,6 +163,34 @@ const WriteOrderForm = ({navigation, route}) => {
     //   return customAlert('알림', '500포인트 이상 부터 사용가능합니다.');
   };
 
+  const _getCouponList = type => {
+    const data = {
+      mt_id: userInfo.mt_id,
+      item_count: '0',
+      limit_count: '10',
+      jumju_id: cartStore.currentStoreCode.jumju_id,
+      jumju_code: cartStore.currentStoreCode.code,
+      cp_gubun: type,
+    };
+    const storeInfo = {
+      mb_id: cartStore.currentStoreCode.jumju_id,
+      mb_jumju_code: cartStore.currentStoreCode.code,
+    };
+    console.log('data', data);
+
+    mutateGetCoupon.mutate(data, {
+      onSettled: e => {
+        navigation.navigate('PaymentMethod', {
+          storeInfo: storeInfo,
+          storeCoupon: e.data.arrItems ?? [],
+          useCoupon: true,
+          select: true,
+          type: type,
+        });
+      },
+    });
+  };
+
   useEffect(() => {
     if (addData) {
       setOrderForm({
@@ -175,6 +206,16 @@ const WriteOrderForm = ({navigation, route}) => {
     _getAddr();
     _getCouponPoint();
   }, []);
+
+  useEffect(() => {
+    setOrderForm({
+      ...orderForm,
+      od_coupon_id_store: storeCoupon?.cp_id ?? '',
+      od_coupon_id_system: systemCoupon?.cp_id ?? '',
+      od_coupon_price_store: storeCoupon?.cp_price ?? '',
+      od_coupon_price_system: systemCoupon?.cp_price ?? '',
+    });
+  }, [storeCoupon, systemCoupon]);
 
   const _checkForm = () => {
     if (isDelivery && !orderForm.od_addr1 && !orderForm.od_addr2) {
@@ -445,7 +486,10 @@ const WriteOrderForm = ({navigation, route}) => {
                 <View style={{flexDirection: 'row', marginTop: 10}}>
                   <Pressable
                     onPress={
-                      () => customAlert('준비중', '현재 준비중인 기능입니다.')
+                      () => {
+                        _getCouponList('store');
+                        // customAlert('준비중', '현재 준비중인 기능입니다.');
+                      }
                       // navigation.navigate('PaymentMethod', {useCoupon: true})
                     }
                     style={{
@@ -457,6 +501,9 @@ const WriteOrderForm = ({navigation, route}) => {
                   </Pressable>
                   <TextInput
                     editable={false}
+                    value={
+                      storeCoupon.cp_price && `${'- ' + storeCoupon.cp_price}`
+                    }
                     style={{...styles.inputContainer, marginLeft: 10}}
                   />
                 </View>
@@ -467,7 +514,10 @@ const WriteOrderForm = ({navigation, route}) => {
                 <View style={{flexDirection: 'row', marginTop: 10}}>
                   <Pressable
                     onPress={
-                      () => customAlert('준비중', '현재 준비중인 기능입니다.')
+                      () => {
+                        _getCouponList('system');
+                        // customAlert('준비중', '현재 준비중인 기능입니다.');
+                      }
                       // navigation.navigate('PaymentMethod', {useCoupon: true})
                     }
                     style={{
@@ -479,8 +529,12 @@ const WriteOrderForm = ({navigation, route}) => {
                   </Pressable>
                   <TextInput
                     editable={false}
+                    value={
+                      systemCoupon.cp_price && `${'- ' + systemCoupon.cp_price}`
+                    }
                     style={{...styles.inputContainer, marginLeft: 10}}
                   />
+                  {console.log('##########', storeCoupon, systemCoupon)}
                 </View>
               </View>
             </>
@@ -533,9 +587,19 @@ const WriteOrderForm = ({navigation, route}) => {
             )}
             <View style={{...styles.paymentText}}>
               <TextRegular style={{color: colors.fontColorA}}>
-                할인금액
+                점주 쿠폰 할인
               </TextRegular>
-              <TextRegular style={{}}>-{0}원</TextRegular>
+              <TextRegular style={{}}>
+                -{storeCoupon?.cp_price ?? 0}원
+              </TextRegular>
+            </View>
+            <View style={{...styles.paymentText}}>
+              <TextRegular style={{color: colors.fontColorA}}>
+                동네북 쿠폰 할인
+              </TextRegular>
+              <TextRegular style={{}}>
+                -{systemCoupon?.cp_price ?? 0}원
+              </TextRegular>
             </View>
             {/* 
             <View style={{...styles.paymentText}}>

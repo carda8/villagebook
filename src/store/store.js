@@ -4,6 +4,7 @@ import {authReducer} from './reducers/AuthReducer';
 import {btBarReducer} from './reducers/BottomBarReducer';
 import {cartReducer} from './reducers/CartReducer';
 import {categoryReducer} from './reducers/CategoryReducer';
+import {couponReducer} from './reducers/CouponReducer';
 import {locationReducer} from './reducers/LocationRecuder';
 import {menuReducer} from './reducers/MenuReducer';
 import {paymentReducer} from './reducers/PaymentReducer';
@@ -20,5 +21,6 @@ export default configureStore({
     paymentReducer,
     addressReducer,
     locationReducer,
+    couponReducer,
   },
 });

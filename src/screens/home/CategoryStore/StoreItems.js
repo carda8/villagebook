@@ -26,6 +26,7 @@ import DividerL from '../../../component/DividerL';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
 import {Errorhandler} from '../../../config/ErrorHandler';
 import {setIsLifeStyle} from '../../../store/reducers/CategoryReducer';
+import {customAlert} from '../../../component/CustomAlert';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
@@ -35,38 +36,22 @@ const StoreItems = ({navigation, route}) => {
   const {currentFilter} = useSelector(state => state.categoryReducer);
 
   // console.log('roueteData', routeData);
-  const [storeList, setStoreList] = useState();
-  const {mutateGetLifeStyle} = useCustomMutation();
+  const [storeList, setStoreList] = useState([]);
+  const {mutateGetLifeStyle, mutateGetStoreList} = useCustomMutation();
 
   const _fliterList = data => {
+    console.log('data', data);
     return data.filter((item, index) => item !== null);
   };
 
-  const mutateGetStoreList = useMutation(mainAPI._getStoreList, {
-    onSuccess: e => {
-      if (e.result === 'true') {
-        console.log('mutateGetStoreList', e.data.arrItems);
-        const temp = _fliterList(e.data.arrItems);
-        setStoreList(temp);
-      }
-      // console.log('temp e', temp);
-      // setCategoryData(e.data.arrItems);
-    },
-  });
-
-  useEffect(() => {
-    console.log('curfilter', currentFilter);
-  }, [currentFilter]);
-
   const itemLimit = useRef(0);
 
-  const _init = more => {
+  const _init = () => {
     // console.log('storeitem', routeData);
-    if (more) itemLimit.current += 20;
     const data = {
       mb_ca_code: routeData.ca_code,
-      item_count: more ? itemLimit.current : 0,
-      limit_count: 30,
+      item_count: itemLimit.current,
+      limit_count: 20,
       mb_jumju_type: routeData.category,
       mb_ca_sort: currentFilter + 1,
       mb_lat: currentLocation.lat,
@@ -87,7 +72,56 @@ const StoreItems = ({navigation, route}) => {
         },
       });
     } else {
-      mutateGetStoreList.mutate(data);
+      mutateGetStoreList.mutate(data, {
+        onSuccess: e => {
+          if (e.result === 'true') {
+            console.log('mutateGetStoreList2', e.data.arrItems);
+            const temp = _fliterList(e.data.arrItems);
+            setStoreList(temp);
+          }
+        },
+      });
+    }
+  };
+
+  const _getMoreStoreList = () => {
+    itemLimit.current += 20;
+    const data = {
+      mb_ca_code: routeData.ca_code,
+      item_count: itemLimit.current,
+      limit_count: 20,
+      mb_jumju_type: routeData.category,
+      mb_ca_sort: currentFilter + 1,
+      mb_lat: currentLocation.lat,
+      mb_lng: currentLocation.lon,
+    };
+
+    if (routeData.category === 'lifestyle') {
+      delete data.mb_ca_sort;
+      mutateGetLifeStyle.mutate(data, {
+        onSuccess: e => {
+          if (e.result === 'true') {
+            console.log('ee', e);
+            setStoreList(prev => prev.concat(e.data.arrItems));
+          } else setStoreList([]);
+        },
+      });
+    } else {
+      mutateGetStoreList.mutate(data, {
+        onSuccess: e => {
+          console.log('life e', e);
+          if (!e.data.arrItems[0] && !e.data.arrItems[1]) return;
+          if (e.result === 'true' && e.data.arrItems.length > 0) {
+            const temp = _fliterList(e.data.arrItems);
+            let prev = [...storeList];
+            prev[0].data = prev[0].data.concat(temp[0].data);
+            console.log('prev', prev);
+            setStoreList(prev);
+          } else {
+            return;
+          }
+        },
+      });
     }
   };
 
@@ -95,9 +129,9 @@ const StoreItems = ({navigation, route}) => {
     _init();
   }, [route.parma, currentFilter]);
 
-  useEffect(() => {
-    console.log('storeList', storeList);
-  }, [storeList]);
+  // useEffect(() => {
+  //   console.log('storeList', storeList);
+  // }, [storeList]);
 
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
@@ -255,6 +289,14 @@ const StoreItems = ({navigation, route}) => {
                 />
               )}
             </View>
+            {routeData.category === 'lifestyle' && (
+              <View>
+                <TextRegular style={{color: colors.fontColorA2}}>
+                  거리 {storeInfo.distance}
+                </TextRegular>
+              </View>
+            )}
+
             {routeData.category !== 'lifestyle' && (
               <View
                 style={{flexDirection: 'row', flexWrap: 'wrap', marginTop: 9}}>
@@ -316,34 +358,54 @@ const StoreItems = ({navigation, route}) => {
     );
   };
 
-  if (
-    mutateGetStoreList.isLoading ||
-    mutateGetLifeStyle.isLoading ||
-    !storeList
-  )
-    return <Loading />;
+  // if (
+  //   mutateGetStoreList.isLoading ||
+  //   mutateGetLifeStyle.isLoading ||
+  //   !storeList
+  // )
+  //   return <Loading />;
   // storeList[0] !== null && storeList[1] !== null ? storeList : []
   // console.log('storeligttt', storeList);
   return (
     <View style={{flex: 1}}>
+      {console.log('route cate', routeData.category)}
       {routeData.category === 'lifestyle' ? (
         <FlatList
           data={storeList}
           keyExtractor={(item, index) => item + index}
           renderItem={item => renderItem(item)}
           ListEmptyComponent={() => (
-            <View>
-              <TextBold>검색결과가 없습니다</TextBold>
+            <View
+              style={{
+                flex: 1,
+                marginTop: '30%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={require('~/assets/no_store.png')}
+                style={{width: 250, height: 250}}
+              />
             </View>
           )}
+          onEndReached={() => _getMoreStoreList()}
           showsVerticalScrollIndicator={false}
         />
       ) : (
         <SectionList
           sections={storeList}
           ListEmptyComponent={
-            <View>
-              <TextBold>검색결과가 없습니다</TextBold>
+            <View
+              style={{
+                flex: 1,
+                marginTop: '30%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={require('~/assets/no_store.png')}
+                style={{width: 250, height: 250}}
+              />
             </View>
           }
           keyExtractor={(item, index) => item + index}
@@ -357,6 +419,10 @@ const StoreItems = ({navigation, route}) => {
             )
           }
           showsVerticalScrollIndicator={false}
+          onEndReached={() => {
+            // console.log('end reached');
+            _getMoreStoreList();
+          }}
         />
       )}
     </View>

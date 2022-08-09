@@ -69,4 +69,20 @@ export default {
     const result = await _reqAPI('proc_review_list.php', data);
     return result;
   },
+  _getCompanyInfo: async data => {
+    const result = await _reqAPI('proc_site_config.php', data);
+    return result;
+  },
+  _updataUserInfo: async data => {
+    const result = await _reqImageAPI('proc_member_update.php', data);
+    return result;
+  },
+  _getFaqList: async data => {
+    const result = await _reqImageAPI('proc_inquiry_list.php', data);
+    return result;
+  },
+  _postFqa: async data => {
+    const result = await _reqImageAPI('proc_inquiry_list.php', data);
+    return result;
+  },
 };
