@@ -10,31 +10,12 @@ import DividerL from '../../component/DividerL';
 import colors from '../../styles/colors';
 import {customAlert} from '../../component/CustomAlert';
 import {replaceString} from '../../config/utils/Price';
+import {useSelector} from 'react-redux';
 
 const DeliveryTipInfo = ({route, navigation}) => {
   const routeData = route.params.data;
   console.log('route', route.params);
-  const [fee, setFee] = useState([]);
-  const {mutateGetDeliveryFeeInfo} = useCustomMutation();
-
-  const _getFeeInfo = () => {
-    const data = {
-      jumju_id: routeData.mb_id,
-      jumju_code: routeData.mb_jumju_code,
-    };
-    mutateGetDeliveryFeeInfo.mutate(data, {
-      onSettled: e => {
-        if (e.result === 'true' && e.data.arrItems.length > 0) {
-          setFee(e.data.arrItems);
-        }
-        console.log('e', e);
-      },
-    });
-  };
-
-  useEffect(() => {
-    _getFeeInfo();
-  }, []);
+  const {deliveryInfo} = useSelector(state => state.deliveryReducer);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -61,7 +42,7 @@ const DeliveryTipInfo = ({route, navigation}) => {
               <TextSBold style={{color: colors.fontColor2}}>배달팁</TextSBold>
             </View>
           </View>
-          {fee.map((item, index) => (
+          {deliveryInfo.map((item, index) => (
             <View key={index} style={{flexDirection: 'row'}}>
               <View style={{flex: 2}}>
                 <TextRegular style={{color: colors.fontColor2}}>

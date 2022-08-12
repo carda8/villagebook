@@ -174,10 +174,10 @@ const OrderList = ({navigation}) => {
           </Pressable>
           <Pressable
             onPress={() => {
-              // navigation.navigate('WriteReview', {storeInfo: data});
+              // navigation.navigate('WriteReview', {storeInfo: data}));
               isDeliveried
                 ? isReviewPossible
-                  ? navigation.navigate('WriteReview')
+                  ? navigation.navigate('WriteReview', {storeInfo: data})
                   : customAlert('알림', '이미 작성된 리뷰가 있습니다.')
                 : customAlert('알림', '배달완료된 주문만 리뷰작성 가능합니다');
             }}

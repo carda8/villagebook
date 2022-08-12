@@ -100,6 +100,21 @@ const Receipt = ({orderResult, isSummary}) => {
             {replaceString(orderData?.od_send_cost2)}원
           </TextRegular>
         </View>
+        {orderData?.od_receipt_point > 0 && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 11,
+            }}>
+            <TextRegular style={{color: colors.fontColor99}}>
+              포인트 사용
+            </TextRegular>
+            <TextRegular style={{color: colors.primary}}>
+              - {replaceString(orderData?.od_receipt_point)}원
+            </TextRegular>
+          </View>
+        )}
 
         {orderData?.od_method_value !== '배달' && (
           <View

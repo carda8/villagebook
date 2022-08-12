@@ -62,6 +62,7 @@ import {customAlert} from '../component/CustomAlert';
 import {useGeoLocation} from '../hooks/useGeoLocation';
 import DeliveryTipInfo from '../screens/menu/DeliveryTipInfo';
 import CouponSelect from '../screens/menu/orderDetail/CouponSelect';
+import SearchView from '../screens/home/SearchView';
 
 const Stack = createNativeStackNavigator();
 
@@ -215,6 +216,7 @@ const MainStackNavigator = () => {
         <Stack.Screen name="ResetAccount" component={ResetAccount} />
 
         <Stack.Screen name="Main" component={Main} />
+        <Stack.Screen name="SearchView" component={SearchView} />
 
         <Stack.Screen name="AddressMain" component={AddressMain} />
         <Stack.Screen name="AddressSetDetail" component={AddressSetDetail} />

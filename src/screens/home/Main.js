@@ -109,7 +109,10 @@ const Main = ({navigation}) => {
           </TextEBold>
         </Pressable>
 
-        {/* <SearchBox /> */}
+        <SearchBox
+          onPress={() => navigation.navigate('SearchView')}
+          isMain={true}
+        />
 
         {/* 동네맛집 */}
         {/* 동네마켓 */}

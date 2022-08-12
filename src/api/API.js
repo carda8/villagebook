@@ -75,6 +75,15 @@ export const ImageAPI = axios.create({
       }
     }
 
+    if (data.isFaq) {
+      delete copyData.isReview;
+      delete copyData.imgArr;
+
+      for (let i = 1; i <= data.imgArr.length; i++) {
+        imageResultObject[`qa_img` + i] = data.imgArr[i - 1];
+      }
+    }
+
     const jwt_data = jwtEncode(copyData, SECRETKEY);
     const result = formFormatter({
       secretKey: SECRETKEY,

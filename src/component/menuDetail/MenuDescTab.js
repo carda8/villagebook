@@ -9,36 +9,34 @@ import {customAlert} from '../CustomAlert';
 import TextSBold from '../text/TextSBold';
 import DividerL from '../DividerL';
 import TextBold from '../text/TextBold';
+import {useDispatch} from 'react-redux';
+import {setDeliveryInfo} from '../../store/reducers/DeliveryInfoReducer';
 
 const MenuDescTab = ({info, navigation}) => {
+  const dispatch = useDispatch();
   const [tabIdx, setTabIdx] = useState(0);
   const {mutateGetDeliveryFeeInfo} = useCustomMutation();
-  const [modal, setModal] = useState(false);
-  const [fee, setFee] = useState([]);
 
-  const _getFeeInfo = () => {
+  const _getFee = () => {
     const data = {
       jumju_id: info.mb_id,
       jumju_code: info.mb_jumju_code,
     };
+
     mutateGetDeliveryFeeInfo.mutate(data, {
       onSettled: e => {
-        if (e.result === 'true' && e.data.arrItems.length > 0) {
-          setFee(e.data.arrItems);
-          // return customAlert('알림', '현재 사용 할 수 없는 기능입니다.');
-          setModal(!modal);
-          // navigation.navigate('DeliveryTipDetail', {data: e.data.arrItems});
-        } else {
-          return customAlert('알림', '현재 사용 할 수 없는 기능입니다.');
-        }
+        if (e.result === 'true' && e.data.arrItems.length > 0)
+          dispatch(setDeliveryInfo(e.data.arrItems));
         console.log('e', e);
       },
     });
   };
 
-  // useEffect(() => {
-  //   console.log('idx', tabIdx);
-  // }, [tabIdx]);
+  useEffect(() => {
+    _getFee();
+  }, []);
+
+  console.log('@@@@@ info', info);
 
   return (
     <>
@@ -203,94 +201,6 @@ const MenuDescTab = ({info, navigation}) => {
           </>
         )}
       </View>
-      <Modal
-        transparent
-        visible={modal}
-        onRequestClose={() => setModal(!modal)}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <View
-            style={{
-              width: 300,
-              height: 300,
-              backgroundColor: 'white',
-              padding: 15,
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#00000029',
-                  shadowOpacity: 0.6,
-                  shadowRadius: 50 / 2,
-                  shadowOffset: {
-                    height: 12,
-                    width: 0,
-                  },
-                },
-                android: {
-                  elevation: 5,
-                },
-              }),
-            }}>
-            <TextSBold style={{color: colors.fontColor2}}>
-              배달팁 정보
-            </TextSBold>
-            <DividerL style={{height: 1, marginVertical: 10}} />
-            <View
-              style={{
-                justifyContent: 'space-between',
-              }}>
-              <View style={{flexDirection: 'row', marginBottom: 10}}>
-                <View style={{flex: 2}}>
-                  <TextSBold style={{color: colors.fontColor2}}>
-                    주문 금액
-                  </TextSBold>
-                </View>
-                <View style={{flex: 1}}>
-                  <TextSBold style={{color: colors.fontColor2}}>
-                    배달팁
-                  </TextSBold>
-                </View>
-              </View>
-              {fee.map((item, index) => (
-                <View key={index} style={{flexDirection: 'row'}}>
-                  <View style={{flex: 2}}>
-                    <TextRegular style={{color: colors.fontColor2}}>
-                      {replaceString(item.dd_charge_start)}원 ~{' '}
-                      {replaceString(item.dd_charge_end)}원
-                    </TextRegular>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <TextRegular style={{color: colors.fontColor2}}>
-                      {replaceString(item.dd_charge_price)}원
-                    </TextRegular>
-                  </View>
-                </View>
-              ))}
-            </View>
-            <Pressable
-              style={{
-                backgroundColor: colors.primary,
-                alignSelf: 'center',
-                width: 120,
-                height: 50,
-                marginTop: 'auto',
-                marginBottom: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 10,
-              }}
-              onPress={() => {
-                setModal(!modal);
-              }}>
-              <TextBold style={{color: 'white'}}>닫기</TextBold>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
     </>
   );
 };

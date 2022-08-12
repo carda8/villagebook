@@ -5,8 +5,6 @@ import {createSlice} from '@reduxjs/toolkit';
 const cartSlice = createSlice({
   name: 'category',
   initialState: {
-    //담기를 하기 전까지는 사라지지는 않는다.
-    //담기버튼을 누르지 않으면 화면을 벗어날때 모두 초기화 (saved 제외)
     //saved는 가게 코드가 바뀌지 않는 이상 안바뀜
     currentStoreCode: '', //현재 가게의 고유코드
     mainCount: {count: 1, mainItemCode: '', menuName: '', mainPrice: 0}, // 본품 기본 수량 : 1
@@ -16,7 +14,7 @@ const cartSlice = createSlice({
     subItems: [],
     //{itemCode: '', itemCount: '', itemPrice: '', itemDesc: ''}
     requiredCount: 0,
-    totalPrice: 0, //주문시 최종 금액?
+    totalPrice: 0,
     //최종금액은 그냥 배열에서 가격 골라서 합산해서 표시
     storeLogoUrl: '',
     savedItem: {savedStoreCode: '', savedItems: []}, // 담기 버튼을 눌렀을때 아이템이 담길 배열
@@ -44,9 +42,6 @@ const cartSlice = createSlice({
       state.subItems.pop();
       state.totalPrice -= action.payload.itemPrice;
     },
-    // saveItem: (state, action) => {
-    //   state.savedItem.push(action.payload);
-    // },
     removeSavedItem: (state, action) => {
       state.savedItem.filter(() => {});
     },
@@ -56,19 +51,11 @@ const cartSlice = createSlice({
     },
     setMainRequired: (state, action) => {
       if (state.selectedMainOption[action.payload.index]?.idx) {
-        // state.totalPrice -= action.payload.data.price;
         state.totalPrice -=
           state.selectedMainOption[action.payload.index]?.price;
         state.totalPrice += action.payload.data.price;
       } else state.totalPrice += action.payload.data.price;
       state.selectedMainOption[action.payload.index] = action.payload.data;
-      // state.selectedMainOption.push(action.payload);
-      // state.selectedMainOption[action.payload.key] = {
-      //   idx: action.payload.idx,
-      //   name: action.payload.name,
-      //   value: action.payload.value,
-      //   price: action.payload.price,
-      // };
     },
     setRequiredCount: (state, action) => {
       state.requiredCount = action.payload;
@@ -86,6 +73,12 @@ const cartSlice = createSlice({
       console.log('action saved', action.payload);
       state.savedItem.savedStoreCode = action.payload.storeCode;
       state.savedItem.savedItems.push(action.payload.items);
+    },
+    updateItem: (state, action) => {
+      state.savedItem.savedItems[action.payload.idx].count += 1       
+      state.savedItem.savedItems[action.payload.idx].main.count += 1;
+      state.savedItem.savedItems[action.payload.idx].totalPrice +=
+        action.payload.price;
     },
     removeItem: (state, action) => {
       console.log('removeItem', action.payload);
@@ -116,5 +109,6 @@ export const {
   setMainCountFromCart,
   removeItem,
   resetSavedItem,
+  updateItem,
 } = actions;
 export const cartReducer = reducer;

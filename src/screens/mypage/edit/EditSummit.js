@@ -5,6 +5,8 @@ import {
   Image,
   ScrollView,
   Modal,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '../../../component/Header';
@@ -17,13 +19,15 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../../styles/commonStyle';
 import {customAlert} from '../../../component/CustomAlert';
 import Loading from '../../../component/Loading';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
+import {setUserInfo} from '../../../store/reducers/AuthReducer';
 
 const EditSummit = ({navigation, route}) => {
   const routeData = route.params?.target;
+  const dispatch = useDispatch();
 
   const {mutateCheckNickName, mutateUpdataUserInfo} = useCustomMutation();
 
@@ -46,6 +50,7 @@ const EditSummit = ({navigation, route}) => {
     const data = {
       mt_nickname: nickname,
     };
+
     mutateCheckNickName.mutate(data, {
       onSettled: e => {
         console.log('e', e);
@@ -60,17 +65,55 @@ const EditSummit = ({navigation, route}) => {
     });
   };
 
-  const _updateInfo = () => {
+  const _updateInfo = isEmail => {
     const data = {
       mt_id: userInfo.mt_id,
-      mt_nick: nickname ?? '',
+      mt_nick: nickname ?? userInfo.mt_nickname,
       mt_image1: profileImg ?? '',
+      mt_email: email ?? userInfo.mt_email,
     };
 
     console.log('data', data);
 
+    if (!checkNickname && !isEmail)
+      return customAlert('알림', '닉네임 중복 체크가 필요합니다.');
+
     mutateUpdataUserInfo.mutate(data, {
       onSettled: e => {
+        if (e.result === 'true') {
+          Alert.alert('알림', '회원정보 수정이 완료되었습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                dispatch(
+                  setUserInfo({
+                    ...userInfo,
+                    mt_email: e.data.arrItems.mb_email
+                      ? e.data.arrItems.mb_email
+                      : userInfo.mt_email,
+                    mt_nickname: e.data.arrItems.mt_nickname
+                      ? e.data.arrItems.mt_nickname
+                      : userInfo.mt_nickname,
+                    mt_profil_url: e.data.arrItems.mt_profil_url
+                      ? e.data.arrItems.mt_profil_url
+                      : userInfo.mt_profil_url,
+                  }),
+                );
+                navigation.goBack();
+              },
+            },
+          ]);
+        } else {
+          Alert.alert('알림', '현재 해당 기능을 사용 할 수 없습니다.', [
+            {
+              text: '확인',
+              onPress: () => {
+                navigation.goBack();
+              },
+            },
+          ]);
+        }
+
         console.log('e', e);
       },
     });
@@ -226,7 +269,18 @@ const EditSummit = ({navigation, route}) => {
                   marginTop: 20,
                   borderRadius: 10,
                 }}>
-                <TextBold style={{color: 'white'}}>내정보수정</TextBold>
+                {mutateUpdataUserInfo.isLoading ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <ActivityIndicator color={'white'} />
+                  </View>
+                ) : (
+                  <TextBold style={{color: 'white'}}>내정보수정</TextBold>
+                )}
               </Pressable>
             </View>
           </>
@@ -240,6 +294,7 @@ const EditSummit = ({navigation, route}) => {
 
             <TextInput
               value={email}
+              autoCapitalize="none"
               onChangeText={e => setEmail(e.trim())}
               style={{
                 height: 50,
@@ -254,6 +309,9 @@ const EditSummit = ({navigation, route}) => {
             />
 
             <Pressable
+              onPress={() => {
+                _updateInfo(true);
+              }}
               style={{
                 height: 50,
                 backgroundColor: colors.primary,
@@ -262,7 +320,11 @@ const EditSummit = ({navigation, route}) => {
                 marginTop: 20,
                 borderRadius: 10,
               }}>
-              <TextBold style={{color: 'white'}}>내정보수정</TextBold>
+              {mutateUpdataUserInfo.isLoading ? (
+                <Loading />
+              ) : (
+                <TextBold style={{color: 'white'}}>내정보수정</TextBold>
+              )}{' '}
             </Pressable>
           </View>
         )}

@@ -145,7 +145,7 @@ const CategoryView = ({navigation, route}) => {
               </TextEBold>
             </Pressable>
 
-            {/* <SearchBox /> */}
+            <SearchBox isSub={true} onPress={()=>navigation.navigate("SearchView")}/>
             {/* 메인배너 */}
             <MainBanner
               navigation={navigation}

@@ -24,14 +24,15 @@ import Cart from './Cart';
 import Caution from '../../../component/Caution';
 
 const SummitOrder = ({navigation, route}) => {
+  const dispatch = useDispatch();
   const {mutateDeliveryFee} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
-  const dispatch = useDispatch();
-  console.log('summit cart store', cartStore);
-  console.log('item main option');
-  console.log('summit route data', route.params);
+  const {deliveryInfo} = useSelector(state => state.deliveryReducer);
   const [isDelivery, setIsDelivery] = useState(true);
 
+  
+  console.log('summit cart store', cartStore);
+  console.log('summit route data', route.params);
   const _filterOption = prop => {
     console.log('props', prop);
     const temp = prop.main.option;
@@ -78,11 +79,11 @@ const SummitOrder = ({navigation, route}) => {
     _getDeliveryFee();
   }, [cartStore]);
 
-  useEffect(() => {
-    if (mutateDeliveryFee.data?.arrItems) {
-      dispatch(setDeliveryData(mutateDeliveryFee.data.data.arrItems[0]));
-    }
-  }, [mutateDeliveryFee.data]);
+  // useEffect(() => {
+  //   if (mutateDeliveryFee.data?.arrItems) {
+  //     dispatch(setDeliveryData(mutateDeliveryFee.data.data.arrItems[0]));
+  //   }
+  // }, [mutateDeliveryFee.data]);
 
   if (cartStore.savedItem.savedItems.length === 0)
     return (
@@ -113,6 +114,7 @@ const SummitOrder = ({navigation, route}) => {
         lastPrice={_getTotalPrice(true)}
         deliveryData={DeliveryData ?? 0}
         data={route.params?.data}
+        isLoading={mutateDeliveryFee.isLoading}
       />
       <ScrollView contentContainerStyle={{paddingBottom: 100}}>
         <View

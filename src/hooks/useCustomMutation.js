@@ -94,7 +94,35 @@ export const useCustomMutation = () => {
 
   const mutateCheckNickName = useMutation(authAPI._checkNickName, {
     onSettled: e => {
-      console.log('mutateGetCompanyInfo', e);
+      console.log('mutateCheckNickName', e);
+      return e;
+    },
+  });
+
+  const mutateGetFaqList = useMutation(mainAPI._getFaqList, {
+    onSettled: e => {
+      console.log('mutateGetFaqList', e);
+      return e;
+    },
+  });
+
+  const mutateGetFaqDetail = useMutation(mainAPI._getFaqDetail, {
+    onSettled: e => {
+      console.log('mutateGetFaqDetail', e);
+      return e;
+    },
+  });
+
+  const mutatePostFaq = useMutation(mainAPI._postFqa, {
+    onSettled: e => {
+      console.log('mutatePostFaq', e);
+      return e;
+    },
+  });
+
+  const mutateNotification = useMutation(mainAPI._setNotification, {
+    onSettled: e => {
+      console.log('mutateNotification', e);
       return e;
     },
   });
@@ -295,6 +323,12 @@ export const useCustomMutation = () => {
       return e;
     },
   });
+  const mutateSearch = useMutation(mainAPI._searchStore, {
+    onSettled: e => {
+      console.log('mutateUpdataUserInfo', e);
+      return e;
+    },
+  });
   return {
     mutateSignIn,
     mutateSNSlogin,
@@ -334,5 +368,10 @@ export const useCustomMutation = () => {
     mutateDownloadCoupon,
     mutateCheckNickName,
     mutateUpdataUserInfo,
+    mutateGetFaqList,
+    mutatePostFaq,
+    mutateNotification,
+    mutateSearch,
+    mutateGetFaqDetail,
   };
 };

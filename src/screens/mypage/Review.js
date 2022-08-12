@@ -7,6 +7,8 @@ import {
   FlatList,
   Pressable,
   useWindowDimensions,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import commonStyles from '../../styles/commonStyle';
@@ -23,12 +25,14 @@ import TextLight from '../../component/text/TextLight';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useSelector} from 'react-redux';
 import Loading from '../../component/Loading';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const Review = ({navigation}) => {
   const [input, setInput] = useState();
   const {mutateGetMyReview} = useCustomMutation();
   const [reviews, setReviews] = useState([]);
   const {userInfo} = useSelector(state => state.authReducer);
+  const [modal, setModal] = useState({visible: false, image: []});
   const layout = useWindowDimensions();
 
   const itemLimit = useRef(0);
@@ -48,6 +52,14 @@ const Review = ({navigation}) => {
         console.log('e', e);
       },
     });
+  };
+
+  const _convertImage = images => {
+    let temp = [];
+    images.map((item, index) => {
+      temp.push({url: item});
+    });
+    return temp;
   };
 
   const _setRating = (isTotal, userRate) => {
@@ -115,23 +127,30 @@ const Review = ({navigation}) => {
                 {data.datetime}
               </TextLight>
               <View style={{flexDirection: 'row'}}>
-                {_setRating(false, data.wr_score)}
+                {_setRating(false, data.rating)}
               </View>
             </View>
           </View>
         </View>
+        <Pressable
+          onPress={() => {
+            if (data.pic.length > 0)
+              setModal({visible: !modal.visible, image: data.pic});
+          }}>
+          {data?.pic.map((item, index) => (
+            <FastImage
+              key={index}
+              source={{uri: item}}
+              style={{
+                borderRadius: 10,
+                alignSelf: 'center',
+                width: layout.width - 44,
+                height: layout.width - 44,
+              }}
+            />
+          ))}
+        </Pressable>
 
-        {data?.pic.map((item, index) => (
-          <FastImage
-            source={{uri: item}}
-            style={{
-              borderRadius: 10,
-              alignSelf: 'center',
-              width: layout.width - 44,
-              height: layout.width - 44,
-            }}
-          />
-        ))}
         <View style={{padding: 22}}>
           <TextRegular>{data.content}</TextRegular>
         </View>
@@ -197,6 +216,24 @@ const Review = ({navigation}) => {
         keyExtractor={(item, index) => index}
         onEndReached={() => {}}
       />
+
+      <Modal
+        transparent
+        visible={modal.visible}
+        onRequestClose={() => {
+          setModal({...modal, visible: !modal.visible});
+        }}>
+        {/* {console.log('modal img', modal.image)} */}
+        <ImageViewer
+          useNativeDriver
+          enablePreload
+          saveToLocalByLongPress={false}
+          imageUrls={_convertImage(modal.image)}
+          loadingRender={() => (
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          )}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };

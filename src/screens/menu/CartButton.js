@@ -1,5 +1,5 @@
 import {View, Text, Pressable, Alert, StyleSheet} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import TextBold from '../../component/text/TextBold';
 import {useDispatch, useSelector} from 'react-redux';
 import colors from '../../styles/colors';
@@ -11,9 +11,12 @@ import {
   saveItem,
   setCurrentStoreCode,
   setStoreLogo,
+  updateItem,
 } from '../../store/reducers/CartReducer';
 import {customAlert} from '../../component/CustomAlert';
 import {setLastPrice} from '../../store/reducers/PaymentReducer';
+import Loading from '../../component/Loading';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
 
 const CartButton = ({
   navigation,
@@ -22,9 +25,11 @@ const CartButton = ({
   deliveryData,
   isDelivery,
   data,
+  isLoading,
 }) => {
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
+  const {mutateDeliveryFee} = useCustomMutation();
   // const payStore = useSelector(state => state.paymentReducer);
 
   console.log('store', cartStore);
@@ -59,6 +64,91 @@ const CartButton = ({
     }
   };
 
+  const _checkItem = () => {
+    let mainCount = {...cartStore.mainCount, count: null};
+    let temp = {
+      // count: cartStore.mainCount.count,
+      main: {
+        ...mainCount,
+        option: cartStore.selectedMainOption,
+      },
+      sub: cartStore.subItems,
+      // totalPrice: cartStore.totalPrice,
+    };
+
+    console.log('temp@@@@', temp);
+    if (cartStore.savedItem.savedItems.length > 0) {
+      let arrIdx = 'no';
+      let temp2 = cartStore.savedItem.savedItems.find((item, index) => {
+        let temp3 = {
+          ...item,
+          main: {
+            ...item.main,
+            count: null,
+          },
+        };
+        delete temp3.count;
+        delete temp3.totalPrice;
+
+        console.log('### item', temp3);
+
+        if (JSON.stringify(temp3) === JSON.stringify(temp)) {
+          arrIdx = index;
+          return true;
+        }
+      });
+      if (arrIdx !== 'no') {
+        console.log('arrIdx', arrIdx);
+        console.log('temp2', temp2);
+        dispatch(
+          updateItem({
+            idx: arrIdx,
+            price: cartStore.totalPrice,
+            count: cartStore.mainCount.count,
+          }),
+        );
+      } else {
+        dispatch(
+          saveItem({
+            storeCode: {
+              code: data.jumju_code,
+              jumju_id: data.jumju_id,
+              storeName: data.mb_company,
+            },
+            items: {
+              count: cartStore.mainCount.count,
+              main: {
+                ...cartStore.mainCount,
+                option: cartStore.selectedMainOption,
+              },
+              sub: cartStore.subItems,
+              totalPrice: cartStore.totalPrice,
+            },
+          }),
+        );
+      }
+    } else {
+      dispatch(
+        saveItem({
+          storeCode: {
+            code: data.jumju_code,
+            jumju_id: data.jumju_id,
+            storeName: data.mb_company,
+          },
+          items: {
+            count: cartStore.mainCount.count,
+            main: {
+              ...cartStore.mainCount,
+              option: cartStore.selectedMainOption,
+            },
+            sub: cartStore.subItems,
+            totalPrice: cartStore.totalPrice,
+          },
+        }),
+      );
+    }
+  };
+
   const _pressSaveCartButton = () => {
     console.log('data222', data);
     dispatch(
@@ -69,24 +159,7 @@ const CartButton = ({
       }),
     );
 
-    dispatch(
-      saveItem({
-        storeCode: {
-          code: data.jumju_code,
-          jumju_id: data.jumju_id,
-          storeName: data.mb_company,
-        },
-        items: {
-          count: cartStore.mainCount.count,
-          main: {
-            ...cartStore.mainCount,
-            option: cartStore.selectedMainOption,
-          },
-          sub: cartStore.subItems,
-          totalPrice: cartStore.totalPrice,
-        },
-      }),
-    );
+    _checkItem();
 
     dispatch(setStoreLogo(data.store_logo));
 
@@ -145,29 +218,29 @@ const CartButton = ({
         _router();
       }}
       style={{...style.btnContainer}}>
-      <View style={{...style.innerView}}>
-        <View style={{flex: 1}} />
-        <View style={{flex: 1, alignItems: 'center'}}>
-          <TextBold style={{color: 'white', fontSize: 16}}>
-            {goTo === 'OrderPage'
-              ? '주문하기'
-              : cartStore.mainCount.count + '개 담기'}
-          </TextBold>
-        </View>
+        <View style={{...style.innerView}}>
+          <View style={{flex: 1}} />
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <TextBold style={{color: 'white', fontSize: 16}}>
+              {goTo === 'OrderPage'
+                ? '주문하기'
+                : cartStore.mainCount.count + '개 담기'}
+            </TextBold>
+          </View>
 
-        <View style={{flex: 1, alignItems: 'center'}}>
-          <TextMedium style={{color: 'white', fontSize: 16}}>
-            {goTo === 'OrderPage'
-              ? replaceString(lastPrice)
-              : ' ' + replaceString(cartStore.totalPrice) + '원'}
-          </TextMedium>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <TextMedium style={{color: 'white', fontSize: 16}}>
+              {goTo === 'OrderPage'
+                ? replaceString(lastPrice)
+                : ' ' + replaceString(cartStore.totalPrice) + '원'}
+            </TextMedium>
+          </View>
         </View>
-      </View>
     </Pressable>
   );
 };
 
-export default CartButton;
+export default React.memo(CartButton);
 
 const style = StyleSheet.create({
   btnContainer: {

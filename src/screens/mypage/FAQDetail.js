@@ -5,16 +5,60 @@ import {
   Pressable,
   Image,
   ScrollView,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
 import TextBold from '../../component/text/TextBold';
 import Header from '../../component/Header';
 import colors from '../../styles/colors';
 import TextRegular from '../../component/text/TextRegular';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useSelector} from 'react-redux';
+import Loading from '../../component/Loading';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
-const FAQDetail = ({navigation}) => {
+const FAQDetail = ({navigation, route}) => {
+  const boardIdx = route.params.boardIndex;
+  const {userInfo} = useSelector(state => state.authReducer);
+  const {mutateGetFaqDetail} = useCustomMutation();
+  const [detail, setDetail] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [imageUrl, setImageUrl] = useState([]);
+
+  const _getDetail = () => {
+    const data = {
+      item_count: '0',
+      limit_count: '10',
+      mt_id: userInfo.mt_id,
+      qa_id: boardIdx,
+    };
+
+    mutateGetFaqDetail.mutate(data, {
+      onSettled: e => {
+        if (e.result === 'true') setDetail(e.data.arrItems);
+        console.log('e', e);
+      },
+    });
+  };
+
+  const _convertImage = images => {
+    let temp = [];
+    if (images?.length > 0) {
+      images.map((item, index) => {
+        temp.push({url: item});
+      });
+      return temp;
+    } else return [];
+  };
+  useEffect(() => {
+    _getDetail();
+  }, []);
+
+  if (!detail) return <Loading />;
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'1:1문의'} navigation={navigation} showCart={true} />
@@ -28,7 +72,7 @@ const FAQDetail = ({navigation}) => {
               marginBottom: 20,
               justifyContent: 'center',
             }}>
-            <TextRegular>제목</TextRegular>
+            <TextRegular>{detail.qa_subject}</TextRegular>
           </View>
 
           <TextBold>문의내용</TextBold>
@@ -40,7 +84,36 @@ const FAQDetail = ({navigation}) => {
               marginBottom: 20,
               height: 200,
             }}>
-            <TextRegular>123</TextRegular>
+            <TextRegular>{detail.qa_content}</TextRegular>
+          </View>
+
+          <View style={{flexDirection: 'row', marginBottom: 20}}>
+            {detail?.pic?.length > 0 &&
+              detail.pic.map((item, index) => (
+                <Pressable
+                  key={index}
+                  onPress={() => {
+                    setModal(!modal);
+                  }}
+                  style={{
+                    flex: 1,
+                    maxWidth: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                    marginHorizontal: 3,
+                    marginTop: 10,
+                  }}>
+                  <Image
+                    source={{uri: item ? item : null}}
+                    style={{
+                      flex: 1,
+                      height: 100,
+                      backgroundColor: colors.inputBoxBG,
+                    }}
+                  />
+                </Pressable>
+              ))}
           </View>
 
           <Pressable
@@ -67,6 +140,19 @@ const FAQDetail = ({navigation}) => {
           </Pressable>
         </View>
       </ScrollView>
+
+      <Modal
+        useNativeDriver
+        enablePreload
+        saveToLocalByLongPress={false}
+        loadingRender={() => (
+          <ActivityIndicator size={'large'} color={colors.primary} />
+        )}
+        transparent
+        visible={modal}
+        onRequestClose={() => setModal(!modal)}>
+        <ImageViewer imageUrls={_convertImage(detail?.pic)} />
+      </Modal>
     </SafeAreaView>
   );
 };

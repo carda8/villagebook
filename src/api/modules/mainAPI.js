@@ -78,11 +78,23 @@ export default {
     return result;
   },
   _getFaqList: async data => {
-    const result = await _reqImageAPI('proc_inquiry_list.php', data);
+    const result = await _reqAPI('proc_inquiry_list.php', data);
     return result;
   },
   _postFqa: async data => {
-    const result = await _reqImageAPI('proc_inquiry_list.php', data);
+    const result = await _reqImageAPI('proc_inquiry_input.php', data);
+    return result;
+  },
+  _getFaqDetail: async data => {
+    const result = await _reqAPI('proc_inquiry_detail.php', data);
+    return result;
+  },
+  _setNotification: async data => {
+    const result = await _reqAPI('proc_alarm_setup.php', data);
+    return result;
+  },
+  _searchStore: async data => {
+    const result = await _reqAPI('proc_store_search_list.php', data);
     return result;
   },
 };
