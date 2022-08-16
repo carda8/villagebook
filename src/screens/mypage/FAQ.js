@@ -1,5 +1,5 @@
 import {View, Text, SafeAreaView, FlatList, Pressable} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
 import colors from '../../styles/colors';
@@ -12,6 +12,7 @@ import TextLight from '../../component/text/TextLight';
 import TextMedium from '../../component/text/TextMedium';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 
 const FAQ = ({navigation}) => {
   const {mutateGetFaqList} = useCustomMutation();
@@ -21,9 +22,10 @@ const FAQ = ({navigation}) => {
   const itemLimit = useRef(0);
 
   const _getFaqList = () => {
+    itemLimit.current = 0;
     const data = {
       item_count: itemLimit.current,
-      limit_count: '20',
+      limit_count: '10',
       mt_id: userInfo.mt_id,
     };
 
@@ -36,23 +38,27 @@ const FAQ = ({navigation}) => {
   };
 
   const _getMoreList = () => {
-    itemLimit.current += 20;
+    itemLimit.current += 10;
 
     const data = {
       item_count: itemLimit.current,
-      limit_count: '20',
+      limit_count: '10',
       mt_id: userInfo.mt_id,
     };
 
     mutateGetFaqList.mutate(data, {
       onSettled: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0) {
+          console.log('concat', list.concat(e.data.arrItems));
+          setList(prev => prev.concat(e.data.arrItems));
+        }
         console.log('e', e);
       },
     });
   };
 
   const renderItem = item => {
-    console.log('item', item);
+    // console.log('item', item);
     const data = item.item;
     return (
       <Pressable
@@ -73,16 +79,18 @@ const FAQ = ({navigation}) => {
             {data.qa_datetime}
           </TextLight>
         </View>
-        <TextMedium>
-          {data.qa_status == 0 ? '답변대기' : '답변완료'}
-        </TextMedium>
+        <TextMedium>{data.qa_status == 0 ? '답변대기' : '답변완료'}</TextMedium>
       </Pressable>
     );
   };
 
-  useEffect(() => {
-    _getFaqList();
-  }, []);
+  useEffect(() => {}, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      _getFaqList();
+    }, []),
+  );
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -110,6 +118,9 @@ const FAQ = ({navigation}) => {
           </>
         )}
         ListEmptyComponent={<TextRegular>등록된 리뷰가 없습니다.</TextRegular>}
+        onEndReached={() => {
+          _getMoreList();
+        }}
         renderItem={item => renderItem(item)}
         keyExtractor={(item, index) => index}
       />

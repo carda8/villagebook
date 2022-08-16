@@ -1,5 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Animated, Image, Pressable, Text, View} from 'react-native';
+import {
+  Animated,
+  Image,
+  Linking,
+  Pressable,
+  Share,
+  Text,
+  View,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import {useCustomMutation} from '../hooks/useCustomMutation';
@@ -64,6 +72,26 @@ const Header = ({
         console.log('ee', e);
       },
     });
+  };
+
+  const _share = async () => {
+    try {
+    
+      const result = await Share.share({
+        message: 'https://www.dongnaebook.com',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log('activityType!');
+        } else {
+          console.log('Share!');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('dismissed');
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -218,6 +246,7 @@ const Header = ({
               hitSlop={10}
               onPress={() => {
                 if (showCart) navigation.navigate('SummitOrder');
+                if (!showCart) _share();
               }}>
               {showCart && (
                 <>

@@ -32,6 +32,7 @@ import SNSLogin from './SNSLogin';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {Errorhandler} from '../../config/ErrorHandler';
 import ImageCropPicker from 'react-native-image-crop-picker';
+import {customAlert} from '../../component/CustomAlert';
 
 const Login = ({navigation}) => {
   const layout = useWindowDimensions();
@@ -321,7 +322,10 @@ const Login = ({navigation}) => {
             </Pressable> */}
             {/* 카카오 */}
             <Pressable
-              onPress={() => _KakaoLogin()}
+              onPress={() => {
+                customAlert('알림', '현재 준비중입니다.');
+                // _KakaoLogin();
+              }}
               style={{
                 ...style.snsButton,
               }}>

@@ -7,7 +7,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
 import TextBold from '../../component/text/TextBold';
@@ -20,8 +20,10 @@ import {Modal} from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {customAlert} from '../../component/CustomAlert';
 
-const FAQWrite = ({navigation}) => {
+const FAQWrite = ({navigation, route}) => {
   const {mutatePostFaq} = useCustomMutation();
+  const isEdit = route.params?.isEdit;
+  const routeData = route.params?.data;
   const {userInfo} = useSelector(state => state.authReducer);
 
   const [title, setTitle] = useState('');
@@ -42,13 +44,16 @@ const FAQWrite = ({navigation}) => {
       isFaq: true,
       imgArr: fsImage,
     };
+    if (isEdit) {
+      data.qa_id = routeData.qa_id;
+    }
 
     console.log('data', data);
     mutatePostFaq.mutate(data, {
       onSettled: e => {
         if (e.result === 'true') {
           customAlert('알림', '문의 작성이 완료되었습니다.');
-          navigation.goBack();
+          navigation.navigate("FAQ");
         }
         console.log('e', e);
       },
@@ -103,6 +108,14 @@ const FAQWrite = ({navigation}) => {
     setFsImage(temp);
     // console.log('temp', temp);
   };
+
+  useEffect(() => {
+    if (isEdit) {
+      setTitle(routeData.qa_subject);
+      setBody(routeData.qa_content);
+      // setim
+    }
+  }, []);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -220,7 +233,9 @@ const FAQWrite = ({navigation}) => {
             {mutatePostFaq.isLoading ? (
               <ActivityIndicator color={'white'} />
             ) : (
-              <TextBold style={{color: colors.fontColor2}}>문의하기</TextBold>
+              <TextBold style={{color: colors.fontColor2}}>
+                {isEdit ? '수정하기' : '문의하기'}
+              </TextBold>
             )}
           </Pressable>
         </View>

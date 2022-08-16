@@ -1,8 +1,6 @@
 import {
   View,
-  Text,
   SafeAreaView,
-  TextInput,
   Image,
   FlatList,
   Pressable,
@@ -10,32 +8,26 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
 import colors from '../../styles/colors';
-import {render} from 'react-dom';
-import Divider from '../../component/Divider';
 import TextRegular from '../../component/text/TextRegular';
 import TextBold from '../../component/text/TextBold';
-import DividerL from '../../component/DividerL';
-import dayjs from 'dayjs';
 import FastImage from 'react-native-fast-image';
 import TextLight from '../../component/text/TextLight';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useSelector} from 'react-redux';
-import Loading from '../../component/Loading';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import {Errorhandler} from '../../config/ErrorHandler';
+import {useEffect} from 'react';
 
 const Review = ({navigation}) => {
-  const [input, setInput] = useState();
   const {mutateGetMyReview} = useCustomMutation();
   const [reviews, setReviews] = useState([]);
   const {userInfo} = useSelector(state => state.authReducer);
   const [modal, setModal] = useState({visible: false, image: []});
   const layout = useWindowDimensions();
-
-  const itemLimit = useRef(0);
 
   const _getMyReview = () => {
     const data = {
@@ -45,10 +37,12 @@ const Review = ({navigation}) => {
       mt_id: userInfo.mt_id,
     };
     mutateGetMyReview.mutate(data, {
-      onSuccess: e => {
+      onError: e => {
+        Errorhandler(e);
+      },
+      onSettled: e => {
         if (e.result === 'true' && e.data.arrItems.length > 0)
           setReviews(e.data.arrItems);
-        else setReviews([]);
         console.log('e', e);
       },
     });
@@ -157,12 +151,12 @@ const Review = ({navigation}) => {
       </View>
     );
   };
+  // if (mutateGetMyReview.isLoading) return <Loading />;
 
   useEffect(() => {
     _getMyReview();
   }, []);
 
-  if (mutateGetMyReview.isLoading) return <Loading />;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header

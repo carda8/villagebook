@@ -86,6 +86,21 @@ const FAQDetail = ({navigation, route}) => {
             }}>
             <TextRegular>{detail.qa_content}</TextRegular>
           </View>
+          {detail.qa_status === '1' && (
+            <>            
+              <TextBold>답변</TextBold>
+              <View
+                style={{
+                  ...commonStyles.inputContainer,
+                  paddingTop: 10,
+                  marginTop: 5,
+                  marginBottom: 20,
+                  height: 200,
+                }}>
+                <TextRegular>{detail.answer_content}</TextRegular>
+              </View>
+            </>
+          )}
 
           <View style={{flexDirection: 'row', marginBottom: 20}}>
             {detail?.pic?.length > 0 &&
@@ -117,6 +132,9 @@ const FAQDetail = ({navigation, route}) => {
           </View>
 
           <Pressable
+            onPress={() =>
+              navigation.navigate('FAQWrite', {isEdit: true, data: detail})
+            }
             style={{
               height: 50,
               marginTop: 20,

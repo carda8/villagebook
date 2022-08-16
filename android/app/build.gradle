@@ -278,7 +278,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     implementation project(':react-native-seoul-naver-login')
-    
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }
