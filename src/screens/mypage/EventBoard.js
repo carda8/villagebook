@@ -75,7 +75,12 @@ const EventBoard = ({navigation}) => {
       <FlatList
         data={boardList}
         ListEmptyComponent={
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 22,
+            }}>
             <TextRegular>이벤트가 등록되지 않았습니다.</TextRegular>
           </View>
         }

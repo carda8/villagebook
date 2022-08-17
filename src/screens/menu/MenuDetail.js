@@ -60,6 +60,18 @@ const MenuDetail = ({navigation, route}) => {
   const chipTarget = useRef([]);
 
   const _init = () => {
+    if (!userInfo) {
+      Alert.alert('알림', '로그인이 필요합니다.', [
+        {
+          text: '로그인 하러 가기',
+          onPress: () =>
+            navigation.reset({
+              routes: [{name: 'Login'}],
+            }),
+        },
+      ]);
+      return;
+    }
     console.log('_init data1', routeData);
     const data = {
       jumju_id: routeData.jumju_id,
@@ -293,6 +305,7 @@ const MenuDetail = ({navigation, route}) => {
             storeInfo={StoreInfo}
             iconColor={'white'}
             title={''}
+            categoryMain={routeData.category}
             style={{
               backgroundColor: 'rgba(0,0,0,0)',
               position: 'absolute',

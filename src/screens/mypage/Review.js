@@ -167,8 +167,13 @@ const Review = ({navigation}) => {
       <FlatList
         data={reviews}
         ListEmptyComponent={
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <TextRegular>리뷰가 등록되지 않았습니다.</TextRegular>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 22,
+            }}>
+            <TextRegular>작성된 리뷰가 없습니다.</TextRegular>
           </View>
         }
         ListHeaderComponent={() => (

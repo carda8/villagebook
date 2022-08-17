@@ -233,8 +233,8 @@ const MenuDesc = ({navigation, info}) => {
               />
             </Pressable>
             <DividerL />
-            <View style={{padding: 22}}>
-              <View style={{marginBottom: 20}}>
+            <View style={{paddingHorizontal: 22, paddingTop: 22}}>
+              <View style={{marginBottom: 0}}>
                 <TextNotoM style={{fontSize: 18, color: colors.fontColor2}}>
                   위치
                 </TextNotoM>

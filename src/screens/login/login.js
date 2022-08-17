@@ -165,7 +165,7 @@ const Login = ({navigation}) => {
       mt_app_token: result.mt_app_token,
       mt_login_type: '3',
       mt_sns_url: result.mt_image1,
-      mt_hp: result.mt_hp,
+      mt_hp: result.mt_hp === 'null' || !result.mt_hp ? '' : result.mt_hp,
       mt_name: result.mt_name,
       mt_email: result.mt_email,
       mt_nickname: result.mt_nickname,
@@ -323,8 +323,8 @@ const Login = ({navigation}) => {
             {/* 카카오 */}
             <Pressable
               onPress={() => {
-                customAlert('알림', '현재 준비중입니다.');
-                // _KakaoLogin();
+                // customAlert('알림', '현재 준비중입니다.');
+                _KakaoLogin();
               }}
               style={{
                 ...style.snsButton,

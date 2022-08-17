@@ -4,7 +4,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Main from '../screens/home/Main';
-import MenuStroe from '../screens/menu/MenuStore';
 import MenuDetail from '../screens/menu/MenuDetail';
 import Map from '../screens/map/Map';
 import Test from '../Test';
@@ -63,6 +62,7 @@ import {useGeoLocation} from '../hooks/useGeoLocation';
 import DeliveryTipInfo from '../screens/menu/DeliveryTipInfo';
 import CouponSelect from '../screens/menu/orderDetail/CouponSelect';
 import SearchView from '../screens/home/SearchView';
+import {Linking} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -193,6 +193,101 @@ const MainStackNavigator = () => {
     }
   };
 
+  const _convert = url => {
+    let temp = url.split(/[?&=]/);
+    console.log('converted', temp);
+
+    // "https://www.dongnaebook.com/?name=hello"
+  };
+
+  const _deepLink = async () => {
+    Linking.getInitialURL().then(res => {
+      //앱이 실행되지 않은 상태에서 요청이 왔을 때
+      if (res == null || res == undefined || res == '') {
+        return;
+      } else {
+        var params = JSON.stringify(res);
+        _convert(res);
+        console.log('from backgroud', params);
+      }
+    });
+    Linking.addEventListener('url', e => {
+      // 앱이 실행되어있는 상태에서 요청이 왔을 때 처리하는 이벤트 등록
+      var params = JSON.stringify(e.url);
+      if (e.url == null || e.url == undefined || e.url == '') {
+        return;
+      } else {
+        _convert(e.url);
+        console.log('fourground', params);
+      }
+    });
+  };
+
+  // const config = {
+  //   screens: {
+  //     CategoryView: {
+  //       path: '/:selectedCategory',
+  //       // parse: {
+  //       //   category: String,
+  //       // },
+  //     },
+  //   },
+  // };
+  const config = {
+    initialRouteName: 'Main',
+    screens: {
+      Login: 'login',
+      Main: 'main',
+      MenuDetail: {
+        path: '/food/:jumju_id/:jumju_code' || '/market/:jumju_id/:jumju_code',
+        // parse: {
+        //   category: String,
+        // },
+      },
+      LifeStyleStoreInfo: {
+        path: '/lifestyle/:jumju_id/:jumju_code',
+      },
+    },
+  };
+  MenuDetail;
+  const linking = {
+    prefixes: [
+      'https://www.dongnaebook.com',
+      'http://www.dongnaebook.com',
+      'dongnaebook://',
+    ],
+    async getInitialURL() {
+      const url = await Linking.getInitialURL();
+
+      if (url != null) {
+        return url;
+      }
+
+      return null;
+    },
+    subscribe(listener) {
+      // console.log('linking subscribe to ', listener);
+      const onReceiveURL = event => {
+        const {url} = event;
+        console.log('link has url', url, event);
+        return listener(url);
+      };
+
+      Linking.addEventListener('url', onReceiveURL);
+      return () => {
+        // console.log('linking unsubscribe to ', listener);
+        Linking.removeAllListeners('url');
+      };
+    },
+    config,
+  };
+
+  // useEffect(() => {
+  //   if (initRoute === 'Main') {
+  //     _deepLink();
+  //   }
+  // }, [initRoute]);
+
   useEffect(() => {
     _initRoute();
   }, []);
@@ -200,7 +295,7 @@ const MainStackNavigator = () => {
   if (!initRoute) return <Loading />;
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator
         initialRouteName={initRoute}
         screenOptions={{headerShown: false}}>
@@ -228,7 +323,6 @@ const MainStackNavigator = () => {
         <Stack.Screen name="WriteReview" component={WriteReview} />
         <Stack.Screen name="DiscountMain" component={DiscountMain} />
         <Stack.Screen name="MyPage" component={MyPage} />
-        <Stack.Screen name="MenuStore" component={MenuStroe} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen
           name="DeliveryTipInfo"

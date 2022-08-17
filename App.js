@@ -12,6 +12,7 @@ import store from './src/store/store';
 import messaging from '@react-native-firebase/messaging';
 import {Alert, Linking, PermissionsAndroid} from 'react-native';
 import notifee, {AndroidImportance} from '@notifee/react-native';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
 
 const qeuryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -52,30 +53,11 @@ const App = () => {
       },
     });
   };
-
-  const _deepLink = () => {
-    Linking.getInitialURL().then(res => {
-      //앱이 실행되지 않은 상태에서 요청이 왔을 때
-      if (res == null || res == undefined || res == '') {
-        return;
-      } else {
-        var params = JSON.stringify(res);
-        console.log('from backgroud',params);
-      }
-    });
-    Linking.addEventListener('url', e => {
-      // 앱이 실행되어있는 상태에서 요청이 왔을 때 처리하는 이벤트 등록
-      var params = JSON.stringify(e.url);
-      if (e.url == null || e.url == undefined || e.url == '') {
-        return;
-      } else {
-        console.log('fourground',params);
-      }
-    });
-  };
-
   useEffect(() => {
-    _deepLink();
+    // _deepLink();
+    // const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
+    // // When the component is unmounted, remove the listener
+    // return () => unsubscribe();
   }, []);
 
   useEffect(() => {

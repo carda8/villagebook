@@ -73,13 +73,23 @@ const FAQ = ({navigation}) => {
           borderBottomColor: colors.borderColor,
           justifyContent: 'space-between',
         }}>
-        <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+        <View>
           <TextRegular>{data.qa_subject}</TextRegular>
-          <TextLight style={{fontSize: 12, marginLeft: 10}}>
-            {data.qa_datetime}
-          </TextLight>
         </View>
-        <TextMedium>{data.qa_status == 0 ? '답변대기' : '답변완료'}</TextMedium>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'baseline',
+            justifyContent: 'space-between',
+          }}>
+          <TextLight style={{fontSize: 12}}>{data.qa_datetime}</TextLight>
+          <TextMedium
+            style={{
+              color: data.qa_status == 0 ? colors.fontColorA : colors.primary,
+            }}>
+            {data.qa_status == 0 ? '답변대기' : '답변완료'}
+          </TextMedium>
+        </View>
       </Pressable>
     );
   };
@@ -117,7 +127,11 @@ const FAQ = ({navigation}) => {
             <DividerL />
           </>
         )}
-        ListEmptyComponent={<TextRegular>등록된 리뷰가 없습니다.</TextRegular>}
+        ListEmptyComponent={
+          <View style={{padding: 22, alignItems: 'center'}}>
+            <TextRegular>문의 내역이 없습니다.</TextRegular>
+          </View>
+        }
         onEndReached={() => {
           _getMoreList();
         }}

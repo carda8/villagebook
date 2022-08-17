@@ -155,6 +155,7 @@ const StoreItems = ({navigation, route}) => {
               jumju_id: storeInfo.mb_id,
               jumju_code: storeInfo.mb_jumju_code,
               mb_company: storeInfo.mb_company,
+              category: routeData.category,
             });
           } else {
             dispatch(setIsLifeStyle(false));
@@ -162,6 +163,7 @@ const StoreItems = ({navigation, route}) => {
               jumju_id: storeInfo.mb_id,
               jumju_code: storeInfo.mb_jumju_code,
               mb_company: storeInfo.mb_company,
+              category: routeData.category,
             });
           }
         }}

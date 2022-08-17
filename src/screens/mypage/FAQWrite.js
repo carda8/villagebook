@@ -36,6 +36,7 @@ const FAQWrite = ({navigation, route}) => {
 
   const _postFaq = () => {
     const data = {
+      act: isEdit ? 'update' : 'insert',
       mt_id: userInfo.mt_id,
       qa_title: title,
       qa_content: body,
@@ -46,6 +47,8 @@ const FAQWrite = ({navigation, route}) => {
     };
     if (isEdit) {
       data.qa_id = routeData.qa_id;
+      data.qa_img_del1 = 0;
+      data.qa_img_del2 = 0;
     }
 
     console.log('data', data);
@@ -53,7 +56,7 @@ const FAQWrite = ({navigation, route}) => {
       onSettled: e => {
         if (e.result === 'true') {
           customAlert('알림', '문의 작성이 완료되었습니다.');
-          navigation.navigate("FAQ");
+          navigation.navigate('FAQ');
         }
         console.log('e', e);
       },
@@ -113,7 +116,15 @@ const FAQWrite = ({navigation, route}) => {
     if (isEdit) {
       setTitle(routeData.qa_subject);
       setBody(routeData.qa_content);
-      // setim
+      let temp = [];
+      if (routeData.pic.length > 0) {
+        routeData.pic.map((item, idx) => {
+          temp.push({uri: item});
+        });
+      }
+      setFsImage(temp);
+      console.log('temp ::', temp);
+      console.log('routeData ::', routeData);
     }
   }, []);
 

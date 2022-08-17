@@ -251,37 +251,30 @@ const Main = ({navigation}) => {
                 target: policyConfig.target.location,
               });
             }}>
-            <TextRegular style={{color: colors.fontColor8}}>
+            <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
               위치기반 서비스 이용약관
             </TextRegular>
           </Pressable>
-          <Divider style={{marginHorizontal: 10}} />
+          <Divider style={{marginHorizontal: 5}} />
           <Pressable
             onPress={() => {
               navigation.navigate('Policy', {
                 target: policyConfig.target.personal,
               });
             }}>
-            <TextBold style={{color: colors.fontColor8}}>
+            <TextBold style={{color: colors.fontColor8, fontSize: 10}}>
               개인정보 처리방침
             </TextBold>
           </Pressable>
-        </View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Divider style={{marginHorizontal: 5}} />
           <Pressable
             onPress={() => {
               navigation.navigate('Policy', {target: policyConfig.target.use});
             }}>
-            <TextRegular style={{color: colors.fontColor8}}>
+            <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
               이용약관
             </TextRegular>
           </Pressable>
-          {/* <Divider style={{marginHorizontal: 10}} />
-          <Pressable onPress={() => {}}>
-            <TextRegular style={{color: colors.fontColor8}}>
-              전자금융거래 이용약관
-            </TextRegular>
-          </Pressable> */}
         </View>
 
         <View
@@ -291,7 +284,7 @@ const Main = ({navigation}) => {
             marginTop: 10,
             marginBottom: 20,
           }}>
-          <TextRegular style={{color: colors.fontColor8}}>
+          <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
             {companyInfo?.de_admin_company_memo}
           </TextRegular>
         </View>
@@ -300,7 +293,7 @@ const Main = ({navigation}) => {
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          <TextRegular style={{color: colors.fontColor8}}>
+          <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
             {companyInfo?.de_admin_company_addr} 대표이사 :{' '}
             {companyInfo?.de_admin_company_owner} | 사업자등록번호 :
             {companyInfo?.de_admin_company_saupja_no} 통신판매업신고 :{' '}

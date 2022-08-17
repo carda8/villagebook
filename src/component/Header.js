@@ -8,6 +8,8 @@ import {
   Text,
   View,
 } from 'react-native';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
+
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import {useCustomMutation} from '../hooks/useCustomMutation';
@@ -27,6 +29,7 @@ const Header = ({
   showShare,
   iconColor,
   category,
+  categoryMain,
   isOption,
   isPayment,
   isSummit,
@@ -76,9 +79,22 @@ const Header = ({
 
   const _share = async () => {
     try {
-    
+      const link = await dynamicLinks().buildShortLink({
+        // link: `https://www.dongnaebook.com/?code=${storeInfo.mb_jumju_code}&mb_id=${storeInfo.mb_id}&category=${category}`,
+        // link: `https://www.dongnaebook.com/${category}`,
+        link: `https://www.dongnaebook.com/${categoryMain}/${storeInfo.mb_id}/${storeInfo.mb_jumju_code}`,
+        domainUriPrefix: 'https://dongnaebook.page.link',
+        android: {
+          packageName: 'com.dmonster.dongnaebook',
+        },
+      });
+
+      console.log('Current Store ::', storeInfo);
+
+      console.log('Link::', link);
+
       const result = await Share.share({
-        message: 'https://www.dongnaebook.com',
+        message: link,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -144,7 +160,8 @@ const Header = ({
                 jumju_code: currentStoreCode.code,
               });
             } else {
-              if (!showLogo) navigation.goBack();
+              if (!showLogo && navigation.canGoBack()) navigation.goBack();
+              else navigation.navigate('Home');
             }
           }}>
           {showLogo ? (
