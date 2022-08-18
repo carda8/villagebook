@@ -31,6 +31,7 @@ export default {
         mb_login_type: 3,
         mt_app_token: fcmToken,
       };
+      if (data.mt_hp !== 'null') data.mt_hp = data.mt_hp.replace('+82 ', '0');
 
       console.log('kakao ###', profile);
       return data;

@@ -22,6 +22,7 @@ import {
 } from '../../../store/reducers/PaymentReducer';
 import Cart from './Cart';
 import Caution from '../../../component/Caution';
+import AuthStorageModuel from '../../../store/localStorage/AuthStorageModuel';
 
 const SummitOrder = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ const SummitOrder = ({navigation, route}) => {
   const {deliveryInfo} = useSelector(state => state.deliveryReducer);
   const [isDelivery, setIsDelivery] = useState(true);
 
-  
   console.log('summit cart store', cartStore);
   console.log('summit route data', route.params);
   const _filterOption = prop => {
@@ -67,8 +67,8 @@ const SummitOrder = ({navigation, route}) => {
 
   const _getDeliveryFee = () => {
     const data = {
-      jumju_id: cartStore.currentStoreCode.jumju_id,
-      jumju_code: cartStore.currentStoreCode.code,
+      jumju_id: cartStore.savedItem.savedStoreCode.jumju_id,
+      jumju_code: cartStore.savedItem.savedStoreCode.code,
       total_price: _getTotalPrice(),
     };
     console.log('data', data);
@@ -78,6 +78,16 @@ const SummitOrder = ({navigation, route}) => {
   useEffect(() => {
     _getDeliveryFee();
   }, [cartStore]);
+
+  const _cartStorage = async () => {
+    let temp = cartStore.savedItem;
+    temp = {...temp, logo: cartStore.storeLogoUrl};
+    await AuthStorageModuel._setCartData(temp);
+  };
+
+  useEffect(() => {
+    _cartStorage();
+  }, [cartStore.savedItem]);
 
   // useEffect(() => {
   //   if (mutateDeliveryFee.data?.arrItems) {

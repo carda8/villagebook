@@ -19,6 +19,7 @@ import {useSelector} from 'react-redux';
 import {useMutation} from 'react-query';
 import authAPI from '../../../api/modules/authAPI';
 import Loading from '../../../component/Loading';
+import AuthStorageModuel from '../../../store/localStorage/AuthStorageModuel';
 
 const EditInfo = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
@@ -26,6 +27,7 @@ const EditInfo = ({navigation}) => {
 
   const _removeReset = async () => {
     await AuthStorage._removeUserTokenID(() => {});
+    await AuthStorageModuel._removeCartData(() => {});
     await AuthStorage._removeItemAutoLogin(() => {
       navigation.reset({
         routes: [{name: 'Login'}],

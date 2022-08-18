@@ -1,4 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+dayjs.locale('ko');
 import localStorageConfig from './localStorageConfig';
 
 export default {
@@ -25,6 +28,11 @@ export default {
   },
   _getItemUserId: async () => {
     const key = localStorageConfig.key.USER_ID;
+    const data = await AsyncStorage.getItem(key);
+    return data;
+  },
+  _getCartData: async () => {
+    const key = localStorageConfig.key.CART;
     const data = await AsyncStorage.getItem(key);
     return data;
   },
@@ -55,6 +63,16 @@ export default {
     const data = await AsyncStorage.setItem(key, value);
     return data;
   },
+  _setCartData: async value => {
+    const key = localStorageConfig.key.CART;
+    let temp = {
+      ...value,
+      savedTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    };
+    console.log('TEMP ::::::', temp);
+    const data = await AsyncStorage.setItem(key, JSON.stringify(temp));
+    return data;
+  },
 
   //REMOVE
   _removeItemAutoLogin: async callback => {
@@ -72,5 +90,10 @@ export default {
     const data3 = await AsyncStorage.removeItem(key3, callback);
     const data4 = await AsyncStorage.removeItem(key4, callback);
     return [data, data2];
+  },
+  _removeCartData: async callback => {
+    const key = localStorageConfig.key.CART;
+    const data = await AsyncStorage.removeItem(key, callback);
+    return data;
   },
 };

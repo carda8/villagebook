@@ -232,7 +232,7 @@ const SignForm = ({navigation}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'회원가입'} navigation={navigation} />
+      <Header title={'동네북 회원가입'} navigation={navigation} />
       <ScrollView>
         <View style={{paddingHorizontal: 22}}>
           <TextBold>아이디</TextBold>

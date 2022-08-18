@@ -99,6 +99,8 @@ const Map = ({navigation, route}) => {
     // ? `${converted.region.area1.name} ${converted.region.area2.name} ${converted.land.name} ${converted.land.number1}`
     const data = {
       mt_id: userInfo.mt_id,
+      mt_name: userInfo.mt_name,
+      mt_hp: userInfo.mt_hp,
       ad_zip: converted.land.addition1.value,
       //도로명 주소 우선 없다면 지번 주소 입력
       ad_addr1:
@@ -113,7 +115,10 @@ const Map = ({navigation, route}) => {
       ad_addr3: '',
       ad_latitude: position.latitude,
       ad_longitude: position.longitude,
+      ad_jibeon: '부산 테스트 지번',
     };
+
+    console.log('ADD data ::', data);
 
     mutateInsertMainAddr.mutate(data, {
       onSuccess: e => {

@@ -5,6 +5,7 @@ export default {
     USER_TOKEN: 'USER_TOKEN',
     LOGIN_TYPE: 'LOGIN_TYPE',
     LOGIN_TYPE_NUM: 'LOGIN_TYPE_NUM',
+    CART: 'CART',
   },
   state: {
     true: 'true',

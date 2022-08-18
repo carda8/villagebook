@@ -64,10 +64,15 @@ const cartSlice = createSlice({
       state.storeLogoUrl = action.payload;
     },
     setMainCountFromCart: (state, action) => {
+      state.savedItem.savedItems[action.payload.index].count =
+        action.payload.count;
       state.savedItem.savedItems[action.payload.index].main.count =
         action.payload.count;
       state.savedItem.savedItems[action.payload.index].totalPrice =
         action.payload.price;
+    },
+    setSaveItem: (state, action) => {
+      state.savedItem = action.payload;
     },
     saveItem: (state, action) => {
       console.log('action saved', action.payload);
@@ -75,7 +80,7 @@ const cartSlice = createSlice({
       state.savedItem.savedItems.push(action.payload.items);
     },
     updateItem: (state, action) => {
-      state.savedItem.savedItems[action.payload.idx].count += 1       
+      state.savedItem.savedItems[action.payload.idx].count += 1;
       state.savedItem.savedItems[action.payload.idx].main.count += 1;
       state.savedItem.savedItems[action.payload.idx].totalPrice +=
         action.payload.price;
@@ -110,5 +115,6 @@ export const {
   removeItem,
   resetSavedItem,
   updateItem,
+  setSaveItem,
 } = actions;
 export const cartReducer = reducer;

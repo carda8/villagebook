@@ -13,16 +13,26 @@ import TextJua from '../../component/text/TextJua';
 import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import policyConfig from '../signIn/policyConfig';
 import {_showAddr} from '../../config/utils/modules';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useFocusEffect} from '@react-navigation/native';
 import BannerList from '../../config/BannerList';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import localStorageConfig from '../../store/localStorage/localStorageConfig';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
+import dayjs from 'dayjs';
+import {
+  removeSavedItem,
+  resetSavedItem,
+} from '../../store/reducers/CartReducer';
 
 const Main = ({navigation}) => {
+  const dispatch = useDispatch();
   const {userInfo} = useSelector(state => state.authReducer);
-  const {postData} = useSelector(state => state.addressReducer);
+  // const {postData} = useSelector(state => state.addressReducer);
+  const {savedItem} = useSelector(state => state.cartReducer);
   const {mutateGetAddress, mutateGetCompanyInfo} = useCustomMutation();
   const [companyInfo, setCompanyInfo] = useState();
 
@@ -35,7 +45,7 @@ const Main = ({navigation}) => {
       onSuccess: e => {
         if (e.result === 'true') {
         }
-        console.log('e', e);
+        console.log('mutateGetAddress', e);
       },
     });
   };
@@ -49,6 +59,19 @@ const Main = ({navigation}) => {
     });
   };
 
+  const _checkTime = () => {
+    const date = new Date();
+    const diff = dayjs(date).diff(savedItem.savedTime, 'minutes');
+    //minute of a day
+    const limit = 60 * Number(companyInfo.de_local_time);
+    console.log('savedItem', savedItem);
+    console.log('DIFF :::::', diff, limit);
+    if (diff >= limit) {
+      dispatch(resetSavedItem());
+    }
+    // if (diff >= 1440) console.log('copyData', copyData);
+  };
+
   useFocusEffect(
     useCallback(() => {
       _getAddr();
@@ -58,11 +81,15 @@ const Main = ({navigation}) => {
 
   useEffect(() => {
     _getCompanyInfo();
+    console.log('::: USER INFO', userInfo);
   }, []);
 
-  // if (!userInfo) return <Loading />;
+  useEffect(() => {
+    if (companyInfo) {
+      _checkTime();
+    }
+  }, [companyInfo]);
 
-  console.log('::: USER INFO', userInfo);
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header

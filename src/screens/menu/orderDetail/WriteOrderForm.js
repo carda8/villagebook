@@ -49,8 +49,8 @@ const WriteOrderForm = ({navigation, route}) => {
   const [couponPoint, setCouponPoint] = useState([]);
   const [agreement, setAgreement] = useState(false);
   const [orderForm, setOrderForm] = useState({
-    jumju_id: cartStore.currentStoreCode.jumju_id,
-    jumju_code: cartStore.currentStoreCode.code,
+    jumju_id: cartStore.savedItem?.savedStoreCode.jumju_id,
+    jumju_code: cartStore.savedItem?.savedStoreCode.code,
     mt_id: userInfo.mt_id,
     mt_name: userInfo.mt_nickname ?? userInfo.mt_name,
 
@@ -86,15 +86,17 @@ const WriteOrderForm = ({navigation, route}) => {
     cartStore.savedItem.savedItems.map((item, index) => {
       calcTotal += item.totalPrice;
     });
-    calcTotal =
-      calcTotal +
-      (Number(deliveryData.send_cost) + Number(deliveryData.send_cost2)) -
-      (Number(orderForm.od_coupon_price_store) +
-        Number(orderForm.od_coupon_price_system) +
-        Number(orderForm.od_receipt_point));
+    if (!isDelivery) calcTotal = calcTotal - deliveryData.take_out_discount;
+    else {
+      calcTotal =
+        calcTotal +
+        (Number(deliveryData.send_cost) + Number(deliveryData.send_cost2)) -
+        (Number(orderForm.od_coupon_price_store) +
+          Number(orderForm.od_coupon_price_system) +
+          Number(orderForm.od_receipt_point));
+    }
     console.log('ORDER FORM', orderForm);
     console.log('delivery', deliveryData);
-    if (!isDelivery) calcTotal = calcTotal - deliveryData.take_out_discount;
     return calcTotal;
   };
 

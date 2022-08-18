@@ -10,7 +10,7 @@ import Splash from './src/component/Splash';
 import MainStackNavigator from './src/navigator/MainStackNavigator';
 import store from './src/store/store';
 import messaging from '@react-native-firebase/messaging';
-import {Alert, Linking, PermissionsAndroid} from 'react-native';
+import {Alert, AppState, Linking, PermissionsAndroid} from 'react-native';
 import notifee, {AndroidImportance} from '@notifee/react-native';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 

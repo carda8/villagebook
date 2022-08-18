@@ -16,6 +16,7 @@ import {
   setOrderResult,
 } from '../../store/reducers/PaymentReducer';
 import {resetCoupon} from '../../store/reducers/CouponReducer';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 
 const PaymentMain = ({navigation, route}) => {
   const isDelivery = route.params?.isDelivery;
@@ -44,12 +45,16 @@ const PaymentMain = ({navigation, route}) => {
     }
   };
 
+  const _resetItem = async () => {
+    await AuthStorageModuel._removeCartData(() => {});
+  };
+
   const _finishTransaction = paymentForm => {
     const method = _getMethod();
     const menuData = _deleteCount();
     const data = {
-      jumju_id: cartStore.currentStoreCode.jumju_id,
-      jumju_code: cartStore.currentStoreCode.code,
+      jumju_id: cartStore.savedItem?.savedStoreCode.jumju_id,
+      jumju_code: cartStore.savedItem?.savedStoreCode.code,
       mt_id: userInfo.mt_id,
       mt_name: orderForm.mt_name,
       od_method: isDelivery ? 'delivery' : 'wrap',
@@ -84,12 +89,14 @@ const PaymentMain = ({navigation, route}) => {
 
     API.post('proc_order_update.php', data)
       .then(result => {
+        console.log('Result :::', result);
         dispatch(
           setOrderResult({orderResultData: result.data, summitedData: data}),
         );
         navigation.reset({
           routes: [{name: 'OrderFinish'}],
         });
+        _resetItem();
         dispatch(resetSavedItem());
         dispatch(resetCoupon());
         dispatch(resetPayment());

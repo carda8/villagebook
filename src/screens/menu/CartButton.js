@@ -17,6 +17,7 @@ import {customAlert} from '../../component/CustomAlert';
 import {setLastPrice} from '../../store/reducers/PaymentReducer';
 import Loading from '../../component/Loading';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 
 const CartButton = ({
   navigation,
@@ -54,7 +55,7 @@ const CartButton = ({
 
   const _isDiffStore = () => {
     const savedStoreCode = cartStore.savedItem?.savedStoreCode.code;
-    const currentStoreCode = data.jumju_code;
+    const currentStoreCode = cartStore.savedItem?.savedStoreCode.code;
     console.log('savedStoreCode 2222', cartStore.savedItem);
     console.log('currentStoreCode  2222', currentStoreCode);
     if (savedStoreCode && currentStoreCode) {
@@ -160,8 +161,7 @@ const CartButton = ({
     );
 
     _checkItem();
-
-    dispatch(setStoreLogo(data.store_logo));
+    if (data.store_logo) dispatch(setStoreLogo(data.store_logo));
 
     // _isDiffStore();
 
@@ -211,6 +211,16 @@ const CartButton = ({
     }
   };
 
+  const _cartStorage = async () => {
+    let temp = cartStore.savedItem;
+    temp = {...temp, logo: data?.store_logo ?? cartStore.storeLogoUrl};
+    await AuthStorageModuel._setCartData(temp);
+  };
+
+  useEffect(() => {
+    _cartStorage();
+  }, [cartStore.savedItem]);
+
   return (
     <Pressable
       onPress={() => {
@@ -218,24 +228,24 @@ const CartButton = ({
         _router();
       }}
       style={{...style.btnContainer}}>
-        <View style={{...style.innerView}}>
-          <View style={{flex: 1}} />
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <TextBold style={{color: 'white', fontSize: 16}}>
-              {goTo === 'OrderPage'
-                ? '주문하기'
-                : cartStore.mainCount.count + '개 담기'}
-            </TextBold>
-          </View>
-
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <TextMedium style={{color: 'white', fontSize: 16}}>
-              {goTo === 'OrderPage'
-                ? replaceString(lastPrice)
-                : ' ' + replaceString(cartStore.totalPrice) + '원'}
-            </TextMedium>
-          </View>
+      <View style={{...style.innerView}}>
+        <View style={{flex: 1}} />
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <TextBold style={{color: 'white', fontSize: 16}}>
+            {goTo === 'OrderPage'
+              ? '주문하기'
+              : cartStore.mainCount.count + '개 담기'}
+          </TextBold>
         </View>
+
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <TextMedium style={{color: 'white', fontSize: 16}}>
+            {goTo === 'OrderPage'
+              ? replaceString(lastPrice)
+              : ' ' + replaceString(cartStore.totalPrice) + '원'}
+          </TextMedium>
+        </View>
+      </View>
     </Pressable>
   );
 };

@@ -23,6 +23,8 @@ const AddressSetDetail = ({navigation, route}) => {
   const _insertAddr = () => {
     const data = {
       mt_id: userInfo.mt_id,
+      mt_name: userInfo.mt_name,
+      mt_hp: userInfo.mt_hp,
       ad_zip: addrData.zonecode,
       //도로명 주소 우선 없다면 지번 주소 입력
       ad_addr1:
@@ -34,7 +36,11 @@ const AddressSetDetail = ({navigation, route}) => {
       ad_addr3: '',
       ad_latitude: '',
       ad_longitude: '',
+      ad_jibeon: addrData.jibunAddress
+        ? addrData.jibunAddress + ' ' + text
+        : addrData.autoJibunAddress + ' ' + text,
     };
+    console.log('ADD data :::', data);
 
     mutateInsertMainAddr.mutate(data, {
       onSuccess: e => {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -62,7 +62,14 @@ import {useGeoLocation} from '../hooks/useGeoLocation';
 import DeliveryTipInfo from '../screens/menu/DeliveryTipInfo';
 import CouponSelect from '../screens/menu/orderDetail/CouponSelect';
 import SearchView from '../screens/home/SearchView';
-import {Linking} from 'react-native';
+import {AppState, Linking} from 'react-native';
+import AuthStorageModuel from '../store/localStorage/AuthStorageModuel';
+import {
+  saveItem,
+  setSaveItem,
+  setStoreLogo,
+} from '../store/reducers/CartReducer';
+import dayjs from 'dayjs';
 
 const Stack = createNativeStackNavigator();
 
@@ -175,7 +182,6 @@ const MainStackNavigator = () => {
   };
 
   const _initRoute = async () => {
-    console.log('@@ 1');
     try {
       const fcmToken = await _getFcmToken();
       const auto = await AuthStorage._getItemAutoLogin();
@@ -193,46 +199,6 @@ const MainStackNavigator = () => {
     }
   };
 
-  const _convert = url => {
-    let temp = url.split(/[?&=]/);
-    console.log('converted', temp);
-
-    // "https://www.dongnaebook.com/?name=hello"
-  };
-
-  const _deepLink = async () => {
-    Linking.getInitialURL().then(res => {
-      //앱이 실행되지 않은 상태에서 요청이 왔을 때
-      if (res == null || res == undefined || res == '') {
-        return;
-      } else {
-        var params = JSON.stringify(res);
-        _convert(res);
-        console.log('from backgroud', params);
-      }
-    });
-    Linking.addEventListener('url', e => {
-      // 앱이 실행되어있는 상태에서 요청이 왔을 때 처리하는 이벤트 등록
-      var params = JSON.stringify(e.url);
-      if (e.url == null || e.url == undefined || e.url == '') {
-        return;
-      } else {
-        _convert(e.url);
-        console.log('fourground', params);
-      }
-    });
-  };
-
-  // const config = {
-  //   screens: {
-  //     CategoryView: {
-  //       path: '/:selectedCategory',
-  //       // parse: {
-  //       //   category: String,
-  //       // },
-  //     },
-  //   },
-  // };
   const config = {
     initialRouteName: 'Main',
     screens: {
@@ -282,11 +248,37 @@ const MainStackNavigator = () => {
     config,
   };
 
-  // useEffect(() => {
-  //   if (initRoute === 'Main') {
-  //     _deepLink();
-  //   }
-  // }, [initRoute]);
+  const appState = useRef(AppState.currentState);
+  useEffect(() => {
+    console.log('appState', appState);
+    const subscription = AppState.addEventListener(
+      'change',
+      async nextAppState => {
+        // console.log('next App STATE', nextAppState);
+        const cartData = await AuthStorageModuel._getCartData();
+        if (cartData) {
+          const copyData = JSON.parse(cartData);
+          if (
+            appState.current.match(/inactive|background/) &&
+            nextAppState === 'active'
+          ) {
+            delete cartData.logo;
+            if (cartData) {
+              dispatch(setSaveItem(JSON.parse(cartData)));
+              dispatch(setStoreLogo(copyData.logo));
+            }
+            // console.log('App has come to the foreground!');
+          }
+          appState.current = nextAppState;
+          // setAppStateVisible(appState.current);
+          // console.log('AppState', appState.current);
+        }
+      },
+    );
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     _initRoute();

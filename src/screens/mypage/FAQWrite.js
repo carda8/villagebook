@@ -49,6 +49,9 @@ const FAQWrite = ({navigation, route}) => {
       data.qa_id = routeData.qa_id;
       data.qa_img_del1 = 0;
       data.qa_img_del2 = 0;
+      data.qa_img_del3 = 0;
+      data.qa_img_del4 = 0;
+      data.qa_img_del5 = 0;
     }
 
     console.log('data', data);
@@ -162,7 +165,7 @@ const FAQWrite = ({navigation, route}) => {
             {fsImage.length > 0 &&
               fsImage.map((item, index) => (
                 <Pressable
-                  key={item.name + index}
+                  key={index}
                   onPress={() => {
                     setModal(!modal);
                   }}
