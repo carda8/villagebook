@@ -466,7 +466,13 @@ const EditSummit = ({navigation, route}) => {
         onRequestClose={() => {
           setModal(!modal);
         }}>
-        <ImageViewer imageUrls={[{url: profileImg?.uri}]} />
+        <ImageViewer
+          imageUrls={[{url: profileImg?.uri}]}
+          useNativeDriver
+          loadingRender={() => (
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          )}
+        />
       </Modal>
 
       <Modal

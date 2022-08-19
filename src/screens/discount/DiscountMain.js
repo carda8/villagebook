@@ -6,6 +6,7 @@ import {
   FlatList,
   Modal,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -26,6 +27,7 @@ import UseInfoList from '../../config/UseInfoList';
 
 const DiscountMain = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
+  const layout = useWindowDimensions();
   const [page, setPage] = useState(1);
   const [couponList, setCouponList] = useState();
 
@@ -96,9 +98,11 @@ const DiscountMain = ({navigation}) => {
               justifyContent: 'center',
               marginVertical: 30,
             }}>
-            <Text style={{color: colors.fontColor2}}>
-              보유중인 쿠폰이 없습니다.
-            </Text>
+            <Image
+              source={require('~/assets/no_coupon.png')}
+              style={{height: layout.width, width: '90%'}}
+              resizeMode="contain"
+            />
           </View>
         }
         ListFooterComponent={() =>

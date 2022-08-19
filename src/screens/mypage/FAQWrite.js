@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  useWindowDimensions,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -19,6 +20,7 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import {Modal} from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {customAlert} from '../../component/CustomAlert';
+import FastImage from 'react-native-fast-image';
 
 const FAQWrite = ({navigation, route}) => {
   const {mutatePostFaq} = useCustomMutation();
@@ -33,6 +35,15 @@ const FAQWrite = ({navigation, route}) => {
   const [imageUrl, setImageUrl] = useState([]);
   const [modal, setModal] = useState(false);
   const [modalPic, setModalPic] = useState(false);
+  const layou = useWindowDimensions();
+
+  const [imgDel, setImgDel] = useState({
+    qa_img_del1: 0,
+    qa_img_del2: 0,
+    qa_img_del3: 0,
+    qa_img_del4: 0,
+    qa_img_del5: 0,
+  });
 
   const _postFaq = () => {
     const data = {
@@ -40,21 +51,18 @@ const FAQWrite = ({navigation, route}) => {
       mt_id: userInfo.mt_id,
       qa_title: title,
       qa_content: body,
-      // qa_img1: {},
-      // qa_img2: {},
       isFaq: true,
       imgArr: fsImage,
+      ...imgDel,
     };
     if (isEdit) {
       data.qa_id = routeData.qa_id;
-      data.qa_img_del1 = 0;
-      data.qa_img_del2 = 0;
-      data.qa_img_del3 = 0;
-      data.qa_img_del4 = 0;
-      data.qa_img_del5 = 0;
     }
 
     console.log('data', data);
+
+    if (!title.trim() || !body.trim())
+      return customAlert('알림', '제목, 내용을 입력해주세요.');
     mutatePostFaq.mutate(data, {
       onSettled: e => {
         if (e.result === 'true') {
@@ -73,6 +81,8 @@ const FAQWrite = ({navigation, route}) => {
       return customAlert('알림', '리뷰 사진은 최대 5장 등록가능합니다.');
 
     ImageCropPicker.openCamera({
+      compressImageMaxHeight: 3000,
+      compressImageMaxWidth: 2000,
       cropping: true,
     }).then(image => {
       let temp = image.path.split('.');
@@ -85,7 +95,20 @@ const FAQWrite = ({navigation, route}) => {
       console.log('image :', image);
       setModalPic(!modalPic);
       setFsImage(prev => [...prev, convert]);
-      setImageUrl(prev => [...prev, {url: convert.uri}]);
+      setImageUrl(prev => [
+        ...prev,
+        {
+          // url: convert.uri,
+          // sizeKb: image.size,
+          // originSizeKb: image.size,
+          // originUrl: image.sourceURL,
+          // freeHeight: true,
+          // freeWidth: true,
+          url: convert.uri,
+        },
+      ]);
+      // <Image source={{uri}}/>
+      // imageUrls={[{originSizeKb, originUrl, sizeKb, }]}
     });
   };
 
@@ -108,7 +131,11 @@ const FAQWrite = ({navigation, route}) => {
     });
   };
 
-  const _removeImage = itemUri => {
+  const _removeImage = (itemUri, index) => {
+    let copyObj = {...imgDel};
+    copyObj[`qa_img_del${index + 1}`] = 1;
+    setImgDel(copyObj);
+
     let arr = [...fsImage];
     let temp = arr.filter(item => item.uri !== itemUri);
     setFsImage(temp);
@@ -180,7 +207,7 @@ const FAQWrite = ({navigation, route}) => {
                   }}>
                   <Pressable
                     onPress={() => {
-                      _removeImage(item.uri);
+                      _removeImage(item.uri, index);
                     }}
                     style={{
                       position: 'absolute',
@@ -256,16 +283,17 @@ const FAQWrite = ({navigation, route}) => {
       </ScrollView>
 
       <Modal
-        useNativeDriver
-        enablePreload
         saveToLocalByLongPress={false}
-        loadingRender={() => (
-          <ActivityIndicator size={'large'} color={colors.primary} />
-        )}
-        transparent
         visible={modal}
         onRequestClose={() => setModal(!modal)}>
-        <ImageViewer imageUrls={imageUrl} />
+        <ImageViewer
+          imageUrls={imageUrl}
+          enablePreload
+          useNativeDriver
+          loadingRender={() => (
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          )}
+        />
       </Modal>
 
       <Modal

@@ -76,13 +76,34 @@ export const ImageAPI = axios.create({
     }
 
     if (data.isFaq) {
-      delete copyData.isReview;
+      delete copyData.isFaq;
       delete copyData.imgArr;
+      console.log('data', data);
+      for (let i = 1; i <= 5; i++) {
+        console.log('data.imgArr[i - 1]', data.imgArr[i - 1]);
+        if (data.imgArr[i - 1]?.name)
+          imageResultObject[`qa_img` + i] = data.imgArr[i - 1];
+      }
 
-      for (let i = 1; i <= data.imgArr.length; i++) {
-        imageResultObject[`qa_img` + i] = data.imgArr[i - 1];
+      if (Object.keys(imageResultObject).length === 0) {
+        let temp = {
+          qa_img1: '',
+          qa_img2: '',
+          qa_img3: '',
+          qa_img4: '',
+          qa_img5: '',
+        };
+        console.log('temp', temp);
+        copyData = {...copyData, ...temp};
+        console.log('temp2', {...copyData, ...temp});
       }
     }
+
+    console.log(Object.keys(imageResultObject).length);
+
+    console.log('imageResultObject', imageResultObject);
+    console.log('copyData', copyData);
+    console.log('data2', data);
 
     const jwt_data = jwtEncode(copyData, SECRETKEY);
     const result = formFormatter({
@@ -96,7 +117,8 @@ export const ImageAPI = axios.create({
 
   transformResponse: data => {
     if (data) {
-      // console.log('## ORIGIN API RES DATA ::', data);
+      console.log('## ORIGIN API RES DATA ::', data);
+      console.log('## ORIGIN API RES DATA2 ::', JSON.parse(data));
       try {
         const parsedData = JSON.parse(data);
         const resData = parsedData.encodeJson;

@@ -87,7 +87,7 @@ const FAQDetail = ({navigation, route}) => {
             <TextRegular>{detail.qa_content}</TextRegular>
           </View>
           {detail.qa_status === '1' && (
-            <>            
+            <>
               <TextBold>답변</TextBold>
               <View
                 style={{
@@ -160,16 +160,17 @@ const FAQDetail = ({navigation, route}) => {
       </ScrollView>
 
       <Modal
-        useNativeDriver
-        enablePreload
         saveToLocalByLongPress={false}
-        loadingRender={() => (
-          <ActivityIndicator size={'large'} color={colors.primary} />
-        )}
-        transparent
+        // transparent
         visible={modal}
         onRequestClose={() => setModal(!modal)}>
-        <ImageViewer imageUrls={_convertImage(detail?.pic)} />
+        <ImageViewer
+          imageUrls={_convertImage(detail?.pic)}
+          useNativeDriver
+          loadingRender={() => (
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          )}
+        />
       </Modal>
     </SafeAreaView>
   );

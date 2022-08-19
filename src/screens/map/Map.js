@@ -79,8 +79,8 @@ const Map = ({navigation, route}) => {
         `https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=${lon},${lat}&sourcecrs=epsg:4326&orders=roadaddr&output=json`,
         {
           headers: {
-            'X-NCP-APIGW-API-KEY-ID': 'xrlljtjdfz',
-            'X-NCP-APIGW-API-KEY': 'q4OXI3sMewxtgAn6iWrN5Meiluu1GAegJVKlmxwT',
+            'X-NCP-APIGW-API-KEY-ID': 'cwl7xpywcu',
+            'X-NCP-APIGW-API-KEY': 'UAFbbOu83NLBLVGsPnKXhnoYjBEYFXjDerel8Dhx',
           },
         },
       )
@@ -97,25 +97,27 @@ const Map = ({navigation, route}) => {
 
   const _insertAddr = () => {
     // ? `${converted.region.area1.name} ${converted.region.area2.name} ${converted.land.name} ${converted.land.number1}`
+    const addr =
+      converted.region.area1.name +
+      ' ' +
+      converted.region.area2.name +
+      ' ' +
+      converted.land.name +
+      ' ' +
+      converted.land.number1 +
+      (converted.land.number2 ? '-' + converted.land.number2 : '');
     const data = {
       mt_id: userInfo.mt_id,
       mt_name: userInfo.mt_name,
       mt_hp: userInfo.mt_hp,
       ad_zip: converted.land.addition1.value,
       //도로명 주소 우선 없다면 지번 주소 입력
-      ad_addr1:
-        converted.region.area1.name +
-        ' ' +
-        converted.region.area2.name +
-        ' ' +
-        converted.land.name +
-        ' ' +
-        converted.land.number1,
+      ad_addr1: addr,
       ad_addr2: text,
       ad_addr3: '',
       ad_latitude: position.latitude,
       ad_longitude: position.longitude,
-      ad_jibeon: '부산 테스트 지번',
+      ad_jibeon: addr,
     };
 
     console.log('ADD data ::', data);
@@ -214,7 +216,11 @@ const Map = ({navigation, route}) => {
         <Text style={{fontSize: 15}}>
           {console.log('converted', converted)}
           {converted
-            ? `${converted.region.area1.name} ${converted.region.area2.name} ${converted.land.name} ${converted.land.number1}`
+            ? `${converted.region.area1.name} ${converted.region.area2.name} ${
+                converted.land.name
+              } ${converted.land.number1}${
+                converted.land.number2 ? '-' + converted.land.number2 : ''
+              }`
             : '현재 위치의 주소를 찾을 수 없습니다. 지도를 이동시켜 보세요'}
         </Text>
         <View style={{flexDirection: 'row', marginVertical: 10}}>

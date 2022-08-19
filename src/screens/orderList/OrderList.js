@@ -20,7 +20,6 @@ const OrderList = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
 
   const itemLimit = useRef(0);
-  const arrHistory = useRef([]);
 
   const _getHistory = () => {
     const data = {
@@ -47,9 +46,10 @@ const OrderList = ({navigation}) => {
     };
     mutateOrderHistory.mutate(data, {
       onSettled: e => {
-        if (e.result === 'true' && e.data.arrItems.length > 0)
+        if (e.result === 'true' && e.data.arrItems.length > 0) {
+          console.log('hihi');
           setHistory(prev => prev.concat(e.data.arrItems));
-        else return customAlert('알림', '이전 주문내역이 없습니다.');
+        } else customAlert('알림', '이전 주문내역이 없습니다.');
       },
     });
   };
@@ -211,7 +211,7 @@ const OrderList = ({navigation}) => {
         data={history}
         ListEmptyComponent={() => <NoHistory />}
         renderItem={item => renderItem(item)}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => item.od_id + index}
         ListFooterComponentStyle={{
           alignItems: 'center',
           justifyContent: 'center',

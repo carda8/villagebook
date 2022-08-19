@@ -9,6 +9,7 @@ import {
   Alert,
   Modal,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -397,7 +398,13 @@ const SignForm = ({navigation}) => {
         onRequestClose={() => {
           setModal(!modal);
         }}>
-        <ImageViewer imageUrls={[{url: fsImage}]} />
+        <ImageViewer
+          imageUrls={[{url: fsImage}]}
+          useNativeDriver
+          loadingRender={() => (
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          )}
+        />
       </Modal>
 
       <Modal

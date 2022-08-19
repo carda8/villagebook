@@ -7,6 +7,7 @@ import {
   Image,
   ScrollView,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import commonStyles from '../../styles/commonStyle';
@@ -290,7 +291,13 @@ const WriteReview = ({navigation, route}) => {
         transparent
         visible={modal}
         onRequestClose={() => setModal(!modal)}>
-        <ImageViewer imageUrls={[imageUrl]} />
+        <ImageViewer
+          imageUrls={[imageUrl]}
+          useNativeDriver
+          loadingRender={() => (
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          )}
+        />
       </Modal>
 
       {/* Modal for selecting picture from where */}

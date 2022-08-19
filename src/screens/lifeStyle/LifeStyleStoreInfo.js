@@ -18,7 +18,6 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
   const [lifeInfo, setLifeInfo] = useState();
   const routeData = route.params;
   const dispatch = useDispatch();
-  const layout = useWindowDimensions();
 
   const _init = () => {
     if (!userInfo) {
@@ -31,6 +30,7 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
             }),
         },
       ]);
+      return;
     }
     dispatch(setIsLifeStyle(true));
 
