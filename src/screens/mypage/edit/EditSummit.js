@@ -135,6 +135,8 @@ const EditSummit = ({navigation, route}) => {
 
   const _setProfileImage = () => {
     ImageCropPicker.openCamera({
+      compressImageMaxHeight: 3000,
+      compressImageMaxWidth: 2000,
       cropping: true,
     }).then(image => {
       let temp = image.path.split('.');

@@ -76,6 +76,8 @@ const WriteReview = ({navigation, route}) => {
       return customAlert('알림', '리뷰 사진은 최대 5장 등록가능합니다.');
 
     ImageCropPicker.openCamera({
+      compressImageMaxHeight: 3000,
+      compressImageMaxWidth: 2000,
       cropping: true,
     }).then(image => {
       let temp = image.path.split('.');
