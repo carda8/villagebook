@@ -25,11 +25,13 @@ import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
 
 const Map = ({navigation, route}) => {
-  const routeData = route.params?.data ?? 'no data';
+  const isStore = route.params?.isStore ?? false;
+  const storeLat = Number(route.params.lat);
+  const storeLon = Number(route.params.lng);
   const {userInfo} = useSelector(state => state.authReducer);
   const {postData} = useSelector(state => state.addressReducer);
   const dispatch = useDispatch();
-  console.log('ROUTE DATA ::', routeData);
+  console.log('ROUTE DATA ::', route.params);
   const [position, setPosition] = useState({
     latitude: null,
     longitude: null,
@@ -73,6 +75,11 @@ const Map = ({navigation, route}) => {
     );
   };
 
+  const _setStorePosition = () => {
+    setPosition({latitude: storeLat, longitude: storeLon});
+    setMapInit({latitude: storeLat, longitude: storeLon});
+  };
+
   const _convertCoor = ({lon, lat}) => {
     axios
       .get(
@@ -92,7 +99,11 @@ const Map = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    requestPermissions(_getCurrentLocation);
+    if (isStore) {
+      requestPermissions(_setStorePosition);
+    } else {
+      requestPermissions(_getCurrentLocation);
+    }
   }, []);
 
   const _insertAddr = () => {
@@ -146,7 +157,10 @@ const Map = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'주소 설정'} navigation={navigation} />
+      <Header
+        title={!isStore ? '주소 설정' : '가게 위치'}
+        navigation={navigation}
+      />
       <View
         style={{
           flex: 1,
@@ -158,105 +172,113 @@ const Map = ({navigation, route}) => {
           zIndex: 100,
           // opacity: 0.5,
         }}>
-        <Image
+        {/* <Image
           source={require('~/assets/ico_location.png')}
           style={{width: 50, height: 50, zIndex: 100}}
           resizeMode="contain"
-        />
+        /> */}
       </View>
       <NaverMapView
-        style={{width: '100%', height: layout.height - 187}}
+        animateToCoordinates={e => console.log('e:::::::', e)}
+        style={{width: '100%', height: layout.height - (isStore ? 57 : 187)}}
+        zoomControl={false}
+        scaleBar={false}
         showsMyLocationButton={true}
         center={{...mapInit, zoom: 16}}
         // scrollGesturesEnabled={false}
         tiltGesturesEnabled={false}
         rotateGesturesEnabled={false}
         onCameraChange={e => {
-          setPosition({latitude: e.latitude, longitude: e.longitude});
-          _convertCoor({lon: e.longitude, lat: e.latitude});
+          if (!isStore) {
+            setPosition({latitude: e.latitude, longitude: e.longitude});
+            _convertCoor({lon: e.longitude, lat: e.latitude});
+          }
         }}
         onMapClick={e => {
           // setPosition({latitude: e.latitude, longitude: e.longitude});
           // _convertCoor({lon: e.longitude, lat: e.latitude});
           // setPosition({latitude: e.latitude, longitude: e.longitude});
         }}>
-        {/* <Marker
+        <Marker
           animateToCoordinate={e => {
             console.log('anime', e);
           }}
           coordinate={position}
           onClick={() => console.log('onClick! p0')}
-        /> */}
+        />
       </NaverMapView>
-
-      <View
-        style={{
-          width: '100%',
-          height: 130,
-          zIndex: 100,
-          backgroundColor: 'white',
-          padding: 22,
-          position: 'absolute',
-          bottom: 0,
-          ...Platform.select({
-            ios: {
-              shadowColor: '#00000029',
-              shadowOpacity: 0.6,
-              shadowRadius: 50 / 2,
-              shadowOffset: {
-                height: 12,
-                width: 0,
-              },
-            },
-            android: {
-              elevation: 10,
-            },
-          }),
-        }}>
-        <Text style={{fontSize: 15}}>
-          {console.log('converted', converted)}
-          {converted
-            ? `${converted.region.area1.name} ${converted.region.area2.name} ${
-                converted.land.name
-              } ${converted.land.number1}${
-                converted.land.number2 ? '-' + converted.land.number2 : ''
-              }`
-            : '현재 위치의 주소를 찾을 수 없습니다. 지도를 이동시켜 보세요'}
-        </Text>
-        <View style={{flexDirection: 'row', marginVertical: 10}}>
-          <TextInput
-            value={text}
-            onChangeText={setText}
-            autoCapitalize={'none'}
-            placeholder={'상세주소 입력'}
+      {!isStore && (
+        <>
+          <View
             style={{
-              flex: 1,
-              marginRight: 10,
-              backgroundColor: colors.inputBoxBG,
-              height: 50,
-              borderRadius: 10,
-              padding: 10,
-            }}></TextInput>
-          <Pressable
-            onPress={() => {
-              if (converted) {
-                _insertAddr();
-              } else {
-                customAlert('알림', '올바른 주소를 설정해주세요');
-              }
-            }}
-            style={{
-              width: 80,
-              height: 50,
-              borderRadius: 10,
-              backgroundColor: colors.primary,
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: '100%',
+              height: 130,
+              zIndex: 100,
+              backgroundColor: 'white',
+              padding: 22,
+              position: 'absolute',
+              bottom: 0,
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#00000029',
+                  shadowOpacity: 0.6,
+                  shadowRadius: 50 / 2,
+                  shadowOffset: {
+                    height: 12,
+                    width: 0,
+                  },
+                },
+                android: {
+                  elevation: 10,
+                },
+              }),
             }}>
-            <TextBold style={{color: 'white', fontSize: 17}}>저장</TextBold>
-          </Pressable>
-        </View>
-      </View>
+            <Text style={{fontSize: 15}}>
+              {console.log('converted', converted)}
+              {converted
+                ? `${converted.region.area1.name} ${
+                    converted.region.area2.name
+                  } ${converted.land.name} ${converted.land.number1}${
+                    converted.land.number2 ? '-' + converted.land.number2 : ''
+                  }`
+                : '현재 위치의 주소를 찾을 수 없습니다. 지도를 이동시켜 보세요'}
+            </Text>
+            <View style={{flexDirection: 'row', marginVertical: 10}}>
+              <TextInput
+                value={text}
+                onChangeText={setText}
+                autoCapitalize={'none'}
+                placeholder={'상세주소 입력'}
+                style={{
+                  flex: 1,
+                  marginRight: 10,
+                  backgroundColor: colors.inputBoxBG,
+                  height: 50,
+                  borderRadius: 10,
+                  padding: 10,
+                }}></TextInput>
+              <Pressable
+                onPress={() => {
+                  if (converted) {
+                    _insertAddr();
+                  } else {
+                    customAlert('알림', '올바른 주소를 설정해주세요');
+                  }
+                }}
+                style={{
+                  width: 80,
+                  height: 50,
+                  borderRadius: 10,
+                  backgroundColor: colors.primary,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <TextBold style={{color: 'white', fontSize: 17}}>저장</TextBold>
+              </Pressable>
+            </View>
+          </View>
+        </>
+      )}
     </SafeAreaView>
   );
 };

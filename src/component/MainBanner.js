@@ -42,7 +42,7 @@ const MainBanner = ({navigation, style, position}) => {
         autoplay
         loop
         autoplayDirection={true}
-        autoplayTimeout={5}
+        autoplayTimeout={1.5}
         style={{height: 140}}
         containerStyle={style}
         removeClippedSubviews={false}

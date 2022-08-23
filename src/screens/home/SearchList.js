@@ -301,10 +301,10 @@ const SearchList = ({navigation}) => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Image
+              {/* <Image
                 source={require('~/assets/no_store.png')}
                 style={{width: 250, height: 250}}
-              />
+              /> */}
             </View>
           }
           ListFooterComponentStyle={{
@@ -350,10 +350,10 @@ const SearchList = ({navigation}) => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Image
+              {/* <Image
                 source={require('~/assets/no_store.png')}
                 style={{width: 250, height: 250}}
-              />
+              /> */}
             </View>
           }
           ListFooterComponentStyle={{

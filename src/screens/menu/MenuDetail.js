@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   Pressable,
   ScrollView,
+  SectionList,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -173,6 +174,7 @@ const MenuDetail = ({navigation, route}) => {
   const StoreTopMenu = mutateTopMenu.data.data.arrItems;
   const StoreServiceTime = mutateServiceTime?.data?.data?.arrItems;
   const StoreService = mutateGetStoreService.data.data.arrItems;
+  console.log('StoreServiceTime', StoreServiceTime);
 
   // console.log('StoreInfo', StoreInfo);
   // console.log('StoreTopMenu', StoreTopMenu);
@@ -612,55 +614,62 @@ const MenuDetail = ({navigation, route}) => {
                     flexDirection: 'row',
                   }}>
                   <View style={{}}>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      상호
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      대표자명
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      전화번호
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      사업자번호
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      주소
-                    </TextRegular>
-                  </View>
-
-                  <View style={{marginLeft: 22, flex: 1}}>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_biz_name}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_name}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_hp}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_biz_no}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_addr1 + ' ' + StoreInfo.mb_addr2}
-                    </TextRegular>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          상호
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_biz_name}
+                      </TextRegular>
+                    </View>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          대표자명
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_name}
+                      </TextRegular>
+                    </View>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          전화번호
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_hp}
+                      </TextRegular>
+                    </View>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          사업자번호
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_biz_no}
+                      </TextRegular>
+                    </View>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          주소
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_addr1 + ' ' + StoreInfo.mb_addr2}
+                      </TextRegular>
+                    </View>
                   </View>
                 </View>
               </View>
-              <View style={{marginBottom: 20}}>
+              {/* <View style={{marginBottom: 20}}>
                 <MiniMap lat={StoreInfo.mb_lat} lng={StoreInfo.mb_lng} />
-              </View>
+              </View> */}
               <DividerL />
               <View
                 style={{
@@ -675,6 +684,10 @@ const MenuDetail = ({navigation, route}) => {
                     flexDirection: 'row',
                   }}>
                   <View style={{}}>
+                    <TextRegular
+                      style={{color: colors.fontColor99, marginBottom: 11}}>
+                      영업일
+                    </TextRegular>
                     <TextRegular
                       style={{color: colors.fontColor99, marginBottom: 11}}>
                       영업시간
@@ -693,23 +706,27 @@ const MenuDetail = ({navigation, route}) => {
                     </TextRegular>
                   </View>
 
-                  <View style={{marginLeft: 22}}>
+                  <View style={{marginLeft: 22, flex: 1}}>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreServiceTime.serviceTime[0] ??
+                      {StoreServiceTime?.serviceTime[0]?.service_open ??
                         '해당 정보가 없습니다.'}
                     </TextRegular>
-                    {/* <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreServiceTime.serviceTime ?? '해당 정보가 없습니다.'}
-                    </TextRegular> */}
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreServiceTime.serviceBreakTime[0] ??
+                      {!StoreServiceTime?.serviceTime[0]
+                        ? '해당 정보가 없습니다.'
+                        : StoreServiceTime?.serviceTime[0]?.service_stime +
+                          ' ~ ' +
+                          StoreServiceTime?.serviceTime[0]?.service_etime}
+                    </TextRegular>
+                    <TextRegular
+                      style={{color: colors.fontColor3, marginBottom: 11}}>
+                      {StoreServiceTime?.serviceBreakTime[0] ??
                         '해당 정보가 없습니다.'}
                     </TextRegular>
                     <TextRegular style={{color: colors.fontColor3}}>
-                      {StoreServiceTime.serviceHoilday ??
+                      {StoreServiceTime?.serviceHoilday ??
                         '해당 정보가 없습니다.'}
                     </TextRegular>
                   </View>
@@ -824,3 +841,13 @@ const MenuDetail = ({navigation, route}) => {
 };
 
 export default MenuDetail;
+
+const styles = StyleSheet.create({
+  titleTakout: {
+    color: colors.fontColor99,
+    marginVertical: 11,
+  },
+  subTitleTakeout: {
+    color: colors.fontColor3,
+  },
+});

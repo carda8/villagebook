@@ -1,11 +1,12 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, Image, Text} from 'react-native';
+import {FlatList, Image, Text, View} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useMutation} from 'react-query';
 import {useDispatch, useSelector} from 'react-redux';
 import mainAPI from '../../api/modules/mainAPI';
+import BottomBar from '../../component/BottomBar';
 import Header from '../../component/Header';
 import Loading from '../../component/Loading';
 import MainBanner from '../../component/MainBanner';
@@ -27,8 +28,20 @@ const CategoryView = ({navigation, route}) => {
 
   const mutateCategory = useMutation(mainAPI._getCategory, {
     onSuccess: e => {
-      console.log('e', e);
-      setCategoryData(e.data.arrItems);
+      if (e.result === 'true') {
+        console.log('e', e);
+        console.log('LENGHT OF ITEMS', e.data.arrItems.length);
+        let temp = e.data.arrItems;
+        let isNumTrue = e.data.arrItems.length % 5;
+        // if (isNumTrue != 0) {
+        //   console.log('IS NUM', isNumTrue);
+        //   for (let i = isNumTrue; i < 5; i++) {
+        //     temp.push('');
+        //   }
+        //   console.log('TEMP ::', temp);
+        // }
+        setCategoryData(temp);
+      }
     },
   });
   console.log('selectedCategory', selectedCategory);
@@ -65,35 +78,47 @@ const CategoryView = ({navigation, route}) => {
   }, []);
 
   const renderItem = item => {
+    console.log('ITEM', item);
     return (
-      <Pressable
-        onPress={() => {
-          if (selectedCategory === 'lifestyle') dispatch(setIsLifeStyle(true));
-          else dispatch(setIsLifeStyle(false));
-          navigation.navigate('StoreList', {
-            routeIdx: item.item.ca_name,
-            category: selectedCategory,
-            categoryData: categoryData,
-          });
-        }}
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          // marginHorizontal: 10,
-        }}>
-        <Image
-          source={{uri: item.item.ca_img}}
-          style={{width: 46, height: 46}}
-          resizeMode="contain"
-        />
-        <TextMedium
+      <>
+        <Pressable
+          onPress={() => {
+            if (item.item) {
+              if (selectedCategory === 'lifestyle')
+                dispatch(setIsLifeStyle(true));
+              else dispatch(setIsLifeStyle(false));
+              navigation.navigate('StoreList', {
+                routeIdx: item.item.ca_name,
+                category: selectedCategory,
+                categoryData: categoryData,
+              });
+            }
+          }}
           style={{
-            textAlign: 'center',
-            fontSize: 13,
+            flex: 1,
+            // justifyContent: 'space-between',
+            alignItems: 'center',
+            // marginHorizontal: 10,
           }}>
-          {item.item.ca_name}
-        </TextMedium>
-      </Pressable>
+          <View style={{width: 80, alignItems: 'center'}}>
+            <Image
+              source={{uri: item.item.ca_img}}
+              style={{width: 55, height: 55}}
+              resizeMode="contain"
+            />
+            <TextMedium
+              style={{
+                textAlign: 'center',
+                fontSize: 12,
+              }}>
+              {item.item.ca_name}
+            </TextMedium>
+          </View>
+        </Pressable>
+        {item.index === categoryData?.length - 1 && (
+          <View style={{flex: 4 - (categoryData?.length % 4)}}></View>
+        )}
+      </>
     );
   };
 
@@ -129,23 +154,38 @@ const CategoryView = ({navigation, route}) => {
                 source={require('~/assets/ico_location.png')}
                 style={{width: 19, height: 19, marginRight: 8}}
               />
-              <TextEBold
-                numberOfLines={1}
+              <View style={{marginLeft: 10, marginRight: 3}}>
+                <TextEBold
+                  numberOfLines={1}
+                  style={{
+                    fontSize: 15,
+                    color: colors.fontColor2,
+                  }}>
+                  {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+                    '주소설정') +
+                    ' ' +
+                    (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
+                      ' ') +
+                    ' '}
+                  {!mutateGetAddress?.data ?? '주소설정'}
+                </TextEBold>
+              </View>
+              <Image
+                source={require('~/assets/arrow.png')}
                 style={{
-                  fontSize: 15,
-                  color: colors.fontColor2,
-                  marginHorizontal: 10,
-                }}>
-                {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
-                  '주소설정') +
-                  ' ' +
-                  (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ?? ' ') +
-                  ' '}
-                {!mutateGetAddress?.data ?? '주소설정'}
-              </TextEBold>
+                  tintColor: colors.primary,
+                  width: 17,
+                  height: 17,
+                  // transform: [{rotate: '90deg'}],
+                }}
+                resizeMode={'contain'}
+              />
             </Pressable>
 
-            <SearchBox isSub={true} onPress={()=>navigation.navigate("SearchView")}/>
+            <SearchBox
+              isSub={true}
+              onPress={() => navigation.navigate('SearchView')}
+            />
             {/* 메인배너 */}
             <MainBanner
               navigation={navigation}
@@ -155,11 +195,18 @@ const CategoryView = ({navigation, route}) => {
           </>
         )}
         renderItem={item => renderItem(item)}
-        numColumns={3}
-        contentContainerStyle={{paddingHorizontal: 22}}
-        columnWrapperStyle={{marginBottom: 20}}
+        numColumns={4}
+        contentContainerStyle={{
+          paddingHorizontal: 22,
+          paddingBottom: 100,
+        }}
+        columnWrapperStyle={{
+          alignSelf: 'center',
+          marginBottom: 20,
+        }}
         keyExtractor={(item, index) => index}
       />
+      <BottomBar navigation={navigation} />
     </SafeAreaView>
   );
 };

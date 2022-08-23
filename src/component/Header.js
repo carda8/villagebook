@@ -26,6 +26,7 @@ const Header = ({
   showCart,
   showLike,
   showNoti,
+  showHome,
   showShare,
   iconColor,
   category,
@@ -256,6 +257,31 @@ const Header = ({
                 resizeMode={'contain'}
               />
             </Pressable>
+          )}
+          {showHome && (
+            <>
+              <Pressable
+                hitSlop={10}
+                onPress={() => {
+                  navigation.navigate('Main');
+                }}>
+                <Image
+                  source={require('~/assets/top_home.png')}
+                  style={{
+                    height: 30,
+                    width: 30,
+                    marginRight: 10,
+                    tintColor:
+                      storeInfo && like === 'Y'
+                        ? colors.primary
+                        : iconColor
+                        ? iconColor
+                        : null,
+                  }}
+                  resizeMode={'contain'}
+                />
+              </Pressable>
+            </>
           )}
 
           {(showCart || showShare) && (

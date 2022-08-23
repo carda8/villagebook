@@ -1,4 +1,13 @@
-import {View, Text, Pressable, StyleSheet, Modal, Platform} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  Modal,
+  Platform,
+  useWindowDimensions,
+  ToastAndroid,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import colors from '../../styles/colors';
 import TextRegular from '../text/TextRegular';
@@ -11,11 +20,21 @@ import DividerL from '../DividerL';
 import TextBold from '../text/TextBold';
 import {useDispatch} from 'react-redux';
 import {setDeliveryInfo} from '../../store/reducers/DeliveryInfoReducer';
+import MiniMap from '../../screens/map/MiniMap';
+import Clipboard from '@react-native-clipboard/clipboard';
+import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
 
 const MenuDescTab = ({info, navigation}) => {
   const dispatch = useDispatch();
   const [tabIdx, setTabIdx] = useState(0);
   const {mutateGetDeliveryFeeInfo} = useCustomMutation();
+  const layout = useWindowDimensions();
+
+  const _copyAdd = async () => {
+    Clipboard.setString(info.mb_addr1 + ' ' + info.mb_addr2);
+    customAlert('알림', '주소가 복사되었습니다.');
+    // ToastAndroid.show('주소가 복사되었습니다.', ToastAndroid.SHORT);
+  };
 
   const _getFee = () => {
     const data = {
@@ -108,7 +127,6 @@ const MenuDescTab = ({info, navigation}) => {
       </View>
       <View
         style={{
-          flex: 1,
           paddingHorizontal: 22,
           paddingTop: 20,
           flexDirection: 'row',
@@ -163,44 +181,119 @@ const MenuDescTab = ({info, navigation}) => {
         )}
         {tabIdx === 1 && (
           <>
-            <View style={{justifyContent: 'space-between'}}>
-              <TextRegular style={{color: colors.fontColor99}}>
-                최소주문금액
-              </TextRegular>
-              <TextRegular style={{...styles.titleTakout}}>
-                이용방법
-              </TextRegular>
-              <TextRegular style={{color: colors.fontColor99}}>
-                조리시간
-              </TextRegular>
-              <TextRegular style={{...styles.titleTakout}}>
-                결제방법
-              </TextRegular>
-              <TextRegular style={{color: colors.fontColor99}}>
-                위치안내
-              </TextRegular>
-            </View>
-
-            <View style={{marginLeft: 22, justifyContent: 'space-between'}}>
-              <TextRegular style={{...styles.subTitleTakeout}}>
-                {info.minPriceWrap}
-              </TextRegular>
-              <TextRegular style={{...styles.subTitleTakeout}}>
-                포장
-              </TextRegular>
-              <TextRegular style={{...styles.subTitleTakeout}}>
-                30~40분 소요 예상
-              </TextRegular>
-              <TextRegular style={{...styles.subTitleTakeout}}>
-                선결제
-              </TextRegular>
-              <TextRegular style={{...styles.subTitleTakeout}}>
-                위치안내
-              </TextRegular>
+            <View style={{flex: 1}}>
+              <View style={{flexDirection: 'row', marginBottom: 10}}>
+                <View style={{width: 100}}>
+                  <TextRegular style={{color: colors.fontColor99}}>
+                    최소주문금액
+                  </TextRegular>
+                </View>
+                <TextRegular style={{...styles.subTitleTakeout}}>
+                  {replaceString(info.minPriceWrap)}
+                </TextRegular>
+              </View>
+              <View style={{flexDirection: 'row', marginBottom: 10}}>
+                <View style={{width: 100}}>
+                  <TextRegular style={{color: colors.fontColor99}}>
+                    이용방법
+                  </TextRegular>
+                </View>
+                <TextRegular style={{...styles.subTitleTakeout}}>
+                  포장
+                </TextRegular>
+              </View>
+              <View style={{flexDirection: 'row', marginBottom: 10}}>
+                <View style={{width: 100}}>
+                  <TextRegular style={{color: colors.fontColor99}}>
+                    조리시간
+                  </TextRegular>
+                </View>
+                <TextRegular style={{...styles.subTitleTakeout}}>
+                  30~40분 소요 예상
+                </TextRegular>
+              </View>
+              <View style={{flexDirection: 'row', marginBottom: 10}}>
+                <View style={{width: 100}}>
+                  <TextRegular style={{color: colors.fontColor99}}>
+                    결제방법
+                  </TextRegular>
+                </View>
+                <TextRegular style={{...styles.subTitleTakeout}}>
+                  선결제
+                </TextRegular>
+              </View>
+              <View style={{flexDirection: 'row', marginBottom: 10, flex: 1}}>
+                <View style={{width: 100}}>
+                  <TextRegular style={{color: colors.fontColor99}}>
+                    위치안내
+                  </TextRegular>
+                </View>
+                <View style={{flex: 1}}>
+                  <TextRegular style={{...styles.subTitleTakeout}}>
+                    {info.mb_addr1 + ' ' + info.mb_addr2}
+                  </TextRegular>
+                </View>
+              </View>
             </View>
           </>
         )}
       </View>
+      {tabIdx === 1 && (
+        <View
+          style={{
+            alignSelf: 'flex-end',
+            marginRight: 22,
+            borderWidth: 1,
+            borderRadius: 10,
+            borderColor: colors.borderColor,
+            overflow: 'hidden',
+          }}>
+          <MiniMap
+            lat={info.mb_lat}
+            lng={info.mb_lng}
+            isStore
+            width={layout.width - 144}
+            height={130}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              width: layout.width - 144,
+              height: 35,
+              backgroundColor: 'white',
+              flexDirection: 'row',
+              flex: 1,
+            }}>
+            <Pressable
+              onPress={() => _copyAdd()}
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRightWidth: 1,
+                borderColor: colors.borderColor,
+              }}>
+              <TextRegular style={{color: colors.fontColor2, fontSize: 12}}>
+                주소복사
+              </TextRegular>
+            </Pressable>
+            <Pressable
+              onPress={() =>
+                navigation.navigate('Map', {
+                  isStore: true,
+                  lat: info.mb_lat,
+                  lng: info.mb_lng,
+                })
+              }
+              style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+              <TextRegular style={{color: colors.fontColor2, fontSize: 12}}>
+                지도보기
+              </TextRegular>
+            </Pressable>
+          </View>
+        </View>
+      )}
     </>
   );
 };

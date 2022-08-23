@@ -7,7 +7,7 @@ const ImageSwipe = ({images}) => {
   return (
     <Swiper
       autoplay
-      autoplayTimeout={5}
+      autoplayTimeout={1.5}
       showsPagination={false}
       removeClippedSubviews={false}
       style={{height: 300}}>

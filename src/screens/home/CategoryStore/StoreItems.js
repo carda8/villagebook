@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  Platform,
   Pressable,
   SectionList,
   Text,
@@ -170,7 +171,22 @@ const StoreItems = ({navigation, route}) => {
         style={{
           flex: 1,
           // height: IMG_CONTAINER,
-          marginVertical: 23,
+          marginVertical: 11,
+          borderRadius: 10,
+          marginHorizontal: 22,
+          backgroundColor: 'white',
+          ...Platform.select({
+            android: {elevation: 1},
+            ios: {
+              shadowColor: '#00000029',
+              shadowOpacity: 0.6,
+              shadowRadius: 50 / 2,
+              shadowOffset: {
+                height: 12,
+                width: 0,
+              },
+            },
+          }),
         }}>
         <View
           style={{
@@ -184,7 +200,7 @@ const StoreItems = ({navigation, route}) => {
               marginRight: 1,
               backgroundColor: colors.inputBoxBG,
               borderTopLeftRadius: 10,
-              borderBottomLeftRadius: 10,
+              // borderBottomLeftRadius: 10,
               overflow: 'hidden',
             }}>
             {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
@@ -227,7 +243,7 @@ const StoreItems = ({navigation, route}) => {
             <View
               style={{
                 flex: 1,
-                borderBottomRightRadius: 10,
+                // borderBottomRightRadius: 10,
                 overflow: 'hidden',
               }}>
               {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
@@ -251,7 +267,7 @@ const StoreItems = ({navigation, route}) => {
           style={{
             flex: 1,
             justifyContent: 'flex-end',
-            marginTop: 22,
+            padding: 10,
           }}>
           <View style={{marginBottom: 9}}>
             <View

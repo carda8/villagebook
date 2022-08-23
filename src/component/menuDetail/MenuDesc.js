@@ -9,6 +9,7 @@ import Divider from '../Divider';
 import DividerL from '../DividerL';
 import Loading from '../Loading';
 import ReviewSimple2 from '../reviews/ReviewSimple2';
+import TextBold from '../text/TextBold';
 import TextLight from '../text/TextLight';
 import TextNotoM from '../text/TextNotoM';
 import TextRegular from '../text/TextRegular';
@@ -87,9 +88,9 @@ const MenuDesc = ({navigation, info}) => {
             paddingHorizontal: 22,
           }}>
           <View>
-            <Text style={{fontSize: 22}}>
+            <TextBold style={{fontSize: 22}}>
               {storeInfo.mb_biz_name ?? storeInfo.mb_company}
-            </Text>
+            </TextBold>
             {!isLifeStyle && <ReviewSimple2 info={storeInfo} />}
           </View>
 

@@ -33,6 +33,7 @@ import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {Errorhandler} from '../../config/ErrorHandler';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {customAlert} from '../../component/CustomAlert';
+import TextSBold from '../../component/text/TextSBold';
 
 const Login = ({navigation}) => {
   const layout = useWindowDimensions();
@@ -207,17 +208,23 @@ const Login = ({navigation}) => {
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <FastImage
-          style={{width: '100%', height: layout.height * 0.4}}
-          source={require('../../assets/login_img.png')}
-          resizeMode={FastImage.resizeMode.cover}
-        />
+        <View style={{flex: 1, alignItems: 'center', marginTop: '30%'}}>
+          <FastImage
+            style={{width: '100%', height: 50, marginBottom: 20}}
+            source={require('../../assets/logo.png')}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          <TextSBold style={{color: colors.fontColor2}}>
+            우리동네 모든 것을 담았다.
+          </TextSBold>
+        </View>
         {/* <AutoLogin /> */}
         <View
           style={{
             alignItems: 'center',
             paddingHorizontal: 22,
             paddingTop: 33,
+            marginTop: 40,
           }}>
           <Input fm={fm} />
           <Pressable

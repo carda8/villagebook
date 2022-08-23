@@ -4,16 +4,18 @@ import NaverMapView from 'react-native-nmap';
 import {Marker} from 'react-native-nmap';
 import colors from '../../styles/colors';
 
-const MiniMap = ({lng, lat}) => {
+const MiniMap = ({lng, lat, isStore, width, height}) => {
   const layout = useWindowDimensions();
   return (
     <View
       style={{
-        paddingHorizontal: 22,
+        paddingHorizontal: isStore ? 0 : 22,
       }}>
       <NaverMapView
-        style={{width: '100%', height: 300}}
-        showsMyLocationButton={true}
+        style={{width: width ? width : '100%', height: height ? height : 300}}
+        showsMyLocationButton={isStore ? false : true}
+        zoomControl={isStore ? false : true}
+        scaleBar={false}
         center={{latitude: Number(lat), longitude: Number(lng), zoom: 16}}
         // scrollGesturesEnabled={false}
         tiltGesturesEnabled={false}
@@ -28,6 +30,8 @@ const MiniMap = ({lng, lat}) => {
           // setPosition({latitude: e.latitude, longitude: e.longitude});
         }}>
         <Marker
+          width={25}
+          height={30}
           animateToCoordinate={e => {
             console.log('anime', e);
           }}

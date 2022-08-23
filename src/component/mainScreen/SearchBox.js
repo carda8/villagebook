@@ -64,7 +64,7 @@ const SearchBox = ({onPress, isMain, isSub}) => {
           value={keyword}
           onChangeText={setKeyword}
           onSubmitEditing={() => setModal(!modal)}
-          placeholder={'맛집검색을 해보세요'}
+          placeholder={'동네북을 펼쳐주세요.'}
         />
         {/* <Pressable
           onPress={() => {

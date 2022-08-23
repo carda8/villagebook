@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Image, ScrollView, View} from 'react-native';
+import {Image, ScrollView, SectionList, View} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BottomBar from '../../component/BottomBar';
@@ -27,6 +27,7 @@ import {
   removeSavedItem,
   resetSavedItem,
 } from '../../store/reducers/CartReducer';
+import TextSBold from '../../component/text/TextSBold';
 
 const Main = ({navigation}) => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const Main = ({navigation}) => {
   const {savedItem} = useSelector(state => state.cartReducer);
   const {mutateGetAddress, mutateGetCompanyInfo} = useCustomMutation();
   const [companyInfo, setCompanyInfo] = useState();
+  const [toggleInfo, setToggleInfo] = useState(false);
 
   const _getAddr = () => {
     const data = {
@@ -116,24 +118,36 @@ const Main = ({navigation}) => {
             source={require('~/assets/ico_location.png')}
             style={{width: 19, height: 19}}
           />
-          <TextEBold
-            numberOfLines={1}
-            style={{
-              fontSize: 15,
-              marginHorizontal: 10,
-              color: colors.fontColor2,
-            }}>
-            {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
-              '주소설정') +
-              ' ' +
-              (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ?? ' ') +
-              ' '}
-            {!mutateGetAddress?.data ?? '주소설정'}
-            {/* {_showAddr(userInfo, '주소설정')} */}
-            {/* {postData.addrMain
+          <View style={{marginLeft: 10, marginRight: 3}}>
+            <TextEBold
+              numberOfLines={1}
+              style={{
+                fontSize: 15,
+                color: colors.fontColor2,
+              }}>
+              {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+                '주소설정') +
+                ' ' +
+                (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ?? ' ') +
+                ' '}
+              {!mutateGetAddress?.data ?? '주소설정'}
+              {/* {_showAddr(userInfo, '주소설정')} */}
+              {/* {postData.addrMain
               ? postData.addrMain + ' ' + postData.addrSub
               : '주소 설정'} */}
-          </TextEBold>
+            </TextEBold>
+          </View>
+
+          <Image
+            source={require('~/assets/arrow.png')}
+            style={{
+              tintColor: colors.primary,
+              width: 17,
+              height: 17,
+              // transform: [{rotate: '90deg'}],
+            }}
+            resizeMode={'contain'}
+          />
         </Pressable>
 
         <SearchBox
@@ -304,6 +318,23 @@ const Main = ({navigation}) => {
           </Pressable>
         </View>
 
+        <Pressable
+          onPress={() => {
+            setToggleInfo(!toggleInfo);
+          }}
+          style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TextSBold>(주)어스닉</TextSBold>
+          <Image
+            source={require('~/assets/btn_top_left.png')}
+            style={{
+              transform: [{rotate: toggleInfo ? '90deg' : '-90deg'}],
+              width: 20,
+              height: 20,
+              marginLeft: 4,
+            }}
+            resizeMode={'contain'}
+          />
+        </Pressable>
         <View
           style={{
             flexDirection: 'row',
@@ -312,21 +343,30 @@ const Main = ({navigation}) => {
             marginBottom: 20,
           }}>
           <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
-            {companyInfo?.de_admin_company_memo}
+            (주)어스닉은 통신판매중개자이며, 따라서 (주)어스닉은 상품, 거래정보
+            및 거래에 대하여 책임을 지지 않습니다.
           </TextRegular>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
-            {companyInfo?.de_admin_company_addr} 대표이사 :{' '}
-            {companyInfo?.de_admin_company_owner} | 사업자등록번호 :
-            {companyInfo?.de_admin_company_saupja_no} 통신판매업신고 :{' '}
-            {companyInfo?.de_admin_tongsin_no}
-          </TextRegular>
-        </View>
+        {toggleInfo && (
+          <>
+            <View
+              style={{
+                alignItems: 'center',
+              }}>
+              <View style={{marginBottom: 20}}>
+                <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
+                  {companyInfo?.de_admin_company_memo}
+                </TextRegular>
+              </View>
+              <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
+                {companyInfo?.de_admin_company_addr} 대표이사 :{' '}
+                {companyInfo?.de_admin_company_owner} | 사업자등록번호 :
+                {companyInfo?.de_admin_company_saupja_no} 통신판매업신고 :{' '}
+                {companyInfo?.de_admin_tongsin_no}
+              </TextRegular>
+            </View>
+          </>
+        )}
       </ScrollView>
       <BottomBar navigation={navigation} />
       {/* <BottomNavigator /> */}
