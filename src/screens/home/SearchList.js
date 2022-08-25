@@ -25,14 +25,13 @@ import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import {setSearchResult} from '../../store/reducers/SearchReducer';
 import colors from '../../styles/colors';
 
-const SearchList = ({navigation}) => {
+const SearchList = ({navigation, JType}) => {
   const dispatch = useDispatch();
   const {mutateSearch} = useCustomMutation();
-  const {searchResult, type, keyword} = useSelector(
-    state => state.searchReducer,
-  );
+  const {foodResult, marketResult, lifestyleResult, type, keyword} =
+    useSelector(state => state.searchReducer);
   const {currentLocation} = useSelector(state => state.locationReducer);
-  console.log('searchResult', searchResult);
+  // console.log('searchResult', searchResult);
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
@@ -50,7 +49,7 @@ const SearchList = ({navigation}) => {
       item_count: limitItem.current,
       limit_count: 20,
       stx: keyword,
-      mb_jumju_type: type,
+      mb_jumju_type: JType,
       mb_lat: currentLocation.lat,
       mb_lng: currentLocation.lon,
     };
@@ -62,11 +61,12 @@ const SearchList = ({navigation}) => {
         let temp = e.data.arrItems;
         temp = temp.filter(item => item !== null);
         if (e.result === 'true' && temp.length > 0) {
-          let prev = [...searchResult];
+          // let prev = [...searchResult];
           prev[0] = prev[0].data.concat(temp[0].data);
           temp[0].data = prev[0];
-          dispatch(setSearchResult(temp));
-        } else return customAlert('알림', '더보기 가능한 스토어가 없습니다.');
+          // dispatch(setSearchResult(temp));
+        }
+        // else return customAlert('알림', '더보기 가능한 스토어가 없습니다.');
       },
     });
   };
@@ -289,9 +289,9 @@ const SearchList = ({navigation}) => {
 
   return (
     <View style={{flex: 1}}>
-      {type === 'lifestyle' ? (
+      {JType === 'lifestyle' ? (
         <FlatList
-          data={searchResult}
+          data={lifestyleResult}
           renderItem={item => renderItem(item)}
           ListEmptyComponent={
             <View
@@ -307,33 +307,33 @@ const SearchList = ({navigation}) => {
               /> */}
             </View>
           }
-          ListFooterComponentStyle={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginVertical: 20,
-          }}
-          ListFooterComponent={
-            mutateSearch.isLoading ? (
-              <Loading />
-            ) : searchResult.length > 0 ? (
-              <Pressable
-                onPress={() => {
-                  _getMoreSearch();
-                }}
-                style={{
-                  width: 150,
-                  height: 50,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: colors.primary,
-                }}>
-                <TextBold style={{color: 'white'}}>더보기</TextBold>
-              </Pressable>
-            ) : (
-              <></>
-            )
-          }
+          // ListFooterComponentStyle={{
+          //   alignItems: 'center',
+          //   justifyContent: 'center',
+          //   marginVertical: 20,
+          // }}
+          // ListFooterComponent={
+          //   mutateSearch.isLoading ? (
+          //     <Loading />
+          //   ) : foodResult.length > 0 ? (
+          //     <Pressable
+          //       onPress={() => {
+          //         _getMoreSearch();
+          //       }}
+          //       style={{
+          //         width: 150,
+          //         height: 50,
+          //         borderRadius: 10,
+          //         alignItems: 'center',
+          //         justifyContent: 'center',
+          //         backgroundColor: colors.primary,
+          //       }}>
+          //       <TextBold style={{color: 'white'}}>더보기</TextBold>
+          //     </Pressable>
+          //   ) : (
+          //     <></>
+          //   )
+          // }
           keyExtractor={(item, index) => index}
           onEndReached={() => {
             // _getMoreSearch();
@@ -341,7 +341,7 @@ const SearchList = ({navigation}) => {
         />
       ) : (
         <SectionList
-          sections={searchResult}
+          sections={JType === 'food' ? foodResult : marketResult}
           ListEmptyComponent={
             <View
               style={{
@@ -356,33 +356,33 @@ const SearchList = ({navigation}) => {
               /> */}
             </View>
           }
-          ListFooterComponentStyle={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginVertical: 20,
-          }}
-          ListFooterComponent={
-            mutateSearch.isLoading ? (
-              <Loading />
-            ) : searchResult.length > 0 ? (
-              <Pressable
-                onPress={() => {
-                  _getMoreSearch();
-                }}
-                style={{
-                  width: 150,
-                  height: 50,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: colors.primary,
-                }}>
-                <TextBold style={{color: 'white'}}>더보기</TextBold>
-              </Pressable>
-            ) : (
-              <></>
-            )
-          }
+          // ListFooterComponentStyle={{
+          //   alignItems: 'center',
+          //   justifyContent: 'center',
+          //   marginVertical: 20,
+          // }}
+          // ListFooterComponent={
+          //   mutateSearch.isLoading ? (
+          //     <Loading />
+          //   ) : foodResult.length > 0 ? (
+          //     <Pressable
+          //       onPress={() => {
+          //         _getMoreSearch();
+          //       }}
+          //       style={{
+          //         width: 150,
+          //         height: 50,
+          //         borderRadius: 10,
+          //         alignItems: 'center',
+          //         justifyContent: 'center',
+          //         backgroundColor: colors.primary,
+          //       }}>
+          //       <TextBold style={{color: 'white'}}>더보기</TextBold>
+          //     </Pressable>
+          //   ) : (
+          //     <></>
+          //   )
+          // }
           keyExtractor={(item, index) => item + index}
           renderItem={item => renderItem(item)}
           renderSectionHeader={({section: {isOpen}}) =>
@@ -395,7 +395,7 @@ const SearchList = ({navigation}) => {
           }
           showsVerticalScrollIndicator={false}
           onEndReached={() => {
-            // _getMoreSearch();
+            _getMoreSearch();
           }}
         />
       )}

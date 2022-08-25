@@ -2,10 +2,32 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const searchSlice = createSlice({
   name: 'menu',
-  initialState: {searchResult: [], type: '', keyword: ''},
+  initialState: {
+    searchResult: [],
+    foodResult: [],
+    marketResult: [],
+    lifestyleResult: [],
+    type: '',
+    keyword: '',
+  },
   reducers: {
     setSearchResult: (state, action) => {
-      state.searchResult = action.payload;
+      switch (action.payload.type) {
+        case 'food':
+          state.foodResult = action.payload.item;
+          // console.log(action.payload);
+          break;
+        case 'market':
+          state.marketResult = action.payload.item;
+          // console.log(action.payload);
+          break;
+        case 'lifestyle':
+          state.lifestyleResult = action.payload.item;
+          // console.log(action.payload);
+          break;
+        default:
+          break;
+      }
     },
     setType: (state, action) => {
       state.type = action.payload.type;

@@ -326,7 +326,7 @@ const EditSummit = ({navigation, route}) => {
                 <Loading />
               ) : (
                 <TextBold style={{color: 'white'}}>내정보수정</TextBold>
-              )}{' '}
+              )}
             </Pressable>
           </View>
         )}

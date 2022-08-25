@@ -325,8 +325,7 @@ export const useCustomMutation = () => {
   });
   const mutateSearch = useMutation(mainAPI._searchStore, {
     onSettled: e => {
-      console.log('mutateUpdataUserInfo', e);
-      return e;
+      console.log('mutateSearch', e);
     },
   });
   return {

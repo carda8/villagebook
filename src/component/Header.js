@@ -8,8 +8,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import dynamicLinks from '@react-native-firebase/dynamic-links';
-
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import {useCustomMutation} from '../hooks/useCustomMutation';
@@ -63,57 +61,6 @@ const Header = ({
       useNativeDriver: true,
     }).start();
   };
-
-  const _setLikeStore = () => {
-    const data = {
-      mt_id: userInfo.mt_id,
-      jumju_id: storeInfo.mb_id,
-      jumju_code: storeInfo.mb_jumju_code,
-    };
-    console.log('data', data);
-    mutateSetLikeStore.mutate(data, {
-      onSuccess: e => {
-        console.log('ee', e);
-      },
-    });
-  };
-
-  const _share = async () => {
-    try {
-      const link = await dynamicLinks().buildShortLink({
-        // link: `https://www.dongnaebook.com/?code=${storeInfo.mb_jumju_code}&mb_id=${storeInfo.mb_id}&category=${category}`,
-        // link: `https://www.dongnaebook.com/${category}`,
-        link: `https://www.dongnaebook.com/${categoryMain}/${storeInfo.mb_id}/${storeInfo.mb_jumju_code}`,
-        domainUriPrefix: 'https://dongnaebook.page.link',
-        android: {
-          packageName: 'com.dmonster.dongnaebook',
-        },
-      });
-
-      console.log('Current Store ::', storeInfo);
-
-      console.log('Link::', link);
-
-      const result = await Share.share({
-        message: link,
-      });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          console.log('activityType!');
-        } else {
-          console.log('Share!');
-        }
-      } else if (result.action === Share.dismissedAction) {
-        console.log('dismissed');
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    if (storeInfo) setLike(storeInfo.isWish);
-  }, [storeInfo]);
 
   useEffect(() => {
     if (isOption) {
@@ -226,17 +173,16 @@ const Header = ({
               hitSlop={10}
               onPress={() => {
                 if (showNoti) navigation.navigate('PushList');
-                if (showLike) {
-                  if (like === 'Y') setLike('N');
-                  if (like === 'N') setLike('Y');
-                  _setLikeStore();
-                }
+                // if (showLike) {
+                //   if (like === 'Y') setLike('N');
+                //   if (like === 'N') setLike('Y');
+                //   _setLikeStore();
+                // }
               }}>
               <Image
                 source={
-                  showNoti
-                    ? require('~/assets/top_ball.png')
-                    : require('~/assets/top_heart.png')
+                  showNoti ? require('~/assets/top_ball.png') : null
+                  // : require('~/assets/top_heart.png')
                 }
                 style={{
                   height: 30,
@@ -289,7 +235,7 @@ const Header = ({
               hitSlop={10}
               onPress={() => {
                 if (showCart) navigation.navigate('SummitOrder');
-                if (!showCart) _share();
+                // if (!showCart) _share();
               }}>
               {showCart && (
                 <>
@@ -320,11 +266,7 @@ const Header = ({
                 </>
               )}
               <Image
-                source={
-                  showCart
-                    ? require('~/assets/top_cart.png')
-                    : require('~/assets/top_share_w.png')
-                }
+                source={showCart ? require('~/assets/top_cart.png') : null}
                 style={{
                   height: 30,
                   width: 30,

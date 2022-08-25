@@ -26,8 +26,8 @@ import {customAlert} from '../../component/CustomAlert';
 
 const Map = ({navigation, route}) => {
   const isStore = route.params?.isStore ?? false;
-  const storeLat = Number(route.params.lat);
-  const storeLon = Number(route.params.lng);
+  const storeLat = Number(route.params?.lat);
+  const storeLon = Number(route.params?.lng);
   const {userInfo} = useSelector(state => state.authReducer);
   const {postData} = useSelector(state => state.addressReducer);
   const dispatch = useDispatch();
@@ -168,15 +168,17 @@ const Map = ({navigation, route}) => {
           alignItems: 'center',
           justifyContent: 'center',
           alignSelf: 'center',
-          top: layout.height / 2 - 83,
+          top: layout.height / 2 - 87,
           zIndex: 100,
           // opacity: 0.5,
         }}>
-        {/* <Image
-          source={require('~/assets/ico_location.png')}
-          style={{width: 50, height: 50, zIndex: 100}}
-          resizeMode="contain"
-        /> */}
+        {!isStore && (
+          <Image
+            source={require('~/assets/ico_location.png')}
+            style={{width: 50, height: 50, zIndex: 100}}
+            resizeMode="contain"
+          />
+        )}
       </View>
       <NaverMapView
         animateToCoordinates={e => console.log('e:::::::', e)}
@@ -199,13 +201,15 @@ const Map = ({navigation, route}) => {
           // _convertCoor({lon: e.longitude, lat: e.latitude});
           // setPosition({latitude: e.latitude, longitude: e.longitude});
         }}>
-        <Marker
-          animateToCoordinate={e => {
-            console.log('anime', e);
-          }}
-          coordinate={position}
-          onClick={() => console.log('onClick! p0')}
-        />
+        {isStore && (
+          <Marker
+            animateToCoordinate={e => {
+              console.log('anime', e);
+            }}
+            coordinate={position}
+            onClick={() => console.log('onClick! p0')}
+          />
+        )}
       </NaverMapView>
       {!isStore && (
         <>

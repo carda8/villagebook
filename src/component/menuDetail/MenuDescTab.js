@@ -24,7 +24,7 @@ import MiniMap from '../../screens/map/MiniMap';
 import Clipboard from '@react-native-clipboard/clipboard';
 import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
 
-const MenuDescTab = ({info, navigation}) => {
+const MenuDescTab = ({info, navigation, routeData}) => {
   const dispatch = useDispatch();
   const [tabIdx, setTabIdx] = useState(0);
   const {mutateGetDeliveryFeeInfo} = useCustomMutation();
@@ -55,7 +55,7 @@ const MenuDescTab = ({info, navigation}) => {
     _getFee();
   }, []);
 
-  console.log('@@@@@ info', info);
+  console.log('@@@@@ info', routeData);
 
   return (
     <>
@@ -91,7 +91,7 @@ const MenuDescTab = ({info, navigation}) => {
               style={{
                 color: tabIdx === 0 ? colors.fontColor2 : colors.fontColorA2,
               }}>
-              배달주문
+              배달하기
             </Text>
           </View>
         </Pressable>
@@ -120,7 +120,7 @@ const MenuDescTab = ({info, navigation}) => {
               style={{
                 color: tabIdx === 1 ? colors.fontColor2 : colors.fontColorA2,
               }}>
-              포장주문
+              포장하기
             </Text>
           </View>
         </Pressable>
@@ -205,7 +205,7 @@ const MenuDescTab = ({info, navigation}) => {
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular style={{color: colors.fontColor99}}>
-                    조리시간
+                    {routeData.category === 'food' ? '조리시간' : '포장시간'}
                   </TextRegular>
                 </View>
                 <TextRegular style={{...styles.subTitleTakeout}}>

@@ -1,4 +1,4 @@
-import {View, Text, Pressable, StyleSheet} from 'react-native';
+import {View, Text, Pressable, StyleSheet, FlatList, Image} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
@@ -10,10 +10,15 @@ import {encode} from 'jwt-simple';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useSelector} from 'react-redux';
 import Loading from '../../component/Loading';
+import RenderItem from '../../component/likeStoreScreen/RenderItem';
+import TextBold from '../../component/text/TextBold';
+import FastImage from 'react-native-fast-image';
+import TextMedium from '../../component/text/TextMedium';
+import {customAlert} from '../../component/CustomAlert';
 
 const LikeMain = ({navigation}) => {
   const [tabIdx, setTabIdx] = useState(0);
-  const {mutateGetLikeList} = useCustomMutation();
+  const {mutateGetLikeList, mutateSetLikeStore} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
   const [list, setList] = useState();
   const itemLimit = useRef(0);
@@ -34,11 +39,151 @@ const LikeMain = ({navigation}) => {
     });
   };
 
+  const _setLikeStore = item => {
+    const data = {
+      mt_id: userInfo.mt_id,
+      jumju_id: item.item.jumju_id,
+      jumju_code: item.item.jumju_code,
+    };
+    console.log('data', data);
+    console.log('list', list);
+    mutateSetLikeStore.mutate(data, {
+      onSuccess: e => {
+        let temp = [...list];
+        temp = temp.filter(item2 => item2.jumju_code !== item.item.jumju_code);
+        setList(temp);
+      },
+    });
+  };
+
   useEffect(() => {
     _getList('food');
   }, []);
 
   if (!list) return <Loading />;
+
+  const RenderItem = ({item}) => {
+    const data = item.item;
+    console.log('item', item);
+    return (
+      <View
+        key={item.index}
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          borderBottomWidth: 1,
+          paddingVertical: 25,
+          borderBottomColor: colors.borderColor,
+          marginBottom: 10,
+          borderRadius: 12,
+        }}>
+        <View style={{flexDirection: 'row'}}>
+          <Pressable
+            style={{flexDirection: 'row', flex: 1}}
+            onPress={() => {
+              navigation.navigate('MenuDetail', {
+                jumju_id: data.jumju_id,
+                jumju_code: data.jumju_code,
+                mb_company: data.mb_company,
+              });
+            }}>
+            <View
+              style={{
+                width: 100,
+                height: 100,
+                borderWidth: 1,
+                borderRadius: 10,
+                marginRight: 15,
+                borderColor: colors.borderColor,
+                overflow: 'hidden',
+              }}>
+              <FastImage
+                source={
+                  data.store_logo
+                    ? {uri: data.store_logo}
+                    : require('~/assets/no_img.png')
+                }
+                resizeMode={FastImage.resizeMode.cover}
+                style={{flex: 1}}
+              />
+            </View>
+            <View style={{flex: 1}}>
+              <TextMedium style={{fontSize: 17, color: colors.fontColor2}}>
+                {data.mb_company}
+              </TextMedium>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/ico_star_on.png')}
+                  style={{width: 15, height: 15}}
+                />
+                <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
+                  {data.stars}
+                </TextMedium>
+              </View>
+              <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
+                {'최소주문 ' + data.minPrice}
+              </TextMedium>
+              <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
+                {'배달팁' + data.tipFrom + '~' + data.tipTo + '원'}
+              </TextMedium>
+            </View>
+            <Pressable
+              hitSlop={10}
+              onPress={() => {
+                customAlert(
+                  '찜 삭제',
+                  '단골찜에서 삭제하시겠습니까?',
+                  '확인',
+                  () => {
+                    _setLikeStore(item);
+                  },
+                  '취소',
+                  () => {},
+                );
+              }}
+              style={{alignItems: 'center', justifyContent: 'center'}}>
+              <Image
+                source={require('~/assets/top_heart_on.png')}
+                style={{width: 30, height: 30}}
+              />
+            </Pressable>
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
+
+  const LikeItems = ({data, navigation}) => {
+    return (
+      <View style={{flex: 1}}>
+        <FlatList
+          ListHeaderComponent={() => (
+            <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}></View>
+          )}
+          data={data}
+          re
+          ListEmptyComponent={
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginVertical: 25,
+              }}>
+              <TextBold>찜내역이 없습니다.</TextBold>
+            </View>
+          }
+          showsVerticalScrollIndicator={false}
+          renderItem={item => <RenderItem item={item} />}
+          keyExtractor={(item, index) => index}
+          onEndReached={() => {}}
+        />
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>

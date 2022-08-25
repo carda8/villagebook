@@ -1,22 +1,23 @@
 import React, {useState} from 'react';
 import {Image} from 'react-native';
 import {Pressable} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {setAutoLogin} from '../../store/reducers/AuthReducer';
 import TextRegular from '../text/TextRegular';
 
 const AutoLogin = () => {
-  const [isAuto, setIsAuto] = useState(false);
   const dispatch = useDispatch();
+  const {autoLogin} = useSelector(state => state.authReducer);
   return (
     <Pressable
-      onPress={() => setIsAuto(!isAuto)}
+      onPress={() => dispatch(setAutoLogin(!autoLogin))}
       style={{
-        marginTop: 15,
-        paddingHorizontal: 22,
-        alignSelf: 'flex-end',
+        marginBottom: 63,
+        alignSelf: 'flex-start',
         flexDirection: 'row',
-      }}>
-      {isAuto ? (
+      }}
+      hitSlop={10}>
+      {autoLogin ? (
         <Image
           source={require('../../assets/top_ic_map_on.png')}
           style={{width: 23, height: 23}}

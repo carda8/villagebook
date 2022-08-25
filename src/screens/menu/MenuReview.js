@@ -24,11 +24,14 @@ import ImageZoom from '../../component/ImageZoom';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Divider from '../../component/Divider';
 import DividerL from '../../component/DividerL';
+import ReviewScore from './ReviewScore';
 
 const MenuReview = ({storeInfo}) => {
   const {mutateGetReview} = useCustomMutation();
   const [review, setReview] = useState();
+  const [reviewOnlyPic, setReviewOnlyPic] = useState();
   const [modal, setModal] = useState({visible: false, image: []});
+  const [onlyPic, setOnlyPic] = useState(false);
 
   const itemLimit = useRef(0);
 
@@ -160,6 +163,16 @@ const MenuReview = ({storeInfo}) => {
     return temp;
   };
 
+  const _filterOnlyPic = () => {
+    let copyReview = {...review};
+    let result = review.review.filter(item => item.pic.length > 0);
+    console.log('Result ::', result);
+    copyReview.review = result;
+    console.log('copyReview', copyReview);
+    setReviewOnlyPic(copyReview);
+    // setReview(copyReview)
+  };
+
   const ListHeader = () => {
     return (
       <>
@@ -245,7 +258,7 @@ const MenuReview = ({storeInfo}) => {
               }}
               resizeMode="contain"
             />
-            <View>
+            <View style={{flex: 1}}>
               <TextBold style={{fontSize: 15, color: colors.fontColor2}}>
                 {item.wr_mb_id}
               </TextBold>
@@ -340,9 +353,12 @@ const MenuReview = ({storeInfo}) => {
     return () => {};
   }, []);
 
+  // useEffect(() => {
+  //   console.log('reviewvewvwevw', review);
+  // }, [review]);
   useEffect(() => {
-    console.log('reviewvewvwevw', review);
-  }, [review]);
+    console.log('Reveiwssss', review);
+  }, [onlyPic]);
 
   if (!review)
     return (
@@ -357,11 +373,40 @@ const MenuReview = ({storeInfo}) => {
     <>
       <View style={{flex: 1}}>
         {/* 리뷰탭 내부 상단 리뷰 정보*/}
-        <ListHeader />
-
-        {review?.review?.map((item, index) => (
-          <ReviewList item={item} key={index} />
-        ))}
+        {/* <ListHeader /> */}
+        <ReviewScore review={review} />
+        <Pressable
+          onPress={() => {
+            setOnlyPic(!onlyPic);
+            _filterOnlyPic();
+          }}
+          style={{
+            paddingHorizontal: 22,
+            paddingVertical: 10,
+            borderBottomWidth: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderColor: colors.borderColor,
+          }}>
+          <Image
+            source={
+              !onlyPic
+                ? require('~/assets/top_ic_map_off.png')
+                : require('~/assets/top_ic_map_on.png')
+            }
+            style={{width: 17, height: 17, marginRight: 7}}
+          />
+          <TextRegular style={{color: colors.fontColor2, fontSize: 13}}>
+            사진리뷰만
+          </TextRegular>
+        </Pressable>
+        {!onlyPic
+          ? review?.review?.map((item, index) => (
+              <ReviewList item={item} key={index} />
+            ))
+          : reviewOnlyPic?.review?.map((item, index) => (
+              <ReviewList item={item} key={index} />
+            ))}
 
         {/* 더보기 버튼*/}
         {mutateGetReview.isLoading ? (

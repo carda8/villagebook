@@ -174,7 +174,6 @@ const MenuDetail = ({navigation, route}) => {
   const StoreTopMenu = mutateTopMenu.data.data.arrItems;
   const StoreServiceTime = mutateServiceTime?.data?.data?.arrItems;
   const StoreService = mutateGetStoreService.data.data.arrItems;
-  console.log('StoreServiceTime', StoreServiceTime);
 
   // console.log('StoreInfo', StoreInfo);
   // console.log('StoreTopMenu', StoreTopMenu);
@@ -190,6 +189,7 @@ const MenuDetail = ({navigation, route}) => {
       mb_company: routeData.mb_company,
       it_img1: item.it_img1,
       store_logo: StoreInfo.store_logo,
+      category: routeData.category,
     });
   };
 
@@ -316,7 +316,12 @@ const MenuDetail = ({navigation, route}) => {
           />
 
           <ImageSwipe images={mutateStoreInfo.data.data.arrItems.store_image} />
-          <MenuDesc info={mutateStoreInfo.data} navigation={navigation} />
+          <MenuDesc
+            categoryMain={routeData.category}
+            info={mutateStoreInfo.data}
+            navigation={navigation}
+            routeData={routeData}
+          />
           <View>
             {/* 메뉴, 정보, 리뷰 탭 */}
             <View

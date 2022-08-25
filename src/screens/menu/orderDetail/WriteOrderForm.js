@@ -38,6 +38,7 @@ const WriteOrderForm = ({navigation, route}) => {
     useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
   const cartStore = useSelector(state => state.cartReducer);
+  const currentStore = cartStore.currentStoreCode;
   const {storeCoupon, systemCoupon} = useSelector(state => state.couponReducer);
 
   const {isDelivery, paymentMethod} = useSelector(
@@ -336,7 +337,11 @@ const WriteOrderForm = ({navigation, route}) => {
             <View style={{marginTop: 10}}>
               <TextBold style={{marginVertical: 5}}>가게 사장님에게</TextBold>
               <TextInput
-                placeholder="예) 오이 뺴주세요"
+                placeholder={
+                  currentStore.category === 'food'
+                    ? '예) 오이 뺴주세요'
+                    : '요청사항을 적어주세요'
+                }
                 value={orderForm.od_to_officer}
                 onChangeText={e =>
                   setOrderForm({...orderForm, od_to_officer: e})
@@ -348,7 +353,11 @@ const WriteOrderForm = ({navigation, route}) => {
               <>
                 <TextBold style={{marginVertical: 5}}>배달 기사님에게</TextBold>
                 <TextInput
-                  placeholder="예) 조심히 와주세요"
+                  placeholder={
+                    currentStore.category === 'food'
+                      ? '예) 조심히 와주세요'
+                      : '요청사항을 적어주세요'
+                  }
                   value={orderForm.od_to_seller}
                   onChangeText={e =>
                     setOrderForm({...orderForm, od_to_seller: e})
@@ -357,36 +366,38 @@ const WriteOrderForm = ({navigation, route}) => {
                 />
               </>
             )}
-            <Pressable
-              hitSlop={10}
-              onPress={() =>
-                setOrderForm({
-                  ...orderForm,
-                  od_no_spoon: !orderForm.od_no_spoon,
-                })
-              }
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 15,
-              }}>
-              <Image
-                source={
-                  orderForm.od_no_spoon
-                    ? require('~/assets/top_ic_map_on.png')
-                    : require('~/assets/top_ic_map_off.png')
+            {currentStore.category === 'food' && (
+              <Pressable
+                hitSlop={10}
+                onPress={() =>
+                  setOrderForm({
+                    ...orderForm,
+                    od_no_spoon: !orderForm.od_no_spoon,
+                  })
                 }
-                style={{width: 20, height: 20, marginRight: 10}}
-              />
-              <View style={{flex: 1}}>
-                <TextRegular style={{color: 'forestgreen'}}>
-                  일회용 수저, 포크 안주셔도 돼요
-                </TextRegular>
-                <TextRegular style={{color: 'forestgreen'}}>
-                  (환경보호를 위해 필요 없을 시 꼭 체크 부탁드려요)
-                </TextRegular>
-              </View>
-            </Pressable>
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 15,
+                }}>
+                <Image
+                  source={
+                    orderForm.od_no_spoon
+                      ? require('~/assets/top_ic_map_on.png')
+                      : require('~/assets/top_ic_map_off.png')
+                  }
+                  style={{width: 20, height: 20, marginRight: 10}}
+                />
+                <View style={{flex: 1}}>
+                  <TextRegular style={{color: 'forestgreen'}}>
+                    일회용 수저, 포크 안주셔도 돼요
+                  </TextRegular>
+                  <TextRegular style={{color: 'forestgreen'}}>
+                    (환경보호를 위해 필요 없을 시 꼭 체크 부탁드려요)
+                  </TextRegular>
+                </View>
+              </Pressable>
+            )}
           </View>
         </View>
         {/* END 배달 정보, 요청 사항 */}

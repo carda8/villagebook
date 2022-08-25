@@ -2,7 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const authSlice = createSlice({
   name: 'menu',
-  initialState: {userInfo: '', autoLogin: '', fcmToken: ''},
+  initialState: {userInfo: '', autoLogin: false, fcmToken: ''},
   reducers: {
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
@@ -10,9 +10,12 @@ const authSlice = createSlice({
     setFcmToken: (state, action) => {
       state.fcmToken = action.payload;
     },
+    setAutoLogin: (state, action) => {
+      state.autoLogin = action.payload;
+    },
   },
 });
 
 const {actions, reducer} = authSlice;
-export const {setUserInfo, setFcmToken} = actions;
+export const {setUserInfo, setFcmToken, setAutoLogin} = actions;
 export const authReducer = reducer;

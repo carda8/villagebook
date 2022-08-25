@@ -1,55 +1,63 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Image, Modal, Pressable, TextInput, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {setSearchResult, setType} from '../../store/reducers/SearchReducer';
 import colors from '../../styles/colors';
+import {customAlert} from '../CustomAlert';
 import TextBold from '../text/TextBold';
 
-const SearchBox = ({onPress, isMain, isSub}) => {
+const SearchBox = ({onPress, isMain, isSub, navigation, category}) => {
   const dispatch = useDispatch();
-  const [modal, setModal] = useState(false);
   const [keyword, setKeyword] = useState('');
   const {mutateSearch} = useCustomMutation();
   const {currentLocation} = useSelector(state => state.locationReducer);
-  const {type, searchResult} = useSelector(state => state.searchReducer);
-
-  const _pressSearch = () => {
-    if (!isMain && !isSub) setModal(true);
-  };
+  const search = useSelector(state => state.searchReducer);
+  const list = ['food', 'market', 'lifestyle'];
+  // const _pressSearch = () => {
+  //   if (!isMain && !isSub) setModal(true);
+  // };
+  console.log('props,', isSub, category);
 
   const limitItem = useRef(0);
 
-  const _search = type => {
-    dispatch(setType({type: type, keyword: keyword}));
-
-    const data = {
-      item_count: limitItem.current,
-      limit_count: 20,
-      stx: keyword,
-      mb_jumju_type: type,
-      mb_lat: currentLocation.lat,
-      mb_lng: currentLocation.lon,
-    };
-
-    console.log('data,', data);
-
-    mutateSearch.mutate(data, {
+  const _getResult = async data => {
+    let result;
+    result = await mutateSearch.mutateAsync(data, {
       onSettled: e => {
         if (e.result === 'true') {
-          let temp = e.data.arrItems;
-          temp = temp.filter(item => item !== null);
-          dispatch(setSearchResult(temp));
+          console.log('e', e);
         }
-        console.log('e', e);
       },
     });
+    let temp = result.data.arrItems;
+    temp = temp.filter(item => item !== null);
+    return temp;
+  };
+
+  const _search = type => {
+    if (!keyword.trim()) return customAlert('알림', '검색어를 입력해주세요');
+    dispatch(setType({type: type, keyword: keyword}));
+    list.map(async (item, index) => {
+      const data = {
+        item_count: limitItem.current,
+        limit_count: 20,
+        stx: keyword,
+        mb_jumju_type: item,
+        mb_lat: currentLocation.lat,
+        mb_lng: currentLocation.lon,
+      };
+      let temp = await _getResult(data);
+      console.log('temp', temp);
+      dispatch(setSearchResult({type: item, item: temp}));
+    });
+    navigation.navigate('SearchResult', {isSub: isSub, category: category});
   };
 
   return (
     <>
       <Pressable
-        onPress={() => onPress()}
+        onPress={() => (onPress ? onPress() : _search())}
         style={{width: '100%', height: 50, flexDirection: 'row'}}>
         <TextInput
           editable={isMain || isSub ? false : true}
@@ -63,7 +71,7 @@ const SearchBox = ({onPress, isMain, isSub}) => {
           }}
           value={keyword}
           onChangeText={setKeyword}
-          onSubmitEditing={() => setModal(!modal)}
+          onSubmitEditing={() => (onPress ? onPress() : _search())}
           placeholder={'동네북을 펼쳐주세요.'}
         />
         {/* <Pressable
@@ -78,9 +86,7 @@ const SearchBox = ({onPress, isMain, isSub}) => {
           }}></Pressable>
            */}
         <Pressable
-          onPress={() => {
-            _pressSearch();
-          }}
+          onPress={() => (onPress ? onPress() : _search())}
           style={{
             width: 50,
             height: 50,
@@ -95,8 +101,14 @@ const SearchBox = ({onPress, isMain, isSub}) => {
           />
         </Pressable>
       </Pressable>
+    </>
+  );
+};
 
-      <Modal
+export default SearchBox;
+
+{
+  /* <Modal
         transparent
         onRequestClose={() => setModal(!modal)}
         visible={modal}>
@@ -168,9 +180,5 @@ const SearchBox = ({onPress, isMain, isSub}) => {
             </Pressable>
           </View>
         </View>
-      </Modal>
-    </>
-  );
-};
-
-export default SearchBox;
+      </Modal> */
+}

@@ -32,9 +32,7 @@ const CartButton = ({
   const cartStore = useSelector(state => state.cartReducer);
   const {mutateDeliveryFee} = useCustomMutation();
   // const payStore = useSelector(state => state.paymentReducer);
-
-  console.log('store', cartStore);
-  console.log('datadatadatadata', data);
+  console.log('cartStore  ###', cartStore);
   const _getTotalPrice = () => {
     let temp = 0;
     cartStore.savedItem.savedItems.map((item, index) => {
@@ -53,19 +51,21 @@ const CartButton = ({
     navigation.goBack();
   };
 
-  const _isDiffStore = () => {
+  const _isDiffStore = callback => {
     const savedStoreCode = cartStore.savedItem?.savedStoreCode.code;
-    const currentStoreCode = cartStore.savedItem?.savedStoreCode.code;
-    console.log('savedStoreCode 2222', cartStore.savedItem);
-    console.log('currentStoreCode  2222', currentStoreCode);
+    const currentStoreCode = cartStore.currentStoreCode?.code;
+    console.log('cartStore ::::::', cartStore);
+    console.log('savedStoreCode2', savedStoreCode);
+    console.log('currentStoreCode2', currentStoreCode);
     if (savedStoreCode && currentStoreCode) {
       if (savedStoreCode !== currentStoreCode) {
         dispatch(resetSavedItem());
       }
     }
+    if (callback) callback(_checkItem);
   };
 
-  const _checkItem = () => {
+  const _checkItem = callback => {
     let mainCount = {...cartStore.mainCount, count: null};
     let temp = {
       // count: cartStore.mainCount.count,
@@ -77,7 +77,7 @@ const CartButton = ({
       // totalPrice: cartStore.totalPrice,
     };
 
-    console.log('temp@@@@', temp);
+    console.log('mainCount', temp);
     if (cartStore.savedItem.savedItems.length > 0) {
       let arrIdx = 'no';
       let temp2 = cartStore.savedItem.savedItems.find((item, index) => {
@@ -148,37 +148,49 @@ const CartButton = ({
         }),
       );
     }
+    if (callback) callback();
+    _getMoreItem();
   };
 
-  const _pressSaveCartButton = () => {
-    console.log('data222', data);
+  const _dispatchStoreCode = callback => {
     dispatch(
       setCurrentStoreCode({
         code: data.jumju_code,
         jumju_id: data.jumju_id,
         storeName: data.mb_company,
+        category: data.category,
       }),
     );
+    if (callback) callback();
+  };
 
-    _checkItem();
+  const _pressSaveCartButton = () => {
+    console.log('data222', data);
+    const prevStoreCode = cartStore.currentStoreCode.code;
+    console.log('prevStoreCode', prevStoreCode);
+    if (prevStoreCode !== data.jumju_code && prevStoreCode) {
+      Alert.alert(
+        '같은 가게의 메뉴만 담을 수 있습니다.',
+        '다른 가게의 메뉴를 담으면 카트에 담겨있는 메뉴는 없어집니다.',
+        [
+          {
+            text: '취소',
+            onPress: () => _getMoreItem(),
+          },
+          {
+            text: '담기',
+            // onPress: () => _getMoreItem(),
+            onPress: () => {
+              _isDiffStore(_dispatchStoreCode);
+            },
+          },
+        ],
+      );
+    } else {
+      _checkItem(_dispatchStoreCode);
+    }
+
     if (data.store_logo) dispatch(setStoreLogo(data.store_logo));
-
-    // _isDiffStore();
-
-    Alert.alert(
-      '카트에 메뉴를 담았습니다.',
-      '다른 가게의 메뉴를 담으면 카트에 담겨있는 메뉴는 없어집니다.',
-      [
-        {
-          text: '카트로 이동',
-          onPress: () => _goToCart(),
-        },
-        {
-          text: '더 담으러 가기',
-          onPress: () => _getMoreItem(),
-        },
-      ],
-    );
   };
 
   const _goToOrderPage = () => {
@@ -190,10 +202,6 @@ const CartButton = ({
   };
 
   const _router = () => {
-    console.log(
-      cartStore.requiredCount,
-      Object.keys(cartStore.selectedMainOption).length,
-    );
     if (
       cartStore.requiredCount !==
       Object.keys(cartStore.selectedMainOption).length
@@ -224,7 +232,6 @@ const CartButton = ({
   return (
     <Pressable
       onPress={() => {
-        _isDiffStore();
         _router();
       }}
       style={{...style.btnContainer}}>

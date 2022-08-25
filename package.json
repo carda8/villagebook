@@ -15,7 +15,7 @@
     "@notifee/react-native": "^5.5.0",
     "@react-native-async-storage/async-storage": "^1.17.7",
     "@react-native-clipboard/clipboard": "^1.11.0",
-    "@react-native-firebase/app": "^15.2.0",
+    "@react-native-firebase/app": "^15.3.0",
     "@react-native-firebase/dynamic-links": "^15.3.0",
     "@react-native-firebase/messaging": "^15.2.0",
     "@react-native-seoul/kakao-login": "^4.2.2",
@@ -66,6 +66,7 @@
     "eslint": "^7.32.0",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.67.0",
+    "react-devtools": "^4.25.0",
     "react-test-renderer": "17.0.2"
   },
   "jest": {

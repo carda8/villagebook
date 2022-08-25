@@ -14,13 +14,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {replaceString} from '../../../config/utils/Price';
 import {removeItem, resetSavedItem} from '../../../store/reducers/CartReducer';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
-import Loading from '../../../component/Loading';
-import {
-  setDeliveryData,
-  setIsDeliveryStore,
-  setLastPrice,
-} from '../../../store/reducers/PaymentReducer';
-import Cart from './Cart';
+import {setIsDeliveryStore} from '../../../store/reducers/PaymentReducer';
 import Caution from '../../../component/Caution';
 import AuthStorageModuel from '../../../store/localStorage/AuthStorageModuel';
 

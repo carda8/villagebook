@@ -34,13 +34,20 @@ import {Errorhandler} from '../../config/ErrorHandler';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import {customAlert} from '../../component/CustomAlert';
 import TextSBold from '../../component/text/TextSBold';
+import TextNotoR from '../../component/text/TextNotoR';
+import AutoLogin from '../../component/loginScreen/AutoLogin';
 
 const Login = ({navigation}) => {
-  const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const [logading, setLoading] = useState(false);
-  const {fcmToken} = useSelector(state => state.authReducer);
+  const {fcmToken, autoLogin} = useSelector(state => state.authReducer);
   const {mutateSNSlogin} = useCustomMutation();
+
+  const isAuto = () => {
+    return autoLogin
+      ? localStorageConfig.state.true
+      : localStorageConfig.state.false;
+  };
 
   const mutate = useMutation(authAPI._login, {
     onSuccess: async e => {
@@ -62,9 +69,7 @@ const Login = ({navigation}) => {
         );
       } else {
         console.log('login e', e);
-        await AuthStorageModuel._setItemAutoLogin(
-          localStorageConfig.state.true,
-        );
+        await AuthStorageModuel._setItemAutoLogin(isAuto());
         await AuthStorageModuel._setItemUserToken(fcmToken);
         await AuthStorageModuel._setItemLoginType(
           localStorageConfig.loginType.local,
@@ -90,7 +95,14 @@ const Login = ({navigation}) => {
 
   const Divider = () => {
     return (
-      <View style={{width: 1, height: 20, backgroundColor: colors.colorE3}} />
+      <View
+        style={{
+          width: 1,
+          height: 20,
+          backgroundColor: colors.primary,
+          marginHorizontal: 10,
+        }}
+      />
     );
   };
 
@@ -134,9 +146,7 @@ const Login = ({navigation}) => {
         if (e.result === 'true') {
           try {
             console.log('login e', e);
-            await AuthStorageModuel._setItemAutoLogin(
-              localStorageConfig.state.true,
-            );
+            await AuthStorageModuel._setItemAutoLogin(isAuto());
             await AuthStorageModuel._setItemUserToken(fcmToken);
             await AuthStorageModuel._setItemLoginType(
               localStorageConfig.loginType.sns,
@@ -180,9 +190,7 @@ const Login = ({navigation}) => {
         if (e.result === 'true') {
           try {
             console.log('login e', e);
-            await AuthStorageModuel._setItemAutoLogin(
-              localStorageConfig.state.true,
-            );
+            await AuthStorageModuel._setItemAutoLogin(isAuto());
             await AuthStorageModuel._setItemUserToken(fcmToken);
             await AuthStorageModuel._setItemLoginType(
               localStorageConfig.loginType.sns,
@@ -210,15 +218,14 @@ const Login = ({navigation}) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{flex: 1, alignItems: 'center', marginTop: '30%'}}>
           <FastImage
-            style={{width: '100%', height: 50, marginBottom: 20}}
+            style={{width: 221, height: 54, marginBottom: 20}}
             source={require('../../assets/logo.png')}
             resizeMode={FastImage.resizeMode.contain}
           />
-          <TextSBold style={{color: colors.fontColor2}}>
+          <TextNotoR style={{fontSize: 15, color: colors.fontColor2}}>
             우리동네 모든 것을 담았다.
-          </TextSBold>
+          </TextNotoR>
         </View>
-        {/* <AutoLogin /> */}
         <View
           style={{
             alignItems: 'center',
@@ -227,6 +234,10 @@ const Login = ({navigation}) => {
             marginTop: 40,
           }}>
           <Input fm={fm} />
+          {/* <View style={{flexDirection:'row'}}>
+            <Image source={require('~/assets/top_ic_map_off.png')}/>            
+          </View> */}
+          <AutoLogin />
           <Pressable
             onPress={() => {
               if (Object.keys(fm.errors).length === 0) fm.handleSubmit();
@@ -235,11 +246,11 @@ const Login = ({navigation}) => {
             style={{
               width: '100%',
               height: 50,
-              borderRadius: 5,
+              borderRadius: 50,
               backgroundColor: colors.primary,
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: 13,
+              marginBottom: 25,
             }}>
             <TextMedium style={{fontSize: 17, color: 'white'}}>
               로그인
@@ -251,7 +262,7 @@ const Login = ({navigation}) => {
               width: '100%',
               flexDirection: 'row',
               marginBottom: 70,
-              justifyContent: 'space-around',
+              justifyContent: 'center',
               alignItems: 'center',
             }}>
             <Pressable
@@ -260,7 +271,7 @@ const Login = ({navigation}) => {
                   target: loginConfig.target.findId,
                 });
               }}>
-              <TextRegular style={{fontSize: 16}}>아이디 찾기</TextRegular>
+              <TextNotoR style={{fontSize: 16}}>아이디 찾기</TextNotoR>
             </Pressable>
             <Divider />
             <Pressable
@@ -269,18 +280,18 @@ const Login = ({navigation}) => {
                   target: loginConfig.target.findPW,
                 });
               }}>
-              <TextRegular style={{fontSize: 16}}>비밀번호 찾기</TextRegular>
+              <TextNotoR style={{fontSize: 16}}>비밀번호 찾기</TextNotoR>
             </Pressable>
             <Divider />
             <Pressable
               onPress={() => {
                 navigation.navigate('CheckTerms');
               }}>
-              <TextRegular style={{fontSize: 16}}>회원가입</TextRegular>
+              <TextNotoR style={{fontSize: 16}}>회원가입</TextNotoR>
             </Pressable>
           </View>
 
-          <Pressable
+          {/* <Pressable
             style={{
               width: '100%',
               height: 20,
@@ -294,14 +305,11 @@ const Login = ({navigation}) => {
               }}>
               SNS 계정으로 로그인
             </TextMedium>
-          </Pressable>
+          </Pressable> */}
 
           <View
             style={{
-              justifyContent: 'space-between',
               flexDirection: 'row',
-              flex: 1,
-              marginBottom: 20,
             }}>
             {/* 네이버 */}
             <Pressable
@@ -310,6 +318,7 @@ const Login = ({navigation}) => {
               }}
               style={{
                 ...style.snsButton,
+                marginRight: 18.5,
               }}>
               <Image
                 source={require('../../assets/sns_naver.png')}
@@ -335,6 +344,7 @@ const Login = ({navigation}) => {
               }}
               style={{
                 ...style.snsButton,
+                marginLeft: 18.5,
               }}>
               <Image
                 source={require('../../assets/sns_kakao.png')}
@@ -367,12 +377,9 @@ const style = StyleSheet.create({
   snsButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    height: 60,
-    marginRight: 6,
   },
   snsImage: {
-    width: '100%',
-    height: '100%',
+    width: 60,
+    height: 60,
   },
 });

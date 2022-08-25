@@ -78,7 +78,6 @@ const CategoryView = ({navigation, route}) => {
   }, []);
 
   const renderItem = item => {
-    console.log('ITEM', item);
     return (
       <>
         <Pressable
@@ -109,15 +108,16 @@ const CategoryView = ({navigation, route}) => {
             <TextMedium
               style={{
                 textAlign: 'center',
-                fontSize: 12,
+                fontSize: 13,
               }}>
               {item.item.ca_name}
             </TextMedium>
           </View>
         </Pressable>
-        {item.index === categoryData?.length - 1 && (
-          <View style={{flex: 4 - (categoryData?.length % 4)}}></View>
-        )}
+        {item.index === categoryData?.length - 1 &&
+          categoryData?.length % 4 !== 0 && (
+            <View style={{flex: 4 - (categoryData?.length % 4)}}></View>
+          )}
       </>
     );
   };
@@ -184,7 +184,13 @@ const CategoryView = ({navigation, route}) => {
 
             <SearchBox
               isSub={true}
-              onPress={() => navigation.navigate('SearchView')}
+              navigation={navigation}
+              onPress={() =>
+                navigation.navigate('SearchView', {
+                  isSub: true,
+                  category: selectedCategory,
+                })
+              }
             />
             {/* 메인배너 */}
             <MainBanner
@@ -198,11 +204,11 @@ const CategoryView = ({navigation, route}) => {
         numColumns={4}
         contentContainerStyle={{
           paddingHorizontal: 22,
-          paddingBottom: 100,
+          paddingBottom: 70,
         }}
         columnWrapperStyle={{
           alignSelf: 'center',
-          marginBottom: 20,
+          marginBottom: 10,
         }}
         keyExtractor={(item, index) => index}
       />

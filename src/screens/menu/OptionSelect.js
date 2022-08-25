@@ -28,7 +28,6 @@ const OptionSelect = ({navigation, route}) => {
     state => state.menuReducer,
   );
   const dispatch = useDispatch();
-  console.log('## route', routeData);
   const _getMenuDetail = () => {
     const data = {
       jumju_id: routeData.jumju_id,

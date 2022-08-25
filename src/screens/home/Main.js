@@ -170,7 +170,7 @@ const Main = ({navigation}) => {
             }}
             style={{
               flex: 1,
-              borderRadius: 25,
+              borderRadius: 10,
               marginRight: 16,
               paddingTop: 34,
               paddingLeft: 27,
@@ -202,7 +202,7 @@ const Main = ({navigation}) => {
             }}
             style={{
               flex: 1,
-              borderRadius: 25,
+              borderRadius: 10,
               paddingTop: 34,
               paddingLeft: 27,
               backgroundColor: colors.mainBG2,
@@ -247,7 +247,7 @@ const Main = ({navigation}) => {
               borderWidth: 1,
               backgroundColor: colors.mainBG3,
               borderColor: colors.mainBG3Border,
-              borderRadius: 25,
+              borderRadius: 10,
               overflow: 'hidden',
             }}>
             <View style={{paddingTop: 39}}>
@@ -274,7 +274,7 @@ const Main = ({navigation}) => {
         {/* 메인배너 */}
         <MainBanner
           navigation={navigation}
-          style={{marginBottom: 60}}
+          style={{marginBottom: 20}}
           position={BannerList.main}
         />
 

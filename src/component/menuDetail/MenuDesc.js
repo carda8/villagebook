@@ -13,9 +13,10 @@ import TextBold from '../text/TextBold';
 import TextLight from '../text/TextLight';
 import TextNotoM from '../text/TextNotoM';
 import TextRegular from '../text/TextRegular';
+import LikeShare from './LikeShare';
 import MenuDescTab from './MenuDescTab';
 
-const MenuDesc = ({navigation, info}) => {
+const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
   const {mutateGetStoreCoupon} = useCustomMutation();
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const dispatch = useDispatch();
@@ -82,39 +83,24 @@ const MenuDesc = ({navigation, info}) => {
       <View style={{top: -27}}>
         <View
           style={{
-            flexDirection: 'row',
             justifyContent: 'space-between',
-            alignItems: 'center',
             paddingHorizontal: 22,
           }}>
-          <View>
-            <TextBold style={{fontSize: 22}}>
-              {storeInfo.mb_biz_name ?? storeInfo.mb_company}
-            </TextBold>
-            {!isLifeStyle && <ReviewSimple2 info={storeInfo} />}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <View style={{flex: 1}}>
+              <TextBold style={{fontSize: 22}}>
+                {storeInfo.mb_biz_name ?? storeInfo.mb_company}
+              </TextBold>
+            </View>
+            <LikeShare storeInfo={storeInfo} categoryMain={categoryMain} />
           </View>
 
-          <View style={{}}>
-            <Pressable
-              onPress={() => {
-                Linking.openURL(`tel:${storeInfo.mb_tel}`);
-              }}
-              style={{
-                width: 51,
-                height: 51,
-                borderRadius: 51 / 2,
-                borderWidth: 1,
-                borderColor: colors.colorE3,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={require('~/assets/ico_call.png')}
-                resizeMode="contain"
-                style={{width: 25, height: 25}}
-              />
-            </Pressable>
-          </View>
+          {!isLifeStyle && <ReviewSimple2 info={storeInfo} />}
         </View>
         {isLifeStyle && (
           <>
@@ -268,7 +254,35 @@ const MenuDesc = ({navigation, info}) => {
                 이 매장의 할인 쿠폰받기
               </Text>
             </Pressable>
-            <MenuDescTab info={storeInfo} navigation={navigation} />
+            <Pressable
+              onPress={() => {
+                Linking.openURL(`tel:${storeInfo.mb_tel}`);
+              }}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'white',
+                borderWidth: 1,
+                borderColor: colors.borderColor,
+                marginHorizontal: 22,
+                height: 50,
+                borderRadius: 8,
+                marginTop: 7,
+              }}>
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 15,
+                  color: colors.fontColorA2,
+                }}>
+                전화하기
+              </Text>
+            </Pressable>
+            <MenuDescTab
+              info={storeInfo}
+              navigation={navigation}
+              routeData={routeData}
+            />
           </>
         )}
       </View>

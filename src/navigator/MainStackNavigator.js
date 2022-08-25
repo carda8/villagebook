@@ -46,7 +46,7 @@ import localStorageConfig from '../store/localStorage/localStorageConfig';
 import Loading from '../component/Loading';
 import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {setFcmToken, setUserInfo} from '../store/reducers/AuthReducer';
 import PaymentMain from '../screens/payment/PaymentMain';
 import messaging from '@react-native-firebase/messaging';
@@ -64,12 +64,9 @@ import CouponSelect from '../screens/menu/orderDetail/CouponSelect';
 import SearchView from '../screens/home/SearchView';
 import {AppState, Linking} from 'react-native';
 import AuthStorageModuel from '../store/localStorage/AuthStorageModuel';
-import {
-  saveItem,
-  setSaveItem,
-  setStoreLogo,
-} from '../store/reducers/CartReducer';
-import dayjs from 'dayjs';
+import {setSaveItem, setStoreLogo} from '../store/reducers/CartReducer';
+import MenuDetail2 from '../screens/menu/MenuDetail2';
+import SearchResult from '../screens/home/SearchResult';
 
 const Stack = createNativeStackNavigator();
 
@@ -292,6 +289,7 @@ const MainStackNavigator = () => {
         initialRouteName={initRoute}
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="MenuDetail2" component={MenuDetail2} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
           name="Policy"
@@ -304,6 +302,11 @@ const MainStackNavigator = () => {
 
         <Stack.Screen name="Main" component={Main} />
         <Stack.Screen name="SearchView" component={SearchView} />
+        <Stack.Screen
+          name="SearchResult"
+          component={SearchResult}
+          options={{animation: 'slide_from_right'}}
+        />
 
         <Stack.Screen name="AddressMain" component={AddressMain} />
         <Stack.Screen name="AddressSetDetail" component={AddressSetDetail} />

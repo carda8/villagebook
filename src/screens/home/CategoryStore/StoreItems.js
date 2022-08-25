@@ -24,6 +24,8 @@ import {useCustomMutation} from '../../../hooks/useCustomMutation';
 import {Errorhandler} from '../../../config/ErrorHandler';
 import {setIsLifeStyle} from '../../../store/reducers/CategoryReducer';
 import {customAlert} from '../../../component/CustomAlert';
+import Loading from '../../../component/Loading';
+import {setCurrentStoreCode} from '../../../store/reducers/CartReducer';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
@@ -45,6 +47,7 @@ const StoreItems = ({navigation, route}) => {
 
   const _init = () => {
     // console.log('storeitem', routeData);
+    itemLimit.current = 0;
     const data = {
       mb_ca_code: routeData.ca_code,
       item_count: itemLimit.current,
@@ -92,15 +95,16 @@ const StoreItems = ({navigation, route}) => {
       mb_lat: currentLocation.lat,
       mb_lng: currentLocation.lon,
     };
-
+    console.log('itemLImit ::::::::', itemLimit.current);
     if (routeData.category === 'lifestyle') {
-      delete data.mb_ca_sort;
+      // delete data.mb_ca_sort;
       mutateGetLifeStyle.mutate(data, {
         onSuccess: e => {
           if (e.result === 'true') {
             console.log('ee', e);
+            console.log('list', storeList);
             setStoreList(prev => prev.concat(e.data.arrItems));
-          } else setStoreList([]);
+          }
         },
       });
     } else {
@@ -143,13 +147,13 @@ const StoreItems = ({navigation, route}) => {
       <Pressable
         onPress={() => {
           console.log('code', storeInfo.mb_jumju_code);
-          // dispatch(
-          //   setCurrentStoreCode({
-          //     code: storeInfo.mb_jumju_code,
-          //     jumju_id: storeInfo.mb_id,
-          //     storeName: storeInfo.mb_company,
-          //   }),
-          // );
+          dispatch(
+            setCurrentStoreCode({
+              code: storeInfo.mb_jumju_code,
+              jumju_id: storeInfo.mb_id,
+              storeName: storeInfo.mb_company,
+            }),
+          );
           if (routeData.category === 'lifestyle') {
             dispatch(setIsLifeStyle(true));
             navigation.navigate('LifeStyleStoreInfo', {
@@ -372,12 +376,6 @@ const StoreItems = ({navigation, route}) => {
     );
   };
 
-  // if (
-  //   mutateGetStoreList.isLoading ||
-  //   mutateGetLifeStyle.isLoading ||
-  //   !storeList
-  // )
-  //   return <Loading />;
   // storeList[0] !== null && storeList[1] !== null ? storeList : []
   // console.log('storeligttt', storeList);
   return (
@@ -388,20 +386,24 @@ const StoreItems = ({navigation, route}) => {
           data={storeList}
           keyExtractor={(item, index) => item + index}
           renderItem={item => renderItem(item)}
-          ListEmptyComponent={() => (
-            <View
-              style={{
-                flex: 1,
-                marginTop: '30%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={require('~/assets/no_store.png')}
-                style={{width: 250, height: 250}}
-              />
-            </View>
-          )}
+          ListEmptyComponent={() =>
+            mutateGetLifeStyle.isLoading ? (
+              <Loading />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  marginTop: '30%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/no_store.png')}
+                  style={{width: 250, height: 250}}
+                />
+              </View>
+            )
+          }
           onEndReached={() => _getMoreStoreList()}
           showsVerticalScrollIndicator={false}
         />
@@ -409,27 +411,31 @@ const StoreItems = ({navigation, route}) => {
         <SectionList
           sections={storeList}
           ListEmptyComponent={
-            <View
-              style={{
-                flex: 1,
-                marginTop: '30%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={require('~/assets/no_store.png')}
-                style={{width: 250, height: 250}}
-              />
-            </View>
+            mutateGetStoreList.isLoading ? (
+              <Loading />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  marginTop: '30%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/no_store.png')}
+                  style={{width: 250, height: 250}}
+                />
+              </View>
+            )
           }
           keyExtractor={(item, index) => item + index}
           renderItem={item => renderItem(item)}
           renderSectionHeader={({section: {isOpen}}) =>
             !isOpen && (
-              <>
+              <View style={{paddingHorizontal: 22}}>
                 <DividerL style={{marginBottom: 20}} />
                 <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
-              </>
+              </View>
             )
           }
           showsVerticalScrollIndicator={false}
