@@ -27,11 +27,11 @@ const paymentSlice = createSlice({
       state.orderResult = action.payload;
     },
     resetPayment: (state, action) => {
-      (state.paymentMethod = ''),
-        (state.addData = ''),
-        (state.deliveryData = ''),
-        (state.lastPrice = ''),
-        (state.isDelivery = true);
+      state.paymentMethod = '';
+      state.addData = '';
+      state.deliveryData = '';
+      state.lastPrice = '';
+      state.isDelivery = true;
     },
   },
 });

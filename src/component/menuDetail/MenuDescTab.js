@@ -19,10 +19,14 @@ import TextSBold from '../text/TextSBold';
 import DividerL from '../DividerL';
 import TextBold from '../text/TextBold';
 import {useDispatch} from 'react-redux';
-import {setDeliveryInfo} from '../../store/reducers/DeliveryInfoReducer';
+import {
+  setDeliveryInfo,
+  setIsDelivery,
+} from '../../store/reducers/DeliveryInfoReducer';
 import MiniMap from '../../screens/map/MiniMap';
 import Clipboard from '@react-native-clipboard/clipboard';
 import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
+import {setIsDeliveryStore} from '../../store/reducers/PaymentReducer';
 
 const MenuDescTab = ({info, navigation, routeData}) => {
   const dispatch = useDispatch();
@@ -76,6 +80,8 @@ const MenuDescTab = ({info, navigation, routeData}) => {
           }}
           onPress={() => {
             setTabIdx(0);
+            dispatch(setIsDelivery(true));
+            dispatch(setIsDeliveryStore(true));
           }}>
           <View
             style={{
@@ -104,17 +110,18 @@ const MenuDescTab = ({info, navigation, routeData}) => {
           }}
           onPress={() => {
             setTabIdx(1);
+            dispatch(setIsDelivery(false));
+            dispatch(setIsDeliveryStore(false));
           }}>
           <View
             style={{
-              borderBottomWidth: tabIdx === 1 ? 2 : 0,
-              borderBottomColor: colors.borderColor22,
-
               width: 70,
               height: '100%',
+              paddingBottom: 9,
               alignItems: 'center',
               justifyContent: 'flex-end',
-              paddingBottom: 9,
+              borderBottomWidth: tabIdx === 1 ? 2 : 0,
+              borderBottomColor: colors.borderColor22,
             }}>
             <Text
               style={{

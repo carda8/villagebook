@@ -19,16 +19,17 @@ import Loading from '../../component/Loading';
 import ReviewSimple from '../../component/reviews/ReviewSimple';
 import TextBold from '../../component/text/TextBold';
 import TextRegular from '../../component/text/TextRegular';
+import TextSBold from '../../component/text/TextSBold';
 import {replaceString} from '../../config/utils/Price';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import {setSearchResult} from '../../store/reducers/SearchReducer';
 import colors from '../../styles/colors';
 
-const SearchList = ({navigation, JType}) => {
+const SearchList = ({navigation, JType, route}) => {
   const dispatch = useDispatch();
   const {mutateSearch} = useCustomMutation();
-  const {foodResult, marketResult, lifestyleResult, type, keyword} =
+  const {foodResult, marketResult, lifestyleResult, type, keyword, isLoading} =
     useSelector(state => state.searchReducer);
   const {currentLocation} = useSelector(state => state.locationReducer);
   // console.log('searchResult', searchResult);
@@ -286,6 +287,8 @@ const SearchList = ({navigation, JType}) => {
       </>
     );
   };
+  console.log('ISLOADING', isLoading);
+  if (isLoading) return <Loading />;
 
   return (
     <View style={{flex: 1}}>
@@ -301,6 +304,7 @@ const SearchList = ({navigation, JType}) => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
+              <TextSBold>검색결과가 없습니다.</TextSBold>
               {/* <Image
                 source={require('~/assets/no_store.png')}
                 style={{width: 250, height: 250}}
@@ -336,25 +340,30 @@ const SearchList = ({navigation, JType}) => {
           // }
           keyExtractor={(item, index) => index}
           onEndReached={() => {
-            // _getMoreSearch();
+            _getMoreSearch();
           }}
         />
       ) : (
         <SectionList
           sections={JType === 'food' ? foodResult : marketResult}
           ListEmptyComponent={
-            <View
-              style={{
-                flex: 1,
-                marginTop: '30%',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              {/* <Image
+            mutateSearch.isLoading ? (
+              <Loading />
+            ) : (
+              <View
+                style={{
+                  flex: 1,
+                  marginTop: '30%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <TextSBold>검색결과가 없습니다.</TextSBold>
+                {/* <Image
                 source={require('~/assets/no_store.png')}
                 style={{width: 250, height: 250}}
               /> */}
-            </View>
+              </View>
+            )
           }
           // ListFooterComponentStyle={{
           //   alignItems: 'center',

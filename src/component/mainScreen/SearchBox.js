@@ -1,13 +1,20 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {Keyboard} from 'react-native';
 import {Image, Modal, Pressable, TextInput, View} from 'react-native';
+import {useQueryClient} from 'react-query';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
-import {setSearchResult, setType} from '../../store/reducers/SearchReducer';
+import {
+  setIsLoading,
+  setSearchResult,
+  setType,
+} from '../../store/reducers/SearchReducer';
 import colors from '../../styles/colors';
 import {customAlert} from '../CustomAlert';
+import Loading from '../Loading';
 import TextBold from '../text/TextBold';
 
-const SearchBox = ({onPress, isMain, isSub, navigation, category}) => {
+const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
   const dispatch = useDispatch();
   const [keyword, setKeyword] = useState('');
   const {mutateSearch} = useCustomMutation();
@@ -18,7 +25,6 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category}) => {
   //   if (!isMain && !isSub) setModal(true);
   // };
   console.log('props,', isSub, category);
-
   const limitItem = useRef(0);
 
   const _getResult = async data => {
@@ -37,6 +43,7 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category}) => {
 
   const _search = type => {
     if (!keyword.trim()) return customAlert('알림', '검색어를 입력해주세요');
+    dispatch(setIsLoading(true));
     dispatch(setType({type: type, keyword: keyword}));
     list.map(async (item, index) => {
       const data = {
@@ -51,8 +58,14 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category}) => {
       console.log('temp', temp);
       dispatch(setSearchResult({type: item, item: temp}));
     });
+    console.log('route', route);
     navigation.navigate('SearchResult', {isSub: isSub, category: category});
   };
+
+  useEffect(() => {
+    if (mutateSearch.isLoading) dispatch(setIsLoading(true));
+    else dispatch(setIsLoading(false));
+  }, [mutateSearch.isLoading]);
 
   return (
     <>
@@ -60,7 +73,7 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category}) => {
         onPress={() => (onPress ? onPress() : _search())}
         style={{width: '100%', height: 50, flexDirection: 'row'}}>
         <TextInput
-          editable={isMain || isSub ? false : true}
+          // editable={isMain || isSub ? false : true}
           style={{
             flex: 1,
             backgroundColor: colors.inputBoxBG,
@@ -86,7 +99,10 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category}) => {
           }}></Pressable>
            */}
         <Pressable
-          onPress={() => (onPress ? onPress() : _search())}
+          onPress={() => {
+            Keyboard.dismiss();
+            onPress ? onPress() : _search();
+          }}
           style={{
             width: 50,
             height: 50,

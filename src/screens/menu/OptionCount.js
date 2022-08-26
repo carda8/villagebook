@@ -40,7 +40,10 @@ const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
       console.log('temp', cartStore.savedItem.savedItems[index].totalPrice);
       console.log('price', price);
       let temp =
-        cartStore.savedItem.savedItems[index].totalPrice + Number(price);
+        cartStore.savedItem.savedItems[index].totalPrice +
+        cartStore.savedItem.savedItems[index].main.mainPrice;
+      console.log('path3', index, temp, subPrice, mainOptionsPrice, isSummit);
+      console.log('cart', cartStore);
       dispatch(
         setMainCountFromCart({
           index: index,
@@ -71,7 +74,8 @@ const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
     if (isSummit) {
       if (cartStore.savedItem.savedItems[index].main.count > 1) {
         let temp =
-          cartStore.savedItem.savedItems[index].totalPrice - Number(price);
+          cartStore.savedItem.savedItems[index].totalPrice -
+          cartStore.savedItem.savedItems[index].main.mainPrice;
         dispatch(
           setMainCountFromCart({
             index: index,

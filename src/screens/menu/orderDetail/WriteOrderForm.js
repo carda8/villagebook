@@ -29,7 +29,8 @@ const WriteOrderForm = ({navigation, route}) => {
   const addData = route.params?.addData;
   // console.log('routeroute', route.params);
   // console.log('addData', addData);
-  const deliveryData = route.params?.deliveryData;
+  const {deliveryData} = useSelector(state => state.paymentReducer);
+  // const deliveryData = route.params?.deliveryData;
   const lastPrice = route.params?.lastPrice;
   // const isDelivery = route.params?.isDelivery;
 
@@ -44,9 +45,6 @@ const WriteOrderForm = ({navigation, route}) => {
   const {isDelivery, paymentMethod} = useSelector(
     state => state.paymentReducer,
   );
-
-  const [noSpoon, setNoSpoon] = useState(false);
-  const [safeNumber, setSafeNumber] = useState(false);
   const [couponPoint, setCouponPoint] = useState([]);
   const [agreement, setAgreement] = useState(false);
   const [orderForm, setOrderForm] = useState({
@@ -98,6 +96,8 @@ const WriteOrderForm = ({navigation, route}) => {
     }
     console.log('ORDER FORM', orderForm);
     console.log('delivery', deliveryData);
+    console.log('calc totla', calcTotal);
+
     return calcTotal;
   };
 

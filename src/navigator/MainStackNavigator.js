@@ -148,8 +148,16 @@ const MainStackNavigator = () => {
         mt_app_token: token,
       };
     } else {
-      data = await _typeNumOfsns(loginTypeNum, token);
+      //자동로그인시 해당 sns 계정 서버는 최초 1회 로그인시 경유
+      //로그아웃 이후 재로그인 시 에도 경유
+      //아래 주석 해제시 항상 서버 경유
+      // data = await _typeNumOfsns(loginTypeNum, token);
       console.log('## autoLogin data', data);
+      data = {
+        mt_id: id,
+        mt_app_token: token,
+        mt_login_type: loginTypeNum,
+      };
       // const result = await SNSLogin._KakaoLogin(token);
       // console.log('_KakaoLogin result', result);
       // data = {
@@ -253,6 +261,8 @@ const MainStackNavigator = () => {
       async nextAppState => {
         // console.log('next App STATE', nextAppState);
         const cartData = await AuthStorageModuel._getCartData();
+        console.log('::::::::::: MAIN DATA', JSON.parse(cartData));
+
         if (cartData) {
           const copyData = JSON.parse(cartData);
           if (

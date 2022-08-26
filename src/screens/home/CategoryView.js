@@ -185,12 +185,13 @@ const CategoryView = ({navigation, route}) => {
             <SearchBox
               isSub={true}
               navigation={navigation}
-              onPress={() =>
-                navigation.navigate('SearchView', {
-                  isSub: true,
-                  category: selectedCategory,
-                })
-              }
+              category={selectedCategory}
+              // onPress={() =>
+              //   navigation.navigate('SearchView', {
+              //     isSub: true,
+              //     category: selectedCategory,
+              //   })
+              // }
             />
             {/* 메인배너 */}
             <MainBanner

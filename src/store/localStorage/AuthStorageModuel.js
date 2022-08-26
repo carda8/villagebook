@@ -69,7 +69,7 @@ export default {
       ...value,
       savedTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
     };
-    console.log('TEMP ::::::', temp);
+    console.log('Storage :::', temp);
     const data = await AsyncStorage.setItem(key, JSON.stringify(temp));
     return data;
   },

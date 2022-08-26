@@ -74,7 +74,10 @@ const SearchResult = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'검색'} navigation={navigation} />
+      <Header
+        title={routeData?.category ? routes[0].title + ' 검색' : '검색'}
+        navigation={navigation}
+      />
       <View style={{paddingHorizontal: 22}}>
         <View>
           <SearchBox navigation={navigation} category={routeData.category} />
@@ -94,7 +97,8 @@ const SearchResult = ({navigation, route}) => {
                 ? colors.borderColor
                 : 'black',
             }}
-            labelStyle={{color: 'black'}}
+            tabStyle={{height: routeData?.category ? 10 : null}}
+            labelStyle={{color: routeData?.category ? 'white' : 'black'}}
             indicatorContainerStyle={{alignItems: 'center'}}
             style={{
               backgroundColor: 'white',
@@ -135,76 +139,3 @@ const styles = StyleSheet.create({
     paddingBottom: 9,
   },
 });
-
-{
-  /* <View
-          style={{
-            ...styles.tabContainer,
-          }}>
-          <Pressable
-            style={{
-              ...styles.tabItemContainer,
-            }}
-            onPress={() => {
-              setTabIdx(0);
-              _getList('food');
-            }}>
-            <View
-              style={{
-                borderBottomWidth: tabIdx === 0 ? 2 : 0,
-                ...styles.tabItem,
-              }}>
-              <Text
-                style={{
-                  color: tabIdx === 0 ? colors.fontColor2 : colors.fontColorA2,
-                }}>
-                맛집
-              </Text>
-            </View>
-          </Pressable>
-          <Pressable
-            style={{
-              ...styles.tabItemContainer,
-            }}
-            onPress={() => {
-              setTabIdx(1);
-              _getList('market');
-            }}>
-            <View
-              style={{
-                borderBottomWidth: tabIdx === 1 ? 2 : 0,
-                ...styles.tabItem,
-              }}>
-              <Text
-                style={{
-                  color: tabIdx === 1 ? colors.fontColor2 : colors.fontColorA2,
-                }}>
-                마켓
-              </Text>
-            </View>
-          </Pressable>
-          <Pressable
-            style={{
-              ...styles.tabItemContainer,
-            }}
-            onPress={() => {
-              setTabIdx(2);
-            }}>
-            <View
-              style={{
-                borderBottomWidth: tabIdx === 2 ? 2 : 0,
-                ...styles.tabItem,
-              }}>
-              <Text
-                style={{
-                  color: tabIdx === 2 ? colors.fontColor2 : colors.fontColorA2,
-                }}>
-                편의
-              </Text>
-            </View>
-          </Pressable>
-        </View> */
-}
-{
-  /* <SearchList navigation={navigation} /> */
-}

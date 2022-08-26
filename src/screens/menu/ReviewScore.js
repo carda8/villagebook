@@ -74,6 +74,9 @@ const ReviewScore = ({review}) => {
   return (
     <>
       <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
+        <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
+          리뷰 정보
+        </TextBold>
         <TextRegular style={{fontSize: 15}}>
           {review?.notice.noticeContent}
         </TextRegular>

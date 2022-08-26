@@ -1363,10 +1363,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/dynamic-links/-/dynamic-links-15.3.0.tgz#aa316777656f4346c86d2d6dcf8e05a10d5062eb"
   integrity sha512-Q7LzMwpUFsnwDlhaCbqVZRDA1lptKIxKNo17HhdIqrzsWMjST2ye+Ag678grRHUM3g14h+FYTWkkyZiJ06sM/Q==
 
-"@react-native-firebase/messaging@^15.2.0":
-  version "15.2.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-15.2.0.tgz#25d5224806587f77a7ef55f4b1e724c07c517176"
-  integrity sha512-z8esKSlaHE+MMYmYTDpn6sgugOCAZpnTyD9M+eK95vG46G4N+qImB9oD5nJ7w39SyvZSuDPPJ2TItc0Qy6Gkxw==
+"@react-native-firebase/messaging@^15.3.0":
+  version "15.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-15.3.0.tgz#fced47b1baeb5ea0e241cb3a12c50e9d45c98e79"
+  integrity sha512-Jia+24sqevom49P8y+fycZJ6P8f4anrDElD9iH3eHEGaUbwkPbwCtWWI6rwXEYD6g+3rpGosZ/DMjaGxZZAGaA==
 
 "@react-native-seoul/kakao-login@^4.2.2":
   version "4.2.2"

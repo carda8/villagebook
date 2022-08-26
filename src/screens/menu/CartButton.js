@@ -18,6 +18,7 @@ import {setLastPrice} from '../../store/reducers/PaymentReducer';
 import Loading from '../../component/Loading';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
+import {replace} from 'formik';
 
 const CartButton = ({
   navigation,
@@ -25,6 +26,7 @@ const CartButton = ({
   lastPrice,
   deliveryData,
   isDelivery,
+  deliveryInfo,
   data,
   isLoading,
 }) => {
@@ -51,21 +53,20 @@ const CartButton = ({
     navigation.goBack();
   };
 
-  const _isDiffStore = callback => {
+  const _isDiffStore = () => {
     const savedStoreCode = cartStore.savedItem?.savedStoreCode.code;
-    const currentStoreCode = cartStore.currentStoreCode?.code;
+    const currentStoreCode = data.jumju_code;
     console.log('cartStore ::::::', cartStore);
     console.log('savedStoreCode2', savedStoreCode);
-    console.log('currentStoreCode2', currentStoreCode);
     if (savedStoreCode && currentStoreCode) {
       if (savedStoreCode !== currentStoreCode) {
         dispatch(resetSavedItem());
       }
     }
-    if (callback) callback(_checkItem);
+    _checkItem();
   };
 
-  const _checkItem = callback => {
+  const _checkItem = () => {
     let mainCount = {...cartStore.mainCount, count: null};
     let temp = {
       // count: cartStore.mainCount.count,
@@ -76,7 +77,6 @@ const CartButton = ({
       sub: cartStore.subItems,
       // totalPrice: cartStore.totalPrice,
     };
-
     console.log('mainCount', temp);
     if (cartStore.savedItem.savedItems.length > 0) {
       let arrIdx = 'no';
@@ -129,6 +129,7 @@ const CartButton = ({
         );
       }
     } else {
+      console.log('path2');
       dispatch(
         saveItem({
           storeCode: {
@@ -148,8 +149,9 @@ const CartButton = ({
         }),
       );
     }
-    if (callback) callback();
-    _getMoreItem();
+    navigation.goBack();
+
+    // _dispatchStoreCode();
   };
 
   const _dispatchStoreCode = callback => {
@@ -161,14 +163,19 @@ const CartButton = ({
         category: data.category,
       }),
     );
-    if (callback) callback();
+    navigation.goBack();
   };
 
   const _pressSaveCartButton = () => {
     console.log('data222', data);
     const prevStoreCode = cartStore.currentStoreCode.code;
     console.log('prevStoreCode', prevStoreCode);
-    if (prevStoreCode !== data.jumju_code && prevStoreCode) {
+
+    // return;
+    if (
+      data.jumju_code !== cartStore.savedItem.savedStoreCode.code &&
+      cartStore.savedItem.savedStoreCode?.code
+    ) {
       Alert.alert(
         '같은 가게의 메뉴만 담을 수 있습니다.',
         '다른 가게의 메뉴를 담으면 카트에 담겨있는 메뉴는 없어집니다.',
@@ -179,26 +186,45 @@ const CartButton = ({
           },
           {
             text: '담기',
-            // onPress: () => _getMoreItem(),
             onPress: () => {
-              _isDiffStore(_dispatchStoreCode);
+              _isDiffStore();
+              if (data.store_logo) dispatch(setStoreLogo(data.store_logo));
             },
           },
         ],
       );
     } else {
-      _checkItem(_dispatchStoreCode);
+      _checkItem();
+      if (data.store_logo) dispatch(setStoreLogo(data.store_logo));
     }
+  };
 
-    if (data.store_logo) dispatch(setStoreLogo(data.store_logo));
+  const _checkMin = () => {
+    const price = Number(String(lastPrice).replace(/[,]/gi, ''));
+    if (isDelivery) {
+      if (price < deliveryInfo.min_price) {
+        customAlert('알림', '배달주문 금액이 최소주문금액 보다 작습니다.');
+        return false;
+      } else return true;
+    } else {
+      if (price < deliveryInfo.min_price_wrap) {
+        customAlert('알림', '포장주문 금액이 최소주문금액 보다 작습니다.');
+        return false;
+      } else return true;
+    }
   };
 
   const _goToOrderPage = () => {
-    navigation.navigate('WriteOrderForm', {
-      isDelivery: isDelivery,
-      deliveryData: deliveryData,
-      lastPrice,
-    });
+    const result = _checkMin();
+    console.log('last', lastPrice);
+    console.log('deliveryInfo', deliveryInfo);
+    if (result) {
+      navigation.navigate('WriteOrderForm', {
+        isDelivery: isDelivery,
+        deliveryData: deliveryData,
+        lastPrice,
+      });
+    }
   };
 
   const _router = () => {
@@ -221,7 +247,13 @@ const CartButton = ({
 
   const _cartStorage = async () => {
     let temp = cartStore.savedItem;
-    temp = {...temp, logo: data?.store_logo ?? cartStore.storeLogoUrl};
+    console.log('_cartStorage1 ::::::::::', temp);
+    temp = {
+      ...temp,
+      logo: data?.store_logo ?? cartStore.storeLogoUrl,
+      // totalPrice,
+    };
+    console.log('_cartStorage2 ::::::::::', temp);
     await AuthStorageModuel._setCartData(temp);
   };
 

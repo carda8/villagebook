@@ -109,7 +109,7 @@ const Header = ({
               });
             } else {
               if (!showLogo && navigation.canGoBack()) navigation.goBack();
-              else navigation.navigate('Home');
+              else navigation.navigate('Main');
             }
           }}>
           {showLogo ? (

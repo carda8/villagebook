@@ -14,28 +14,26 @@ import {useDispatch, useSelector} from 'react-redux';
 import {replaceString} from '../../../config/utils/Price';
 import {removeItem, resetSavedItem} from '../../../store/reducers/CartReducer';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
-import {setIsDeliveryStore} from '../../../store/reducers/PaymentReducer';
+import {
+  setDeliveryData,
+  setIsDeliveryStore,
+} from '../../../store/reducers/PaymentReducer';
 import Caution from '../../../component/Caution';
 import AuthStorageModuel from '../../../store/localStorage/AuthStorageModuel';
+import {setIsDelivery} from '../../../store/reducers/DeliveryInfoReducer';
 
 const SummitOrder = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {mutateDeliveryFee} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
-  const {deliveryInfo} = useSelector(state => state.deliveryReducer);
-  const [isDelivery, setIsDelivery] = useState(true);
-
-  console.log('summit cart store', cartStore);
-  console.log('summit route data', route.params);
+  const {isDelivery} = useSelector(state => state.deliveryReducer);
+  const [deliveryInfo, setDeliveryInfo] = useState();
   const _filterOption = prop => {
-    console.log('props', prop);
     const temp = prop.main.option;
-    console.log('temp', temp);
     let arr = [];
 
     temp.map((item, index) => {
       arr.push(item.name, ' : ', item.value, ', ');
-      // console.log('temp', temp[index], prop.main.option[temp[index]].name);
     });
 
     return arr;
@@ -47,7 +45,7 @@ const SummitOrder = ({navigation, route}) => {
       temp += item.totalPrice;
     });
     if (isSummit) {
-      const DeliveryData = mutateDeliveryFee?.data?.data.arrItems[0];
+      const DeliveryData = {...deliveryInfo};
 
       if (!isDelivery) {
         let calc = temp - DeliveryData?.take_out_discount ?? 0;
@@ -66,7 +64,11 @@ const SummitOrder = ({navigation, route}) => {
       total_price: _getTotalPrice(),
     };
     console.log('data', data);
-    mutateDeliveryFee.mutate(data);
+    mutateDeliveryFee.mutate(data, {
+      onSettled: e => {
+        if (e.result === 'true') setDeliveryInfo(e.data.arrItems[0]);
+      },
+    });
   };
 
   useEffect(() => {
@@ -75,19 +77,29 @@ const SummitOrder = ({navigation, route}) => {
 
   const _cartStorage = async () => {
     let temp = cartStore.savedItem;
+    console.log('_cartStorag summit3 ::::::::::::', temp);
     temp = {...temp, logo: cartStore.storeLogoUrl};
+    console.log('_cartStorag summit4 ::::::::::::', temp);
     await AuthStorageModuel._setCartData(temp);
   };
 
   useEffect(() => {
-    _cartStorage();
+    if (
+      cartStore.savedItem.savedItems.length === 0 &&
+      cartStore.savedItem.savedStoreCode?.code
+    ) {
+      dispatch(resetSavedItem());
+    } else {
+      _cartStorage();
+    }
   }, [cartStore.savedItem]);
 
-  // useEffect(() => {
-  //   if (mutateDeliveryFee.data?.arrItems) {
-  //     dispatch(setDeliveryData(mutateDeliveryFee.data.data.arrItems[0]));
-  //   }
-  // }, [mutateDeliveryFee.data]);
+  useEffect(() => {
+    if (deliveryInfo) {
+      console.log('path1 :::', deliveryInfo);
+      dispatch(setDeliveryData(deliveryInfo));
+    }
+  }, [deliveryInfo]);
 
   if (cartStore.savedItem.savedItems.length === 0)
     return (
@@ -105,7 +117,6 @@ const SummitOrder = ({navigation, route}) => {
   // if (!mutateDeliveryFee.data || mutateDeliveryFee.isLoading)
   //   return <Loading />;
   // console.log('mutate data', mutateDeliveryFee.data);
-  const DeliveryData = mutateDeliveryFee?.data?.data?.arrItems[0];
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -116,7 +127,7 @@ const SummitOrder = ({navigation, route}) => {
         goTo={'OrderPage'}
         isDelivery={isDelivery}
         lastPrice={_getTotalPrice(true)}
-        deliveryData={DeliveryData ?? 0}
+        deliveryInfo={deliveryInfo ?? 0}
         data={route.params?.data}
         isLoading={mutateDeliveryFee.isLoading}
       />
@@ -226,8 +237,12 @@ const SummitOrder = ({navigation, route}) => {
             onPress={() => {
               console.log('path1', cartStore.currentStoreCode);
               navigation.navigate('MenuDetail', {
-                jumju_id: cartStore.currentStoreCode.jumju_id,
-                jumju_code: cartStore.currentStoreCode.code,
+                jumju_id:
+                  cartStore.currentStoreCode?.jumju_id ??
+                  cartStore.savedItem.savedStoreCode.jumju_id,
+                jumju_code:
+                  cartStore.currentStoreCode?.code ??
+                  cartStore.savedItem.savedStoreCode.code,
               });
             }}
             style={{
@@ -248,7 +263,7 @@ const SummitOrder = ({navigation, route}) => {
           <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
             <Pressable
               onPress={() => {
-                setIsDelivery(true);
+                dispatch(setIsDelivery(true));
                 dispatch(setIsDeliveryStore(true));
               }}
               style={{
@@ -268,9 +283,9 @@ const SummitOrder = ({navigation, route}) => {
               </TextBold>
             </Pressable>
             <Pressable
-              disabled={DeliveryData?.take_out === 'true' ? false : true}
+              disabled={deliveryInfo?.take_out === 'true' ? false : true}
               onPress={() => {
-                setIsDelivery(false);
+                dispatch(setIsDelivery(false));
                 dispatch(setIsDeliveryStore(false));
               }}
               style={{
@@ -298,7 +313,7 @@ const SummitOrder = ({navigation, route}) => {
                   }}>
                   <TextRegular>배달팁</TextRegular>
                   <TextRegular>
-                    {replaceString(DeliveryData?.send_cost)}원
+                    {replaceString(deliveryInfo?.send_cost)}원
                   </TextRegular>
                 </View>
                 <View
@@ -309,7 +324,7 @@ const SummitOrder = ({navigation, route}) => {
                   }}>
                   <TextRegular>추가 배달팁</TextRegular>
                   <TextRegular>
-                    {replaceString(DeliveryData?.send_cost2)}원
+                    {replaceString(deliveryInfo?.send_cost2)}원
                   </TextRegular>
                 </View>
               </>
@@ -323,7 +338,7 @@ const SummitOrder = ({navigation, route}) => {
                   }}>
                   <TextRegular>포장할인</TextRegular>
                   <TextRegular>
-                    {replaceString(DeliveryData?.take_out_discount)}원
+                    {replaceString(deliveryInfo?.take_out_discount)}원
                   </TextRegular>
                 </View>
               </>

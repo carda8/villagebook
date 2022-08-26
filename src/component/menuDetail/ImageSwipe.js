@@ -7,8 +7,10 @@ const ImageSwipe = ({images}) => {
   return (
     <View style={{flex: 1}}>
       <Swiper
+        loop
         autoplay
         autoplayTimeout={1.5}
+        autoplayDirection={true}
         showsPagination={false}
         removeClippedSubviews={false}
         style={{height: 300}}>
@@ -26,7 +28,7 @@ const ImageSwipe = ({images}) => {
   );
 };
 
-export default React.memo(ImageSwipe);
+export default ImageSwipe;
 
 const styles = StyleSheet.create({
   wrapper: {},

@@ -82,7 +82,7 @@ const cartSlice = createSlice({
     updateItem: (state, action) => {
       state.savedItem.savedItems[action.payload.idx].count += 1;
       state.savedItem.savedItems[action.payload.idx].main.count += 1;
-      state.savedItem.savedItems[action.payload.idx].totalPrice +=
+      state.savedItem.savedItems[action.payload.idx].totalPrice =
         action.payload.price;
     },
     removeItem: (state, action) => {
@@ -93,7 +93,9 @@ const cartSlice = createSlice({
       state.savedItem.savedItems = temp;
     },
     resetSavedItem: (state, action) => {
+      console.log('resetSavedItem', action);
       state.savedItem = {savedStoreCode: {}, savedItems: []};
+      state.currentStoreCode = '';
     },
   },
 });

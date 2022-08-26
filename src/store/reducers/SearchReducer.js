@@ -9,6 +9,7 @@ const searchSlice = createSlice({
     lifestyleResult: [],
     type: '',
     keyword: '',
+    isLoading: false,
   },
   reducers: {
     setSearchResult: (state, action) => {
@@ -33,9 +34,12 @@ const searchSlice = createSlice({
       state.type = action.payload.type;
       state.keyword = action.payload.keyword;
     },
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
   },
 });
 
 const {actions, reducer} = searchSlice;
-export const {setSearchResult, setType} = actions;
+export const {setSearchResult, setType, setIsLoading} = actions;
 export const searchReducer = reducer;

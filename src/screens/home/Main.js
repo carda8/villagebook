@@ -151,7 +151,8 @@ const Main = ({navigation}) => {
         </Pressable>
 
         <SearchBox
-          onPress={() => navigation.navigate('SearchView')}
+          navigation={navigation}
+          // onPress={() => navigation.navigate('SearchView')}
           isMain={true}
         />
 

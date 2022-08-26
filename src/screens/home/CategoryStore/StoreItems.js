@@ -147,13 +147,13 @@ const StoreItems = ({navigation, route}) => {
       <Pressable
         onPress={() => {
           console.log('code', storeInfo.mb_jumju_code);
-          dispatch(
-            setCurrentStoreCode({
-              code: storeInfo.mb_jumju_code,
-              jumju_id: storeInfo.mb_id,
-              storeName: storeInfo.mb_company,
-            }),
-          );
+          // dispatch(
+          //   setCurrentStoreCode({
+          //     code: storeInfo.mb_jumju_code,
+          //     jumju_id: storeInfo.mb_id,
+          //     storeName: storeInfo.mb_company,
+          //   }),
+          // );
           if (routeData.category === 'lifestyle') {
             dispatch(setIsLifeStyle(true));
             navigation.navigate('LifeStyleStoreInfo', {
