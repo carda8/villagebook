@@ -46,7 +46,7 @@ import localStorageConfig from '../store/localStorage/localStorageConfig';
 import Loading from '../component/Loading';
 import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setFcmToken, setUserInfo} from '../store/reducers/AuthReducer';
 import PaymentMain from '../screens/payment/PaymentMain';
 import messaging from '@react-native-firebase/messaging';
@@ -74,6 +74,7 @@ const MainStackNavigator = () => {
   const [initRoute, setInitRoute] = useState();
   const dispatch = useDispatch();
   const {mutateSNSlogin} = useCustomMutation();
+  const cartStore = useSelector(state => state.cartReducer);
   const {_getCurrentLocation, _requestPermissions} = useGeoLocation();
 
   const _getFcmToken = async () => {
@@ -253,16 +254,29 @@ const MainStackNavigator = () => {
     config,
   };
 
+  const _getLocalData = async () => {
+    const cartData = await AuthStorageModuel._getCartData();
+    console.log('::::::::::: MAIN DATA', JSON.parse(cartData));
+    if (cartData) {
+      const copyData = JSON.parse(cartData);
+      delete cartData.logo;
+      if (cartData) {
+        dispatch(setSaveItem(JSON.parse(cartData)));
+        dispatch(setStoreLogo(copyData.logo));
+      }
+    }
+  };
+
   const appState = useRef(AppState.currentState);
+
   useEffect(() => {
-    console.log('appState', appState);
+    console.log(' ::::::::::::: appState', appState);
+    _getLocalData();
     const subscription = AppState.addEventListener(
       'change',
       async nextAppState => {
-        // console.log('next App STATE', nextAppState);
         const cartData = await AuthStorageModuel._getCartData();
         console.log('::::::::::: MAIN DATA', JSON.parse(cartData));
-
         if (cartData) {
           const copyData = JSON.parse(cartData);
           if (
@@ -278,7 +292,6 @@ const MainStackNavigator = () => {
           }
           appState.current = nextAppState;
           // setAppStateVisible(appState.current);
-          // console.log('AppState', appState.current);
         }
       },
     );

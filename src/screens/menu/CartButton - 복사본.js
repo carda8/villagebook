@@ -154,19 +154,21 @@ const CartButton = ({
       );
     }
     navigation.goBack();
+
+    // _dispatchStoreCode();
   };
 
-  // const _dispatchStoreCode = callback => {
-  //   dispatch(
-  //     setCurrentStoreCode({
-  //       code: data.jumju_code,
-  //       jumju_id: data.jumju_id,
-  //       storeName: data.mb_company,
-  //       category: data.category,
-  //     }),
-  //   );
-  //   navigation.goBack();
-  // };
+  const _dispatchStoreCode = callback => {
+    dispatch(
+      setCurrentStoreCode({
+        code: data.jumju_code,
+        jumju_id: data.jumju_id,
+        storeName: data.mb_company,
+        category: data.category,
+      }),
+    );
+    navigation.goBack();
+  };
 
   const _pressSaveCartButton = () => {
     console.log('data222', data);
@@ -190,7 +192,6 @@ const CartButton = ({
             text: '담기',
             onPress: () => {
               _isDiffStore();
-              console.log('LOGOOOOOOOOOOOO', data);
               if (data.store_logo) dispatch(setStoreLogo(data.store_logo));
             },
           },
@@ -198,7 +199,6 @@ const CartButton = ({
       );
     } else {
       _checkItem();
-      console.log('LOGOOOOOOOOOOOO', data);
       if (data.store_logo) dispatch(setStoreLogo(data.store_logo));
     }
   };
@@ -248,6 +248,22 @@ const CartButton = ({
       }
     }
   };
+
+  const _cartStorage = async () => {
+    let temp = cartStore.savedItem;
+    console.log('_cartStorage1 ::::::::::', temp);
+    temp = {
+      ...temp,
+      logo: data?.store_logo ?? cartStore.storeLogoUrl,
+      // totalPrice,
+    };
+    console.log('_cartStorage2 ::::::::::', temp);
+    await AuthStorageModuel._setCartData(temp);
+  };
+
+  useEffect(() => {
+    _cartStorage();
+  }, [cartStore.savedItem]);
 
   return (
     <Pressable

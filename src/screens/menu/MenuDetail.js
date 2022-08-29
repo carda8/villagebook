@@ -35,6 +35,7 @@ import {useSelector} from 'react-redux';
 import MenuReview from './MenuReview';
 import MiniMap from '../map/MiniMap';
 import Caution from '../../component/Caution';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 
 const MenuDetail = ({navigation, route}) => {
   const {
@@ -45,6 +46,7 @@ const MenuDetail = ({navigation, route}) => {
     mutateGetStoreService,
   } = useCustomMutation();
   const {savedItem} = useSelector(state => state.cartReducer);
+  const cartStore = useSelector(state => state.cartReducer);
   const {userInfo} = useSelector(state => state.authReducer);
 
   const routeData = route.params;
@@ -152,11 +154,21 @@ const MenuDetail = ({navigation, route}) => {
     }
   }, [selected]);
 
-  useEffect(() => {
-    if (mutateStoreInfo.data) {
-    }
-  }, [mutateStoreInfo.data]);
+  const _cartStorage = async () => {
+    let temp = savedItem;
+    temp = {
+      ...temp,
+      logo: cartStore.storeLogoUrl,
+      // totalPrice,
+    };
+    await AuthStorageModuel._setCartData(temp);
+  };
 
+  useEffect(() => {
+    _cartStorage();
+  }, [cartStore]);
+
+  // console.log('store', savedItem);
   if (
     mutateStoreInfo.isLoading ||
     mutateTopMenu.isLoading ||

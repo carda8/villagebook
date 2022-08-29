@@ -1,105 +1,131 @@
 import {View, Pressable, Image} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import colors from '../../styles/colors';
 import TextBold from '../../component/text/TextBold';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  setCountDown,
+  setCountUp,
   setMainCount,
   setMainCountFromCart,
 } from '../../store/reducers/CartReducer';
 import Loading from '../../component/Loading';
+import {customAlert} from '../../component/CustomAlert';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 
 const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
-  const [count, setCount] = useState(1);
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
+  const mainCount = cartStore.mainCount;
+  const mainCountNum = cartStore.mainCount.count;
+  const mainOptionPrice = cartStore.selectedMainOption;
+  const savedMenu = cartStore.savedItem.savedItems;
+  const subItems = cartStore.subItems;
 
-  console.log('cartStore', cartStore);
-  console.log('savedItem', savedItem);
-  console.log('isSummit', isSummit, '//', 'index', index);
+  const _calcMenuPrice = down => {
+    let optionPrice = 0;
+    //메인의 옵션 가격
+    if (mainOptionPrice.length > 0) {
+      mainOptionPrice.map((item, index) => {
+        optionPrice += item.price;
+      });
+    }
 
-  const _getSubItemsPrice = () => {
-    let subPrice = 0;
+    // 추가메뉴 가격
+    let subItemPrice = 0;
+    if (subItems.length > 0) {
+      subItems.map((item, index) => {
+        subItemPrice += item.itemPrice;
+      });
+    }
 
-    cartStore.subItems.map((item, index) => {
-      subPrice += item.itemPrice;
-    });
+    let price = 0;
+    if (down) {
+      // subItemPrice;subItemPrice
+      price =
+        cartStore.totalPrice -
+        (mainCount.mainPrice + optionPrice) -
+        subItemPrice;
+    } else {
+      subItemPrice *= mainCountNum + 1;
+      price =
+        (mainCount.mainPrice + optionPrice) * (mainCountNum + 1) + subItemPrice;
+    }
+    return price;
+  };
 
-    return subPrice;
+  const _calcFromCart = down => {
+    let savedItem = savedMenu[index];
+    let temp = {count: 1, price: 0, index: index};
+    temp.count = down ? savedItem.count - 1 : savedItem.count + 1;
+
+    console.log('temp', temp);
+    console.log('savedItem', savedItem);
+    let temp2 = 0;
+    if (savedItem.main.option.length > 0) {
+      savedItem.main.option.map((item, index) => {
+        temp2 += item.price;
+      });
+    }
+    if (savedItem.sub.length > 0) {
+      savedItem.sub.map((item, index) => {
+        temp2 += item.itemPrice;
+      });
+    }
+    temp2 = (savedItem.main.mainPrice + temp2) * temp.count;
+    temp.price = temp2;
+
+    console.log('temp', temp);
+    dispatch(setMainCountFromCart(temp));
+  };
+
+  const _checkRequired = () => {
+    if (
+      cartStore.requiredCount !==
+      Object.keys(cartStore.selectedMainOption).length
+    ) {
+      customAlert('알림', '필수 옵션을 선택해주세요.');
+      return false;
+    } else return true;
   };
 
   const _countUp = () => {
-    const subPrice = _getSubItemsPrice();
-
-    let mainOptionsPrice = 0;
-    cartStore.selectedMainOption.map((item, index) => {
-      mainOptionsPrice += item.price;
-    });
-
-    if (isSummit) {
-      console.log('temp', cartStore.savedItem.savedItems[index].totalPrice);
-      console.log('price', price);
-      let temp =
-        cartStore.savedItem.savedItems[index].totalPrice +
-        cartStore.savedItem.savedItems[index].main.mainPrice;
-      console.log('path3', index, temp, subPrice, mainOptionsPrice, isSummit);
-      console.log('cart', cartStore);
-      dispatch(
-        setMainCountFromCart({
-          index: index,
-          count: cartStore.savedItem.savedItems[index].main.count + 1,
-          price: temp + subPrice + mainOptionsPrice,
-        }),
-      );
-    } else {
-      dispatch(
-        setMainCount({
-          count: cartStore.mainCount.count + 1,
-          mainItemCode: cartStore.mainCount.mainItemCode,
-          price:
-            cartStore.totalPrice + Number(price) + subPrice + mainOptionsPrice,
-        }),
-      );
+    const result = _checkRequired();
+    console.log('index ::', index);
+    if (result) {
+      if (isSummit) {
+        _calcFromCart();
+      } else {
+        dispatch(setCountUp({price: _calcMenuPrice()}));
+      }
     }
   };
 
   const _countDown = () => {
-    const subPrice = _getSubItemsPrice();
-
-    let mainOptionsPrice = 0;
-    cartStore.selectedMainOption.map((item, index) => {
-      mainOptionsPrice += item.price;
-    });
-
-    if (isSummit) {
-      if (cartStore.savedItem.savedItems[index].main.count > 1) {
-        let temp =
-          cartStore.savedItem.savedItems[index].totalPrice -
-          cartStore.savedItem.savedItems[index].main.mainPrice;
-        dispatch(
-          setMainCountFromCart({
-            index: index,
-            count: cartStore.savedItem.savedItems[index].main.count - 1,
-            price: temp - subPrice - mainOptionsPrice,
-          }),
-        );
-      }
-    } else {
-      if (cartStore.mainCount.count > 1) {
-        dispatch(
-          setMainCount({
-            count: cartStore.mainCount.count - 1,
-            mainItemCode: cartStore.mainCount.mainItemCode,
-            price:
-              cartStore.totalPrice -
-              Number(price) -
-              subPrice -
-              mainOptionsPrice,
-          }),
-        );
-      }
+    const result = _checkRequired();
+    if (result) {
+      console.log('cartStore', cartStore);
+      if (mainCountNum > 1 || savedMenu[index].count > 0)
+        if (isSummit) {
+          _calcFromCart(true);
+        } else {
+          dispatch(setCountDown({price: _calcMenuPrice(true)}));
+        }
     }
   };
+
+  const _cartStorage = async () => {
+    let temp = cartStore.savedItem;
+    temp = {
+      ...temp,
+      logo: cartStore.storeLogoUrl,
+      // totalPrice,
+    };
+    await AuthStorageModuel._setCartData(temp);
+  };
+  useEffect(() => {
+    _cartStorage();
+  }, [savedItem]);
 
   return (
     <View
