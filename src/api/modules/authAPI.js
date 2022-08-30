@@ -1,9 +1,13 @@
 import {API} from '../API';
-import {_reqAPI} from '../apiModule';
+import {_reqAPI, _reqImageAPI} from '../apiModule';
 
 export default {
   _login: async data => {
     const result = await _reqAPI('proc_member_login.php', data);
+    return result;
+  },
+  _snsLogin: async data => {
+    const result = await _reqAPI('proc_member_login_social.php', data);
     return result;
   },
   _autoLogin: async data => {
@@ -11,7 +15,7 @@ export default {
     return result;
   },
   _submitForm: async data => {
-    const result = await _reqAPI('proc_member_join.php', data);
+    const result = await _reqImageAPI('proc_member_join.php', data);
     return result;
   },
   _checkId: async data => {

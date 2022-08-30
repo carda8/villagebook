@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
@@ -49,11 +49,13 @@ const Policy = ({navigation, route}) => {
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={routeData} navigation={navigation} />
-      <View style={{padding: 22}}>
-        <TextRegular>
-          {mutatePolicy?.data?.data.arrItems.co_content}
-        </TextRegular>
-      </View>
+      <ScrollView>
+        <View style={{padding: 22}}>
+          <TextRegular>
+            {mutatePolicy?.data?.data.arrItems.co_content}
+          </TextRegular>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

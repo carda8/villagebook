@@ -10,7 +10,9 @@ import Splash from './src/component/Splash';
 import MainStackNavigator from './src/navigator/MainStackNavigator';
 import store from './src/store/store';
 import messaging from '@react-native-firebase/messaging';
-import {Alert} from 'react-native';
+import {Alert, AppState, Linking, PermissionsAndroid} from 'react-native';
+import notifee, {AndroidImportance} from '@notifee/react-native';
+import dynamicLinks from '@react-native-firebase/dynamic-links';
 
 const qeuryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -18,7 +20,7 @@ const qeuryClient = new QueryClient({
       console.error('::: useQuery Error occurred', e);
     },
     onSuccess: s => {
-      console.log('::: useQuery Success', s);
+      // console.log('::: useQuery Success', s);
     },
   }),
   mutationCache: new MutationCache({
@@ -26,7 +28,7 @@ const qeuryClient = new QueryClient({
       console.error('::: useMutation Error occurred', e);
     },
     onSuccess: s => {
-      console.log('::: useMutation Success', s);
+      // console.log('::: useMutation Success', s);
     },
   }),
 });
@@ -34,18 +36,34 @@ const qeuryClient = new QueryClient({
 const App = () => {
   const [isSplash, setIsSplash] = useState(true);
 
-  const _getToken = async () => {
-    const temp = await messaging().getToken();
-    console.log('FCM TOKEN', temp);
+  const onMessageReceived = async message => {
+    console.log('message', message);
+    const channelId2 = await notifee.createChannel({
+      id: 'onForeground',
+      name: 'Default Channel onForeground',
+      importance: AndroidImportance.HIGH,
+    });
+    // Display a notification
+    await notifee.displayNotification({
+      title: message.notification.title,
+      body: message.notification.body,
+      android: {
+        channelId: channelId2,
+        importance: AndroidImportance.HIGH,
+      },
+    });
   };
-
   useEffect(() => {
-    _getToken();
+    // _deepLink();
+    // const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
+    // // When the component is unmounted, remove the listener
+    // return () => unsubscribe();
   }, []);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      onMessageReceived(remoteMessage);
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
     return unsubscribe;
   }, []);

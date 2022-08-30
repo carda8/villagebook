@@ -1,7 +1,16 @@
-import React, {useEffect, useRef} from 'react';
-import {Animated, Image, Pressable, Text, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  Animated,
+  Image,
+  Linking,
+  Pressable,
+  Share,
+  Text,
+  View,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
+import {useCustomMutation} from '../hooks/useCustomMutation';
 import colors from '../styles/colors';
 import TextBold from './text/TextBold';
 import TextMedium from './text/TextMedium';
@@ -15,16 +24,22 @@ const Header = ({
   showCart,
   showLike,
   showNoti,
+  showHome,
   showShare,
   iconColor,
   category,
+  categoryMain,
   isOption,
   isPayment,
   isSummit,
+  storeInfo,
 }) => {
   const {currentCategory} = useSelector(state => state.categoryReducer);
   const {optionHeader} = useSelector(state => state.menuReducer);
-  const {currentStoreCode} = useSelector(state => state.cartReducer);
+  const {currentStoreCode, savedItem} = useSelector(state => state.cartReducer);
+  const {userInfo} = useSelector(state => state.authReducer);
+  const {mutateSetLikeStore} = useCustomMutation();
+  const [like, setLike] = useState();
 
   // fadeAnim will be used as the value for opacity. Initial Value: 0
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -93,7 +108,8 @@ const Header = ({
                 jumju_code: currentStoreCode.code,
               });
             } else {
-              if (!showLogo) navigation.goBack();
+              if (!showLogo && navigation.canGoBack()) navigation.goBack();
+              else navigation.navigate('Main');
             }
           }}>
           {showLogo ? (
@@ -157,22 +173,61 @@ const Header = ({
               hitSlop={10}
               onPress={() => {
                 if (showNoti) navigation.navigate('PushList');
+                // if (showLike) {
+                //   if (like === 'Y') setLike('N');
+                //   if (like === 'N') setLike('Y');
+                //   _setLikeStore();
+                // }
               }}>
               <Image
                 source={
-                  showNoti
-                    ? require('~/assets/top_ball.png')
-                    : require('~/assets/top_heart.png')
+                  showNoti ? require('~/assets/top_ball.png') : null
+                  // : require('~/assets/top_heart.png')
                 }
                 style={{
                   height: 30,
                   width: 30,
                   marginRight: 10,
-                  tintColor: iconColor ? iconColor : null,
+                  tintColor:
+                    storeInfo && like === 'Y'
+                      ? colors.primary
+                      : iconColor
+                      ? iconColor
+                      : null,
+                  // tintColor: iconColor
+                  //   ? iconColor
+                  //   : like === 'Y'
+                  //   ? 'red'
+                  //   : null,
                 }}
                 resizeMode={'contain'}
               />
             </Pressable>
+          )}
+          {showHome && (
+            <>
+              <Pressable
+                hitSlop={10}
+                onPress={() => {
+                  navigation.navigate('Main');
+                }}>
+                <Image
+                  source={require('~/assets/top_home.png')}
+                  style={{
+                    height: 30,
+                    width: 30,
+                    marginRight: 10,
+                    tintColor:
+                      storeInfo && like === 'Y'
+                        ? colors.primary
+                        : iconColor
+                        ? iconColor
+                        : null,
+                  }}
+                  resizeMode={'contain'}
+                />
+              </Pressable>
+            </>
           )}
 
           {(showCart || showShare) && (
@@ -180,13 +235,38 @@ const Header = ({
               hitSlop={10}
               onPress={() => {
                 if (showCart) navigation.navigate('SummitOrder');
+                // if (!showCart) _share();
               }}>
+              {showCart && (
+                <>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: -1,
+                      right: -3,
+                      width: 16,
+                      height: 16,
+                      borderRadius: 16 / 2,
+                      backgroundColor: colors.primary,
+                      zIndex: 100,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <TextBold
+                      style={{
+                        color: 'white',
+                        includeFontPadding: false,
+                        fontSize: 11,
+                      }}>
+                      {savedItem.savedItems.length > 9
+                        ? '9+'
+                        : savedItem.savedItems.length}
+                    </TextBold>
+                  </View>
+                </>
+              )}
               <Image
-                source={
-                  showCart
-                    ? require('~/assets/top_cart.png')
-                    : require('~/assets/top_share_w.png')
-                }
+                source={showCart ? require('~/assets/top_cart.png') : null}
                 style={{
                   height: 30,
                   width: 30,

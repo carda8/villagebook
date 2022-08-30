@@ -1,26 +1,24 @@
 import React, {forwardRef, useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   Image,
   PermissionsAndroid,
   Pressable,
   ScrollView,
+  SectionList,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Swiper from 'react-native-swiper';
-import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import Header from '../../component/Header';
 import ImageSwipe from '../../component/menuDetail/ImageSwipe';
-import MenuList from '../../component/menuDetail/MenuList';
 import MenuDesc from '../../component/menuDetail/MenuDesc';
 import commonStyles from '../../styles/commonStyle';
 import colors from '../../styles/colors';
 import TextRegular from '../../component/text/TextRegular';
 import Dot from '../../component/Dot';
-import {color} from 'react-native-reanimated';
 import FastImage from 'react-native-fast-image';
 import TextMedium from '../../component/text/TextMedium';
 import TextBold from '../../component/text/TextBold';
@@ -29,22 +27,28 @@ import TextNotoR from '../../component/text/TextNotoR';
 import TextNotoB from '../../component/text/TextNotoB';
 import DividerL from '../../component/DividerL';
 import {Slider} from '@miblanchard/react-native-slider';
-import ImagePicker, {launchCamera} from 'react-native-image-picker';
-import {useMutation} from 'react-query';
-import storeAPI from '../../api/modules/storeAPI';
 import Loading from '../../component/Loading';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
 import {replaceString} from '../../config/utils/Price';
-import {useDispatch, useSelector} from 'react-redux';
-import {setStoreLogo} from '../../store/reducers/CartReducer';
+import {useSelector} from 'react-redux';
+import MenuReview from './MenuReview';
+import MiniMap from '../map/MiniMap';
+import Caution from '../../component/Caution';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
+import {Shadow} from 'react-native-shadow-2';
 
 const MenuDetail = ({navigation, route}) => {
-  const {mutateTopMenu, mutateStoreInfo, mutateAllMunu, mutateServiceTime} =
-    useCustomMutation();
-  const dispatch = useDispatch();
-  const {storeLogoUrl} = useSelector(state => state.cartReducer);
+  const {
+    mutateTopMenu,
+    mutateStoreInfo,
+    mutateAllMunu,
+    mutateServiceTime,
+    mutateGetStoreService,
+  } = useCustomMutation();
   const {savedItem} = useSelector(state => state.cartReducer);
+  const cartStore = useSelector(state => state.cartReducer);
+  const {userInfo} = useSelector(state => state.authReducer);
 
   const routeData = route.params;
   const layout = useWindowDimensions();
@@ -59,55 +63,24 @@ const MenuDetail = ({navigation, route}) => {
   const focusTarget = useRef([]);
   const chipTarget = useRef([]);
 
-  const _setRating = isTotal => {
-    const temp = 5;
-    let temp2 = [];
-
-    for (let i = 0; i < temp; i++) {
-      temp2.push(
-        <Image
-          key={i}
-          source={require('~/assets/ico_star_on.png')}
-          style={{width: isTotal ? 20 : 16, height: isTotal ? 20 : 16}}
-          resizeMode="contain"
-        />,
-      );
-    }
-
-    return temp2;
-  };
-
-  const _setSlider = () => {
-    const temp = 5;
-    let temp2 = [];
-    for (let i = 0; i < 5; i++) {
-      temp2.push(
-        <View key={i} style={{flexDirection: 'row'}}>
-          <Slider
-            value={1}
-            maximumValue={5}
-            disabled
-            minimumTrackTintColor={colors.primary}
-            trackStyle={{
-              backgroundColor: 'white',
-              height: 5,
-              padding: 0,
-              margin: 0,
-            }}
-            containerStyle={{width: 87, height: 20}}
-            renderThumbComponent={() => <></>}
-          />
-          <Text style={{marginLeft: 10}}>{'5점 (40)'}</Text>
-        </View>,
-      );
-    }
-    return temp2;
-  };
-
   const _init = () => {
+    if (!userInfo) {
+      Alert.alert('알림', '로그인이 필요합니다.', [
+        {
+          text: '로그인 하러 가기',
+          onPress: () =>
+            navigation.reset({
+              routes: [{name: 'Login'}],
+            }),
+        },
+      ]);
+      return;
+    }
+    console.log('_init data1', routeData);
     const data = {
       jumju_id: routeData.jumju_id,
       jumju_code: routeData.jumju_code,
+      mt_id: userInfo.mt_id,
     };
     console.log('_init data', data);
     mutateStoreInfo.mutate(data);
@@ -139,6 +112,18 @@ const MenuDetail = ({navigation, route}) => {
     mutateServiceTime.mutate(data);
   };
 
+  const _getStoreService = () => {
+    const data = {
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+    };
+    mutateGetStoreService.mutate(data, {
+      onSuccess: e => {
+        console.log('## service', e);
+      },
+    });
+  };
+
   const _calcTotalPrice = () => {
     let temp = 0;
     savedItem.savedItems.map((item, index) => {
@@ -152,7 +137,8 @@ const MenuDetail = ({navigation, route}) => {
     _getTopMenu();
     _getAllMenu();
     _getServiceTime();
-  }, []);
+    _getStoreService();
+  }, [route.params]);
 
   useEffect(() => {
     if (chipTarget.current[selected.idx]) {
@@ -169,18 +155,30 @@ const MenuDetail = ({navigation, route}) => {
     }
   }, [selected]);
 
-  useEffect(() => {
-    if (mutateStoreInfo.data)
-      dispatch(setStoreLogo(mutateStoreInfo.data.data.arrItems.store_logo));
-  }, [mutateStoreInfo.data]);
+  const _cartStorage = async () => {
+    let temp = savedItem;
+    temp = {
+      ...temp,
+      logo: cartStore.storeLogoUrl,
+      // totalPrice,
+    };
+    await AuthStorageModuel._setCartData(temp);
+  };
 
+  useEffect(() => {
+    _cartStorage();
+  }, [cartStore]);
+
+  // console.log('store', savedItem);
   if (
     mutateStoreInfo.isLoading ||
     mutateTopMenu.isLoading ||
     mutateAllMunu.isLoading ||
+    mutateGetStoreService.isLoading ||
     !mutateStoreInfo.data ||
     !mutateTopMenu.data ||
-    !mutateAllMunu.data
+    !mutateAllMunu.data ||
+    !mutateGetStoreService.data
   )
     return <Loading />;
 
@@ -188,9 +186,25 @@ const MenuDetail = ({navigation, route}) => {
   const StoreAllMenu = mutateAllMunu.data.data.arrItems;
   const StoreTopMenu = mutateTopMenu.data.data.arrItems;
   const StoreServiceTime = mutateServiceTime?.data?.data?.arrItems;
+  const StoreService = mutateGetStoreService.data.data.arrItems;
 
+  // console.log('StoreInfo', StoreInfo);
   // console.log('StoreTopMenu', StoreTopMenu);
   // console.log('StoreTopMenu', StoreAllMenu);
+
+  const _pressMenu = item => {
+    if (StoreInfo.isOpen === 'N')
+      return customAlert('알림', '현재 가게는 오픈 준비중 입니다.');
+    navigation.navigate('OptionSelect', {
+      it_id: item.it_id,
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+      mb_company: routeData.mb_company,
+      it_img1: item.it_img1,
+      store_logo: StoreInfo.store_logo,
+      category: routeData.category,
+    });
+  };
 
   return (
     <>
@@ -303,8 +317,10 @@ const MenuDetail = ({navigation, route}) => {
             navigation={navigation}
             showLike={true}
             showShare={true}
+            storeInfo={StoreInfo}
             iconColor={'white'}
             title={''}
+            categoryMain={routeData.category}
             style={{
               backgroundColor: 'rgba(0,0,0,0)',
               position: 'absolute',
@@ -313,7 +329,12 @@ const MenuDetail = ({navigation, route}) => {
           />
 
           <ImageSwipe images={mutateStoreInfo.data.data.arrItems.store_image} />
-          <MenuDesc info={mutateStoreInfo.data} />
+          <MenuDesc
+            categoryMain={routeData.category}
+            info={mutateStoreInfo.data}
+            navigation={navigation}
+            routeData={routeData}
+          />
           <View>
             {/* 메뉴, 정보, 리뷰 탭 */}
             <View
@@ -383,6 +404,7 @@ const MenuDetail = ({navigation, route}) => {
               </Pressable>
             </View>
           </View>
+          {/* 메뉴 탭 */}
           {index === 0 && (
             <>
               <View
@@ -392,9 +414,7 @@ const MenuDetail = ({navigation, route}) => {
                 }}>
                 <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
                   <TextRegular style={{fontSize: 15}}>
-                    수제버거 맛나버거가 부산에 상륙했습니다! 소고기 패티에
-                    신선한 야채와 치즈의 만남! 리뷰이벤트준비했으니 많이많이
-                    참여해주세요!
+                    {StoreInfo.store_service?.do_jumju_introduction}
                   </TextRegular>
                 </View>
                 <View
@@ -441,16 +461,10 @@ const MenuDetail = ({navigation, route}) => {
                   <View style={{flex: 1}}>
                     {/* 대표메뉴 */}
                     {/* OptionSelect route data 추후 수정 필요 */}
-                    {/* 수정 완료 07/21 j */}
                     {StoreTopMenu?.map((item, index) => (
                       <Pressable
                         onPress={() => {
-                          navigation.navigate('OptionSelect', {
-                            it_id: item.it_id,
-                            jumju_id: routeData.jumju_id,
-                            jumju_code: routeData.jumju_code,
-                            it_img1: item.it_img1,
-                          });
+                          _pressMenu(item);
                         }}
                         key={index}
                         style={{
@@ -463,27 +477,28 @@ const MenuDetail = ({navigation, route}) => {
                           borderRadius: 12,
                         }}>
                         <View style={{flexDirection: 'row'}}>
-                          <View
-                            style={{
-                              width: 80,
-                              height: 80,
-                              borderWidth: 1,
-                              borderRadius: 10,
-                              marginRight: 15,
-                              borderColor: colors.borderColor,
-                              overflow: 'hidden',
-                              elevation: 5,
-                            }}>
-                            <FastImage
-                              source={
-                                item.it_img1
-                                  ? {uri: item.it_img1}
-                                  : '~/assets/no_img.png'
-                              }
-                              resizeMode={FastImage.resizeMode.cover}
-                              style={{flex: 1}}
-                            />
-                          </View>
+                          <Shadow distance={4} offset={[0, 2]}>
+                            <View
+                              style={{
+                                width: 80,
+                                height: 80,
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                marginRight: 15,
+                                borderColor: colors.borderColor,
+                                overflow: 'hidden',
+                              }}>
+                              <FastImage
+                                source={
+                                  item.it_img1
+                                    ? {uri: item.it_img1}
+                                    : '~/assets/no_img.png'
+                                }
+                                resizeMode={FastImage.resizeMode.cover}
+                                style={{flex: 1}}
+                              />
+                            </View>
+                          </Shadow>
                           <View style={{flex: 1}}>
                             <TextMedium
                               style={{fontSize: 17, color: colors.fontColor2}}>
@@ -533,12 +548,7 @@ const MenuDetail = ({navigation, route}) => {
                         {item.menus.map((item, index) => (
                           <Pressable
                             onPress={() => {
-                              navigation.navigate('OptionSelect', {
-                                it_id: item.it_id,
-                                jumju_id: routeData.jumju_id,
-                                jumju_code: routeData.jumju_code,
-                                it_img1: item.it_img1,
-                              });
+                              _pressMenu(item);
                             }}
                             key={index}
                             style={{
@@ -553,26 +563,28 @@ const MenuDetail = ({navigation, route}) => {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                               }}>
-                              <View
-                                style={{
-                                  width: 80,
-                                  height: 80,
-                                  borderWidth: 1,
-                                  borderRadius: 10,
-                                  marginRight: 15,
-                                  borderColor: colors.borderColor,
-                                  overflow: 'hidden',
-                                }}>
-                                <FastImage
-                                  source={
-                                    item.it_img1
-                                      ? {uri: item.it_img1}
-                                      : require('~/assets/no_img.png')
-                                  }
-                                  resizeMode={FastImage.resizeMode.cover}
-                                  style={{flex: 1}}
-                                />
-                              </View>
+                              <Shadow distance={4} offset={[0, 2]}>
+                                <View
+                                  style={{
+                                    width: 80,
+                                    height: 80,
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                    marginRight: 15,
+                                    borderColor: colors.borderColor,
+                                    overflow: 'hidden',
+                                  }}>
+                                  <FastImage
+                                    source={
+                                      item.it_img1
+                                        ? {uri: item.it_img1}
+                                        : require('~/assets/no_img.png')
+                                    }
+                                    resizeMode={FastImage.resizeMode.cover}
+                                    style={{flex: 1}}
+                                  />
+                                </View>
+                              </Shadow>
                               <View style={{flex: 1}}>
                                 <TextMedium
                                   style={{
@@ -607,7 +619,7 @@ const MenuDetail = ({navigation, route}) => {
               </View>
             </>
           )}
-
+          {/* 정보 탭 */}
           {index === 1 && (
             <View style={{flex: 1}}>
               <View
@@ -623,52 +635,62 @@ const MenuDetail = ({navigation, route}) => {
                     flexDirection: 'row',
                   }}>
                   <View style={{}}>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      상호
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      대표자명
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      전화번호
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      사업자번호
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor99, marginBottom: 11}}>
-                      주소
-                    </TextRegular>
-                  </View>
-
-                  <View style={{marginLeft: 22, flex: 1}}>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_biz_name}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_name}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_hp}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_biz_no}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreInfo.mb_addr1 + ' ' + StoreInfo.mb_addr2}
-                    </TextRegular>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          상호
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_biz_name}
+                      </TextRegular>
+                    </View>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          대표자명
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_name}
+                      </TextRegular>
+                    </View>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          전화번호
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_hp}
+                      </TextRegular>
+                    </View>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          사업자번호
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_biz_no}
+                      </TextRegular>
+                    </View>
+                    <View style={{flexDirection: 'row', marginBottom: 10}}>
+                      <View style={{width: 100}}>
+                        <TextRegular style={{color: colors.fontColor99}}>
+                          주소
+                        </TextRegular>
+                      </View>
+                      <TextRegular style={{...styles.subTitleTakeout}}>
+                        {StoreInfo.mb_addr1 + ' ' + StoreInfo.mb_addr2}
+                      </TextRegular>
+                    </View>
                   </View>
                 </View>
               </View>
+              {/* <View style={{marginBottom: 20}}>
+                <MiniMap lat={StoreInfo.mb_lat} lng={StoreInfo.mb_lng} />
+              </View> */}
               <DividerL />
               <View
                 style={{
@@ -683,6 +705,10 @@ const MenuDetail = ({navigation, route}) => {
                     flexDirection: 'row',
                   }}>
                   <View style={{}}>
+                    <TextRegular
+                      style={{color: colors.fontColor99, marginBottom: 11}}>
+                      영업일
+                    </TextRegular>
                     <TextRegular
                       style={{color: colors.fontColor99, marginBottom: 11}}>
                       영업시간
@@ -701,23 +727,27 @@ const MenuDetail = ({navigation, route}) => {
                     </TextRegular>
                   </View>
 
-                  <View style={{marginLeft: 22}}>
+                  <View style={{marginLeft: 22, flex: 1}}>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreServiceTime.serviceTime[0] ??
+                      {StoreServiceTime?.serviceTime[0]?.service_open ??
                         '해당 정보가 없습니다.'}
                     </TextRegular>
-                    {/* <TextRegular
-                      style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreServiceTime.serviceTime ?? '해당 정보가 없습니다.'}
-                    </TextRegular> */}
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreServiceTime.serviceBreakTime[0] ??
+                      {!StoreServiceTime?.serviceTime[0]
+                        ? '해당 정보가 없습니다.'
+                        : StoreServiceTime?.serviceTime[0]?.service_stime +
+                          ' ~ ' +
+                          StoreServiceTime?.serviceTime[0]?.service_etime}
+                    </TextRegular>
+                    <TextRegular
+                      style={{color: colors.fontColor3, marginBottom: 11}}>
+                      {StoreServiceTime?.serviceBreakTime[0] ??
                         '해당 정보가 없습니다.'}
                     </TextRegular>
                     <TextRegular style={{color: colors.fontColor3}}>
-                      {StoreServiceTime.serviceHoilday ??
+                      {StoreServiceTime?.serviceHoilday ??
                         '해당 정보가 없습니다.'}
                     </TextRegular>
                   </View>
@@ -725,163 +755,12 @@ const MenuDetail = ({navigation, route}) => {
               </View>
             </View>
           )}
+
+          {/* 리뷰 탭 */}
           {index === 2 && (
-            <View style={{flex: 1}}>
-              <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
-                <TextRegular style={{fontSize: 15}}>
-                  리뷰 이벤트를 진행하시면 서비스로 OO을 드립니다. 참여시려면
-                  주문시 비고란에 리뷰 참여라고 입력 하시고 반드시 리뷰를
-                  작성해주세요~
-                </TextRegular>
-              </View>
-
-              <View
-                style={{
-                  height: 227,
-                  backgroundColor: '#F5F5F5',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingHorizontal: 22,
-                }}>
-                <View style={{flexDirection: 'row'}}>
-                  <TextBold style={{fontSize: 15}}>이 상품에 </TextBold>
-                  <TextBold style={{fontSize: 15, color: colors.primary}}>
-                    {'00명'}
-                  </TextBold>
-                  <TextBold style={{fontSize: 15}}>이</TextBold>
-                </View>
-
-                <TextBold style={{fontSize: 15}}>
-                  소중한 리뷰를 남겨주었습니다.
-                </TextBold>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: 20,
-                  }}>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                    }}>
-                    <TextBold style={{fontSize: 44, color: colors.primary}}>
-                      {''}4.3
-                    </TextBold>
-                    <View style={{flexDirection: 'row'}}>
-                      {_setRating(true)}
-                    </View>
-                  </View>
-                  <View style={{marginLeft: 30}}>{_setSlider()}</View>
-                </View>
-              </View>
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: 'white',
-                  paddingHorizontal: 22,
-                  paddingVertical: 35,
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginBottom: 15,
-                  }}>
-                  <Image
-                    source={require('~/assets/no_img.png')}
-                    style={{
-                      width: 38,
-                      height: 38,
-                      borderRadius: 38 / 2,
-                      marginRight: 13,
-                    }}
-                    resizeMode="contain"
-                  />
-                  <View>
-                    {/* 카메라 돌아 저장 시 돌아감  */}
-                    {/* <Pressable
-                      onPress={async () => {
-                        await PermissionsAndroid.request(
-                          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                        );
-                        const result = await launchCamera(
-                          {
-                            mediaType: 'photo',
-                            // saveToPhotos: true,
-                          },
-                          res => {
-                            console.log('result::', res);
-                          },
-                        );
-                        console.log('result', result);
-                      }}
-                      style={{height: 20, backgroundColor: 'gray'}}></Pressable> */}
-                    <TextBold style={{fontSize: 15, color: colors.fontColor2}}>
-                      맛집대동여지도
-                    </TextBold>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <TextRegular
-                        style={{fontSize: 13, color: colors.fontColorA2}}>
-                        7달전
-                      </TextRegular>
-                      <View style={{flexDirection: 'row', marginLeft: 23}}>
-                        {_setRating(false)}
-                      </View>
-                    </View>
-                  </View>
-                </View>
-                <TextRegular>
-                  맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
-                  맛있어요 맛있어요 맛있어요 맛있어요 맛있어요
-                </TextRegular>
-                <FastImage
-                  source={require('~/assets/dummy/CK_tc01560002923_l.jpg')}
-                  resizeMode={FastImage.resizeMode.cover}
-                  style={{
-                    flex: 1,
-                    height: 245,
-                    marginTop: 20,
-                    marginBottom: 8,
-                    borderRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    borderRadius: 15,
-                    borderTopLeftRadius: 0,
-                    backgroundColor: colors.storeIcon,
-                    paddingVertical: 16,
-                    paddingHorizontal: 13,
-                  }}>
-                  <View
-                    style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-                    <Image
-                      source={require('~/assets/no_img.png')}
-                      style={{width: 38, height: 38, borderRadius: 38 / 2}}
-                      resizeMode="cover"
-                    />
-                    <View style={{marginLeft: 15, flex: 1}}>
-                      <TextBold style={{fontSize: 16, color: colors.primary}}>
-                        맛나버거 부산대점
-                      </TextBold>
-                      <TextRegular
-                        style={{fontSize: 13, color: colors.fontColorA2}}>
-                        {Date()}
-                      </TextRegular>
-                      <TextRegular
-                        style={{
-                          fontSize: 15,
-                          color: colors.fontColor2,
-                          marginTop: 7,
-                        }}>
-                        맛있다고 하시니 다행입니다. 많이 이용해주세요
-                      </TextRegular>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </View>
+            <>
+              <MenuReview storeInfo={StoreInfo} />
+            </>
           )}
 
           {index !== 2 && (
@@ -908,95 +787,10 @@ const MenuDetail = ({navigation, route}) => {
                     color: colors.fontColor8,
                     includeFontPadding: false,
                   }}>
-                  햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기
-                  : 국내산)햄치즈, 햄스페셜, 햄치즈포테이토(햄-돼지고기 :
-                  국내산, 닭고기 : 국내산)햄치즈, 햄스페셜,
-                  햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기 : 국내산)햄치즈,
-                  햄스페셜, 햄치즈포테이토(햄-돼지고기 : 국내산, 닭고기 :
-                  국내산)
+                  {StoreInfo.store_service.do_jumju_origin}
                 </TextNotoR>
               </View>
-
-              <View
-                style={{
-                  paddingHorizontal: 22,
-                  paddingVertical: 20,
-                  backgroundColor: colors.inputBoxBG,
-                  marginTop: 20,
-                }}>
-                <TextNotoB
-                  style={{
-                    fontSize: 14,
-                    color: colors.fontColor3,
-                    includeFontPadding: false,
-                    marginBottom: 7,
-                  }}>
-                  유의사항
-                </TextNotoB>
-                <TextNotoR
-                  style={{
-                    fontSize: 13,
-                    color: colors.fontColor8,
-                    includeFontPadding: false,
-                  }}>
-                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
-                  작성되었으며 변동될 수 있습니다.
-                </TextNotoR>
-              </View>
-
-              <View
-                style={{
-                  paddingHorizontal: 22,
-                  paddingVertical: 20,
-                  backgroundColor: colors.inputBoxBG,
-                }}>
-                <TextNotoB
-                  style={{
-                    fontSize: 14,
-                    color: colors.fontColor3,
-                    includeFontPadding: false,
-                    marginBottom: 7,
-                  }}>
-                  유의사항
-                </TextNotoB>
-                <TextNotoR
-                  style={{
-                    fontSize: 13,
-                    color: colors.fontColor8,
-                    includeFontPadding: false,
-                  }}>
-                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
-                  작성되었으며 변동될 수 있습니다.
-                </TextNotoR>
-              </View>
-              <View
-                style={{
-                  paddingHorizontal: 22,
-                  paddingVertical: 20,
-                  backgroundColor: colors.inputBoxBG,
-                }}>
-                <TextNotoB
-                  style={{
-                    fontSize: 14,
-                    color: colors.fontColor3,
-                    includeFontPadding: false,
-                    marginBottom: 7,
-                  }}>
-                  유의사항
-                </TextNotoB>
-                <TextNotoR
-                  style={{
-                    fontSize: 13,
-                    color: colors.fontColor8,
-                    includeFontPadding: false,
-                  }}>
-                  메뉴사진은 연출된 이미지로 실제 조리된 음식과 다를수 있습니다.
-                  상단 메뉴 및 가격은 업소에서 제공한 정보를 기준으로
-                  작성되었으며 변동될 수 있습니다.
-                </TextNotoR>
-              </View>
+              <Caution />
             </>
           )}
         </ScrollView>
@@ -1005,7 +799,7 @@ const MenuDetail = ({navigation, route}) => {
         {savedItem.savedItems.length > 0 && (
           <Pressable
             onPress={() => {
-              navigation.navigate('SummitOrder');
+              navigation.navigate('SummitOrder', {data: StoreInfo});
             }}
             style={{
               position: 'absolute',
@@ -1068,3 +862,13 @@ const MenuDetail = ({navigation, route}) => {
 };
 
 export default MenuDetail;
+
+const styles = StyleSheet.create({
+  titleTakout: {
+    color: colors.fontColor99,
+    marginVertical: 11,
+  },
+  subTitleTakeout: {
+    color: colors.fontColor3,
+  },
+});

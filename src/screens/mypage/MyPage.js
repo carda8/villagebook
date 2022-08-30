@@ -20,6 +20,22 @@ import {useMutation} from 'react-query';
 const MyPage = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
 
+  const _snsIcon = () => {
+    //1: 일반, 2:네이버, 3:카카오, 4:구글 X -> (페북), 5:애플
+    switch (userInfo.mt_login_type) {
+      case '2':
+        return require('~/assets/sns_naver.png');
+      case '3':
+        return require('~/assets/sns_kakao.png');
+      case '4':
+        return require('~/assets/sns_facebook.png');
+      case '5':
+        return require('~/assets/sns_apple.png');
+      default:
+        return require('~/assets/no_use_img.png');
+    }
+  };
+
   const arr = [
     '개인정보 수정',
     '공지사항',
@@ -46,21 +62,43 @@ const MyPage = ({navigation}) => {
               alignItems: 'center',
             }}>
             <Image
-              source={require('~/assets/no_use_img.png')}
+              source={
+                userInfo.mt_profil_url
+                  ? {uri: userInfo.mt_profil_url}
+                  : userInfo.mt_profil_url
+                  ? {uri: userInfo.mt_profil_url}
+                  : require('~/assets/no_use_img.png')
+              }
               style={{width: 60, height: 60, borderRadius: 60 / 2}}
             />
             <View style={{flex: 1, marginLeft: 20}}>
-              <View style={{flexDirection: 'row', alignItems: 'baseline'}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextBold style={{color: colors.fontColor2}}>
-                  {userInfo.mt_nickname}
+                  {userInfo.mt_nickname ?? userInfo.mt_name}
                 </TextBold>
                 <TextRegular style={{fontSize: 12, color: colors.fontColor2}}>
                   님
                 </TextRegular>
                 <TextBold style={{color: colors.fontColor2}}> / </TextBold>
-                <TextBold style={{color: colors.fontColor2}}>
-                  {userInfo.mt_id}
-                </TextBold>
+                {userInfo.mt_login_type === '1' ? (
+                  <TextBold style={{color: colors.fontColor2}}>
+                    {userInfo.mt_id}
+                  </TextBold>
+                ) : (
+                  <View
+                    style={{
+                      width: 17,
+                      height: 17,
+                      borderRadius: 17 / 2,
+                      overflow: 'hidden',
+                    }}>
+                    <Image
+                      source={_snsIcon()}
+                      style={{width: 17, height: 17}}
+                      resizeMode="center"
+                    />
+                  </View>
+                )}
               </View>
               <TextRegular style={{color: colors.fontColor2}}>
                 {userInfo.mt_email}
@@ -107,13 +145,13 @@ const MyPage = ({navigation}) => {
             </View>
             <View style={{flex: 1, alignItems: 'center'}}>
               <TextBold style={{color: colors.fontColorA, fontSize: 18}}>
-                {userInfo.mt_coupon ?? 0}
+                {userInfo.mt_coupon ? userInfo.mt_coupon : 0}
               </TextBold>
               <TextBold style={{color: colors.fontColor2}}>쿠폰</TextBold>
             </View>
             <View style={{flex: 1, alignItems: 'center'}}>
               <TextBold style={{color: colors.fontColorA, fontSize: 18}}>
-                {'3'}
+                {userInfo.mt_review_cnt}
               </TextBold>
               <TextBold style={{color: colors.fontColor2}}>리뷰</TextBold>
             </View>
@@ -171,7 +209,7 @@ const MyPage = ({navigation}) => {
             backgroundColor: colors.inputBoxBG,
             paddingHorizontal: 22,
           }}>
-          <TextBold style={{color: colors.fontColor2}}>주의사항</TextBold>
+          {/* <TextBold style={{color: colors.fontColor2}}>주의사항</TextBold> */}
           {/* <TextBold style={{color: colors.fontColor2}}>주문취소</TextBold>
           <TextBold style={{color: colors.fontColor2}}>업체연락처</TextBold>
           <TextBold style={{color: colors.fontColor2}}>주문누락</TextBold>

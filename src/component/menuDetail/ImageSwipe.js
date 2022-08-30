@@ -5,26 +5,30 @@ import Swiper from 'react-native-swiper';
 
 const ImageSwipe = ({images}) => {
   return (
-    <Swiper
-      autoplay
-      autoplayTimeout={5}
-      showsPagination={false}
-      removeClippedSubviews={false}
-      style={{height: 300}}>
-      {images.map((item, index) => (
-        <View style={{flex: 1}} key={index}>
-          <FastImage
-            source={{uri: item}}
-            style={{flex: 1}}
-            resizeMode={FastImage.resizeMode.cover}
-          />
-        </View>
-      ))}
-    </Swiper>
+    <View style={{flex: 1}}>
+      <Swiper
+        loop
+        autoplay
+        autoplayTimeout={1.5}
+        autoplayDirection={true}
+        showsPagination={false}
+        removeClippedSubviews={false}
+        style={{height: 300}}>
+        {images.map((item, index) => (
+          <View style={{flex: 1}} key={index}>
+            <FastImage
+              source={{uri: item}}
+              style={{flex: 1}}
+              resizeMode={FastImage.resizeMode.cover}
+            />
+          </View>
+        ))}
+      </Swiper>
+    </View>
   );
 };
 
-export default React.memo(ImageSwipe);
+export default ImageSwipe;
 
 const styles = StyleSheet.create({
   wrapper: {},

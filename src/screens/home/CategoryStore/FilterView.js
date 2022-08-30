@@ -19,7 +19,7 @@ const FilterView = () => {
   //   const [selectedFilter, setSelectedFilter] = useState(0);
   const dispatch = useDispatch();
   const {currentFilter} = useSelector(state => state.categoryReducer);
-
+  const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const scrollRef = useRef();
   const filterRef = useRef([]);
 
@@ -33,8 +33,7 @@ const FilterView = () => {
         top: 110,
         position: 'absolute',
         minWidth: layout.width,
-      }}
-    >
+      }}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -42,39 +41,72 @@ const FilterView = () => {
         contentContainerStyle={{
           alignItems: 'center',
           paddingRight: 22,
-        }}
-      >
-        {Filter.filter.map((item, index) => (
-          <Pressable
-            ref={filterRef[index]}
-            key={index}
-            onPress={() => {
-              // scrollRef.current.scrollTo();
-              dispatch(setcurrentFilter(index));
-            }}
-            style={{
-              height: 30,
-              backgroundColor:
-                currentFilter === index ? colors.primary : 'white',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 18,
-              paddingHorizontal: 13,
-            }}
-          >
-            {currentFilter === index ? (
-              <TextSBold
-                style={{
-                  color: currentFilter === index ? 'white' : colors.fontColorA2,
+        }}>
+        {Filter.filter.map((item, index) =>
+          isLifeStyle ? (
+            index < 2 ? (
+              <Pressable
+                ref={filterRef[index]}
+                key={index}
+                onPress={() => {
+                  // scrollRef.current.scrollTo();
+                  dispatch(setcurrentFilter(index));
                 }}
-              >
-                {item}
-              </TextSBold>
+                style={{
+                  height: 30,
+                  backgroundColor:
+                    currentFilter === index ? colors.primary : 'white',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 18,
+                  paddingHorizontal: 13,
+                }}>
+                {currentFilter === index ? (
+                  <TextSBold
+                    style={{
+                      color:
+                        currentFilter === index ? 'white' : colors.fontColorA2,
+                    }}>
+                    {item}
+                  </TextSBold>
+                ) : (
+                  <TextRegular>{item}</TextRegular>
+                )}
+              </Pressable>
             ) : (
-              <TextRegular>{item}</TextRegular>
-            )}
-          </Pressable>
-        ))}
+              <View key={index}></View>
+            )
+          ) : (
+            <Pressable
+              ref={filterRef[index]}
+              key={index}
+              onPress={() => {
+                // scrollRef.current.scrollTo();
+                dispatch(setcurrentFilter(index));
+              }}
+              style={{
+                height: 30,
+                backgroundColor:
+                  currentFilter === index ? colors.primary : 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 18,
+                paddingHorizontal: 13,
+              }}>
+              {currentFilter === index ? (
+                <TextSBold
+                  style={{
+                    color:
+                      currentFilter === index ? 'white' : colors.fontColorA2,
+                  }}>
+                  {item}
+                </TextSBold>
+              ) : (
+                <TextRegular>{item}</TextRegular>
+              )}
+            </Pressable>
+          ),
+        )}
       </ScrollView>
     </View>
   );

@@ -1,5 +1,5 @@
 import {View, Text, Pressable} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import IMP from 'iamport-react-native';
 import Loading from '../../component/Loading';
 import axios from 'axios';
@@ -11,21 +11,29 @@ import PaymentList from '../../config/PaymentList';
 import OrderFinish from '../menu/orderDetail/OrderFinish';
 import {API} from '../../api/API';
 import {resetSavedItem} from '../../store/reducers/CartReducer';
-import {setOrderResult} from '../../store/reducers/PaymentReducer';
+import {
+  resetPayment,
+  setOrderResult,
+} from '../../store/reducers/PaymentReducer';
+import {resetCoupon} from '../../store/reducers/CouponReducer';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
+import {setDeliveryType} from '../../store/reducers/DeliveryInfoReducer';
 
 const PaymentMain = ({navigation, route}) => {
-  const isDelivery = route.params?.isDelivery;
+  const deliveryType = route.params?.deliveryType;
   const orderForm = route.params?.orderForm;
   const totalSellPrice = route.params?.totalSellPrice;
+  const totalOrderPrice = route.params?.totalOrderPrice;
   const dispatch = useDispatch();
 
   const {mutateFinishTransaction} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
   const paymentStore = useSelector(state => state.paymentReducer);
   const {userInfo} = useSelector(state => state.authReducer);
+  // const {deliveryType} = useSelector(state => state.deliveryReducer);
   console.log('userinfo', userInfo);
   console.log('orderForm', orderForm);
-
+  console.log('route data', route.params);
   const _deleteCount = () => {
     return {savedItems: cartStore.savedItem.savedItems};
   };
@@ -39,21 +47,38 @@ const PaymentMain = ({navigation, route}) => {
     }
   };
 
+  const _resetItem = async () => {
+    await AuthStorageModuel._removeCartData(() => {});
+  };
+  const _getDeliveryType = () => {
+    switch (deliveryType) {
+      case 0:
+        return 'delivery';
+      case 1:
+        return 'wrap';
+      case 2:
+        return 'forhere';
+      default:
+        return;
+    }
+  };
+
   const _finishTransaction = paymentForm => {
     const method = _getMethod();
     const menuData = _deleteCount();
     const data = {
-      jumju_id: cartStore.currentStoreCode.jumju_id,
-      jumju_code: cartStore.currentStoreCode.code,
+      jumju_id: cartStore.savedItem?.savedStoreCode.jumju_id,
+      jumju_code: cartStore.savedItem?.savedStoreCode.code,
       mt_id: userInfo.mt_id,
       mt_name: orderForm.mt_name,
-      od_method: isDelivery ? 'delivery' : 'wrap',
+      od_method: _getDeliveryType(),
+      od_forhere_num: orderForm.od_forhere_num,
       od_pay_method: method, // 결제방법 선택시 선택된 값을 넘김 (카트, 만나서 카드 or 현금) [card, card-face, cash]
-      od_zip: orderForm.od_zip,
-      od_addr1: orderForm.od_addr1,
-      od_addr2: orderForm.od_addr2,
+      od_zip: orderForm.od_zip ?? '',
+      od_addr1: orderForm.od_addr1 ?? '',
+      od_addr2: orderForm.od_addr2 ?? '',
       od_addr3: orderForm.od_addr3 ?? '',
-      od_addr_jibeon: orderForm.od_addr_jibeon,
+      od_addr_jibeon: orderForm.od_addr_jibeon ?? '',
 
       od_hp: orderForm.od_hp,
       od_to_officer: orderForm.od_to_officer,
@@ -69,23 +94,28 @@ const PaymentMain = ({navigation, route}) => {
       od_coupon_id_store: '',
       od_coupon_price_system: orderForm.od_coupon_price_system,
       od_coupon_price_store: orderForm.od_coupon_price_store,
-      od_total_sell_price: orderForm.od_total_sell_price,
-      od_total_order_price: orderForm.od_total_order_price,
+      od_total_sell_price: totalSellPrice,
+      od_total_order_price: totalOrderPrice,
 
-      od_pg_data: JSON.stringify(paymentForm),
+      od_pg_data: method === 'card' ? JSON.stringify(paymentForm) : null,
       od_menu_data: JSON.stringify(menuData),
     };
     console.log('_finishTransaction data Obj', data);
 
     API.post('proc_order_update.php', data)
       .then(result => {
-        dispatch(resetSavedItem());
+        console.log('Result :::', result);
         dispatch(
           setOrderResult({orderResultData: result.data, summitedData: data}),
         );
         navigation.reset({
           routes: [{name: 'OrderFinish'}],
         });
+        _resetItem();
+        dispatch(resetSavedItem());
+        dispatch(resetCoupon());
+        dispatch(resetPayment());
+        dispatch(setDeliveryType(0));
       })
       .catch(e => {
         Errorhandler(e);
@@ -142,14 +172,14 @@ const PaymentMain = ({navigation, route}) => {
   const data = {
     pg: 'html5_inicis',
     pay_method: 'card',
-    name: '아임포트 결제데이터 분석',
+    name: '아임포트 결제 테스트',
     merchant_uid: `mid_${new Date().getTime()}`,
-    amount: '100',
-    buyer_name: '홍길동',
-    buyer_tel: '01012345678',
-    buyer_email: 'example@naver.com',
-    buyer_addr: '서울시 강남구 신사동 661-16',
-    buyer_postcode: '06018',
+    amount: totalOrderPrice,
+    buyer_name: orderForm.mt_name,
+    buyer_tel: orderForm.od_hp,
+    buyer_email: userInfo.mt_email,
+    buyer_addr: orderForm.od_addr1 + orderForm.od_addr2 + orderForm.od_addr3,
+    buyer_postcode: orderForm.od_zip,
     app_scheme: 'example',
     // [Deprecated v1.0.3]: m_redirect_url
   };
@@ -160,30 +190,36 @@ const PaymentMain = ({navigation, route}) => {
     // navigation.navigate('OrderFinish', res);
   };
 
-  if (_getMethod() !== 'card')
+  if (_getMethod() !== 'card') {
+    useEffect(() => {
+      _finishTransaction();
+    }, []);
+    return <Loading />;
+  } else {
     return (
-      <View style={{flex: 1}}>
-        <Pressable
-          onPress={() => {
-            _finishTransaction();
-          }}
-          style={{
-            height: 60,
-            width: '100%',
-            backgroundColor: 'teal',
-          }}></Pressable>
-      </View>
+      <IMP.Payment
+        userCode={'imp72538339'} // 가맹점 식별코드
+        //tierCode={'AAA'} // 티어 코드: agency 기능 사용자에 한함
+        loading={<Loading />} // 로딩 컴포넌트
+        data={data} // 결제 데이터
+        callback={_callback} // 결제 종료 후 콜백
+      />
     );
+  }
 
-  return (
-    <IMP.Payment
-      userCode={'imp72538339'} // 가맹점 식별코드
-      //tierCode={'AAA'} // 티어 코드: agency 기능 사용자에 한함
-      loading={<Loading />} // 로딩 컴포넌트
-      data={data} // 결제 데이터
-      callback={_callback} // 결제 종료 후 콜백
-    />
-  );
+  // return (
+  //   <View style={{flex: 1}}>
+  //     <Pressable
+  //       onPress={() => {
+  //         _finishTransaction();
+  //       }}
+  //       style={{
+  //         height: 60,
+  //         width: '100%',
+  //         backgroundColor: 'teal',
+  //       }}></Pressable>
+  //   </View>
+  // );
 };
 
 export default PaymentMain;

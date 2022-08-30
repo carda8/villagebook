@@ -16,9 +16,10 @@ import colors from '../../styles/colors';
 import dayjs from 'dayjs';
 
 const NoticeDetail = ({navigation, route}) => {
+  const routeData = route.params.data;
   const [HEIGHT, setHEIGHT] = useState({height: 0, rate: 0});
-  console.log('route', route.params);
   const layout = useWindowDimensions();
+  console.log('route', routeData);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -32,32 +33,33 @@ const NoticeDetail = ({navigation, route}) => {
             paddingVertical: 10,
             justifyContent: 'space-between',
           }}>
-          <TextBold style={{color: colors.fontColor2}}>공지</TextBold>
+          <TextBold style={{color: colors.fontColor2}}>
+            {routeData.subject}
+          </TextBold>
           <TextRegular style={{fontSize: 11, color: colors.fontColorA2}}>
-            {dayjs().format('YYYY-MM-DD')}
+            {routeData.datetime}
           </TextRegular>
         </View>
+        {routeData?.pic.map((item, index) => (
+          <Image
+            key={index}
+            source={{uri: item.file}}
+            onLoad={e => {
+              setHEIGHT({
+                height: e.nativeEvent.source.height,
+                rate: layout.width / e.nativeEvent.source.width,
+              });
+            }}
+            style={{
+              width: layout.width,
+              height: HEIGHT.height ? HEIGHT.height * HEIGHT.rate : 100,
+            }}
+            resizeMode="contain"
+          />
+        ))}
         <View style={{paddingHorizontal: 22, paddingTop: 22}}>
-          <TextRegular>{'테스트 메시지'}</TextRegular>
-          <TextRegular>{'테스트 메시지'}</TextRegular>
-          <TextRegular>{'테스트 메시지'}</TextRegular>
+          <TextRegular>{routeData.content}</TextRegular>
         </View>
-
-        <Image
-          source={require('~/assets/banner1.png')}
-          onLoad={e => {
-            setHEIGHT({
-              height: e.nativeEvent.source.height,
-              rate: layout.width / e.nativeEvent.source.width,
-            });
-          }}
-          style={{
-            width: layout.width,
-            height: HEIGHT.height ? HEIGHT.height * HEIGHT.rate : 100,
-            backgroundColor: 'red',
-          }}
-          resizeMode="contain"
-        />
       </ScrollView>
     </SafeAreaView>
   );

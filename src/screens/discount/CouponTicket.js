@@ -1,13 +1,108 @@
 import {View, Text, Pressable} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import TextMedium from '../../component/text/TextMedium';
 import TextNotoM from '../../component/text/TextNotoM';
 import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
+import {Modal} from 'react-native';
+import TextBold from '../../component/text/TextBold';
+import dayjs from 'dayjs';
+import {replace} from 'formik';
+import {replaceString} from '../../config/utils/Price';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useDispatch, useSelector} from 'react-redux';
+import {customAlert} from '../../component/CustomAlert';
+import {
+  setStoreCoupon,
+  setSystemCoupon,
+} from '../../store/reducers/CouponReducer';
 
-const CouponTicket = () => {
+const CouponTicket = ({
+  data,
+  download,
+  storeInfo,
+  select,
+  type,
+  navigation,
+}) => {
+  // const [modal, setModal] = useState({visible: false, data: ''});
+  const {mutateDownloadCoupon} = useCustomMutation();
+  const {userInfo} = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
+  const itemInfo = data.item;
+  console.log('data ::', download);
+  const _calcDate = () => {
+    const date1 = dayjs().format('YYYY-MM-DD');
+    const date2 = itemInfo.cp_end ?? itemInfo.cz_end;
+
+    const diffDate = dayjs(date2).diff(date1, 'days');
+    return diffDate;
+  };
+
+  const _convertCpType = () => {
+    // 0 : 모두 사용 가능
+    // 1 : 포장용 쿠폰
+    // 2 : 배달용 쿠폰
+    const type = itemInfo.cp_type ?? itemInfo.cz_type;
+    switch (type) {
+      case '0':
+        return {
+          type: '배달/포장',
+          color: colors.primary,
+          fontColor: 'white',
+        };
+      case '1':
+        return {
+          type: '포장용',
+          color: colors.mainBG1,
+          fontColor: colors.fontMain1,
+        };
+      case '2':
+        return {
+          type: '배달용',
+          color: colors.mainBG2,
+          fontColor: colors.fontMain2,
+        };
+      default:
+        return type;
+    }
+  };
+
+  const _downloadCoupon = () => {
+    const info = {
+      jumju_id: storeInfo.mb_id,
+      jumju_code: storeInfo.mb_jumju_code,
+      mt_id: userInfo.mt_id,
+      cz_no: data.item.cz_no,
+    };
+    console.log('info', info);
+    mutateDownloadCoupon.mutate(info, {
+      onSettled: e => {
+        if (e.result === 'true') customAlert('알림', '쿠폰 다운로드 완료');
+        else customAlert('알림', '이미 보유한 쿠폰입니다.');
+        console.log('download', e);
+      },
+    });
+  };
+
+  const _selectCoupon = () => {
+    console.log('select', itemInfo);
+    if (type === 'store') {
+      dispatch(setStoreCoupon(itemInfo));
+      navigation.goBack();
+    }
+    if (type === 'system') {
+      dispatch(setSystemCoupon(itemInfo));
+      navigation.goBack();
+    }
+  };
+
   return (
-    <View
+    <Pressable
+      onPress={() => {
+        download && _downloadCoupon();
+        select && _selectCoupon();
+      }}
       style={{
         height: 140,
         borderWidth: 1,
@@ -20,29 +115,55 @@ const CouponTicket = () => {
         overflow: 'hidden',
       }}>
       <View style={{flex: 3, paddingLeft: 20}}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TextMedium style={{fontSize: 17, color: colors.fontColor2}}>
-            1000원 쿠폰
-          </TextMedium>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <View style={{flex: 1}}>
+            <TextBold style={{fontSize: 22, color: colors.primary}}>
+              {/* 0: 고정금액 할인 , 1: 퍼센트 할인 */}
+              {itemInfo.cp_price_type ?? itemInfo.cz_price_type === '0'
+                ? replaceString(itemInfo.cp_price ?? itemInfo.cz_price) + '원'
+                : itemInfo.cp_price ?? itemInfo.cz_price + '%'}
+            </TextBold>
+            <TextMedium style={{color: colors.fontColor2}}>
+              {itemInfo.cp_subject ?? itemInfo.cz_subject}
+            </TextMedium>
+          </View>
           <View
             style={{
-              width: 52,
+              paddingHorizontal: 10,
               height: 24,
               borderRadius: 12,
-              backgroundColor: colors.primary,
+              backgroundColor: _convertCpType().color,
               marginLeft: 7,
+              marginRight: 15,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <TextNotoM style={{fontSize: 12, color: 'white'}}>배달용</TextNotoM>
+            {/* 0 : 모두 사용 가능
+                1 : 포장용 쿠폰
+                2 : 배달용 쿠폰 */}
+            <TextNotoM
+              style={{fontSize: 12, color: _convertCpType().fontColor}}>
+              {_convertCpType().type}
+            </TextNotoM>
           </View>
         </View>
         <View style={{marginTop: 8}}>
-          <TextRegular>2020.09.01~2020.09.30</TextRegular>
-          <TextRegular>이삭토스트</TextRegular>
+          <TextRegular>
+            {itemInfo.cp_start ?? itemInfo.cz_start} ~{' '}
+            {itemInfo.cp_end ?? itemInfo.cz_end}
+          </TextRegular>
+          <TextRegular>
+            {itemInfo.cp_mb_company ? itemInfo.cp_mb_company : '동네북 쿠폰'}
+            {/* {itemInfo.cp_method_txt}) */}
+          </TextRegular>
         </View>
       </View>
       <Pressable
+        // onPress={() => setModal({data: itemInfo, visible: !modal.visible})}
         style={{
           flex: 1,
           alignItems: 'center',
@@ -52,9 +173,14 @@ const CouponTicket = () => {
           borderColor: colors.borderColor,
           backgroundColor: colors.couponBG,
         }}>
-        <TextNotoM style={{color: colors.fontColor2}}>자세히</TextNotoM>
+        <TextNotoM style={{color: colors.fontMain3, fontSize: 12}}>
+          남은기한
+        </TextNotoM>
+        <TextNotoM style={{color: colors.fontMain3, fontSize: 20}}>
+          {_calcDate()}일
+        </TextNotoM>
       </Pressable>
-    </View>
+    </Pressable>
   );
 };
 

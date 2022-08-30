@@ -13,6 +13,10 @@ const pushSlice = createSlice({
   reducers: {
     setNotiAll: (state, action) => {
       state.NotiAll = action.payload;
+      state.NotiEvent = action.payload;
+      state.NotiReqReview = action.payload;
+      state.NotiCouponPoint = action.payload;
+      state.NotiReply = action.payload;
     },
     setNotiEvent: (state, action) => {
       state.NotiEvent = action.payload;

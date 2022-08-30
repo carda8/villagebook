@@ -22,18 +22,32 @@ import loginConfig from './loginConfig';
 import {useMutation} from 'react-query';
 import authAPI from '../../api/modules/authAPI';
 import Loading from '../../component/Loading';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setUserInfo} from '../../store/reducers/AuthReducer';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import localStorageConfig from '../../store/localStorage/localStorageConfig';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import SNSLogin from './SNSLogin';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {Errorhandler} from '../../config/ErrorHandler';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import {customAlert} from '../../component/CustomAlert';
+import TextSBold from '../../component/text/TextSBold';
+import TextNotoR from '../../component/text/TextNotoR';
+import AutoLogin from '../../component/loginScreen/AutoLogin';
 
 const Login = ({navigation}) => {
-  const layout = useWindowDimensions();
   const dispatch = useDispatch();
   const [logading, setLoading] = useState(false);
+  const {fcmToken, autoLogin} = useSelector(state => state.authReducer);
+  const {mutateSNSlogin} = useCustomMutation();
+
+  const isAuto = () => {
+    return autoLogin
+      ? localStorageConfig.state.true
+      : localStorageConfig.state.false;
+  };
 
   const mutate = useMutation(authAPI._login, {
     onSuccess: async e => {
@@ -55,10 +69,11 @@ const Login = ({navigation}) => {
         );
       } else {
         console.log('login e', e);
-        await AuthStorageModuel._setItemAutoLogin(
-          localStorageConfig.state.true,
+        await AuthStorageModuel._setItemAutoLogin(isAuto());
+        await AuthStorageModuel._setItemUserToken(fcmToken);
+        await AuthStorageModuel._setItemLoginType(
+          localStorageConfig.loginType.local,
         );
-        await AuthStorageModuel._setItemUserToken(e.data.arrItems.mt_app_token);
         await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
 
         dispatch(setUserInfo(e.data.arrItems));
@@ -73,13 +88,21 @@ const Login = ({navigation}) => {
     const data = {
       mt_id: e.mt_id,
       mt_pwd: e.mt_pwd,
+      mt_app_token: fcmToken,
     };
     mutate.mutate(data);
   };
 
   const Divider = () => {
     return (
-      <View style={{width: 1, height: 20, backgroundColor: colors.colorE3}} />
+      <View
+        style={{
+          width: 1,
+          height: 20,
+          backgroundColor: colors.primary,
+          marginHorizontal: 10,
+        }}
+      />
     );
   };
 
@@ -100,23 +123,121 @@ const Login = ({navigation}) => {
     _login(e);
   };
 
+  const _NaverLogin = async () => {
+    const result = await SNSLogin._NaverLogin(fcmToken);
+    const data = {
+      mt_id: result.mt_id,
+      mt_pwd: result.mt_pwd,
+      mt_app_token: result.mt_app_token,
+      mt_login_type: '2',
+      mt_sns_url: result.mt_image1,
+      mt_hp: result.mt_hp,
+      mt_name: result.mt_name,
+      mt_email: result.mt_email,
+      mt_nickname: result.mt_nickname,
+    };
+
+    // 로그인 하기
+    console.log('_NaverLogin result', result);
+    console.log('_NaverLogin data', data);
+
+    mutateSNSlogin.mutate(data, {
+      onSuccess: async e => {
+        if (e.result === 'true') {
+          try {
+            console.log('login e', e);
+            await AuthStorageModuel._setItemAutoLogin(isAuto());
+            await AuthStorageModuel._setItemUserToken(fcmToken);
+            await AuthStorageModuel._setItemLoginType(
+              localStorageConfig.loginType.sns,
+            );
+            await AuthStorageModuel._setItemLoginTypeNum(
+              localStorageConfig.loginTypeNum.naver,
+            );
+            await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
+
+            dispatch(setUserInfo(e.data.arrItems));
+            navigation.reset({
+              routes: [{name: 'Main'}],
+            });
+          } catch (err) {
+            Errorhandler(err);
+          }
+        }
+      },
+    });
+  };
+
+  const _KakaoLogin = async () => {
+    const result = await SNSLogin._KakaoLogin(fcmToken);
+    const data = {
+      mt_id: result.mt_id,
+      mt_pwd: result.mt_pwd,
+      mt_app_token: result.mt_app_token,
+      mt_login_type: '3',
+      mt_sns_url: result.mt_image1,
+      mt_hp: result.mt_hp === 'null' || !result.mt_hp ? '' : result.mt_hp,
+      mt_name: result.mt_name,
+      mt_email: result.mt_email,
+      mt_nickname: result.mt_nickname,
+    };
+
+    console.log('_KakaoLogin result', result);
+    console.log('_KakaoLogin data', data);
+
+    mutateSNSlogin.mutate(data, {
+      onSuccess: async e => {
+        if (e.result === 'true') {
+          try {
+            console.log('login e', e);
+            await AuthStorageModuel._setItemAutoLogin(isAuto());
+            await AuthStorageModuel._setItemUserToken(fcmToken);
+            await AuthStorageModuel._setItemLoginType(
+              localStorageConfig.loginType.sns,
+            );
+            await AuthStorageModuel._setItemLoginTypeNum(
+              localStorageConfig.loginTypeNum.kakao,
+            );
+            await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
+
+            dispatch(setUserInfo(e.data.arrItems));
+            navigation.reset({
+              routes: [{name: 'Main'}],
+            });
+          } catch (err) {
+            Errorhandler(err);
+          }
+        }
+      },
+    });
+  };
+
   if (logading) return <Loading />;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <FastImage
-          style={{width: '100%', height: layout.height * 0.4}}
-          source={require('../../assets/login_img.png')}
-          resizeMode={FastImage.resizeMode.cover}
-        />
-        {/* <AutoLogin /> */}
+        <View style={{flex: 1, alignItems: 'center', marginTop: '30%'}}>
+          <FastImage
+            style={{width: 221, height: 54, marginBottom: 20}}
+            source={require('../../assets/logo.png')}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          <TextNotoR style={{fontSize: 15, color: colors.fontColor2}}>
+            우리동네 모든 것을 담았다.
+          </TextNotoR>
+        </View>
         <View
           style={{
             alignItems: 'center',
             paddingHorizontal: 22,
             paddingTop: 33,
+            marginTop: 40,
           }}>
           <Input fm={fm} />
+          {/* <View style={{flexDirection:'row'}}>
+            <Image source={require('~/assets/top_ic_map_off.png')}/>            
+          </View> */}
+          <AutoLogin />
           <Pressable
             onPress={() => {
               if (Object.keys(fm.errors).length === 0) fm.handleSubmit();
@@ -125,11 +246,11 @@ const Login = ({navigation}) => {
             style={{
               width: '100%',
               height: 50,
-              borderRadius: 5,
+              borderRadius: 50,
               backgroundColor: colors.primary,
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: 13,
+              marginBottom: 25,
             }}>
             <TextMedium style={{fontSize: 17, color: 'white'}}>
               로그인
@@ -141,7 +262,7 @@ const Login = ({navigation}) => {
               width: '100%',
               flexDirection: 'row',
               marginBottom: 70,
-              justifyContent: 'space-around',
+              justifyContent: 'center',
               alignItems: 'center',
             }}>
             <Pressable
@@ -150,7 +271,7 @@ const Login = ({navigation}) => {
                   target: loginConfig.target.findId,
                 });
               }}>
-              <TextRegular style={{fontSize: 16}}>아이디 찾기</TextRegular>
+              <TextNotoR style={{fontSize: 16}}>아이디 찾기</TextNotoR>
             </Pressable>
             <Divider />
             <Pressable
@@ -159,18 +280,18 @@ const Login = ({navigation}) => {
                   target: loginConfig.target.findPW,
                 });
               }}>
-              <TextRegular style={{fontSize: 16}}>비밀번호 찾기</TextRegular>
+              <TextNotoR style={{fontSize: 16}}>비밀번호 찾기</TextNotoR>
             </Pressable>
             <Divider />
             <Pressable
               onPress={() => {
                 navigation.navigate('CheckTerms');
               }}>
-              <TextRegular style={{fontSize: 16}}>회원가입</TextRegular>
+              <TextNotoR style={{fontSize: 16}}>회원가입</TextNotoR>
             </Pressable>
           </View>
 
-          <Pressable
+          {/* <Pressable
             style={{
               width: '100%',
               height: 20,
@@ -184,20 +305,20 @@ const Login = ({navigation}) => {
               }}>
               SNS 계정으로 로그인
             </TextMedium>
-          </Pressable>
+          </Pressable> */}
 
           <View
             style={{
-              justifyContent: 'space-between',
               flexDirection: 'row',
-              flex: 1,
-              marginBottom: 20,
             }}>
             {/* 네이버 */}
             <Pressable
-              onPress={() => {}}
+              onPress={() => {
+                _NaverLogin();
+              }}
               style={{
                 ...style.snsButton,
+                marginRight: 18.5,
               }}>
               <Image
                 source={require('../../assets/sns_naver.png')}
@@ -205,7 +326,7 @@ const Login = ({navigation}) => {
                 resizeMode={'contain'}></Image>
             </Pressable>
             {/* 페이스북 */}
-            <Pressable
+            {/* <Pressable
               onPress={() => {}}
               style={{
                 ...style.snsButton,
@@ -214,12 +335,16 @@ const Login = ({navigation}) => {
                 source={require('../../assets/sns_facebook.png')}
                 style={{...style.snsImage}}
                 resizeMode={'contain'}></Image>
-            </Pressable>
+            </Pressable> */}
             {/* 카카오 */}
             <Pressable
-              onPress={() => SNSLogin._KakaoLogin()}
+              onPress={() => {
+                // customAlert('알림', '현재 준비중입니다.');
+                _KakaoLogin();
+              }}
               style={{
                 ...style.snsButton,
+                marginLeft: 18.5,
               }}>
               <Image
                 source={require('../../assets/sns_kakao.png')}
@@ -252,12 +377,9 @@ const style = StyleSheet.create({
   snsButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
-    height: 60,
-    marginRight: 6,
   },
   snsImage: {
-    width: '100%',
-    height: '100%',
+    width: 60,
+    height: 60,
   },
 });

@@ -1,12 +1,11 @@
 import {
   View,
-  Text,
   SafeAreaView,
   Image,
   StyleSheet,
   Pressable,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
 import colors from '../../styles/colors';
@@ -20,10 +19,38 @@ import {
   setNotiReply,
   setNotiReqReview,
 } from '../../store/reducers/PushReducer';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
 
 const PushSetting = ({navigation}) => {
   const dispatch = useDispatch();
+  const {userInfo} = useSelector(state => state.authReducer);
   const pushState = useSelector(state => state.pushReducer);
+
+  const {mutateNotification} = useCustomMutation();
+
+  const _setNoti = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+      mt_pushing1: pushState.NotiAll ? 'Y' : 'N',
+      mt_pushing2: pushState.NotiEvent ? 'Y' : 'N',
+      mt_pushing3: pushState.NotiReqReview ? 'Y' : 'N',
+      mt_pushing4: pushState.NotiReply ? 'Y' : 'N',
+      mt_pushing5: pushState.NotiCouponPoint ? 'Y' : 'N',
+    };
+    console.log('data', data);
+
+    mutateNotification.mutate(data, {
+      onSettled: e => {
+        console.log('e', e);
+      },
+    });
+  };
+
+  useEffect(() => {
+    _setNoti();
+  }, [pushState]);
+
+  // useEffect(() => {}, [pushState]);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>

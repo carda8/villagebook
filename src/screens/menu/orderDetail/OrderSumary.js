@@ -1,5 +1,5 @@
-import {View, Text, Image, ScrollView, Pressable} from 'react-native';
-import React from 'react';
+import {View, Text, Image, ScrollView, Pressable, Linking} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../../styles/commonStyle';
 import Header from '../../../component/Header';
@@ -10,8 +10,52 @@ import TextNotoM from '../../../component/text/TextNotoM';
 import TextBold from '../../../component/text/TextBold';
 import DividerL from '../../../component/DividerL';
 import Receipt from '../../../component/Receipt';
+import {useCustomMutation} from '../../../hooks/useCustomMutation';
+import Loading from '../../../component/Loading';
+import {replaceString} from '../../../config/utils/Price';
 
-const OrderSumary = ({navigation}) => {
+const OrderSumary = ({navigation, route}) => {
+  const routeData = route.params?.orderData;
+
+  const [orderData, setOrderData] = useState();
+  const {mutateOrderDetail} = useCustomMutation();
+
+  const _getDetail = () => {
+    const data = {
+      mt_id: routeData.mt_id,
+      od_id: routeData.od_id,
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+    };
+    console.log('data', data);
+    mutateOrderDetail.mutate(data, {
+      onSuccess: e => {
+        console.log('e', e);
+        if (e.data?.arrItems) {
+          _parseCartData(e.data.arrItems);
+        }
+      },
+    });
+  };
+
+  const _parseCartData = prop => {
+    let temp = [];
+
+    prop.orderDetail.map((item, index) => {
+      temp.push(JSON.parse(item.cart_data));
+    });
+    console.log('parsed', temp);
+
+    setOrderData({data: prop, parsedCartData: temp});
+    return temp;
+  };
+
+  useEffect(() => {
+    _getDetail();
+  }, []);
+
+  if (!orderData) return <Loading />;
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'주문 상세'} navigation={navigation} />
@@ -24,21 +68,30 @@ const OrderSumary = ({navigation}) => {
           }}>
           <View style={{flexDirection: 'row'}}>
             <Image
-              source={require('~/assets/no_use_img.png')}
+              source={
+                orderData.data.store.store_logo
+                  ? {uri: orderData.data.store.store_logo}
+                  : require('~/assets/no_use_img.png')
+              }
               style={{width: 60, height: 60, borderRadius: 10}}
             />
             <View
               style={{flex: 1, marginLeft: 10, justifyContent: 'space-evenly'}}>
               <TextMedium style={{color: colors.fontColor2}}>
-                설빙 부산대역점
+                {orderData.data.store.mb_company}
               </TextMedium>
               <TextRegular style={{color: colors.fontColor6}}>
-                자스민 아메리카노(R) 외 1개 6,000원
+                {orderData.data.order.order_good_name}{' '}
+                {orderData.data.orderDetail.lenght > 1 &&
+                  '외' + (orderData.data.orderDetail.length - 1) + '건'}
               </TextRegular>
             </View>
           </View>
           <View style={{flexDirection: 'row', marginTop: 15}}>
-            <View
+            <Pressable
+              onPress={() =>
+                Linking.openURL(`tel: ${orderData.data.store.mb_tel}`)
+              }
               style={{
                 flex: 1,
                 height: 45,
@@ -49,8 +102,16 @@ const OrderSumary = ({navigation}) => {
                 justifyContent: 'center',
               }}>
               <TextNotoM style={{color: 'white'}}>가게 전화</TextNotoM>
-            </View>
-            <View
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                console.log('data', orderData.data.store);
+                navigation.navigate('MenuDetail', {
+                  jumju_id: orderData.data.store.jumju_id,
+                  jumju_code: orderData.data.store.jumju_code,
+                  mb_company: orderData.data.store.mb_company,
+                });
+              }}
               style={{
                 flex: 1,
                 height: 45,
@@ -62,50 +123,201 @@ const OrderSumary = ({navigation}) => {
                 justifyContent: 'center',
               }}>
               <TextNotoM style={{color: colors.fontColorA}}>
-                가게 전화
+                가게 보기
               </TextNotoM>
+            </Pressable>
+          </View>
+        </View>
+        {orderData.parsedCartData[0].savedItems.map((item2, index) => (
+          <View key={index}>
+            <View style={{paddingHorizontal: 22, paddingTop: 19}}>
+              <TextMedium style={{fontSize: 17, color: colors.fontColor2}}>
+                {item2.main.menuName}
+                {'  '}
+                <TextRegular
+                  style={{
+                    fontSize: 12,
+                    color: colors.fontColorA,
+                  }}>
+                  수량 : {item2.count}
+                </TextRegular>
+              </TextMedium>
+
+              <View style={{marginVertical: 10}}>
+                {item2.main.option.map((item3, index) => (
+                  <TextRegular
+                    key={item3 + index}
+                    style={{color: colors.fontColor99}}>
+                    - {item3.name} : {item3.value}
+                  </TextRegular>
+                ))}
+              </View>
+              {item2.sub.length > 0 && (
+                <>
+                  <TextMedium style={{fontSize: 13, color: colors.fontColor2}}>
+                    추가선택
+                  </TextMedium>
+
+                  <View style={{marginVertical: 10}}>
+                    {item2.sub.map((item3, index) => (
+                      <TextRegular
+                        key={item3 + index}
+                        style={{color: colors.fontColor99}}>
+                        - {item3.itemCategory} : {item3.itemName}
+                      </TextRegular>
+                    ))}
+                  </View>
+                </>
+              )}
+              <View style={{alignSelf: 'flex-end'}}>
+                <TextBold style={{fontSize: 17, color: colors.fontColor2}}>
+                  {replaceString(item2.totalPrice)}원
+                </TextBold>
+              </View>
+            </View>
+            <DividerL style={{height: 1, marginVertical: 10}} />
+          </View>
+        ))}
+
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: colors.borderColor,
+            borderRadius: 5,
+            paddingHorizontal: 16,
+            paddingVertical: 24,
+            marginVertical: 16,
+            marginHorizontal: 22,
+          }}>
+          <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
+            결제금액
+          </TextBold>
+          <View style={{marginTop: 20}}>
+            <View
+              style={{
+                marginBottom: 11,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                총 주문금액
+              </TextRegular>
+              <TextRegular style={{color: colors.fontColor3}}>
+                {replaceString(orderData.data.order.odder_cart_price)}원
+              </TextRegular>
+            </View>
+
+            <View
+              style={{
+                marginBottom: 11,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                배달팁
+              </TextRegular>
+              <TextRegular style={{color: colors.fontColor3}}>
+                {replaceString(orderData.data.order.order_cost)}원
+              </TextRegular>
+            </View>
+
+            <View
+              style={{
+                marginBottom: 11,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                추가배달팁
+              </TextRegular>
+              <TextRegular style={{color: colors.fontColor3}}>
+                {replaceString(orderData.data.order.order_cost2)}원
+              </TextRegular>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 11,
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                포장 할인
+              </TextRegular>
+              <TextRegular style={{color: colors.primary}}>
+                - {replaceString(orderData.data.order.order_take_out_discount)}
+                원
+              </TextRegular>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 11,
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                점주쿠폰 할인
+              </TextRegular>
+              <TextRegular style={{color: colors.primary}}>
+                - {replaceString(orderData.data.order.order_coupon_store)}원
+              </TextRegular>
+            </View>
+
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                동네북쿠폰 할인
+              </TextRegular>
+              <TextRegular style={{color: colors.primary}}>
+                - {replaceString(orderData.data.order.order_coupon_ohjoo)}원
+              </TextRegular>
+            </View>
+
+            <DividerL style={{height: 1, marginVertical: 20}} />
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 10,
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                {'주문방법'}
+              </TextRegular>
+              <TextRegular style={{color: colors.primary}}>
+                {orderData.data.order.od_method === 'delivery'
+                  ? '배달'
+                  : '포장'}
+              </TextRegular>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginVertical: 10,
+                marginBottom: 20,
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                {'결제방법'}
+              </TextRegular>
+              <TextRegular style={{color: colors.primary}}>
+                {orderData.data.order.od_settle_case}
+              </TextRegular>
             </View>
           </View>
-        </View>
 
-        <View style={{paddingHorizontal: 22, paddingTop: 19}}>
-          <TextMedium style={{fontSize: 17, color: colors.fontColor2}}>
-            [살얼음가득] 물밀면 (강력추천)
-          </TextMedium>
-          <View style={{marginVertical: 10}}>
-            <TextRegular style={{color: colors.fontColor99}}>
-              - 양선택 : 보통(7,000원)
-            </TextRegular>
-            <TextRegular style={{color: colors.fontColor99}}>
-              - 추가선택(최대8개) : 통등심돈까스(100g)(700원)
-            </TextRegular>
-          </View>
-          <View style={{alignSelf: 'flex-end'}}>
-            <TextBold style={{fontSize: 17, color: colors.fontColor2}}>
-              7,700원
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
+              총 결제금액
+            </TextBold>
+
+            <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
+              {replaceString(orderData.data.order.order_sumprice)}원
             </TextBold>
           </View>
         </View>
-
-        <DividerL style={{height: 1, marginVertical: 10}} />
-
-        <View style={{paddingHorizontal: 22, paddingTop: 10}}>
-          <TextMedium style={{fontSize: 17, color: colors.fontColor2}}>
-            핫치킨MVP토스트 2개
-          </TextMedium>
-          <View style={{marginVertical: 10}}>
-            <TextRegular style={{color: colors.fontColor99}}>
-              핫치킨MVP토스트 2개
-            </TextRegular>
-          </View>
-          <View style={{alignSelf: 'flex-end'}}>
-            <TextBold style={{fontSize: 17, color: colors.fontColor2}}>
-              7,200원
-            </TextBold>
-          </View>
-        </View>
-
-        <Receipt />
 
         <View style={{paddingHorizontal: 22}}>
           <View style={{marginBottom: 13, flexDirection: 'row', flex: 1}}>
@@ -125,8 +337,10 @@ const OrderSumary = ({navigation}) => {
                   marginBottom: 13,
                   color: colors.fontColor3,
                 }}>
-                부산 금정구 구서동 445-21 5층 (도로명) 부산 금정구 금정로 225
-                5층
+                {console.log('orderData.data.order.', orderData.data.order)}
+                {orderData.data.order.order_addr1}{' '}
+                {orderData.data.order?.order_addr2}{' '}
+                {orderData.data.order?.order_addr3}
               </TextRegular>
             </View>
           </View>
@@ -148,7 +362,7 @@ const OrderSumary = ({navigation}) => {
                   marginBottom: 13,
                   color: colors.fontColor3,
                 }}>
-                010-1234-5678
+                {orderData.data.order.order_hp}
               </TextRegular>
             </View>
           </View>
@@ -170,7 +384,7 @@ const OrderSumary = ({navigation}) => {
                   marginBottom: 13,
                   color: colors.fontColor3,
                 }}>
-                오이 빼주세요.
+                {orderData.data.order.order_officer}
               </TextRegular>
             </View>
           </View>
@@ -192,25 +406,12 @@ const OrderSumary = ({navigation}) => {
                   marginBottom: 13,
                   color: colors.fontColor3,
                 }}>
-                12시 30분까지 와주세요.
+                {orderData.data.order.order_seller}
               </TextRegular>
             </View>
           </View>
-          {/* 
-          <Pressable
-            style={{
-              height: 50,
-              backgroundColor: colors.primary,
-              borderRadius: 5,
-              marginBottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <TextMedium style={{color: 'white', fontSize: 17}}>
-              메인화면으로 이동
-            </TextMedium>
-          </Pressable> */}
 
+          {/* 
           <Pressable
             style={{
               height: 50,
@@ -223,7 +424,7 @@ const OrderSumary = ({navigation}) => {
             <TextMedium style={{color: 'white', fontSize: 17}}>
               주문내역 삭제
             </TextMedium>
-          </Pressable>
+          </Pressable> */}
         </View>
       </ScrollView>
     </SafeAreaView>

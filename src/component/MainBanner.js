@@ -1,63 +1,100 @@
 import {View, Text, Pressable, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../styles/commonStyle';
-import Swiper from 'react-native-swiper';
 import FastImage from 'react-native-fast-image';
 import colors from '../styles/colors';
 import TextRegular from './text/TextRegular';
+import {useCustomMutation} from '../hooks/useCustomMutation';
+import Loading from './Loading';
+import Swiper from 'react-native-swiper';
 
-const MainBanner = ({navigation, style}) => {
-  const arr = [1, 2, 3, 4, 5];
+const MainBanner = ({navigation, style, position}) => {
+  const {mutateGetBanner} = useCustomMutation();
+  const [bannerImg, setBannerImg] = useState();
+
+  const _getBanner = () => {
+    const data = {
+      bn_position: position !== 'lifestyle' ? position : '동네편의',
+    };
+
+    mutateGetBanner.mutate(data, {
+      onSettled: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0) {
+          console.log('eeee', e.data.arrItems);
+          setBannerImg(e.data.arrItems);
+        } else {
+          // console.log('fail');
+          setBannerImg([]);
+        }
+        console.log('e', e);
+      },
+    });
+  };
+
+  useEffect(() => {
+    _getBanner();
+  }, []);
+
+  if (!bannerImg || bannerImg.length === 0)
+    return (
+      <View
+        style={{
+          width: '100%',
+          height: 140,
+          borderRadius: 10,
+          backgroundColor: colors.mainBG3,
+          ...style,
+        }}></View>
+    );
+
   return (
-    <>
+    <View style={{flex: 1}}>
       <Swiper
-        autoplay
         loop
+        autoplay
         autoplayDirection={true}
-        autoplayTimeout={5}
-        style={{height: 184}}
+        autoplayTimeout={1.5}
+        style={{height: 140}}
         containerStyle={style}
         removeClippedSubviews={false}
         renderPagination={(index, total, context) => (
-          <>
-            <View
-              style={{
-                top: 155,
-                right: 20,
-                width: 44,
-                height: 21,
-                borderRadius: 50,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(22, 22, 22, 0.57)',
-                position: 'absolute',
-              }}>
-              <TextRegular style={{color: 'white'}}>
-                {index + 1}/{total}
-              </TextRegular>
-            </View>
-          </>
+          <View
+            style={{
+              top: 110,
+              right: 20,
+              width: 44,
+              height: 21,
+              borderRadius: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(22, 22, 22, 0.57)',
+              position: 'absolute',
+            }}>
+            <TextRegular style={{color: 'white'}}>
+              {index + 1}/{total}
+            </TextRegular>
+          </View>
         )}>
-        {arr.map((item, idx) => (
+        {bannerImg.map((item, idx) => (
           <Pressable
             key={idx}
             onPress={() => {}}
             style={{
               flex: 1,
               backgroundColor: colors.mainBG3,
-              borderRadius: 25,
+              borderRadius: 10,
               overflow: 'hidden',
             }}>
             <FastImage
-              source={require('~/assets/banner1.png')}
-              style={{flex: 1}}
+              source={{uri: item.bn_img}}
+              style={{flex: 1, borderRadius: 10}}
               resizeMode={FastImage.resizeMode.cover}
             />
           </Pressable>
         ))}
       </Swiper>
-    </>
+    </View>
   );
 };
 

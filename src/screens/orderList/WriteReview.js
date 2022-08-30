@@ -6,6 +6,8 @@ import {
   Pressable,
   Image,
   ScrollView,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import commonStyles from '../../styles/commonStyle';
@@ -14,11 +16,114 @@ import TextBold from '../../component/text/TextBold';
 import colors from '../../styles/colors';
 import {_setRating} from '../../config/utils/modules';
 import SetRating from '../../component/SetRating';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useSelector} from 'react-redux';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import {customAlert} from '../../component/CustomAlert';
+import Loading from '../../component/Loading';
 
-const WriteReview = ({navigation}) => {
+const WriteReview = ({navigation, route}) => {
+  const routeData = route.params.storeInfo;
+  const {mutateWriteReveiw} = useCustomMutation();
+  const {userInfo} = useSelector(state => state.authReducer);
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState('');
+
+  const [fsImage, setFsImage] = useState([]);
+  const [imageUrl, setImageUrl] = useState([]);
+
+  const [modal, setModal] = useState(false);
+  // const [modalPic, setModalPic] = useState(false);
+
+  console.log('data', routeData);
+  const _writeReview = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+      mt_name: userInfo.mt_name ?? userInfo.mt_nickname,
+      jumju_id: routeData.jumju_id,
+      jumju_code: routeData.jumju_code,
+      od_id: routeData.od_id,
+      wr_score: rating,
+      mb_company: routeData.mb_company,
+      rt_content: text,
+      // rt_img1: {},
+      // rt_img2: {},
+      // rt_img3: {},
+      // rt_img4: {},
+      // rt_img5: {},
+      isReview: true,
+      imgArr: fsImage,
+    };
+
+    console.log('form data', data);
+    mutateWriteReveiw.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') {
+          customAlert('알림', '리뷰등록 완료 되었습니다');
+          navigation.goBack();
+        } else {
+          customAlert('알림', '리뷰등록 실패 하였습니다');
+          navigation.goBack();
+        }
+        console.log('e', e);
+      },
+    });
+  };
+
+  const _setImageFromCamera = () => {
+    if (fsImage.length === 5)
+      return customAlert('알림', '리뷰 사진은 최대 5장 등록가능합니다.');
+
+    ImageCropPicker.openCamera({
+      compressImageMaxHeight: 3000,
+      compressImageMaxWidth: 2000,
+      cropping: true,
+    }).then(image => {
+      let temp = image.path.split('.');
+      const convert = {
+        uri: image.path,
+        name: image.modificationDate + '.' + temp[temp.length - 1],
+        type: image.mime,
+      };
+      console.log('convert', convert);
+      console.log('image :', image);
+      setFsImage(prev => [...prev, convert]);
+      setImageUrl(prev => [...prev, convert.uri]);
+    });
+  };
+
+  const _setImageFromLocal = () => {
+    if (fsImage.length === 5)
+      return customAlert('알림', '리뷰 사진은 최대 5장 등록가능합니다.');
+
+    ImageCropPicker.openPicker({}).then(image => {
+      let temp = image.path.split('.');
+      const convert = {
+        uri: image.path,
+        name: image.modificationDate + '.' + temp[temp.length - 1],
+        type: image.mime,
+      };
+      console.log('convert', convert);
+      console.log('image :', image);
+      setFsImage(prev => [...prev, convert]);
+      setImageUrl(prev => [...prev, convert.uri]);
+    });
+  };
+
+  const _removeImage = itemUri => {
+    let arr = [...fsImage];
+    let temp = arr.filter(item => item.uri !== itemUri);
+    setFsImage(temp);
+    // console.log('temp', temp);
+  };
+
   const ratingCompleted = rating => {
     console.log('Rating is: ' + rating);
   };
+
+  if (mutateWriteReveiw.isLoading) return <Loading />;
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'리뷰작성'} navigation={navigation} />
@@ -30,7 +135,7 @@ const WriteReview = ({navigation}) => {
             </TextBold>
             <View style={{flexDirection: 'row', marginTop: 20}}>
               {/* {_setRating(false, {width: 40, height: 40})} */}
-              <SetRating />
+              <SetRating rating={rating} setRating={setRating} />
             </View>
           </View>
           <TextInput
@@ -42,35 +147,132 @@ const WriteReview = ({navigation}) => {
               paddingHorizontal: 10,
               textAlignVertical: 'top',
             }}
+            value={text}
+            onChangeText={setText}
             multiline
-            maxLength={500}
-            placeholder="리뷰를 작성해주세요(최대 500자)"
+            maxLength={300}
+            placeholder="리뷰를 작성해주세요"
           />
-          <Pressable
-            style={{
-              height: 70,
-              backgroundColor: colors.inputBoxBG,
-              borderRadius: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 30,
-            }}>
-            <Image
-              source={require('~/assets/btn_add.png')}
+
+          {console.log('fsImages', fsImage)}
+          <View style={{flexDirection: 'row'}}>
+            {fsImage.length > 0 &&
+              fsImage.map((item, index) => (
+                <Pressable
+                  key={item.name + index}
+                  onPress={() => {
+                    setModal(!modal);
+                  }}
+                  style={{
+                    flex: 1,
+                    maxWidth: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                    marginHorizontal: 3,
+                    marginTop: 10,
+                  }}>
+                  <Pressable
+                    onPress={() => {
+                      _removeImage(item.uri);
+                    }}
+                    style={{
+                      position: 'absolute',
+                      zIndex: 100,
+                      right: 3,
+                      top: 3,
+                    }}>
+                    <Image
+                      source={require('~/assets/pop_close.png')}
+                      style={{
+                        width: 25,
+                        height: 25,
+                        tintColor: colors.primary,
+                      }}
+                    />
+                  </Pressable>
+                  <Image
+                    source={{uri: item.uri ? item.uri : null}}
+                    style={{
+                      flex: 1,
+                      height: 100,
+                      backgroundColor: colors.inputBoxBG,
+                    }}
+                  />
+                </Pressable>
+              ))}
+          </View>
+
+          <View style={{flexDirection: 'row'}}>
+            <Pressable
+              onPress={() => _setImageFromCamera()}
               style={{
-                width: 20,
-                height: 20,
-                tintColor: colors.fontColor2,
-                marginRight: 10,
-              }}
-            />
-            <TextBold
-              style={{color: colors.fontColor2, includeFontPadding: false}}>
-              리뷰 사진을 등록해주세요. (최대 5개)
-            </TextBold>
-          </Pressable>
+                flex: 1,
+                height: 70,
+                backgroundColor: colors.mainBG1,
+                borderRadius: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 30,
+                marginRight: 20,
+              }}>
+              <Image
+                source={require('~/assets/btn_add.png')}
+                style={{
+                  width: 20,
+                  height: 20,
+                  tintColor: colors.fontColor2,
+                  marginRight: 10,
+                  marginLeft: 10,
+                }}
+                resizeMode="contain"
+              />
+              <TextBold
+                style={{
+                  color: colors.fontColor2,
+                  includeFontPadding: false,
+                  flex: 1,
+                }}>
+                사진 촬영
+              </TextBold>
+            </Pressable>
+
+            <Pressable
+              onPress={() => _setImageFromLocal()}
+              style={{
+                flex: 1,
+                height: 70,
+                backgroundColor: colors.mainBG2,
+                borderRadius: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 30,
+              }}>
+              <Image
+                source={require('~/assets/btn_add.png')}
+                style={{
+                  width: 20,
+                  height: 20,
+                  tintColor: colors.fontColor2,
+                  marginRight: 10,
+                  marginLeft: 10,
+                }}
+                resizeMode="contain"
+              />
+              <TextBold
+                style={{
+                  flex: 1,
+                  color: colors.fontColor2,
+                  includeFontPadding: false,
+                }}>
+                갤러리 가져오기
+              </TextBold>
+            </Pressable>
+          </View>
           <Pressable
+            onPress={() => _writeReview()}
             style={{
               height: 45,
               backgroundColor: colors.primary,
@@ -84,30 +286,29 @@ const WriteReview = ({navigation}) => {
               리뷰 등록
             </TextBold>
           </Pressable>
-          {/* <View style={{marginTop: 20, flexDirection: 'row'}}>
-          <Image
-            source={require('~/assets/no_use_img.png')}
-            style={{flex: 1, height: 50, marginRight: 10}}
-          />
-          <Image
-            source={require('~/assets/no_use_img.png')}
-            style={{flex: 1, height: 50, marginRight: 10}}
-          />
-          <Image
-            source={require('~/assets/no_use_img.png')}
-            style={{flex: 1, height: 50, marginRight: 10}}
-          />
-          <Image
-            source={require('~/assets/no_use_img.png')}
-            style={{flex: 1, height: 50, marginRight: 10}}
-          />
-          <Image
-            source={require('~/assets/no_use_img.png')}
-            style={{flex: 1, height: 50, marginRight: 10}}
-          />
-        </View> */}
         </View>
       </ScrollView>
+      {/* Modal for zooming image */}
+      <Modal
+        transparent
+        visible={modal}
+        onRequestClose={() => setModal(!modal)}>
+        <ImageViewer
+          imageUrls={[imageUrl]}
+          useNativeDriver
+          loadingRender={() => (
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          )}
+        />
+      </Modal>
+
+      {/* Modal for selecting picture from where */}
+      {/* <Modal
+        transparent
+        visible={modalPic}
+        onRequestClose={() => setModal(!modalPic)}>
+        <View style={{}}></View>
+      </Modal> */}
     </SafeAreaView>
   );
 };

@@ -1,8 +1,8 @@
 import {View, Text, Pressable, Image} from 'react-native';
 import React, {useState} from 'react';
 
-const SetRating = () => {
-  const [rating, setRating] = useState(5);
+const SetRating = ({rating, setRating}) => {
+  // const [rating, setRating] = useState(5);
 
   return (
     <View style={{flexDirection: 'row'}}>

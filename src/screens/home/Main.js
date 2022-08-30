@@ -1,5 +1,5 @@
-import React from 'react';
-import {Image, ScrollView, View} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Image, ScrollView, SectionList, View} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BottomBar from '../../component/BottomBar';
@@ -13,15 +13,85 @@ import TextJua from '../../component/text/TextJua';
 import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import policyConfig from '../signIn/policyConfig';
+import {_showAddr} from '../../config/utils/modules';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useFocusEffect} from '@react-navigation/native';
+import BannerList from '../../config/BannerList';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import localStorageConfig from '../../store/localStorage/localStorageConfig';
+import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
+import dayjs from 'dayjs';
+import {
+  removeSavedItem,
+  resetSavedItem,
+} from '../../store/reducers/CartReducer';
+import TextSBold from '../../component/text/TextSBold';
 
 const Main = ({navigation}) => {
+  const dispatch = useDispatch();
   const {userInfo} = useSelector(state => state.authReducer);
+  // const {postData} = useSelector(state => state.addressReducer);
+  const {savedItem} = useSelector(state => state.cartReducer);
+  const {mutateGetAddress, mutateGetCompanyInfo} = useCustomMutation();
+  const [companyInfo, setCompanyInfo] = useState();
+  const [toggleInfo, setToggleInfo] = useState(false);
 
-  // if (!userInfo) return <Loading />;
+  const _getAddr = () => {
+    const data = {
+      mt_id: userInfo.mt_id,
+    };
 
-  console.log('::: USER INFO', userInfo);
+    mutateGetAddress.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') {
+        }
+        console.log('mutateGetAddress', e);
+      },
+    });
+  };
+
+  const _getCompanyInfo = () => {
+    const data = {};
+    mutateGetCompanyInfo.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') setCompanyInfo(e.data.arrItems);
+      },
+    });
+  };
+
+  const _checkTime = () => {
+    const date = new Date();
+    const diff = dayjs(date).diff(savedItem.savedTime, 'minutes');
+    //minute of a day
+    const limit = 60 * Number(companyInfo.de_local_time);
+    console.log('savedItem', savedItem);
+    console.log('DIFF :::::', diff, limit);
+    if (diff >= limit) {
+      dispatch(resetSavedItem());
+    }
+    // if (diff >= 1440) console.log('copyData', copyData);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      _getAddr();
+      return () => {};
+    }, []),
+  );
+
+  useEffect(() => {
+    _getCompanyInfo();
+    console.log('::: USER INFO', userInfo);
+  }, []);
+
+  useEffect(() => {
+    if (companyInfo) {
+      _checkTime();
+    }
+  }, [companyInfo]);
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header
@@ -35,10 +105,10 @@ const Main = ({navigation}) => {
         contentContainerStyle={{paddingHorizontal: 22, paddingBottom: 70}}>
         <Pressable
           onPress={() => {
-            navigation.navigate('Map');
+            navigation.navigate('AddressMain');
           }}
           style={{
-            width: '100%',
+            flex: 1,
             alignItems: 'center',
             flexDirection: 'row',
             backgroundColor: 'white',
@@ -46,12 +116,45 @@ const Main = ({navigation}) => {
           }}>
           <Image
             source={require('~/assets/ico_location.png')}
-            style={{width: 19, height: 19, marginRight: 8}}
+            style={{width: 19, height: 19}}
           />
-          <TextEBold style={{fontSize: 15}}>주소 검색</TextEBold>
+          <View style={{marginLeft: 10, marginRight: 3}}>
+            <TextEBold
+              numberOfLines={1}
+              style={{
+                fontSize: 15,
+                color: colors.fontColor2,
+              }}>
+              {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+                '주소설정') +
+                ' ' +
+                (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ?? ' ') +
+                ' '}
+              {!mutateGetAddress?.data ?? '주소설정'}
+              {/* {_showAddr(userInfo, '주소설정')} */}
+              {/* {postData.addrMain
+              ? postData.addrMain + ' ' + postData.addrSub
+              : '주소 설정'} */}
+            </TextEBold>
+          </View>
+
+          <Image
+            source={require('~/assets/arrow.png')}
+            style={{
+              tintColor: colors.primary,
+              width: 17,
+              height: 17,
+              // transform: [{rotate: '90deg'}],
+            }}
+            resizeMode={'contain'}
+          />
         </Pressable>
 
-        <SearchBox />
+        <SearchBox
+          navigation={navigation}
+          // onPress={() => navigation.navigate('SearchView')}
+          isMain={true}
+        />
 
         {/* 동네맛집 */}
         {/* 동네마켓 */}
@@ -68,7 +171,7 @@ const Main = ({navigation}) => {
             }}
             style={{
               flex: 1,
-              borderRadius: 25,
+              borderRadius: 10,
               marginRight: 16,
               paddingTop: 34,
               paddingLeft: 27,
@@ -100,7 +203,7 @@ const Main = ({navigation}) => {
             }}
             style={{
               flex: 1,
-              borderRadius: 25,
+              borderRadius: 10,
               paddingTop: 34,
               paddingLeft: 27,
               backgroundColor: colors.mainBG2,
@@ -145,7 +248,7 @@ const Main = ({navigation}) => {
               borderWidth: 1,
               backgroundColor: colors.mainBG3,
               borderColor: colors.mainBG3Border,
-              borderRadius: 25,
+              borderRadius: 10,
               overflow: 'hidden',
             }}>
             <View style={{paddingTop: 39}}>
@@ -154,7 +257,7 @@ const Main = ({navigation}) => {
               </TextJua>
               <View style={{marginTop: 8}}>
                 <TextRegular>
-                  우리동네 뫃든 시설, {'\n'}정보 검색은 한번에
+                  우리동네 모든 시설, {'\n'}정보 검색은 한번에
                 </TextRegular>
               </View>
             </View>
@@ -170,7 +273,11 @@ const Main = ({navigation}) => {
         </View>
 
         {/* 메인배너 */}
-        <MainBanner navigation={navigation} style={{marginBottom: 60}} />
+        <MainBanner
+          navigation={navigation}
+          style={{marginBottom: 20}}
+          position={BannerList.main}
+        />
 
         {/* 약관 */}
         <View
@@ -186,39 +293,49 @@ const Main = ({navigation}) => {
                 target: policyConfig.target.location,
               });
             }}>
-            <TextRegular style={{color: colors.fontColor8}}>
+            <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
               위치기반 서비스 이용약관
             </TextRegular>
           </Pressable>
-          <Divider style={{marginHorizontal: 10}} />
+          <Divider style={{marginHorizontal: 5}} />
           <Pressable
             onPress={() => {
               navigation.navigate('Policy', {
                 target: policyConfig.target.personal,
               });
             }}>
-            <TextBold style={{color: colors.fontColor8}}>
+            <TextBold style={{color: colors.fontColor8, fontSize: 10}}>
               개인정보 처리방침
             </TextBold>
           </Pressable>
-        </View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Divider style={{marginHorizontal: 5}} />
           <Pressable
             onPress={() => {
               navigation.navigate('Policy', {target: policyConfig.target.use});
             }}>
-            <TextRegular style={{color: colors.fontColor8}}>
+            <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
               이용약관
             </TextRegular>
           </Pressable>
-          {/* <Divider style={{marginHorizontal: 10}} />
-          <Pressable onPress={() => {}}>
-            <TextRegular style={{color: colors.fontColor8}}>
-              전자금융거래 이용약관
-            </TextRegular>
-          </Pressable> */}
         </View>
 
+        <Pressable
+          onPress={() => {
+            setToggleInfo(!toggleInfo);
+          }}
+          style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TextSBold>(주)어스닉</TextSBold>
+          <Image
+            source={require('~/assets/btn_top_left.png')}
+            style={{
+              transform: [{rotate: toggleInfo ? '90deg' : '-90deg'}],
+              width: 20,
+              height: 20,
+              marginLeft: 4,
+            }}
+            resizeMode={'contain'}
+          />
+        </Pressable>
         <View
           style={{
             flexDirection: 'row',
@@ -226,21 +343,31 @@ const Main = ({navigation}) => {
             marginTop: 10,
             marginBottom: 20,
           }}>
-          <TextRegular style={{color: colors.fontColor8}}>
-            동네북은 통신판매 중개자로서 통신판매의 당사자가 아닙니다. 따라서
-            오늘의 주문은 상품거래정보 및 거래에 대한 책임을 지지 않습니다.
+          <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
+            (주)어스닉은 통신판매중개자이며, 따라서 (주)어스닉은 상품, 거래정보
+            및 거래에 대하여 책임을 지지 않습니다.
           </TextRegular>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <TextRegular style={{color: colors.fontColor8}}>
-            서울특별시 강남구 영동대로 1234 대표이사 : 홍길동 | 사업자등록번호 :
-            123-12-123456 통신판매업신고 : 제 2022-서울강남-12345호
-          </TextRegular>
-        </View>
+        {toggleInfo && (
+          <>
+            <View
+              style={{
+                alignItems: 'center',
+              }}>
+              <View style={{marginBottom: 20}}>
+                <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
+                  {companyInfo?.de_admin_company_memo}
+                </TextRegular>
+              </View>
+              <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
+                {companyInfo?.de_admin_company_addr} 대표이사 :{' '}
+                {companyInfo?.de_admin_company_owner} | 사업자등록번호 :
+                {companyInfo?.de_admin_company_saupja_no} 통신판매업신고 :{' '}
+                {companyInfo?.de_admin_tongsin_no}
+              </TextRegular>
+            </View>
+          </>
+        )}
       </ScrollView>
       <BottomBar navigation={navigation} />
       {/* <BottomNavigator /> */}

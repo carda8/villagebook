@@ -1,5 +1,6 @@
 import {View, Text, Pressable} from 'react-native';
 import React, {useState} from 'react';
+import {Shadow} from 'react-native-shadow-2';
 
 const Test = () => {
   const [temp, setTemp] = useState();
@@ -9,29 +10,25 @@ const Test = () => {
   return (
     <View style={{flex: 1}}>
       {arr.map((item, index) => (
-        <Pressable
-          style={{
-            width: 100,
-            height: 50,
-            margin: 20,
-            backgroundColor: temp === index ? 'teal' : 'tomato',
-          }}
-          onPress={() => {
-            setTemp(index);
-          }}></Pressable>
-      ))}
+        <Shadow
+          // offset={[3, 10]}
 
-      {arr.map((item, index) => (
-        <Pressable
-          style={{
-            width: 100,
-            height: 50,
+          containerStyle={{
             margin: 20,
-            backgroundColor: temp2 === index ? 'linen' : 'gray',
+            shadowRadius: 1,
           }}
-          onPress={() => {
-            setTemp2(index);
-          }}></Pressable>
+          key={index}>
+          <Pressable
+            style={{
+              width: 100,
+              height: 50,
+              // margin: 20,
+              backgroundColor: temp === index ? 'teal' : 'tomato',
+            }}
+            onPress={() => {
+              setTemp(index);
+            }}></Pressable>
+        </Shadow>
       ))}
     </View>
   );

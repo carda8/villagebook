@@ -25,4 +25,32 @@ export default {
     const result = await _reqAPI('proc_cart_send_cost.php', data);
     return result;
   },
+  _getLikeList: async data => {
+    const result = await _reqAPI('proc_wish_store_list.php', data);
+    return result;
+  },
+  _setLikeStore: async data => {
+    const result = await _reqAPI('proc_wish_store_input.php', data);
+    return result;
+  },
+  _getStoreCoupon: async data => {
+    const result = await _reqAPI('proc_store_service_couponzone.php', data);
+    return result;
+  },
+  _getStoreDeliveryFeeInfo: async data => {
+    const result = await _reqAPI('proc_store_delivery.php', data);
+    return result;
+  },
+  _getBanner: async data => {
+    const result = await _reqAPI('proc_banner_list.php', data);
+    return result;
+  },
+  _getStoreService: async data => {
+    const result = await _reqAPI('proc_store_service.php', data);
+    return result;
+  },
+  _downloadCoupon: async data => {
+    const result = await _reqAPI('proc_coupon_download.php', data);
+    return result;
+  },
 };

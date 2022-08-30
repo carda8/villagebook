@@ -7,8 +7,11 @@ import {
   ScrollView,
   Image,
   Alert,
+  Modal,
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
 import Header from '../../component/Header';
@@ -23,8 +26,16 @@ import {useMutation} from 'react-query';
 import authAPI from '../../api/modules/authAPI';
 import {APP_TOKEN} from '@env';
 import {Errorhandler} from '../../config/ErrorHandler';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import {useSelector} from 'react-redux';
 
 const SignForm = ({navigation}) => {
+  const {fcmToken} = useSelector(state => state.authReducer);
+  const [fsImage, setFsImage] = useState();
+  const [modal, setModal] = useState(false);
+  const [modalPic, setModalPic] = useState(false);
+
   const mutateCheckId = useMutation(authAPI._checkId, {
     onSuccess: e => {
       if (e.result === 'false') {
@@ -70,8 +81,7 @@ const SignForm = ({navigation}) => {
   });
 
   const mutateSignIn = useMutation(authAPI._submitForm, {
-    onSuccess: e => {
-      // Alert.alert('알림', `인증번호가 발송 되었습니다.`);
+    onSettled: e => {
       if (e.result === 'true') {
         Alert.alert(
           '가입완료',
@@ -81,6 +91,9 @@ const SignForm = ({navigation}) => {
       }
       console.log('mutateSignIn', e);
     },
+    // onSuccess: e => {
+    //   // Alert.alert('알림', `인증번호가 발송 되었습니다.`);
+    // },
   });
 
   const fm = useFormik({
@@ -96,7 +109,6 @@ const SignForm = ({navigation}) => {
       mt_email: '',
       mt_level: '2',
       mt_image1: '', //이미지 관련 설정 필요
-
       mt_idChecked: false, //중복 체크 여부 확인 값 1
       mt_nickNameChecked: false, //중복 체크 여부 확인 값 2
     },
@@ -135,13 +147,15 @@ const SignForm = ({navigation}) => {
       mt_id: e.mt_id,
       mt_pwd: e.mt_pwd,
       mt_pwd_re: e.mt_pwd_re,
-      // mt_name: e.mt_name,
+      mt_name: e.mt_nickname,
       mt_nickname: e.mt_nickname,
       mt_hp: e.mt_hp,
       mt_certify: e.mt_certify,
       mt_email: e.mt_email,
       mt_level: e.mt_level,
       mt_image1: e.mt_image1,
+      mb_login_type: 1,
+      mt_app_token: fcmToken,
     };
     console.log('summit data', data);
     mutateSignIn.mutate(data);
@@ -168,6 +182,7 @@ const SignForm = ({navigation}) => {
   const _vaildateCode = () => {
     console.log('certify', fm.values.mt_certify_check);
     console.log('mt_code', fm.values.mt_code);
+
     if (
       fm.values.mt_certify_check &&
       fm.values.mt_code == fm.values.mt_certify_check
@@ -182,9 +197,45 @@ const SignForm = ({navigation}) => {
     }
   };
 
+  const _setProfileImage = () => {
+    ImageCropPicker.openCamera({
+      compressImageMaxHeight: 3000,
+      compressImageMaxWidth: 2000,
+      cropping: true,
+    }).then(image => {
+      let temp = image.path.split('.');
+      const convert = {
+        uri: image.path,
+        name: image.modificationDate + '.' + temp[temp.length - 1],
+        type: image.mime,
+      };
+      console.log('convert', convert);
+      console.log('image :', image);
+      fm.setFieldValue('mt_image1', convert);
+      setFsImage(image.path);
+      setModalPic(!modalPic);
+    });
+  };
+
+  const _setProfileImageFromLocal = () => {
+    ImageCropPicker.openPicker({}).then(image => {
+      let temp = image.path.split('.');
+      const convert = {
+        uri: image.path,
+        name: image.modificationDate + '.' + temp[temp.length - 1],
+        type: image.mime,
+      };
+      console.log('convert', convert);
+      console.log('image :', image);
+      fm.setFieldValue('mt_image1', convert);
+      setFsImage(image.path);
+      setModalPic(!modalPic);
+    });
+  };
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'회원가입'} navigation={navigation} />
+      <Header title={'동네북 회원가입'} navigation={navigation} />
       <ScrollView>
         <View style={{paddingHorizontal: 22}}>
           <TextBold>아이디</TextBold>
@@ -279,20 +330,50 @@ const SignForm = ({navigation}) => {
 
           <View style={{marginTop: 20}}>
             <TextBold>프로필사진</TextBold>
-            <View
-              style={{
-                width: 100,
-                height: 100,
-                borderRadius: 10,
-                marginTop: 10,
-                backgroundColor: colors.inputBoxBG,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Image
-                source={require('~/assets/ico_plus.png')}
-                style={{width: 30, height: 30}}
-              />
+            <View style={{flexDirection: 'row', marginTop: 10}}>
+              {fsImage && (
+                <Pressable
+                  onPress={() => {
+                    setModal(!modal);
+                  }}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                    marginRight: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={{uri: fsImage ? fsImage : null}}
+                    style={{
+                      width: 100,
+                      height: 100,
+                      backgroundColor: colors.inputBoxBG,
+                    }}
+                  />
+                </Pressable>
+              )}
+
+              <Pressable
+                onPress={() => {
+                  setModalPic(!modalPic);
+                  // _setProfileImage();
+                }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: 10,
+                  backgroundColor: colors.inputBoxBG,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/ico_plus.png')}
+                  style={{width: 30, height: 30}}
+                />
+              </Pressable>
             </View>
           </View>
 
@@ -313,6 +394,125 @@ const SignForm = ({navigation}) => {
           />
         </View>
       </ScrollView>
+      <Modal
+        transparent
+        visible={modal}
+        onRequestClose={() => {
+          setModal(!modal);
+        }}>
+        <ImageViewer
+          imageUrls={[{url: fsImage}]}
+          useNativeDriver
+          loadingRender={() => (
+            <ActivityIndicator size={'large'} color={colors.primary} />
+          )}
+        />
+      </Modal>
+
+      <Modal
+        transparent
+        visible={modalPic}
+        onRequestClose={() => {
+          setModalPic(!modalPic);
+        }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            paddingHorizontal: 22,
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              width: '100%',
+              height: 70,
+              borderRadius: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'white',
+              ...Platform.select({
+                ios: {
+                  shadowColor: '#00000029',
+                  shadowOpacity: 0.6,
+                  shadowRadius: 50 / 2,
+                  shadowOffset: {
+                    height: 12,
+                    width: 0,
+                  },
+                },
+                android: {
+                  elevation: 5,
+                },
+              }),
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <Pressable
+                onPress={() => _setProfileImage()}
+                style={{
+                  flex: 1,
+                  height: 70,
+                  backgroundColor: colors.mainBG1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/btn_add.png')}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    tintColor: colors.fontColor2,
+                    marginRight: 10,
+                    marginLeft: 10,
+                  }}
+                  resizeMode="contain"
+                />
+                <TextBold
+                  style={{
+                    color: colors.fontColor2,
+                    includeFontPadding: false,
+                    flex: 1,
+                  }}>
+                  사진 촬영
+                </TextBold>
+              </Pressable>
+
+              <Pressable
+                onPress={() => _setProfileImageFromLocal()}
+                style={{
+                  flex: 1,
+                  height: 70,
+                  backgroundColor: colors.mainBG2,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/btn_add.png')}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    tintColor: colors.fontColor2,
+                    marginRight: 10,
+                    marginLeft: 10,
+                  }}
+                  resizeMode="contain"
+                />
+                <TextBold
+                  style={{
+                    flex: 1,
+                    color: colors.fontColor2,
+                    includeFontPadding: false,
+                  }}>
+                  갤러리 가져오기
+                </TextBold>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };

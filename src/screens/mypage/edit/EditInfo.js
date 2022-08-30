@@ -19,6 +19,7 @@ import {useSelector} from 'react-redux';
 import {useMutation} from 'react-query';
 import authAPI from '../../../api/modules/authAPI';
 import Loading from '../../../component/Loading';
+import AuthStorageModuel from '../../../store/localStorage/AuthStorageModuel';
 
 const EditInfo = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
@@ -26,6 +27,7 @@ const EditInfo = ({navigation}) => {
 
   const _removeReset = async () => {
     await AuthStorage._removeUserTokenID(() => {});
+    await AuthStorageModuel._removeCartData(() => {});
     await AuthStorage._removeItemAutoLogin(() => {
       navigation.reset({
         routes: [{name: 'Login'}],
@@ -111,24 +113,30 @@ const EditInfo = ({navigation}) => {
             <TextMedium style={{color: colors.fontColorA}}>
               휴대폰번호
             </TextMedium>
-            <TextMedium style={{color: colors.fontColorA}}>비밀번호</TextMedium>
+            {userInfo.mt_login_type === '1' && (
+              <TextMedium style={{color: colors.fontColorA}}>
+                비밀번호
+              </TextMedium>
+            )}
           </View>
 
           {/* 해당 항목 유저 정보 */}
           <View
             style={{justifyContent: 'space-evenly', marginLeft: 40, flex: 1}}>
             <TextMedium style={{color: colors.fontColor2}}>
-              {userInfo.mt_nickname}
+              {userInfo.mt_nickname ?? userInfo.mt_name}
             </TextMedium>
             <TextMedium style={{color: colors.fontColor2}}>
               {userInfo.mt_email}
             </TextMedium>
             <TextMedium style={{color: colors.fontColor2}}>
-              {userInfo.mt_hp}
+              {userInfo.mt_hp ? userInfo.mt_hp : ''}
             </TextMedium>
-            <TextMedium style={{color: colors.fontColor2}}>
-              {'************'}
-            </TextMedium>
+            {userInfo.mt_login_type === '1' && (
+              <TextMedium style={{color: colors.fontColor2}}>
+                {'************'}
+              </TextMedium>
+            )}
           </View>
           <View style={{justifyContent: 'space-evenly', width: 40}}>
             <Pressable
@@ -173,20 +181,22 @@ const EditInfo = ({navigation}) => {
                 변경
               </TextMedium>
             </Pressable>
-            <Pressable
-              onPress={() => {
-                navigation.navigate('EditSummit', {
-                  target: EditConfig.target.password,
-                });
-              }}
-              hitSlop={10}
-              style={{
-                ...styles.btnEdit,
-              }}>
-              <TextMedium style={{color: colors.fontColor2, fontSize: 12}}>
-                변경
-              </TextMedium>
-            </Pressable>
+            {userInfo.mt_login_type === '1' && (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('EditSummit', {
+                    target: EditConfig.target.password,
+                  });
+                }}
+                hitSlop={10}
+                style={{
+                  ...styles.btnEdit,
+                }}>
+                <TextMedium style={{color: colors.fontColor2, fontSize: 12}}>
+                  변경
+                </TextMedium>
+              </Pressable>
+            )}
           </View>
         </View>
         <View

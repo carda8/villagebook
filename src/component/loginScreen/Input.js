@@ -15,15 +15,17 @@ const Input = ({fm}) => {
           width: '100%',
           height: 50,
           alignSelf: 'flex-start',
-          borderWidth: 1,
+          borderBottomWidth: 1,
           borderRadius: 5,
           borderColor: colors.colorE3,
           paddingHorizontal: 20,
           fontSize: 15,
           marginBottom: 4,
+          color: colors.primary,
         }}
         autoCapitalize="none"
-        placeholder={'아이디를 입력하세요'}
+        placeholder={'아이디'}
+        placeholderTextColor={colors.primary}
       />
       <TextInput
         value={fm.values.mt_pwd}
@@ -34,16 +36,18 @@ const Input = ({fm}) => {
           width: '100%',
           height: 50,
           alignSelf: 'flex-start',
-          borderWidth: 1,
+          borderBottomWidth: 1,
           borderRadius: 5,
           borderColor: colors.colorE3,
           paddingHorizontal: 20,
           fontSize: 15,
           marginBottom: 26,
+          color: colors.primary,
         }}
         autoCapitalize="none"
         secureTextEntry
-        placeholder={'비밀번호를 입력하세요'}
+        placeholder={'비밀번호'}
+        placeholderTextColor={colors.primary}
       />
     </>
   );
