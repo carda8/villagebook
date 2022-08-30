@@ -46,6 +46,7 @@ const Receipt = ({orderResult, isSummary}) => {
     console.log('temp', temp);
     return temp;
   };
+  console.log('orderResult', orderResult);
 
   return (
     <View
@@ -74,32 +75,38 @@ const Receipt = ({orderResult, isSummary}) => {
             {replaceString(_calcTotalPrice())}원
           </TextRegular>
         </View>
+        {summitedData?.od_method === 'wrap' && (
+          <>
+            <View
+              style={{
+                marginBottom: 11,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                배달팁
+              </TextRegular>
+              <TextRegular style={{color: colors.fontColor3}}>
+                {replaceString(summitedData?.od_send_cost)}원
+              </TextRegular>
+            </View>
 
-        <View
-          style={{
-            marginBottom: 11,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <TextRegular style={{color: colors.fontColor99}}>배달팁</TextRegular>
-          <TextRegular style={{color: colors.fontColor3}}>
-            {replaceString(summitedData?.od_send_cost)}원
-          </TextRegular>
-        </View>
+            <View
+              style={{
+                marginBottom: 11,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
+                추가배달팁
+              </TextRegular>
+              <TextRegular style={{color: colors.fontColor3}}>
+                {replaceString(orderData?.od_send_cost2)}원
+              </TextRegular>
+            </View>
+          </>
+        )}
 
-        <View
-          style={{
-            marginBottom: 11,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <TextRegular style={{color: colors.fontColor99}}>
-            추가배달팁
-          </TextRegular>
-          <TextRegular style={{color: colors.fontColor3}}>
-            {replaceString(orderData?.od_send_cost2)}원
-          </TextRegular>
-        </View>
         {orderData?.od_receipt_point > 0 && (
           <View
             style={{
@@ -116,7 +123,7 @@ const Receipt = ({orderResult, isSummary}) => {
           </View>
         )}
 
-        {orderData?.od_method_value !== '배달' && (
+        {orderData?.od_method !== 'delivery' && (
           <View
             style={{
               flexDirection: 'row',
@@ -124,7 +131,7 @@ const Receipt = ({orderResult, isSummary}) => {
               marginBottom: 11,
             }}>
             <TextRegular style={{color: colors.fontColor99}}>
-              포장 할인
+              {orderData?.od_method === 'wrap' ? '포장할인' : '먹고가기 할인'}
             </TextRegular>
             <TextRegular style={{color: colors.primary}}>
               - {replaceString(orderData?.od_take_out_discount)}원

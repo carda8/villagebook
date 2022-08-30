@@ -25,26 +25,20 @@ import {set} from 'react-native-reanimated';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
 
 const WriteOrderForm = ({navigation, route}) => {
-  const [datas, setDatas] = useState();
   const addData = route.params?.addData;
-  // console.log('routeroute', route.params);
-  // console.log('addData', addData);
-  const {deliveryData} = useSelector(state => state.paymentReducer);
-  // const deliveryData = route.params?.deliveryData;
-  const lastPrice = route.params?.lastPrice;
-  // const isDelivery = route.params?.isDelivery;
-
-  // console.log('last', lastPrice, deliveryData);
-  const {mutateGetCouponPoint, mutateGetCoupon, mutateGetAddress} =
-    useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
   const cartStore = useSelector(state => state.cartReducer);
-  const currentStore = cartStore.currentStoreCode;
   const {storeCoupon, systemCoupon} = useSelector(state => state.couponReducer);
-
-  const {isDelivery, paymentMethod} = useSelector(
+  const {deliveryType} = useSelector(state => state.deliveryReducer);
+  const {deliveryData, paymentMethod} = useSelector(
     state => state.paymentReducer,
   );
+
+  const {mutateGetCouponPoint, mutateGetCoupon, mutateGetAddress} =
+    useCustomMutation();
+
+  const currentStore = cartStore.currentStoreCode;
+  // const {deliveryType === 0} = useSelector(state => state.paymentReducer);
   const [couponPoint, setCouponPoint] = useState([]);
   const [agreement, setAgreement] = useState(false);
   const [orderForm, setOrderForm] = useState({
@@ -61,12 +55,13 @@ const WriteOrderForm = ({navigation, route}) => {
     od_hp: userInfo.mt_hp,
     od_to_officer: '', // 가게 사장님
     od_to_seller: '', //배달 기사님
-
+    od_forhere_num: '',
     od_safety_chk: true,
-    od_send_cost: isDelivery ? deliveryData.send_cost : 0,
-    od_send_cost2: isDelivery ? deliveryData.send_cost2 : 0,
+    od_send_cost: deliveryType === 0 ? deliveryData.send_cost : 0,
+    od_send_cost2: deliveryType === 0 ? deliveryData.send_cost2 : 0,
     od_receipt_point: 0,
-    od_takeout_discount: isDelivery ? '0' : deliveryData.take_out_discount,
+    od_takeout_discount:
+      deliveryType === 0 ? '0' : deliveryData.take_out_discount,
 
     od_no_spoon: false,
     od_coupon_id_system: '', //관리자 발행 쿠폰번호
@@ -85,7 +80,8 @@ const WriteOrderForm = ({navigation, route}) => {
     cartStore.savedItem.savedItems.map((item, index) => {
       calcTotal += item.totalPrice;
     });
-    if (!isDelivery) calcTotal = calcTotal - deliveryData.take_out_discount;
+    if (deliveryType !== 0)
+      calcTotal = calcTotal - deliveryData.take_out_discount;
     else {
       calcTotal =
         calcTotal +
@@ -221,7 +217,7 @@ const WriteOrderForm = ({navigation, route}) => {
   }, [storeCoupon, systemCoupon]);
 
   const _checkForm = () => {
-    if (isDelivery && !orderForm.od_addr1 && !orderForm.od_addr2) {
+    if (deliveryType === 0 && !orderForm.od_addr1 && !orderForm.od_addr2) {
       return customAlert('알림', '배달정보를 확인해주세요.');
     }
     if (!paymentMethod) {
@@ -234,7 +230,7 @@ const WriteOrderForm = ({navigation, route}) => {
     // });
     console.log('orderForm', orderForm);
     navigation.navigate('PaymentMain', {
-      isDelivery,
+      deliveryType,
       orderForm,
       totalSellPrice: _calcLastPrice(),
       totalOrderPrice: _calcSummary(),
@@ -249,16 +245,20 @@ const WriteOrderForm = ({navigation, route}) => {
         <View style={{padding: 22}}>
           <View style={{flexDirection: 'row', alignItems: 'baseline', flex: 1}}>
             <TextBold style={{fontSize: 16}}>
-              {isDelivery ? '배달정보' : '포장'}
+              {deliveryType === 0
+                ? '배달정보'
+                : deliveryType === 1
+                ? '포장'
+                : '먹고가기'}
             </TextBold>
-            {isDelivery && (
+            {deliveryType === 0 && (
               <TextRegular style={{color: '#D91313', fontSize: 13}}>
                 (주소가 맞는지 꼭 확인 후 주문해 주세요)
               </TextRegular>
             )}
           </View>
 
-          {isDelivery && (
+          {deliveryType === 0 && (
             <>
               <View style={{flexDirection: 'row', marginTop: 10}}>
                 <TextInput
@@ -292,7 +292,7 @@ const WriteOrderForm = ({navigation, route}) => {
               />
             </>
           )}
-          {!isDelivery && (
+          {deliveryType !== 0 && (
             <View style={{marginVertical: 10}}>
               <TextBold>주문자 휴대폰 번호</TextBold>
             </View>
@@ -313,6 +313,31 @@ const WriteOrderForm = ({navigation, route}) => {
               <TextBold style={{fontSize: 16, color: 'white'}}>변경</TextBold>
             </Pressable> */}
           </View>
+
+          {deliveryType === 2 && (
+            <>
+              <View style={{marginVertical: 10}}>
+                <TextBold>식사 인원 입력</TextBold>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <TextInput
+                  value={orderForm.od_forhere_num}
+                  onChangeText={e => {
+                    let temp = e;
+                    temp = temp.replace(/[^0-9]/gi, '');
+                    setOrderForm({...orderForm, od_forhere_num: temp});
+                  }}
+                  style={{...styles.inputContainer, marginRight: 10}}
+                  keyboardType={'numeric'}
+                  placeholder={'식사 인원 입력'}
+                  maxLength={4}
+                />
+                <View style={{position: 'absolute', right: 25}}>
+                  <TextBold style={{color: colors.fontColorA2}}>명</TextBold>
+                </View>
+              </View>
+            </>
+          )}
 
           {/* 안심번호 */}
           {/* <Pressable
@@ -349,7 +374,7 @@ const WriteOrderForm = ({navigation, route}) => {
                 style={{...styles.inputContainer, backgroundColor: 'white'}}
               />
             </View>
-            {isDelivery && (
+            {deliveryType === 0 && (
               <>
                 <TextBold style={{marginVertical: 5}}>배달 기사님에게</TextBold>
                 <TextInput
@@ -446,7 +471,7 @@ const WriteOrderForm = ({navigation, route}) => {
             </View>
           )}
           <TextRegular></TextRegular>
-          {isDelivery && paymentMethod === PaymentList.card && (
+          {deliveryType === 0 && paymentMethod === PaymentList.card && (
             <>
               {/* 포인트 사용 */}
               <View style={{marginTop: 20}}>
@@ -567,7 +592,7 @@ const WriteOrderForm = ({navigation, route}) => {
                 {replaceString(_calcLastPrice())}원
               </TextRegular>
             </View>
-            {isDelivery && (
+            {deliveryType === 0 && (
               <>
                 <View style={{...styles.paymentText}}>
                   <TextRegular style={{color: colors.fontColorA}}>
@@ -588,10 +613,10 @@ const WriteOrderForm = ({navigation, route}) => {
                 </View>
               </>
             )}
-            {!isDelivery && (
+            {deliveryType !== 0 && (
               <View style={{...styles.paymentText}}>
                 <TextRegular style={{color: colors.fontColorA}}>
-                  포장할인
+                  {deliveryType === 2 ? '먹고가기 할인' : '포장할인'}
                 </TextRegular>
                 <TextRegular style={{}}>
                   -{deliveryData.take_out_discount}

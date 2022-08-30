@@ -20,13 +20,15 @@ import {
 } from '../../../store/reducers/PaymentReducer';
 import Caution from '../../../component/Caution';
 import AuthStorageModuel from '../../../store/localStorage/AuthStorageModuel';
-import {setIsDelivery} from '../../../store/reducers/DeliveryInfoReducer';
+import {setDeliveryType} from '../../../store/reducers/DeliveryInfoReducer';
 
 const SummitOrder = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {mutateDeliveryFee} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
-  const {isDelivery} = useSelector(state => state.deliveryReducer);
+  const {isDelivery, deliveryType} = useSelector(
+    state => state.deliveryReducer,
+  );
   const [deliveryInfo, setDeliveryInfo] = useState();
   const _filterOption = prop => {
     const temp = prop.main.option;
@@ -47,7 +49,7 @@ const SummitOrder = ({navigation, route}) => {
     if (isSummit) {
       const DeliveryData = {...deliveryInfo};
 
-      if (!isDelivery) {
+      if (deliveryType !== 0) {
         let calc = temp - DeliveryData?.take_out_discount ?? 0;
         return calc;
       } else {
@@ -77,10 +79,23 @@ const SummitOrder = ({navigation, route}) => {
 
   const _cartStorage = async () => {
     let temp = cartStore.savedItem;
-    console.log('_cartStorag summit3 ::::::::::::', temp);
+    // console.log('_cartStorag summit3 ::::::::::::', temp);
     temp = {...temp, logo: cartStore.storeLogoUrl};
-    console.log('_cartStorag summit4 ::::::::::::', temp);
+    // console.log('_cartStorag summit4 ::::::::::::', temp);
     await AuthStorageModuel._setCartData(temp);
+  };
+
+  const _getMinPrice = () => {
+    switch (deliveryType) {
+      case 0:
+        return deliveryInfo?.min_price;
+      case 1:
+        return deliveryInfo?.min_price_wrap;
+      case 2:
+        return deliveryInfo?.min_price_wrap;
+      default:
+        return '0';
+    }
   };
 
   useEffect(() => {
@@ -125,7 +140,7 @@ const SummitOrder = ({navigation, route}) => {
       <CartButton
         navigation={navigation}
         goTo={'OrderPage'}
-        isDelivery={isDelivery}
+        isDelivery={deliveryType === 0 ? true : false}
         lastPrice={_getTotalPrice(true)}
         deliveryInfo={deliveryInfo ?? 0}
         data={route.params?.data}
@@ -157,13 +172,13 @@ const SummitOrder = ({navigation, route}) => {
             <View
               key={index}
               style={{
+                flex: 1,
+                padding: 10,
                 width: '100%',
                 borderWidth: 1,
                 borderRadius: 5,
-                padding: 10,
                 borderColor: colors.borderColor,
                 marginBottom: 10,
-                flex: 1,
               }}>
               <View
                 style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
@@ -259,11 +274,11 @@ const SummitOrder = ({navigation, route}) => {
         </View>
         <DividerL />
         <View style={{flex: 1, paddingHorizontal: 22, paddingTop: 40}}>
-          <TextBold>배달/포장 선택</TextBold>
+          <TextBold>배달/포장/먹고가기 선택</TextBold>
           <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
             <Pressable
               onPress={() => {
-                dispatch(setIsDelivery(true));
+                dispatch(setDeliveryType(0));
                 dispatch(setIsDeliveryStore(true));
               }}
               style={{
@@ -273,38 +288,63 @@ const SummitOrder = ({navigation, route}) => {
                 justifyContent: 'center',
                 height: 50,
                 marginRight: 10,
-                backgroundColor: isDelivery
-                  ? colors.primary
-                  : colors.inputBoxBG,
+                backgroundColor:
+                  deliveryType === 0 ? colors.primary : colors.inputBoxBG,
               }}>
               <TextBold
-                style={{color: isDelivery ? 'white' : colors.fontColor2}}>
+                style={{
+                  color: deliveryType === 0 ? 'white' : colors.fontColor2,
+                }}>
                 배달
               </TextBold>
             </Pressable>
             <Pressable
               disabled={deliveryInfo?.take_out === 'true' ? false : true}
               onPress={() => {
-                dispatch(setIsDelivery(false));
+                // dispatch(setIsDelivery(false));
+                dispatch(setDeliveryType(1));
                 dispatch(setIsDeliveryStore(false));
               }}
               style={{
                 flex: 1,
                 borderRadius: 7,
-                backgroundColor: isDelivery
-                  ? colors.inputBoxBG
-                  : colors.primary,
+                backgroundColor:
+                  deliveryType === 1 ? colors.primary : colors.inputBoxBG,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
               <TextBold
-                style={{color: !isDelivery ? 'white' : colors.fontColor2}}>
+                style={{
+                  color: deliveryType === 1 ? 'white' : colors.fontColor2,
+                }}>
                 포장
               </TextBold>
             </Pressable>
           </View>
+
+          <Pressable
+            disabled={deliveryInfo?.take_out === 'true' ? false : true}
+            onPress={() => {
+              dispatch(setDeliveryType(2));
+            }}
+            style={{
+              flex: 1,
+              height: 50,
+              borderRadius: 7,
+              marginTop: 10,
+              backgroundColor:
+                deliveryType === 2 ? colors.primary : colors.inputBoxBG,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TextBold
+              style={{color: deliveryType === 2 ? 'white' : colors.fontColor2}}>
+              먹고가기
+            </TextBold>
+          </Pressable>
+
           <View style={{marginTop: 10}}>
-            {isDelivery ? (
+            {deliveryType === 0 ? (
               <>
                 <View
                   style={{
@@ -328,7 +368,7 @@ const SummitOrder = ({navigation, route}) => {
                   </TextRegular>
                 </View>
               </>
-            ) : (
+            ) : deliveryType === 1 ? (
               <>
                 <View
                   style={{
@@ -342,6 +382,20 @@ const SummitOrder = ({navigation, route}) => {
                   </TextRegular>
                 </View>
               </>
+            ) : (
+              <>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginVertical: 10,
+                  }}>
+                  <TextRegular>먹고가기 할인</TextRegular>
+                  <TextRegular>
+                    {replaceString(deliveryInfo?.take_out_discount)}원
+                  </TextRegular>
+                </View>
+              </>
             )}
 
             <View
@@ -350,12 +404,24 @@ const SummitOrder = ({navigation, route}) => {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginVertical: 20,
+                marginTop: 20,
+                marginBottom: 10,
               }}>
               <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
               <TextBold style={{fontSize: 18}}>
                 {replaceString(_getTotalPrice(true))}
               </TextBold>
+            </View>
+            <View
+              style={{
+                alignSelf: 'flex-end',
+                marginBottom: 20,
+                flexDirection: 'row',
+              }}>
+              <TextMedium style={{fontSize: 12}}>최소주문금액 : </TextMedium>
+              <TextMedium style={{fontSize: 12}}>
+                {replaceString(_getMinPrice())}
+              </TextMedium>
             </View>
           </View>
         </View>

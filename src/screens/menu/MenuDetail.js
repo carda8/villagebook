@@ -36,6 +36,7 @@ import MenuReview from './MenuReview';
 import MiniMap from '../map/MiniMap';
 import Caution from '../../component/Caution';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
+import {Shadow} from 'react-native-shadow-2';
 
 const MenuDetail = ({navigation, route}) => {
   const {
@@ -476,27 +477,28 @@ const MenuDetail = ({navigation, route}) => {
                           borderRadius: 12,
                         }}>
                         <View style={{flexDirection: 'row'}}>
-                          <View
-                            style={{
-                              width: 80,
-                              height: 80,
-                              borderWidth: 1,
-                              borderRadius: 10,
-                              marginRight: 15,
-                              borderColor: colors.borderColor,
-                              overflow: 'hidden',
-                              elevation: 5,
-                            }}>
-                            <FastImage
-                              source={
-                                item.it_img1
-                                  ? {uri: item.it_img1}
-                                  : '~/assets/no_img.png'
-                              }
-                              resizeMode={FastImage.resizeMode.cover}
-                              style={{flex: 1}}
-                            />
-                          </View>
+                          <Shadow distance={4} offset={[0, 2]}>
+                            <View
+                              style={{
+                                width: 80,
+                                height: 80,
+                                borderWidth: 1,
+                                borderRadius: 10,
+                                marginRight: 15,
+                                borderColor: colors.borderColor,
+                                overflow: 'hidden',
+                              }}>
+                              <FastImage
+                                source={
+                                  item.it_img1
+                                    ? {uri: item.it_img1}
+                                    : '~/assets/no_img.png'
+                                }
+                                resizeMode={FastImage.resizeMode.cover}
+                                style={{flex: 1}}
+                              />
+                            </View>
+                          </Shadow>
                           <View style={{flex: 1}}>
                             <TextMedium
                               style={{fontSize: 17, color: colors.fontColor2}}>
@@ -561,26 +563,28 @@ const MenuDetail = ({navigation, route}) => {
                                 flexDirection: 'row',
                                 alignItems: 'center',
                               }}>
-                              <View
-                                style={{
-                                  width: 80,
-                                  height: 80,
-                                  borderWidth: 1,
-                                  borderRadius: 10,
-                                  marginRight: 15,
-                                  borderColor: colors.borderColor,
-                                  overflow: 'hidden',
-                                }}>
-                                <FastImage
-                                  source={
-                                    item.it_img1
-                                      ? {uri: item.it_img1}
-                                      : require('~/assets/no_img.png')
-                                  }
-                                  resizeMode={FastImage.resizeMode.cover}
-                                  style={{flex: 1}}
-                                />
-                              </View>
+                              <Shadow distance={4} offset={[0, 2]}>
+                                <View
+                                  style={{
+                                    width: 80,
+                                    height: 80,
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                    marginRight: 15,
+                                    borderColor: colors.borderColor,
+                                    overflow: 'hidden',
+                                  }}>
+                                  <FastImage
+                                    source={
+                                      item.it_img1
+                                        ? {uri: item.it_img1}
+                                        : require('~/assets/no_img.png')
+                                    }
+                                    resizeMode={FastImage.resizeMode.cover}
+                                    style={{flex: 1}}
+                                  />
+                                </View>
+                              </Shadow>
                               <View style={{flex: 1}}>
                                 <TextMedium
                                   style={{

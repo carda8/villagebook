@@ -65,7 +65,6 @@ import SearchView from '../screens/home/SearchView';
 import {AppState, Linking} from 'react-native';
 import AuthStorageModuel from '../store/localStorage/AuthStorageModuel';
 import {setSaveItem, setStoreLogo} from '../store/reducers/CartReducer';
-import MenuDetail2 from '../screens/menu/MenuDetail2';
 import SearchResult from '../screens/home/SearchResult';
 
 const Stack = createNativeStackNavigator();
@@ -310,9 +309,9 @@ const MainStackNavigator = () => {
     <NavigationContainer linking={linking}>
       <Stack.Navigator
         initialRouteName={initRoute}
+        // initialRouteName={'Test'}
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="MenuDetail2" component={MenuDetail2} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
           name="Policy"

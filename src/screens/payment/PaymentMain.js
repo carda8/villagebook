@@ -17,9 +17,10 @@ import {
 } from '../../store/reducers/PaymentReducer';
 import {resetCoupon} from '../../store/reducers/CouponReducer';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
+import {setDeliveryType} from '../../store/reducers/DeliveryInfoReducer';
 
 const PaymentMain = ({navigation, route}) => {
-  const isDelivery = route.params?.isDelivery;
+  const deliveryType = route.params?.deliveryType;
   const orderForm = route.params?.orderForm;
   const totalSellPrice = route.params?.totalSellPrice;
   const totalOrderPrice = route.params?.totalOrderPrice;
@@ -29,6 +30,7 @@ const PaymentMain = ({navigation, route}) => {
   const cartStore = useSelector(state => state.cartReducer);
   const paymentStore = useSelector(state => state.paymentReducer);
   const {userInfo} = useSelector(state => state.authReducer);
+  // const {deliveryType} = useSelector(state => state.deliveryReducer);
   console.log('userinfo', userInfo);
   console.log('orderForm', orderForm);
   console.log('route data', route.params);
@@ -48,6 +50,18 @@ const PaymentMain = ({navigation, route}) => {
   const _resetItem = async () => {
     await AuthStorageModuel._removeCartData(() => {});
   };
+  const _getDeliveryType = () => {
+    switch (deliveryType) {
+      case 0:
+        return 'delivery';
+      case 1:
+        return 'wrap';
+      case 2:
+        return 'forhere';
+      default:
+        return;
+    }
+  };
 
   const _finishTransaction = paymentForm => {
     const method = _getMethod();
@@ -57,7 +71,8 @@ const PaymentMain = ({navigation, route}) => {
       jumju_code: cartStore.savedItem?.savedStoreCode.code,
       mt_id: userInfo.mt_id,
       mt_name: orderForm.mt_name,
-      od_method: isDelivery ? 'delivery' : 'wrap',
+      od_method: _getDeliveryType(),
+      od_forhere_num: orderForm.od_forhere_num,
       od_pay_method: method, // 결제방법 선택시 선택된 값을 넘김 (카트, 만나서 카드 or 현금) [card, card-face, cash]
       od_zip: orderForm.od_zip ?? '',
       od_addr1: orderForm.od_addr1 ?? '',
@@ -100,6 +115,7 @@ const PaymentMain = ({navigation, route}) => {
         dispatch(resetSavedItem());
         dispatch(resetCoupon());
         dispatch(resetPayment());
+        dispatch(setDeliveryType(0));
       })
       .catch(e => {
         Errorhandler(e);

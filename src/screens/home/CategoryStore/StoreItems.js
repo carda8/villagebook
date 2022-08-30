@@ -26,6 +26,7 @@ import {setIsLifeStyle} from '../../../store/reducers/CategoryReducer';
 import {customAlert} from '../../../component/CustomAlert';
 import Loading from '../../../component/Loading';
 import {setCurrentStoreCode} from '../../../store/reducers/CartReducer';
+import {Shadow} from 'react-native-shadow-2';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
@@ -144,89 +145,63 @@ const StoreItems = ({navigation, route}) => {
     const storeCode = item.item.storeCode;
     const storeInfo = item.item;
     return (
-      <Pressable
-        onPress={() => {
-          console.log('code', storeInfo.mb_jumju_code);
-          // dispatch(
-          //   setCurrentStoreCode({
-          //     code: storeInfo.mb_jumju_code,
-          //     jumju_id: storeInfo.mb_id,
-          //     storeName: storeInfo.mb_company,
-          //   }),
-          // );
-          if (routeData.category === 'lifestyle') {
-            dispatch(setIsLifeStyle(true));
-            navigation.navigate('LifeStyleStoreInfo', {
-              jumju_id: storeInfo.mb_id,
-              jumju_code: storeInfo.mb_jumju_code,
-              mb_company: storeInfo.mb_company,
-              category: routeData.category,
-            });
-          } else {
-            dispatch(setIsLifeStyle(false));
-            navigation.navigate('MenuDetail', {
-              jumju_id: storeInfo.mb_id,
-              jumju_code: storeInfo.mb_jumju_code,
-              mb_company: storeInfo.mb_company,
-              category: routeData.category,
-            });
-          }
-        }}
-        style={{
-          flex: 1,
-          // height: IMG_CONTAINER,
-          marginVertical: 11,
-          borderRadius: 10,
+      <Shadow
+        offset={[0, 7]}
+        style={{width: '100%', height: '100%'}}
+        containerStyle={{
+          marginVertical: 10,
           marginHorizontal: 22,
-          backgroundColor: 'white',
-          ...Platform.select({
-            android: {elevation: 1},
-            ios: {
-              shadowColor: '#00000029',
-              shadowOpacity: 0.6,
-              shadowRadius: 50 / 2,
-              shadowOffset: {
-                height: 12,
-                width: 0,
-              },
-            },
-          }),
+          flex: 1,
         }}>
-        <View
+        <Pressable
+          onPress={() => {
+            console.log('code', storeInfo.mb_jumju_code);
+            // dispatch(
+            //   setCurrentStoreCode({
+            //     code: storeInfo.mb_jumju_code,
+            //     jumju_id: storeInfo.mb_id,
+            //     storeName: storeInfo.mb_company,
+            //   }),
+            // );
+            if (routeData.category === 'lifestyle') {
+              dispatch(setIsLifeStyle(true));
+              navigation.navigate('LifeStyleStoreInfo', {
+                jumju_id: storeInfo.mb_id,
+                jumju_code: storeInfo.mb_jumju_code,
+                mb_company: storeInfo.mb_company,
+                category: routeData.category,
+              });
+            } else {
+              dispatch(setIsLifeStyle(false));
+              navigation.navigate('MenuDetail', {
+                jumju_id: storeInfo.mb_id,
+                jumju_code: storeInfo.mb_jumju_code,
+                mb_company: storeInfo.mb_company,
+                category: routeData.category,
+              });
+            }
+          }}
           style={{
-            height: IMG_HEIGHT,
+            // flex: 1,
+            // height: IMG_CONTAINER,
+            // marginHorizontal: 22,
+            // marginVertical: 11,
             borderRadius: 10,
-            flexDirection: 'row',
+            backgroundColor: 'white',
           }}>
           <View
             style={{
-              flex: 1,
-              marginRight: 1,
-              backgroundColor: colors.inputBoxBG,
-              borderTopLeftRadius: 10,
-              // borderBottomLeftRadius: 10,
-              overflow: 'hidden',
-            }}>
-            {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
-              <ImageCover />
-            )}
-
-            <FastImage
-              source={{uri: item.item.store_image[0]}}
-              resizeMode={FastImage.resizeMode.cover}
-              style={{flex: 1}}
-            />
-          </View>
-
-          <View
-            style={{
-              width: layout.width * 0.24,
+              height: IMG_HEIGHT,
+              borderRadius: 10,
+              flexDirection: 'row',
             }}>
             <View
               style={{
                 flex: 1,
-                borderTopRightRadius: 10,
-                marginBottom: 1,
+                marginRight: 1,
+                backgroundColor: colors.inputBoxBG,
+                borderTopLeftRadius: 10,
+                // borderBottomLeftRadius: 10,
                 overflow: 'hidden',
               }}>
               {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
@@ -234,11 +209,7 @@ const StoreItems = ({navigation, route}) => {
               )}
 
               <FastImage
-                source={
-                  storeInfo.store_image[1]
-                    ? {uri: storeInfo.store_image[1]}
-                    : require('~/assets/no_img.png')
-                }
+                source={{uri: item.item.store_image[0]}}
                 resizeMode={FastImage.resizeMode.cover}
                 style={{flex: 1}}
               />
@@ -246,133 +217,164 @@ const StoreItems = ({navigation, route}) => {
 
             <View
               style={{
-                flex: 1,
-                // borderBottomRightRadius: 10,
-                overflow: 'hidden',
+                width: layout.width * 0.24,
               }}>
-              {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
-                <>
-                  <ImageCover />
-                </>
-              )}
-              <FastImage
-                source={
-                  storeInfo.store_image[2]
-                    ? {uri: storeInfo.store_image[2]}
-                    : storeInfo.store_image[2] ?? require('~/assets/no_img.png')
-                }
-                resizeMode={FastImage.resizeMode.cover}
-                style={{flex: 1}}
-              />
+              <View
+                style={{
+                  flex: 1,
+                  borderTopRightRadius: 10,
+                  marginBottom: 1,
+                  overflow: 'hidden',
+                }}>
+                {!item?.section?.isOpen &&
+                  routeData.category !== 'lifestyle' && <ImageCover />}
+
+                <FastImage
+                  source={
+                    storeInfo.store_image[1]
+                      ? {uri: storeInfo.store_image[1]}
+                      : require('~/assets/no_img.png')
+                  }
+                  resizeMode={FastImage.resizeMode.cover}
+                  style={{flex: 1}}
+                />
+              </View>
+
+              <View
+                style={{
+                  flex: 1,
+                  // borderBottomRightRadius: 10,
+                  overflow: 'hidden',
+                }}>
+                {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
+                  <>
+                    <ImageCover />
+                  </>
+                )}
+                <FastImage
+                  source={
+                    storeInfo.store_image[2]
+                      ? {uri: storeInfo.store_image[2]}
+                      : storeInfo.store_image[2] ??
+                        require('~/assets/no_img.png')
+                  }
+                  resizeMode={FastImage.resizeMode.cover}
+                  style={{flex: 1}}
+                />
+              </View>
             </View>
           </View>
-        </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'flex-end',
-            padding: 10,
-          }}>
-          <View style={{marginBottom: 9}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              <View style={{flex: 1}} clip>
-                <Text
-                  style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
-                  ellipsizeMode="tail"
-                  numberOfLines={1}>
-                  {storeInfo.mb_company}
-                </Text>
-                {routeData.category === 'lifestyle' && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              padding: 10,
+            }}>
+            <View style={{marginBottom: 9}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{flex: 1}} clip>
                   <Text
-                    style={{
-                      fontFamily: 'Pretendard-Medium',
-                      fontSize: 12,
-                      color: colors.fontColorA,
-                    }}
+                    style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
                     ellipsizeMode="tail"
                     numberOfLines={1}>
-                    {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
+                    {storeInfo.mb_company}
                   </Text>
+                  {routeData.category === 'lifestyle' && (
+                    <Text
+                      style={{
+                        fontFamily: 'Pretendard-Medium',
+                        fontSize: 12,
+                        color: colors.fontColorA,
+                      }}
+                      ellipsizeMode="tail"
+                      numberOfLines={1}>
+                      {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
+                    </Text>
+                  )}
+                </View>
+                {routeData.category !== 'lifestyle' && (
+                  <ReviewSimple
+                    star={storeInfo.stars}
+                    review={storeInfo.store_review}
+                  />
                 )}
               </View>
+              {routeData.category === 'lifestyle' && (
+                <View>
+                  <TextRegular style={{color: colors.fontColorA2}}>
+                    거리 {storeInfo.distance}
+                  </TextRegular>
+                </View>
+              )}
+
               {routeData.category !== 'lifestyle' && (
-                <ReviewSimple
-                  star={storeInfo.stars}
-                  review={storeInfo.store_review}
-                />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    marginTop: 9,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                    }}>
+                    <TextRegular style={{color: colors.fontColorA2}}>
+                      배달팁{' '}
+                    </TextRegular>
+                    <TextRegular style={{color: colors.fontColor6}}>
+                      {replaceString(storeInfo.tipFrom)}원~
+                      {replaceString(storeInfo.tipTo)}원
+                    </TextRegular>
+                    <Dot />
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={require('~/assets/time.png')}
+                      style={{width: 14, height: 14}}
+                    />
+                    <TextRegular> 30분~</TextRegular>
+                    <TextRegular>40분</TextRegular>
+                    <Dot />
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                    }}>
+                    <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                      <TextRegular style={{color: colors.fontColorA2}}>
+                        최소 주문{' '}
+                      </TextRegular>
+                      <TextRegular>
+                        {replaceString(storeInfo.minPrice)}원
+                      </TextRegular>
+                    </View>
+                    <View style={{marginLeft: 10}}>
+                      <TextRegular style={{color: colors.fontColorA2}}>
+                        거리 {storeInfo.distance}
+                      </TextRegular>
+                    </View>
+                  </View>
+                </View>
               )}
             </View>
-            {routeData.category === 'lifestyle' && (
-              <View>
-                <TextRegular style={{color: colors.fontColorA2}}>
-                  거리 {storeInfo.distance}
-                </TextRegular>
-              </View>
-            )}
-
-            {routeData.category !== 'lifestyle' && (
-              <View
-                style={{flexDirection: 'row', flexWrap: 'wrap', marginTop: 9}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                  }}>
-                  <TextRegular style={{color: colors.fontColorA2}}>
-                    배달팁{' '}
-                  </TextRegular>
-                  <TextRegular style={{color: colors.fontColor6}}>
-                    {replaceString(storeInfo.tipFrom)}원~
-                    {replaceString(storeInfo.tipTo)}원
-                  </TextRegular>
-                  <Dot />
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    source={require('~/assets/time.png')}
-                    style={{width: 14, height: 14}}
-                  />
-                  <TextRegular> 30분~</TextRegular>
-                  <TextRegular>40분</TextRegular>
-                  <Dot />
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                  }}>
-                  <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                    <TextRegular style={{color: colors.fontColorA2}}>
-                      최소 주문{' '}
-                    </TextRegular>
-                    <TextRegular>
-                      {replaceString(storeInfo.minPrice)}원
-                    </TextRegular>
-                  </View>
-                  <View style={{marginLeft: 10}}>
-                    <TextRegular style={{color: colors.fontColorA2}}>
-                      거리 {storeInfo.distance}
-                    </TextRegular>
-                  </View>
-                </View>
-              </View>
-            )}
+            <Chip
+              coupon={storeInfo.coupon}
+              newStore={storeInfo.new}
+              takeout={storeInfo.wrap}
+            />
           </View>
-          <Chip
-            coupon={storeInfo.coupon}
-            newStore={storeInfo.new}
-            takeout={storeInfo.wrap}
-          />
-        </View>
-      </Pressable>
+        </Pressable>
+      </Shadow>
     );
   };
 
