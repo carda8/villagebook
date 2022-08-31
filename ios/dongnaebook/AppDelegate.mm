@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-//#import <FirebaseCore.h>
+#import <FirebaseCore.h>
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -30,7 +30,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   RCTAppSetupPrepareApp(application);
-//  [FIRApp configure];
+  [FIRApp configure];
   [[NaverThirdPartyLoginConnection getSharedInstance] setIsNaverAppOauthEnable:YES];
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 
@@ -70,7 +70,7 @@
 - (BOOL)application:(UIApplication *)app
      openURL:(NSURL *)url
      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  if ([url.scheme isEqualToString:@"your_apps_urlscheme"]) {
+  if ([url.scheme isEqualToString:@"dongnaebook"]) {
     return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
   }
  if([RNKakaoLogins isKakaoTalkLoginUrl:url]) {

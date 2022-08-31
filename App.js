@@ -53,7 +53,25 @@ const App = () => {
       },
     });
   };
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    let enabled;
+    if (
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL
+    )
+      enabled = true;
+
+    // const enabled =
+    //   authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    //   authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
   useEffect(() => {
+    requestUserPermission();
     // _deepLink();
     // const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
     // // When the component is unmounted, remove the listener

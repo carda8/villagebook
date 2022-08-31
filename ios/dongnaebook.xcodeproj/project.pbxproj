@@ -21,6 +21,7 @@
 		77A37847DA4A40688B7BB3F8 /* NotoSansKR-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = EAC6DE91117D44BCA98D02B4 /* NotoSansKR-Regular.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		90069FCC3F1C4D50A318CD9C /* Pretendard-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 33721273308B4411B3EE266D /* Pretendard-Light.otf */; };
+		94B6FFBC28BF40950009DE8C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 94B6FFBB28BF40950009DE8C /* GoogleService-Info.plist */; };
 		94CF7F63287BC47D0088E2A1 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 94CF7F62287BC47D0088E2A1 /* Fonts */; };
 		ACB8FE18991E49E4B486608E /* Pretendard-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = F05F6DF9743B4E2FB6C97895 /* Pretendard-ExtraLight.otf */; };
 		B0CD8ABCA0BC4273AAB6A8AD /* Pretendard-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 65E26B00617941DC86D201A7 /* Pretendard-ExtraBold.otf */; };
@@ -61,6 +62,7 @@
 		5DB7E25B5E2EEAE102264884 /* libPods-dongnaebook.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-dongnaebook.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		65E26B00617941DC86D201A7 /* Pretendard-ExtraBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-ExtraBold.otf"; path = "../src/assets/fonts/Pretendard-ExtraBold.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = dongnaebook/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		94B6FFBB28BF40950009DE8C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		94CF7F62287BC47D0088E2A1 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		94CF7F642880099E0088E2A1 /* dongnaebook-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "dongnaebook-Bridging-Header.h"; sourceTree = "<group>"; };
 		94EB69CF28BDF3DD007842D6 /* dongnaebook.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = dongnaebook.entitlements; path = dongnaebook/dongnaebook.entitlements; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 		13B07FAE1A68108700A75B9A /* dongnaebook */ = {
 			isa = PBXGroup;
 			children = (
+				94B6FFBB28BF40950009DE8C /* GoogleService-Info.plist */,
 				94EB69CF28BDF3DD007842D6 /* dongnaebook.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -315,6 +318,7 @@
 				BEC57F92E49942B8AC716909 /* Pretendard-Regular.otf in Resources */,
 				3CB0CB6E01F043A0ACF6EDA7 /* Pretendard-SemiBold.otf in Resources */,
 				D3677C5BD2AC4EF4B73BB705 /* Pretendard-Thin.otf in Resources */,
+				94B6FFBC28BF40950009DE8C /* GoogleService-Info.plist in Resources */,
 				37FE83C720124800B81BC531 /* BMJUA.otf in Resources */,
 				C6176E9F08B24AD18E985985 /* CoreGothicD-CoreGothicDBold.ttf in Resources */,
 				94CF7F63287BC47D0088E2A1 /* Fonts in Resources */,
