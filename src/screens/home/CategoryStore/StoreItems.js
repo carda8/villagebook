@@ -63,13 +63,16 @@ const StoreItems = ({navigation, route}) => {
     if (routeData.category === 'lifestyle') {
       delete data.mb_ca_sort;
       mutateGetLifeStyle.mutate(data, {
+        onError: e => {
+          setStoreList('');
+        },
         onSuccess: e => {
           if (e.result === 'true') {
             console.log('ee', e);
             const temp = _fliterList(e.data.arrItems);
             console.log('temp', temp);
             setStoreList(temp);
-          } else setStoreList([]);
+          } else setStoreList('');
         },
       });
     } else {
@@ -392,18 +395,21 @@ const StoreItems = ({navigation, route}) => {
             mutateGetLifeStyle.isLoading ? (
               <Loading />
             ) : (
-              <View
-                style={{
-                  flex: 1,
-                  marginTop: '30%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  source={require('~/assets/no_store.png')}
-                  style={{width: 250, height: 250}}
-                />
-              </View>
+              (mutateGetLifeStyle.isError || mutateGetLifeStyle.isSuccess) &&
+              storeList.length === 0 && (
+                <View
+                  style={{
+                    flex: 1,
+                    marginTop: '30%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={require('~/assets/no_store.png')}
+                    style={{width: 250, height: 250}}
+                  />
+                </View>
+              )
             )
           }
           onEndReached={() => _getMoreStoreList()}
@@ -416,18 +422,21 @@ const StoreItems = ({navigation, route}) => {
             mutateGetStoreList.isLoading ? (
               <Loading />
             ) : (
-              <View
-                style={{
-                  flex: 1,
-                  marginTop: '30%',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Image
-                  source={require('~/assets/no_store.png')}
-                  style={{width: 250, height: 250}}
-                />
-              </View>
+              (mutateGetStoreList.isError || mutateGetStoreList.isSuccess) &&
+              storeList.length === 0 && (
+                <View
+                  style={{
+                    flex: 1,
+                    marginTop: '30%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={require('~/assets/no_store.png')}
+                    style={{width: 250, height: 250}}
+                  />
+                </View>
+              )
             )
           }
           keyExtractor={(item, index) => item + index}
