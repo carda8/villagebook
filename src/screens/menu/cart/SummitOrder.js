@@ -274,7 +274,28 @@ const SummitOrder = ({navigation, route}) => {
         </View>
         <DividerL />
         <View style={{flex: 1, paddingHorizontal: 22, paddingTop: 40}}>
-          <TextBold>배달/포장/먹고가기 선택</TextBold>
+          <TextBold>먹고가기/배달/포장 선택</TextBold>
+          <Pressable
+            disabled={deliveryInfo?.take_out === 'true' ? false : true}
+            onPress={() => {
+              dispatch(setDeliveryType(2));
+            }}
+            style={{
+              flex: 1,
+              height: 50,
+              borderRadius: 7,
+              marginTop: 10,
+              backgroundColor:
+                deliveryType === 2 ? colors.primary : colors.inputBoxBG,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TextBold
+              style={{color: deliveryType === 2 ? 'white' : colors.fontColor2}}>
+              먹고가기
+            </TextBold>
+          </Pressable>
+
           <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
             <Pressable
               onPress={() => {
@@ -321,27 +342,6 @@ const SummitOrder = ({navigation, route}) => {
               </TextBold>
             </Pressable>
           </View>
-
-          <Pressable
-            disabled={deliveryInfo?.take_out === 'true' ? false : true}
-            onPress={() => {
-              dispatch(setDeliveryType(2));
-            }}
-            style={{
-              flex: 1,
-              height: 50,
-              borderRadius: 7,
-              marginTop: 10,
-              backgroundColor:
-                deliveryType === 2 ? colors.primary : colors.inputBoxBG,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <TextBold
-              style={{color: deliveryType === 2 ? 'white' : colors.fontColor2}}>
-              먹고가기
-            </TextBold>
-          </Pressable>
 
           <View style={{marginTop: 10}}>
             {deliveryType === 0 ? (
