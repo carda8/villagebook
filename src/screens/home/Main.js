@@ -156,12 +156,56 @@ const Main = ({navigation}) => {
           isMain={true}
         />
 
+        {/* 동네편의 */}
+        <View
+          style={{
+            flex: 1,
+            height: 141,
+            marginBottom: 15,
+            marginTop: 17,
+          }}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('CategoryView', {
+                selectedCategory: 'lifestyle',
+              });
+            }}
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              paddingLeft: 27,
+              borderWidth: 1,
+              backgroundColor: colors.mainBG3,
+              borderColor: colors.mainBG3Border,
+              borderRadius: 10,
+              overflow: 'hidden',
+            }}>
+            <View style={{paddingTop: 39}}>
+              <TextJua style={{fontSize: 23, color: colors.fontMain3}}>
+                동네서비스
+              </TextJua>
+              <View style={{marginTop: 8}}>
+                <TextRegular>
+                  우리동네 서비스, {'\n'}시설 검색은 한번에
+                </TextRegular>
+              </View>
+            </View>
+            <Image
+              source={require('~/assets/main_ico03.png')}
+              style={{
+                width: 150,
+                height: 139,
+              }}
+              resizeMode="contain"
+            />
+          </Pressable>
+        </View>
+
         {/* 동네맛집 */}
         {/* 동네마켓 */}
         <View
           style={{
             height: 220,
-            marginTop: 17,
             marginBottom: 15,
             flexDirection: 'row',
           }}>
@@ -222,50 +266,6 @@ const Main = ({navigation}) => {
                 flex: 1,
                 width: 120,
                 alignSelf: 'flex-end',
-              }}
-              resizeMode="contain"
-            />
-          </Pressable>
-        </View>
-
-        {/* 동네편의 */}
-        <View
-          style={{
-            flex: 1,
-            height: 141,
-            marginBottom: 15,
-          }}>
-          <Pressable
-            onPress={() => {
-              navigation.navigate('CategoryView', {
-                selectedCategory: 'lifestyle',
-              });
-            }}
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              paddingLeft: 27,
-              borderWidth: 1,
-              backgroundColor: colors.mainBG3,
-              borderColor: colors.mainBG3Border,
-              borderRadius: 10,
-              overflow: 'hidden',
-            }}>
-            <View style={{paddingTop: 39}}>
-              <TextJua style={{fontSize: 23, color: colors.fontMain3}}>
-                동네편의
-              </TextJua>
-              <View style={{marginTop: 8}}>
-                <TextRegular>
-                  우리동네 모든 시설, {'\n'}정보 검색은 한번에
-                </TextRegular>
-              </View>
-            </View>
-            <Image
-              source={require('~/assets/main_ico03.png')}
-              style={{
-                width: 150,
-                height: 139,
               }}
               resizeMode="contain"
             />

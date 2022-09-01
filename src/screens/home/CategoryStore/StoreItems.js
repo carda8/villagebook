@@ -310,7 +310,7 @@ const StoreItems = ({navigation, route}) => {
               {routeData.category === 'lifestyle' && (
                 <View>
                   <TextRegular style={{color: colors.fontColorA2}}>
-                    거리 {storeInfo.distance}
+                    {storeInfo.distance}
                   </TextRegular>
                 </View>
               )}
@@ -363,7 +363,7 @@ const StoreItems = ({navigation, route}) => {
                     </View>
                     <View style={{marginLeft: 10}}>
                       <TextRegular style={{color: colors.fontColorA2}}>
-                        거리 {storeInfo.distance}
+                        {storeInfo.distance}
                       </TextRegular>
                     </View>
                   </View>

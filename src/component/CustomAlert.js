@@ -8,8 +8,14 @@ export const customAlert = (
   btnSubTitle,
   btnSubPress,
 ) => {
-  Alert.alert(title, text, [
-    {text: btnTitle, onPress: btnPress},
-    {text: btnSubTitle, onPress: btnSubPress},
-  ]);
+  Alert.alert(
+    title,
+    text,
+    btnTitle || btnSubTitle
+      ? [
+          {text: btnTitle, onPress: btnPress},
+          {text: btnSubTitle, onPress: btnSubPress},
+        ]
+      : [{text: '확인', onPress: () => {}}],
+  );
 };

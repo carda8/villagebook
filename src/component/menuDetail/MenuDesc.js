@@ -1,3 +1,4 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useEffect, useState} from 'react';
 import {Image, Linking, Platform, Pressable, Text, View} from 'react-native';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
@@ -5,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
+import {customAlert} from '../CustomAlert';
 import Divider from '../Divider';
 import DividerL from '../DividerL';
 import Loading from '../Loading';
@@ -20,6 +22,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
   const {mutateGetStoreCoupon} = useCustomMutation();
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const dispatch = useDispatch();
+  const [moreInfo, setMoreInfo] = useState(false);
   const [more, setMore] = useState(false);
   const storeInfo = info?.data?.arrItems ?? info;
   console.log('info', storeInfo);
@@ -43,6 +46,12 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
         console.log('e', e);
       },
     });
+  };
+
+  const _copyAdd = async str => {
+    Clipboard.setString(str);
+    customAlert('알림', '주소가 복사되었습니다.');
+    // ToastAndroid.show('주소가 복사되었습니다.', ToastAndroid.SHORT);
   };
   return (
     <>
@@ -108,9 +117,39 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
               style={{
                 flex: 1,
                 paddingHorizontal: 22,
-                paddingTop: 20,
               }}>
-              <View style={{flexDirection: 'row', marginBottom: 11}}>
+              <Pressable
+                onPress={() => {
+                  Linking.openURL(`tel:${storeInfo.mb_tel}`);
+                }}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: colors.couponBG,
+                  borderWidth: 1,
+                  borderColor: colors.borderColor,
+                  height: 50,
+                  borderRadius: 8,
+                  marginTop: 7,
+                  marginBottom: 20,
+                }}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 15,
+                    color: colors.primary,
+                  }}>
+                  전화하기
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 9,
+                    color: colors.primary,
+                  }}>
+                  (동네북보고 전화했어요. 라고 말하면 문의가 빨라요)
+                </Text>
+              </Pressable>
+              {/* <View style={{flexDirection: 'row', marginBottom: 11}}>
                 <View style={{width: 100}}>
                   <TextRegular style={{color: colors.fontColor99}}>
                     대표장명
@@ -121,7 +160,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                     {storeInfo.mb_name}
                   </TextRegular>
                 </View>
-              </View>
+              </View> */}
 
               <View style={{flexDirection: 'row', marginBottom: 11}}>
                 <View style={{width: 100}}>
@@ -134,6 +173,21 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                     {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
                   </TextRegular>
                 </View>
+                <Pressable
+                  onPress={() =>
+                    _copyAdd(storeInfo?.mb_addr1 + ' ' + storeInfo?.mb_addr2)
+                  }
+                  hitSlop={10}
+                  style={{
+                    width: 35,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: colors.borderColor,
+                  }}>
+                  <TextRegular style={{color: colors.primary, fontSize: 12}}>
+                    복사
+                  </TextRegular>
+                </Pressable>
               </View>
 
               <View style={{flexDirection: 'row', marginBottom: 11}}>
@@ -162,41 +216,68 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                   <Pressable
                     onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}>
                     <TextRegular style={{color: colors.fontColor3}}>
-                      {storeInfo.mb_homepage}
+                      {storeInfo?.mb_homepage ? storeInfo?.mb_homepage : '-'}
                     </TextRegular>
                   </Pressable>
                 </View>
               </View>
-              {storeInfo.mb_opening_hours ? (
-                <View style={{flexDirection: 'row', marginBottom: 11}}>
-                  <View style={{width: 100}}>
-                    <TextRegular
-                      style={{
-                        color: colors.fontColor99,
-                      }}>
-                      영업 시간
-                    </TextRegular>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <TextRegular style={{color: colors.fontColor3}}>
-                      {storeInfo.mb_opening_hours}
-                    </TextRegular>
-                  </View>
+
+              <View
+                style={{
+                  height: moreInfo ? 'auto' : 0,
+                  flexDirection: 'row',
+                  marginBottom: 11,
+                }}>
+                <View style={{width: 100}}>
+                  <TextRegular
+                    style={{
+                      color: colors.fontColor99,
+                    }}>
+                    영업 시간
+                  </TextRegular>
                 </View>
-              ) : (
-                <></>
-              )}
+                <View style={{flex: 1}}>
+                  <TextRegular style={{color: colors.fontColor3}}>
+                    {storeInfo?.mb_opening_hours
+                      ? storeInfo.mb_opening_hours
+                      : '-'}
+                  </TextRegular>
+                </View>
+              </View>
+
+              <Pressable
+                onPress={() => setMoreInfo(!moreInfo)}
+                style={{
+                  width: '100%',
+                  height: 40,
+                  alignSelf: 'center',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Image
+                  source={require('~/assets/btn_top_left.png')}
+                  style={{
+                    tintColor: colors.primary,
+                    width: 30,
+                    height: 30,
+                    transform: [{rotate: moreInfo ? '90deg' : '270deg'}],
+                  }}
+                  resizeMode={'contain'}
+                />
+              </Pressable>
             </View>
 
             <DividerL />
             <View style={{padding: 22}}>
               <View style={{marginBottom: 20}}>
-                <TextNotoM style={{fontSize: 18, color: colors.fontColor2}}>
+                <TextNotoM style={{fontSize: 18, color: colors.fontColor6}}>
                   소개
                 </TextNotoM>
               </View>
-              <View style={{height: more ? null : 80}}>
-                <TextRegular>{storeInfo.mb_memo}</TextRegular>
+              <View style={{minHeight: 80, height: more ? 'auto' : 80}}>
+                <TextRegular style={{color: colors.fontColor2}}>
+                  {storeInfo.mb_memo}
+                </TextRegular>
               </View>
             </View>
             <Pressable
@@ -221,11 +302,9 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
             </Pressable>
             <DividerL />
             <View style={{paddingHorizontal: 22, paddingTop: 22}}>
-              <View style={{marginBottom: 0}}>
-                <TextNotoM style={{fontSize: 18, color: colors.fontColor2}}>
-                  위치
-                </TextNotoM>
-              </View>
+              <TextNotoM style={{fontSize: 18, color: colors.fontColor6}}>
+                위치
+              </TextNotoM>
             </View>
           </>
         )}

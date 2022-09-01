@@ -730,25 +730,22 @@ const MenuDetail = ({navigation, route}) => {
                   <View style={{marginLeft: 22, flex: 1}}>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreServiceTime?.serviceTime[0]?.service_open ??
-                        '해당 정보가 없습니다.'}
+                      {StoreServiceTime?.serviceTime[0]?.service_open ?? '-'}
                     </TextRegular>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
                       {!StoreServiceTime?.serviceTime[0]
-                        ? '해당 정보가 없습니다.'
+                        ? '-'
                         : StoreServiceTime?.serviceTime[0]?.service_stime +
                           ' ~ ' +
                           StoreServiceTime?.serviceTime[0]?.service_etime}
                     </TextRegular>
                     <TextRegular
                       style={{color: colors.fontColor3, marginBottom: 11}}>
-                      {StoreServiceTime?.serviceBreakTime[0] ??
-                        '해당 정보가 없습니다.'}
+                      {StoreServiceTime?.serviceBreakTime[0] ?? '-'}
                     </TextRegular>
                     <TextRegular style={{color: colors.fontColor3}}>
-                      {StoreServiceTime?.serviceHoilday ??
-                        '해당 정보가 없습니다.'}
+                      {StoreServiceTime?.serviceHoilday ?? '-'}
                     </TextRegular>
                   </View>
                 </View>
