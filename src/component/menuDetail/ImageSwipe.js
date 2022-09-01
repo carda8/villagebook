@@ -1,9 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, useWindowDimensions, View} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 
-const ImageSwipe = ({images}) => {
+const ImageSwipe = ({images, imageStyle}) => {
+  const layout = useWindowDimensions();
   return (
     <View style={{flex: 1}}>
       <Swiper
@@ -18,7 +19,7 @@ const ImageSwipe = ({images}) => {
           <View style={{flex: 1}} key={index}>
             <FastImage
               source={{uri: item}}
-              style={{flex: 1}}
+              style={{flex: 1, maxWidth: layout.width, maxHeight: 300}}
               resizeMode={FastImage.resizeMode.cover}
             />
           </View>

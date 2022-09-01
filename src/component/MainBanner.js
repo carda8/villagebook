@@ -1,17 +1,15 @@
-import {View, Text, Pressable, Image} from 'react-native';
+import {View, Text, Pressable, Image, useWindowDimensions} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import commonStyles from '../styles/commonStyle';
 import FastImage from 'react-native-fast-image';
 import colors from '../styles/colors';
 import TextRegular from './text/TextRegular';
 import {useCustomMutation} from '../hooks/useCustomMutation';
-import Loading from './Loading';
 import Swiper from 'react-native-swiper';
 
 const MainBanner = ({navigation, style, position}) => {
   const {mutateGetBanner} = useCustomMutation();
   const [bannerImg, setBannerImg] = useState();
+  const layout = useWindowDimensions();
 
   const _getBanner = () => {
     const data = {
@@ -88,7 +86,12 @@ const MainBanner = ({navigation, style, position}) => {
             }}>
             <FastImage
               source={{uri: item.bn_img}}
-              style={{flex: 1, borderRadius: 10}}
+              style={{
+                flex: 1,
+                maxWidth: layout.width - 44,
+                maxHeight: 140,
+                borderRadius: 10,
+              }}
               resizeMode={FastImage.resizeMode.cover}
             />
           </Pressable>

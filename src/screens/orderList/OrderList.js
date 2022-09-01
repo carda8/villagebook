@@ -209,7 +209,10 @@ const OrderList = ({navigation}) => {
       {/* {console.log('his', history)} */}
       <FlatList
         data={history}
-        ListEmptyComponent={() => <NoHistory />}
+        ListEmptyComponent={
+          mutateOrderHistory.isSuccess ||
+          (mutateOrderHistory.isError && <NoHistory />)
+        }
         renderItem={item => renderItem(item)}
         keyExtractor={(item, index) => item.od_id + index}
         ListFooterComponentStyle={{
