@@ -45,10 +45,10 @@ export default {
 
   _NaverLogin: async fcmToken => {
     const iosKeys = {
-      kConsumerKey: '6Uxa9QvuvUy1WvnSypzG',
-      kConsumerSecret: 'LBzKBdmH0u',
-      kServiceAppName: 'OStage',
-      kServiceAppUrlScheme: 'naverlogin', // only for iOS
+      kConsumerKey: 'nGK2ISNXozWaxAXbBTIs',
+      kConsumerSecret: 'FaR9Tjtk1V',
+      kServiceAppName: '동네북',
+      kServiceAppUrlScheme: 'dongnaebook', // only for iOS
     };
 
     const androidKeys = {

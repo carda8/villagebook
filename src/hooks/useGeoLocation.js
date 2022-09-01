@@ -9,7 +9,7 @@ export const useGeoLocation = () => {
 
   const _requestPermissions = async callback => {
     if (Platform.OS === 'ios') {
-      Geolocation.requestAuthorization();
+      Geolocation.requestAuthorization('always');
       Geolocation.setRNConfiguration({
         skipPermissionRequests: false,
         authorizationLevel: 'whenInUse',

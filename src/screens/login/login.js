@@ -232,7 +232,8 @@ const Login = ({navigation}) => {
             paddingHorizontal: 22,
             paddingTop: 33,
             marginTop: 40,
-          }}>
+          }}
+        >
           <Input fm={fm} />
           {/* <View style={{flexDirection:'row'}}>
             <Image source={require('~/assets/top_ic_map_off.png')}/>            
@@ -251,7 +252,8 @@ const Login = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: 25,
-            }}>
+            }}
+          >
             <TextMedium style={{fontSize: 17, color: 'white'}}>
               로그인
             </TextMedium>
@@ -264,13 +266,15 @@ const Login = ({navigation}) => {
               marginBottom: 70,
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <Pressable
               onPress={() => {
                 navigation.navigate('FindUserAccount', {
                   target: loginConfig.target.findId,
                 });
-              }}>
+              }}
+            >
               <TextNotoR style={{fontSize: 16}}>아이디 찾기</TextNotoR>
             </Pressable>
             <Divider />
@@ -279,14 +283,16 @@ const Login = ({navigation}) => {
                 navigation.navigate('FindUserAccount', {
                   target: loginConfig.target.findPW,
                 });
-              }}>
+              }}
+            >
               <TextNotoR style={{fontSize: 16}}>비밀번호 찾기</TextNotoR>
             </Pressable>
             <Divider />
             <Pressable
               onPress={() => {
                 navigation.navigate('CheckTerms');
-              }}>
+              }}
+            >
               <TextNotoR style={{fontSize: 16}}>회원가입</TextNotoR>
             </Pressable>
           </View>
@@ -310,7 +316,8 @@ const Login = ({navigation}) => {
           <View
             style={{
               flexDirection: 'row',
-            }}>
+            }}
+          >
             {/* 네이버 */}
             <Pressable
               onPress={() => {
@@ -319,11 +326,13 @@ const Login = ({navigation}) => {
               style={{
                 ...style.snsButton,
                 marginRight: 18.5,
-              }}>
+              }}
+            >
               <Image
                 source={require('../../assets/sns_naver.png')}
                 style={{...style.snsImage}}
-                resizeMode={'contain'}></Image>
+                resizeMode={'contain'}
+              ></Image>
             </Pressable>
             {/* 페이스북 */}
             {/* <Pressable
@@ -345,11 +354,13 @@ const Login = ({navigation}) => {
               style={{
                 ...style.snsButton,
                 marginLeft: 18.5,
-              }}>
+              }}
+            >
               <Image
                 source={require('../../assets/sns_kakao.png')}
                 style={{...style.snsImage}}
-                resizeMode={'contain'}></Image>
+                resizeMode={'contain'}
+              ></Image>
             </Pressable>
             {/* 애플 */}
             {Platform.OS === 'ios' && (
@@ -357,11 +368,14 @@ const Login = ({navigation}) => {
                 onPress={() => {}}
                 style={{
                   ...style.snsButton,
-                }}>
+                  marginLeft: 37,
+                }}
+              >
                 <Image
                   source={require('../../assets/sns_apple.png')}
                   style={{...style.snsImage}}
-                  resizeMode={'contain'}></Image>
+                  resizeMode={'contain'}
+                ></Image>
               </Pressable>
             )}
           </View>
