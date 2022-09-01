@@ -29,7 +29,7 @@
 			<string>Bundle Id</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>dongnaebook</string>				
+				<string>dongnaebook</string>
 				<string>com.dmonster.dongnaebook</string>
 				<string>kakao3b2d0193b43c447113dbdf6e68dfdc2b</string>
 			</array>
