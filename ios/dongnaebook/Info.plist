@@ -25,19 +25,13 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>kakao3b2d0193b43c447113dbdf6e68dfdc2b</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>Bundle Id</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>dongnaebook</string>				
 				<string>com.dmonster.dongnaebook</string>
+				<string>kakao3b2d0193b43c447113dbdf6e68dfdc2b</string>
 			</array>
 		</dict>
 	</array>
@@ -71,8 +65,16 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow access to your camera</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Program requires GPS to track current user location</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Program requires GPS to track current user location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Program requires GPS to track current user location </string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow access to your photo gallery</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Black.otf</string>
@@ -93,6 +95,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
