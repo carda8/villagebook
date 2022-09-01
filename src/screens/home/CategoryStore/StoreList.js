@@ -27,7 +27,6 @@ const StoreList = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header category={true} navigation={navigation} showCart showHome />
       <SafeAreaView
         style={{
           // flex: 1,
@@ -39,6 +38,13 @@ const StoreList = ({navigation, route}) => {
       >
         <FilterView />
       </SafeAreaView>
+      <Header
+        category={true}
+        navigation={navigation}
+        showCart
+        showHome
+        style={{zIndex: 300}}
+      />
       <Tab.Navigator
         backBehavior="none"
         initialRouteName={routeIdx}

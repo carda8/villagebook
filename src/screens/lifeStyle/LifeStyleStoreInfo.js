@@ -58,28 +58,21 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header
-        navigation={navigation}
-        // showLike={true}
-        showShare={true}
-        iconColor={'white'}
-        title={''}
-        storeInfo={lifeInfo}
-        categoryMain={routeData.category}
-        style={{
-          backgroundColor: 'rgba(0,0,0,0)',
-          position: 'absolute',
-          zIndex: 100,
-        }}
-      />
-      <ScrollView
-        stickyHeaderIndices={[3]}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-        alwaysBounceVertical={false}
-        // contentOffset={{x: 0, y: 100}}
-        // scrollEnabled={false}
-        contentContainerStyle={{paddingBottom: 60}}>
+      <ScrollView contentContainerStyle={{paddingBottom: 60}}>
+        <Header
+          navigation={navigation}
+          showLike={true}
+          showShare={true}
+          iconColor={'white'}
+          title={''}
+          storeInfo={lifeInfo}
+          categoryMain={routeData.category}
+          style={{
+            backgroundColor: 'rgba(0,0,0,0)',
+            zIndex: 100,
+            position: 'absolute',
+          }}
+        />
         <ImageSwipe images={lifeInfo.store_image} />
         <MenuDesc info={lifeInfo} />
         <MiniMap lat={lifeInfo.mb_lat} lng={lifeInfo.mb_lng} />

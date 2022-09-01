@@ -1,6 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import React, {useEffect, useState} from 'react';
 import {Image, Linking, Platform, Pressable, Text, View} from 'react-native';
+import {Shadow} from 'react-native-shadow-2';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
@@ -67,40 +68,31 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
           backgroundColor: colors.storeIcon,
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'hidden',
-          ...Platform.select({
-            ios: {
-              shadowColor: '#00000029',
-              shadowRadius: 5,
-              shadowOpacity: 0.6,
-              shadowOffset: {
-                height: 6,
-                width: 0,
-              },
-            },
-            android: {
-              elevation: 6,
-            },
-          }),
-        }}>
-        <Image
-          source={{uri: storeInfo.store_logo}}
-          resizeMode="contain"
-          style={{width: 81, height: 81}}
-        />
+          // overflow: 'hidden',
+        }}
+      >
+        <Shadow distance={5}>
+          <Image
+            source={{uri: storeInfo.store_logo}}
+            resizeMode="contain"
+            style={{width: 81, height: 81, borderRadius: 30}}
+          />
+        </Shadow>
       </View>
       <View style={{top: -27}}>
         <View
           style={{
             justifyContent: 'space-between',
             paddingHorizontal: 22,
-          }}>
+          }}
+        >
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             <View style={{flex: 1}}>
               <TextBold style={{fontSize: 22}}>
                 {storeInfo.mb_biz_name ?? storeInfo.mb_company}
@@ -117,7 +109,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
               style={{
                 flex: 1,
                 paddingHorizontal: 22,
-              }}>
+              }}
+            >
               <Pressable
                 onPress={() => {
                   Linking.openURL(`tel:${storeInfo.mb_tel}`);
@@ -132,20 +125,23 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                   borderRadius: 8,
                   marginTop: 7,
                   marginBottom: 20,
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontWeight: 'bold',
                     fontSize: 15,
                     color: colors.primary,
-                  }}>
+                  }}
+                >
                   전화하기
                 </Text>
                 <Text
                   style={{
                     fontSize: 9,
                     color: colors.primary,
-                  }}>
+                  }}
+                >
                   (동네북보고 전화했어요. 라고 말하면 문의가 빨라요)
                 </Text>
               </Pressable>
@@ -183,7 +179,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderColor: colors.borderColor,
-                  }}>
+                  }}
+                >
                   <TextRegular style={{color: colors.primary, fontSize: 12}}>
                     복사
                   </TextRegular>
@@ -195,7 +192,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                   <TextRegular
                     style={{
                       color: colors.fontColor99,
-                    }}>
+                    }}
+                  >
                     연락처
                   </TextRegular>
                 </View>
@@ -214,7 +212,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                 </View>
                 <View style={{flex: 1}}>
                   <Pressable
-                    onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}>
+                    onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}
+                  >
                     <TextRegular style={{color: colors.fontColor3}}>
                       {storeInfo?.mb_homepage ? storeInfo?.mb_homepage : '-'}
                     </TextRegular>
@@ -227,12 +226,14 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                   height: moreInfo ? 'auto' : 0,
                   flexDirection: 'row',
                   marginBottom: 11,
-                }}>
+                }}
+              >
                 <View style={{width: 100}}>
                   <TextRegular
                     style={{
                       color: colors.fontColor99,
-                    }}>
+                    }}
+                  >
                     영업 시간
                   </TextRegular>
                 </View>
@@ -253,7 +254,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                   alignSelf: 'center',
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Image
                   source={require('~/assets/btn_top_left.png')}
                   style={{
@@ -288,7 +290,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                 alignSelf: 'center',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               <Image
                 source={require('~/assets/btn_top_left.png')}
                 style={{
@@ -323,13 +326,15 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                 height: 50,
                 borderRadius: 8,
                 marginTop: 19,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontWeight: 'bold',
                   fontSize: 15,
                   color: colors.primary,
-                }}>
+                }}
+              >
                 이 매장의 할인 쿠폰받기
               </Text>
             </Pressable>
@@ -347,13 +352,15 @@ const MenuDesc = ({navigation, info, routeData, categoryMain}) => {
                 height: 50,
                 borderRadius: 8,
                 marginTop: 7,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontWeight: 'bold',
                   fontSize: 15,
                   color: colors.fontColorA2,
-                }}>
+                }}
+              >
                 전화하기
               </Text>
             </Pressable>

@@ -290,14 +290,16 @@ const StoreItems = ({navigation, route}) => {
                   justifyContent: 'space-between',
                 }}
               >
-                <View style={{flex: 1}} clip>
-                  <Text
-                    style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
-                    ellipsizeMode="tail"
-                    numberOfLines={1}
-                  >
-                    {storeInfo.mb_company}
-                  </Text>
+                <View style={{flex: 1}}>
+                  <View style={{marginBottom: 5}}>
+                    <Text
+                      style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
+                      ellipsizeMode="tail"
+                      numberOfLines={1}
+                    >
+                      {storeInfo.mb_company}
+                    </Text>
+                  </View>
                   {routeData.category === 'lifestyle' && (
                     <Text
                       style={{
@@ -320,7 +322,7 @@ const StoreItems = ({navigation, route}) => {
                 )}
               </View>
               {routeData.category === 'lifestyle' && (
-                <View>
+                <View style={{marginTop: 2}}>
                   <TextRegular style={{color: colors.fontColorA2}}>
                     {storeInfo.distance}
                   </TextRegular>
