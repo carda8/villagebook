@@ -27,6 +27,7 @@ import {customAlert} from '../../../component/CustomAlert';
 import Loading from '../../../component/Loading';
 import {setCurrentStoreCode} from '../../../store/reducers/CartReducer';
 import {Shadow} from 'react-native-shadow-2';
+import FilterView from './FilterView';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
@@ -155,7 +156,8 @@ const StoreItems = ({navigation, route}) => {
           marginVertical: 10,
           marginHorizontal: 22,
           flex: 1,
-        }}>
+        }}
+      >
         <Pressable
           onPress={() => {
             console.log('code', storeInfo.mb_jumju_code);
@@ -191,13 +193,15 @@ const StoreItems = ({navigation, route}) => {
             // marginVertical: 11,
             borderRadius: 10,
             backgroundColor: 'white',
-          }}>
+          }}
+        >
           <View
             style={{
               height: IMG_HEIGHT,
               borderRadius: 10,
               flexDirection: 'row',
-            }}>
+            }}
+          >
             <View
               style={{
                 flex: 1,
@@ -206,7 +210,8 @@ const StoreItems = ({navigation, route}) => {
                 borderTopLeftRadius: 10,
                 // borderBottomLeftRadius: 10,
                 overflow: 'hidden',
-              }}>
+              }}
+            >
               {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
                 <ImageCover />
               )}
@@ -221,14 +226,16 @@ const StoreItems = ({navigation, route}) => {
             <View
               style={{
                 width: layout.width * 0.24,
-              }}>
+              }}
+            >
               <View
                 style={{
                   flex: 1,
                   borderTopRightRadius: 10,
                   marginBottom: 1,
                   overflow: 'hidden',
-                }}>
+                }}
+              >
                 {!item?.section?.isOpen &&
                   routeData.category !== 'lifestyle' && <ImageCover />}
 
@@ -248,7 +255,8 @@ const StoreItems = ({navigation, route}) => {
                   flex: 1,
                   // borderBottomRightRadius: 10,
                   overflow: 'hidden',
-                }}>
+                }}
+              >
                 {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
                   <>
                     <ImageCover />
@@ -272,19 +280,22 @@ const StoreItems = ({navigation, route}) => {
               flex: 1,
               justifyContent: 'flex-end',
               padding: 10,
-            }}>
+            }}
+          >
             <View style={{marginBottom: 9}}>
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                }}>
+                }}
+              >
                 <View style={{flex: 1}} clip>
                   <Text
                     style={{fontFamily: 'Pretendard-Medium', fontSize: 16}}
                     ellipsizeMode="tail"
-                    numberOfLines={1}>
+                    numberOfLines={1}
+                  >
                     {storeInfo.mb_company}
                   </Text>
                   {routeData.category === 'lifestyle' && (
@@ -295,7 +306,8 @@ const StoreItems = ({navigation, route}) => {
                         color: colors.fontColorA,
                       }}
                       ellipsizeMode="tail"
-                      numberOfLines={1}>
+                      numberOfLines={1}
+                    >
                       {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
                     </Text>
                   )}
@@ -321,11 +333,13 @@ const StoreItems = ({navigation, route}) => {
                     flexDirection: 'row',
                     flexWrap: 'wrap',
                     marginTop: 9,
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: 'row',
-                    }}>
+                    }}
+                  >
                     <TextRegular style={{color: colors.fontColorA2}}>
                       배달팁{' '}
                     </TextRegular>
@@ -340,7 +354,8 @@ const StoreItems = ({navigation, route}) => {
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}>
+                    }}
+                  >
                     <Image
                       source={require('~/assets/time.png')}
                       style={{width: 14, height: 14}}
@@ -352,7 +367,8 @@ const StoreItems = ({navigation, route}) => {
                   <View
                     style={{
                       flexDirection: 'row',
-                    }}>
+                    }}
+                  >
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                       <TextRegular style={{color: colors.fontColorA2}}>
                         최소 주문{' '}
@@ -403,7 +419,8 @@ const StoreItems = ({navigation, route}) => {
                     marginTop: '30%',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <Image
                     source={require('~/assets/no_store.png')}
                     style={{width: 250, height: 250}}
@@ -430,7 +447,8 @@ const StoreItems = ({navigation, route}) => {
                     marginTop: '30%',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <Image
                     source={require('~/assets/no_store.png')}
                     style={{width: 250, height: 250}}

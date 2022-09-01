@@ -28,13 +28,23 @@ const StoreList = ({navigation, route}) => {
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header category={true} navigation={navigation} showCart showHome />
-      <FilterView />
+      <SafeAreaView
+        style={{
+          // flex: 1,
+          position: 'absolute',
+          zIndex: 300,
+          // width: 100,
+          // height: 100,
+        }}
+      >
+        <FilterView />
+      </SafeAreaView>
       <Tab.Navigator
         backBehavior="none"
         initialRouteName={routeIdx}
         screenListeners={{
           state: e => {
-            // console.log('state e', e.target, e.data);
+            console.log('state e', e.target, e.data, e);
           },
           focus: e => {
             let temp = e.target.split('-');
@@ -56,21 +66,25 @@ const StoreList = ({navigation, route}) => {
             paddingLeft: 22,
           },
           tabBarLabel: props => (
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
+            <>
+              <View
                 style={{
-                  fontFamily: 'Pretendard-Bold',
-                  // : 'Pretendard-Medium',
-                  color: props.focused ? colors.primary : colors.fontColor2,
-                }}>
-                {route.name}
-              </Text>
-            </View>
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: 'Pretendard-Bold',
+                    // : 'Pretendard-Medium',
+                    color: props.focused ? colors.primary : colors.fontColor2,
+                  }}
+                >
+                  {route.name}
+                </Text>
+              </View>
+            </>
           ),
           tabBarScrollEnabled: true,
           tabBarItemStyle: {
@@ -129,7 +143,8 @@ const StoreList = ({navigation, route}) => {
               </>
             );
           },
-        })}>
+        })}
+      >
         {categoryData.map((item, index) => (
           <Tab.Screen
             key={item.ca_name + index}
