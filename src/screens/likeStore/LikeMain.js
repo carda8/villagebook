@@ -18,23 +18,63 @@ import {customAlert} from '../../component/CustomAlert';
 
 const LikeMain = ({navigation}) => {
   const [tabIdx, setTabIdx] = useState(0);
-  const {mutateGetLikeList, mutateSetLikeStore} = useCustomMutation();
+  const {mutateGetLikeList, mutateSetLikeStore, mutateLikeLifeStyle} =
+    useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
-  const [list, setList] = useState();
+  const [list, setList] = useState([]);
+  const limit = 20;
   const itemLimit = useRef(0);
 
-  const _getList = type => {
+  const _getList = (type, more) => {
+    if (more) {
+      itemLimit.current += limit;
+    }
     const data = {
       item_count: itemLimit.current,
-      limit_count: 20,
+      limit_count: limit,
       mt_id: userInfo.mt_id,
       jumju_type: type,
     };
     console.log('data', data);
     mutateGetLikeList.mutate(data, {
       onSuccess: e => {
-        if (e.result === 'true') setList(e.data.arrItems);
-        else setList([]);
+        if (more) {
+          if (e.result === 'true') {
+            let temp = e.data.arrItems;
+            setList(prev => prev.concat(temp));
+            console.log('Merged Arr', temp);
+          }
+        } else {
+          if (e.result === 'true') setList(e.data.arrItems);
+          else setList([]);
+        }
+      },
+    });
+  };
+
+  const _getLifeList = more => {
+    if (more) {
+      itemLimit.current += limit;
+    }
+    const data = {
+      item_count: itemLimit.current,
+      limit_count: 9,
+      mt_id: userInfo.mt_id,
+      jumju_type: 'lifestyle',
+    };
+
+    mutateLikeLifeStyle.mutate(data, {
+      onSuccess: e => {
+        if (more) {
+          if (e.result === 'true') {
+            let temp = e.data.arrItems;
+            setList(prev => prev.concat(temp));
+            console.log('Merged Arr', temp);
+          }
+        } else {
+          if (e.result === 'true') setList(e.data.arrItems);
+          else setList([]);
+        }
       },
     });
   };
@@ -54,6 +94,18 @@ const LikeMain = ({navigation}) => {
         setList(temp);
       },
     });
+  };
+  const _getCategory = () => {
+    switch (tabIdx) {
+      case 0:
+        return 'food';
+      case 1:
+        return 'market';
+      case 2:
+        return 'lifestyle';
+      default:
+        return;
+    }
   };
 
   useEffect(() => {
@@ -81,11 +133,15 @@ const LikeMain = ({navigation}) => {
           <Pressable
             style={{flexDirection: 'row', flex: 1}}
             onPress={() => {
-              navigation.navigate('MenuDetail', {
-                jumju_id: data.jumju_id,
-                jumju_code: data.jumju_code,
-                mb_company: data.mb_company,
-              });
+              navigation.navigate(
+                tabIdx !== 2 ? 'MenuDetail' : 'LifeStyleStoreInfo',
+                {
+                  jumju_id: data.jumju_id,
+                  jumju_code: data.jumju_code,
+                  mb_company: data.mb_company,
+                  category: _getCategory(),
+                },
+              );
             }}>
             <View
               style={{
@@ -107,29 +163,36 @@ const LikeMain = ({navigation}) => {
                 style={{flex: 1}}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={{flex: 1, justifyContent: 'center'}}>
               <TextMedium style={{fontSize: 17, color: colors.fontColor2}}>
                 {data.mb_company}
               </TextMedium>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Image
-                  source={require('~/assets/ico_star_on.png')}
-                  style={{width: 15, height: 15}}
-                />
-                <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
-                  {data.stars}
-                </TextMedium>
-              </View>
-              <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
-                {'최소주문 ' + data.minPrice}
-              </TextMedium>
-              <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
-                {'배달팁' + data.tipFrom + '~' + data.tipTo + '원'}
-              </TextMedium>
+              {tabIdx !== 2 ? (
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <Image
+                      source={require('~/assets/ico_star_on.png')}
+                      style={{width: 15, height: 15}}
+                    />
+                    <TextMedium
+                      style={{fontSize: 14, color: colors.fontColor8}}>
+                      {data.stars}
+                    </TextMedium>
+                  </View>
+                  <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
+                    {'최소주문 ' + data.minPrice}
+                  </TextMedium>
+                  <TextMedium style={{fontSize: 14, color: colors.fontColor8}}>
+                    {'배달팁' + data.tipFrom + '~' + data.tipTo + '원'}
+                  </TextMedium>
+                </>
+              ) : (
+                <></>
+              )}
             </View>
             <Pressable
               hitSlop={10}
@@ -179,7 +242,10 @@ const LikeMain = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           renderItem={item => <RenderItem item={item} />}
           keyExtractor={(item, index) => index}
-          onEndReached={() => {}}
+          onEndReached={() => {
+            let type = tabIdx === 0 ? 'food' : 'market';
+            if (list.length > 4) _getList(type, true);
+          }}
         />
       </View>
     );
@@ -197,6 +263,7 @@ const LikeMain = ({navigation}) => {
             ...styles.tabItemContainer,
           }}
           onPress={() => {
+            itemLimit.current = 0;
             setTabIdx(0);
             _getList('food');
           }}>
@@ -218,6 +285,7 @@ const LikeMain = ({navigation}) => {
             ...styles.tabItemContainer,
           }}
           onPress={() => {
+            itemLimit.current = 0;
             setTabIdx(1);
             _getList('market');
           }}>
@@ -234,12 +302,14 @@ const LikeMain = ({navigation}) => {
             </Text>
           </View>
         </Pressable>
-        {/* <Pressable
+        <Pressable
           style={{
             ...styles.tabItemContainer,
           }}
           onPress={() => {
+            itemLimit.current = 0;
             setTabIdx(2);
+            _getLifeList();
           }}>
           <View
             style={{
@@ -253,22 +323,46 @@ const LikeMain = ({navigation}) => {
               편의
             </Text>
           </View>
-        </Pressable> */}
+        </Pressable>
       </View>
 
-      {tabIdx === 0 && (
+      <View style={{flex: 1, paddingHorizontal: 22}}>
+        <View style={{flex: 1}}>
+          <FlatList
+            ListHeaderComponent={() => (
+              <View
+                style={{flexDirection: 'row', alignSelf: 'flex-end'}}></View>
+            )}
+            data={list}
+            ListEmptyComponent={
+              <View
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginVertical: 25,
+                }}>
+                <TextBold>찜내역이 없습니다.</TextBold>
+              </View>
+            }
+            showsVerticalScrollIndicator={false}
+            renderItem={item => <RenderItem item={item} />}
+            keyExtractor={(item, index) => index}
+            onEndReached={() => {
+              let type =
+                tabIdx === 0 ? 'food' : tabIdx === 1 ? 'market' : 'lifestyle';
+              if (list.length % limit === 0) _getList(type, true);
+            }}
+          />
+        </View>
+      </View>
+      {/* {tabIdx === 1 && (
         <View style={{flex: 1, paddingHorizontal: 22}}>
           <LikeItems navigation={navigation} data={list}></LikeItems>
         </View>
       )}
-      {tabIdx === 1 && (
+      {tabIdx === 2 && (
         <View style={{flex: 1, paddingHorizontal: 22}}>
           <LikeItems navigation={navigation} data={list}></LikeItems>
-        </View>
-      )}
-      {/* {tabIdx === 2 && (
-        <View style={{flex: 1, paddingHorizontal: 22}}>
-          <LikeItems navigation={navigation} data={[1, 2, 3, 4, 5]}></LikeItems>
         </View>
       )} */}
       {/* <BottomBar navigation={navigation} /> */}

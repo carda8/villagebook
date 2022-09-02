@@ -3,11 +3,16 @@ import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
+import TextRegular from '../text/TextRegular';
+import TextSBold from '../text/TextSBold';
+import colors from '../../styles/colors';
 
-const LikeShare = ({storeInfo, categoryMain}) => {
+const LikeShare = ({storeInfo, categoryMain, likeCount}) => {
   const {userInfo} = useSelector(state => state.authReducer);
   const {mutateSetLikeStore} = useCustomMutation();
   const [like, setLike] = useState();
+  const [likeNum, setLikeNum] = useState(likeCount);
+  console.log('likenum', likeNum, likeCount);
 
   const _setLikeStore = () => {
     const data = {
@@ -24,8 +29,14 @@ const LikeShare = ({storeInfo, categoryMain}) => {
   };
 
   const _onPressLike = () => {
-    if (like === 'Y') setLike('N');
-    if (like === 'N') setLike('Y');
+    if (like === 'Y') {
+      setLike('N');
+      if (categoryMain === 'lifestyle') setLikeNum(Number(likeNum) - 1);
+    }
+    if (like === 'N') {
+      setLike('Y');
+      if (categoryMain === 'lifestyle') setLikeNum(Number(likeNum) + 1);
+    }
     _setLikeStore();
   };
 
@@ -73,17 +84,22 @@ const LikeShare = ({storeInfo, categoryMain}) => {
         hitSlop={10}
         onPress={() => {
           _onPressLike();
-        }}>
+        }}
+        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}>
         <Image
           source={
             like === 'Y'
               ? require('~/assets/top_heart_on.png')
               : require('~/assets/top_heart.png')
           }
-          style={{width: 30, height: 30, marginRight: 20}}
+          style={{width: 30, height: 30}}
         />
+        {categoryMain === 'lifestyle' && (
+          <TextSBold style={{fontSize: 16, color: colors.fontColor2}}>
+            {likeNum}
+          </TextSBold>
+        )}
       </Pressable>
-
       <Pressable
         hitSlop={10}
         onPress={() => {

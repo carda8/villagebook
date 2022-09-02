@@ -28,6 +28,8 @@ const OrderList = ({navigation}) => {
       mt_id: userInfo.mt_id,
     };
 
+    console.log('log 1', data);
+
     mutateOrderHistory.mutate(data, {
       onSettled: e => {
         if (e.result === 'true' && e.data.arrItems.length > 0)
@@ -209,10 +211,7 @@ const OrderList = ({navigation}) => {
       {/* {console.log('his', history)} */}
       <FlatList
         data={history}
-        ListEmptyComponent={
-          mutateOrderHistory.isSuccess ||
-          (mutateOrderHistory.isError && <NoHistory />)
-        }
+        ListEmptyComponent={() => <NoHistory />}
         renderItem={item => renderItem(item)}
         keyExtractor={(item, index) => item.od_id + index}
         ListFooterComponentStyle={{
@@ -223,7 +222,7 @@ const OrderList = ({navigation}) => {
         ListFooterComponent={e =>
           mutateOrderHistory.isLoading && history ? (
             <Loading />
-          ) : history ? (
+          ) : history.length > 0 ? (
             <Pressable
               onPress={() => {
                 _getMoreHistory();

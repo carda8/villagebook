@@ -127,6 +127,13 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mutateLikeLifeStyle = useMutation(storeAPI._getLikeLifeStyle, {
+    onSettled: e => {
+      console.log('mutateNotification', e);
+      return e;
+    },
+  });
+
   //Auth
   const mutateSNSlogin = useMutation(authAPI._snsLogin, {
     onSettled: e => {
@@ -372,5 +379,6 @@ export const useCustomMutation = () => {
     mutateNotification,
     mutateSearch,
     mutateGetFaqDetail,
+    mutateLikeLifeStyle,
   };
 };

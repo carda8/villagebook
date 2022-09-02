@@ -37,6 +37,7 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
     const data = {
       jumju_id: routeData.jumju_id,
       jumju_code: routeData.jumju_code,
+      mt_id: userInfo.mt_id,
     };
     console.log('route', route.params);
 
@@ -74,7 +75,11 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
           }}
         />
         <ImageSwipe images={lifeInfo.store_image} />
-        <MenuDesc info={lifeInfo} />
+        <MenuDesc
+          info={lifeInfo}
+          likeCount={lifeInfo.mb_zzim_count}
+          categoryMain={routeData.category}
+        />
         <MiniMap lat={lifeInfo.mb_lat} lng={lifeInfo.mb_lng} />
       </ScrollView>
     </SafeAreaView>

@@ -1,6 +1,7 @@
 import {View, Text, Pressable} from 'react-native';
 import React, {useState} from 'react';
 import {Shadow} from 'react-native-shadow-2';
+import {SectionList} from 'react-native';
 
 const Test = () => {
   const [temp, setTemp] = useState();
@@ -9,6 +10,7 @@ const Test = () => {
 
   return (
     <View style={{flex: 1}}>
+      <SectionList />
       {arr.map((item, index) => (
         <Shadow
           // offset={[3, 10]}

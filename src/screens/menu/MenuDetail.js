@@ -314,12 +314,12 @@ const MenuDetail = ({navigation, route}) => {
             }
           }}>
           <Header
-            navigation={navigation}
+            title={''}
             showLike={true}
             showShare={true}
-            storeInfo={StoreInfo}
             iconColor={'white'}
-            title={''}
+            storeInfo={StoreInfo}
+            navigation={navigation}
             categoryMain={routeData.category}
             style={{
               backgroundColor: 'rgba(0,0,0,0)',

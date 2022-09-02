@@ -151,7 +151,7 @@ const MyPage = ({navigation}) => {
             </View>
             <View style={{flex: 1, alignItems: 'center'}}>
               <TextBold style={{color: colors.fontColorA, fontSize: 18}}>
-                {userInfo.mt_review_cnt}
+                {userInfo.mt_review_cnt ?? 0}
               </TextBold>
               <TextBold style={{color: colors.fontColor2}}>리뷰</TextBold>
             </View>
