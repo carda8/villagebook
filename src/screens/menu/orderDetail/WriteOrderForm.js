@@ -21,7 +21,7 @@ import Loading from '../../../component/Loading';
 import ImageCover from '../../../component/ImageCover';
 import {customAlert} from '../../../component/CustomAlert';
 import PaymentList from '../../../config/PaymentList';
-import {set} from 'react-native-reanimated';
+import {or, set} from 'react-native-reanimated';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
 
 const WriteOrderForm = ({navigation, route}) => {
@@ -222,6 +222,9 @@ const WriteOrderForm = ({navigation, route}) => {
     }
     if (!paymentMethod) {
       return customAlert('알림', '결제방법을 선택해주세요..');
+    }
+    if (Number(orderForm.od_forhere_num) < 2) {
+      return customAlert('알림', '식사인원은 최소 2명 이상입니다.');
     }
     // setOrderForm({
     //   ...orderForm,

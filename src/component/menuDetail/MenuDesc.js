@@ -59,25 +59,37 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
       <View
         style={{
           top: -40,
-          width: 81,
           height: 81,
           marginHorizontal: 22,
-          borderRadius: 30,
-          borderWidth: 2,
-          borderColor: 'white',
-          backgroundColor: colors.storeIcon,
-          alignItems: 'center',
-          justifyContent: 'center',
-          // overflow: 'hidden',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
         }}>
         <Shadow distance={5}>
-          <Image
-            source={{uri: storeInfo.store_logo}}
-            resizeMode="contain"
-            style={{width: 81, height: 81, borderRadius: 30}}
-          />
+          <View
+            style={{
+              borderRadius: 30,
+              borderWidth: 2,
+              borderColor: 'white',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: colors.storeIcon,
+            }}>
+            <Image
+              source={{uri: storeInfo.store_logo}}
+              resizeMode="contain"
+              style={{width: 81, height: 81, borderRadius: 30}}
+            />
+          </View>
         </Shadow>
+        <View style={{alignSelf: 'flex-end'}}>
+          <LikeShare
+            storeInfo={storeInfo}
+            categoryMain={categoryMain}
+            likeCount={likeCount}
+          />
+        </View>
       </View>
+
       <View style={{top: -27}}>
         <View
           style={{
@@ -95,11 +107,6 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 {storeInfo.mb_biz_name ?? storeInfo.mb_company}
               </TextBold>
             </View>
-            <LikeShare
-              storeInfo={storeInfo}
-              categoryMain={categoryMain}
-              likeCount={likeCount}
-            />
           </View>
 
           {!isLifeStyle && <ReviewSimple2 info={storeInfo} />}
@@ -226,7 +233,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                     style={{
                       color: colors.fontColor99,
                     }}>
-                    영업 시간
+                    영업시간
                   </TextRegular>
                 </View>
                 <View style={{flex: 1}}>
