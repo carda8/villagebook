@@ -25,6 +25,8 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import Divider from '../../component/Divider';
 import DividerL from '../../component/DividerL';
 import ReviewScore from './ReviewScore';
+import {useWindowDimensions} from 'react-native';
+import ReviewImg from './ReviewImg';
 
 const MenuReview = ({storeInfo}) => {
   const {mutateGetReview} = useCustomMutation();
@@ -173,14 +175,26 @@ const MenuReview = ({storeInfo}) => {
     // setReview(copyReview)
   };
 
+  console.log('REVIEW ::', review);
+  const layout = useWindowDimensions();
+
   const ListHeader = () => {
     return (
       <>
+        <View style={{padding: 22, paddingBottom: 0}}>
+          <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
+            리뷰 정보
+          </TextBold>
+        </View>
         <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
           <TextRegular style={{fontSize: 15}}>
             {review?.notice.noticeContent}
           </TextRegular>
         </View>
+
+        {review.notice?.noticePic?.map((item, index) => (
+          <ReviewImg review={review} key={index} />
+        ))}
 
         <View
           style={{
@@ -372,6 +386,14 @@ const MenuReview = ({storeInfo}) => {
   return (
     <>
       <View style={{flex: 1}}>
+        <View style={{padding: 22}}>
+          <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
+            리뷰 정보
+          </TextBold>
+        </View>
+        {review.notice?.noticePic?.map((item, index) => (
+          <ReviewImg review={review} key={index} />
+        ))}
         {/* 리뷰탭 내부 상단 리뷰 정보*/}
         {/* <ListHeader /> */}
         <ReviewScore review={review} />

@@ -16,6 +16,7 @@ import {useDispatch} from 'react-redux';
 import {setPaymentMethod} from '../../../store/reducers/PaymentReducer';
 import PaymentList from '../../../config/PaymentList';
 import CouponTicket from '../../discount/CouponTicket';
+import {resetCoupon} from '../../../store/reducers/CouponReducer';
 
 const PaymentMethod = ({navigation, route}) => {
   const routeData = route.params;
@@ -88,6 +89,7 @@ const PaymentMethod = ({navigation, route}) => {
           <Pressable
             onPress={() => {
               dispatch(setPaymentMethod(PaymentList.offlineCard));
+              dispatch(resetCoupon());
               navigation.goBack();
             }}
             style={{
@@ -107,6 +109,7 @@ const PaymentMethod = ({navigation, route}) => {
           <Pressable
             onPress={() => {
               dispatch(setPaymentMethod(PaymentList.offlineCash));
+              dispatch(resetCoupon());
               navigation.goBack();
             }}
             style={{

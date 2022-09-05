@@ -275,7 +275,7 @@ const StoreItems = ({navigation, route}) => {
               justifyContent: 'flex-end',
               padding: 10,
             }}>
-            <View style={{marginBottom: 9}}>
+            <View style={{}}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -366,8 +366,10 @@ const StoreItems = ({navigation, route}) => {
                       {storeInfo.distance}
                     </TextRegular>
                   </View>
-                  <View style={{}}>
-                    <TextRegular style={{color: colors.fontColorA2}}>
+                  <View style={{flex: 1}}>
+                    <TextRegular
+                      numberOfLines={1}
+                      style={{color: colors.fontColorA2}}>
                       {storeInfo?.mb_opening_hours2}
                     </TextRegular>
                   </View>
@@ -385,43 +387,53 @@ const StoreItems = ({navigation, route}) => {
                     style={{
                       flexDirection: 'row',
                     }}>
-                    <TextRegular style={{color: colors.fontColorA2}}>
+                    <TextRegular
+                      style={{color: colors.fontColorA2, fontSize: 12}}>
                       배달팁{' '}
                     </TextRegular>
-                    <TextRegular style={{color: colors.fontColor6}}>
+                    <TextRegular
+                      style={{color: colors.fontColor6, fontSize: 12}}>
                       {replaceString(storeInfo.tipFrom)}원~
                       {replaceString(storeInfo.tipTo)}원
                     </TextRegular>
                     <Dot />
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <Image
-                      source={require('~/assets/time.png')}
-                      style={{width: 14, height: 14}}
-                    />
-                    <TextRegular> 30분~</TextRegular>
-                    <TextRegular>40분</TextRegular>
-                    <Dot />
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                    }}>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                      <TextRegular style={{color: colors.fontColorA2}}>
+                      <TextRegular
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
                         최소 주문{' '}
                       </TextRegular>
-                      <TextRegular>
-                        {replaceString(storeInfo.minPrice)}원
+                      <TextRegular style={{fontSize: 12}}>
+                        {replaceString(storeInfo.minPrice)}원{' '}
                       </TextRegular>
                     </View>
-                    <View style={{marginLeft: 10}}>
-                      <TextRegular style={{color: colors.fontColorA2}}>
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                    }}>
+                    <>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Image
+                          source={require('~/assets/time.png')}
+                          style={{width: 14, height: 14}}
+                        />
+                        <TextRegular style={{fontSize: 12}}>
+                          {storeInfo.delivery_time}
+                        </TextRegular>
+                        {/* <TextRegular style={{fontSize: 12}}>40분</TextRegular> */}
+                        <Dot />
+                      </View>
+                    </>
+
+                    <View style={{}}>
+                      <TextRegular
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
                         {storeInfo.distance}
                       </TextRegular>
                     </View>
@@ -429,11 +441,21 @@ const StoreItems = ({navigation, route}) => {
                 </View>
               )}
             </View>
-            <Chip
-              coupon={storeInfo.coupon}
-              newStore={storeInfo.new}
-              takeout={storeInfo.wrap}
-            />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text style={{color: colors.fontColorA, fontSize: 12}}>
+                {storeInfo?.major_menu}
+              </Text>
+              <Chip
+                coupon={storeInfo.coupon}
+                newStore={storeInfo.new}
+                takeout={storeInfo.wrap}
+              />
+            </View>
           </View>
         </Pressable>
       </Shadow>

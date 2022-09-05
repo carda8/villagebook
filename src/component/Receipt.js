@@ -75,7 +75,7 @@ const Receipt = ({orderResult, isSummary}) => {
             {replaceString(_calcTotalPrice())}원
           </TextRegular>
         </View>
-        {summitedData?.od_method === 'wrap' && (
+        {summitedData?.od_method === 'delivery' && (
           <>
             <View
               style={{

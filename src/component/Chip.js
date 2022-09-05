@@ -4,12 +4,12 @@ import colors from '../styles/colors';
 
 const Chip = ({newStore, coupon, takeout}) => {
   return (
-    <View style={{flexDirection: 'row'}}>
+    <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}>
       {newStore && (
         <View
           style={{
             width: 42,
-            height: 24,
+            height: 22,
             borderRadius: 12,
             backgroundColor: 'rgba(252,134,0, 0.1)',
             justifyContent: 'center',
@@ -30,7 +30,7 @@ const Chip = ({newStore, coupon, takeout}) => {
         <View
           style={{
             width: 42,
-            height: 24,
+            height: 22,
             borderRadius: 12,
             backgroundColor: 'rgba(32,171,200, 0.1)',
             justifyContent: 'center',
@@ -52,7 +52,7 @@ const Chip = ({newStore, coupon, takeout}) => {
         <View
           style={{
             width: 42,
-            height: 24,
+            height: 22,
             borderRadius: 12,
             backgroundColor: '#F8F8F8',
             justifyContent: 'center',

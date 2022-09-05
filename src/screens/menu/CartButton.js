@@ -14,11 +14,16 @@ import {
   updateItem,
 } from '../../store/reducers/CartReducer';
 import {customAlert} from '../../component/CustomAlert';
-import {setLastPrice} from '../../store/reducers/PaymentReducer';
+import {
+  resetPayment,
+  setLastPrice,
+  setPaymentMethod,
+} from '../../store/reducers/PaymentReducer';
 import Loading from '../../component/Loading';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import {replace} from 'formik';
+import {resetCoupon} from '../../store/reducers/CouponReducer';
 
 const CartButton = ({
   navigation,
@@ -223,6 +228,8 @@ const CartButton = ({
     console.log('last', lastPrice);
     console.log('deliveryInfo', deliveryInfo);
     if (result) {
+      dispatch(resetCoupon());
+      dispatch(setPaymentMethod(''));
       navigation.navigate('WriteOrderForm', {
         isDelivery: isDelivery,
         deliveryData: deliveryData,

@@ -157,7 +157,9 @@ const CouponTicket = ({
             {itemInfo.cp_end ?? itemInfo.cz_end}
           </TextRegular>
           <TextRegular>
-            {itemInfo.cp_mb_company ? itemInfo.cp_mb_company : '동네북 쿠폰'}
+            {itemInfo.cp_gubun === 'system'
+              ? '동네북 쿠폰'
+              : itemInfo.cp_mb_company}
             {/* {itemInfo.cp_method_txt}) */}
           </TextRegular>
         </View>

@@ -153,12 +153,13 @@ const MainStackNavigator = () => {
       //로그아웃 이후 재로그인 시 에도 경유
       //아래 주석 해제시 항상 서버 경유
       // data = await _typeNumOfsns(loginTypeNum, token);
-      console.log('## autoLogin data', data);
       data = {
         mt_id: id,
         mt_app_token: token,
         mt_login_type: loginTypeNum,
       };
+      console.log('## autoLogin data', data);
+
       // const result = await SNSLogin._KakaoLogin(token);
       // console.log('_KakaoLogin result', result);
       // data = {
@@ -178,6 +179,7 @@ const MainStackNavigator = () => {
       mutateSNSlogin.mutate(data, {
         onSuccess: e => {
           const userInfo = e.data.arrItems;
+          console.log('mutateSNSlogin result :::', e);
           if (userInfo) {
             dispatch(setUserInfo(userInfo));
             setInitRoute('Main');

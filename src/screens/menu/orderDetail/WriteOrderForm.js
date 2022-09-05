@@ -216,6 +216,12 @@ const WriteOrderForm = ({navigation, route}) => {
     });
   }, [storeCoupon, systemCoupon]);
 
+  useEffect(() => {
+    if (paymentMethod !== PaymentList.card) {
+      setOrderForm({...orderForm, od_receipt_point: 0});
+    }
+  }, [paymentMethod]);
+
   const _checkForm = () => {
     if (deliveryType === 0 && !orderForm.od_addr1 && !orderForm.od_addr2) {
       return customAlert('알림', '배달정보를 확인해주세요.');
@@ -223,7 +229,7 @@ const WriteOrderForm = ({navigation, route}) => {
     if (!paymentMethod) {
       return customAlert('알림', '결제방법을 선택해주세요..');
     }
-    if (Number(orderForm.od_forhere_num) < 2) {
+    if (Number(orderForm.od_forhere_num) < 2 && deliveryType === 2) {
       return customAlert('알림', '식사인원은 최소 2명 이상입니다.');
     }
     // setOrderForm({
@@ -304,7 +310,7 @@ const WriteOrderForm = ({navigation, route}) => {
           <View style={{flexDirection: 'row'}}>
             <TextInput
               editable={false}
-              style={{...styles.inputContainer, marginRight: 10}}
+              style={{...styles.inputContainer}}
               placeholder={'휴대폰 번호(숫자만 입력)'}
               defaultValue={userInfo.mt_hp}
             />

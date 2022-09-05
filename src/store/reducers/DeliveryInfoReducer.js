@@ -4,7 +4,7 @@ const deliverySlice = createSlice({
   name: 'menu',
   initialState: {
     deliveryInfo: [],
-    deliveryType: 0, // 0 : 배달, 1 : 포장, 2 : 먹고가기
+    deliveryType: 2, // 0 : 배달, 1 : 포장, 2 : 먹고가기
   },
   reducers: {
     setDeliveryInfo: (state, action) => {

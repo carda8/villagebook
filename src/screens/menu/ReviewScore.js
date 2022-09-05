@@ -39,7 +39,7 @@ const ReviewScore = ({review}) => {
   };
   const _setSlider = () => {
     let temp2 = [];
-    console.log('re@@@@@@@@@@@', review);
+    // console.log('re@@@@@@@@@@@', review);
     for (let i = 0; i < 5; i++) {
       temp2.push(
         <View key={i} style={{flexDirection: 'row'}}>
@@ -74,9 +74,6 @@ const ReviewScore = ({review}) => {
   return (
     <>
       <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
-        <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
-          리뷰 정보
-        </TextBold>
         <TextRegular style={{fontSize: 15}}>
           {review?.notice.noticeContent}
         </TextRegular>

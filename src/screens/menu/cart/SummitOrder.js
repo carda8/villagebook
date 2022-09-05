@@ -21,6 +21,7 @@ import {
 import Caution from '../../../component/Caution';
 import AuthStorageModuel from '../../../store/localStorage/AuthStorageModuel';
 import {setDeliveryType} from '../../../store/reducers/DeliveryInfoReducer';
+import {resetCoupon} from '../../../store/reducers/CouponReducer';
 
 const SummitOrder = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -65,9 +66,10 @@ const SummitOrder = ({navigation, route}) => {
       jumju_code: cartStore.savedItem.savedStoreCode.code,
       total_price: _getTotalPrice(),
     };
-    console.log('data', data);
+    console.log('_getDeliveryFee :::', data);
     mutateDeliveryFee.mutate(data, {
       onSettled: e => {
+        console.log(':: RESULT _getDeliveryFee', e);
         if (e.result === 'true') setDeliveryInfo(e.data.arrItems[0]);
       },
     });
