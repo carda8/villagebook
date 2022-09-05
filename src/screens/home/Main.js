@@ -74,12 +74,16 @@ const Main = ({navigation}) => {
     // if (diff >= 1440) console.log('copyData', copyData);
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      _getAddr();
-      return () => {};
-    }, []),
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     _getAddr();
+  //     return () => {};
+  //   }, []),
+  // );
+
+  useEffect(() => {
+    _getAddr();
+  }, [navigation]);
 
   useEffect(() => {
     _getCompanyInfo();

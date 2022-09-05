@@ -28,6 +28,8 @@ import Loading from '../../../component/Loading';
 import {setCurrentStoreCode} from '../../../store/reducers/CartReducer';
 import {Shadow} from 'react-native-shadow-2';
 import FilterView from './FilterView';
+import {RefreshControl} from 'react-native';
+import Divider from '../../../component/Divider';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
@@ -35,6 +37,7 @@ const StoreItems = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {currentLocation} = useSelector(state => state.locationReducer);
   const {currentFilter} = useSelector(state => state.categoryReducer);
+  const [refresh, setRefresh] = useState(false);
 
   // console.log('roueteData', routeData);
   const [storeList, setStoreList] = useState([]);
@@ -49,6 +52,7 @@ const StoreItems = ({navigation, route}) => {
 
   const _init = () => {
     // console.log('storeitem', routeData);
+    // setRefresh(true)
     itemLimit.current = 0;
     const data = {
       mb_ca_code: routeData.ca_code,
@@ -68,6 +72,7 @@ const StoreItems = ({navigation, route}) => {
           setStoreList('');
         },
         onSuccess: e => {
+          // setRefresh(false)
           if (e.result === 'true') {
             console.log('ee', e);
             const temp = _fliterList(e.data.arrItems);
@@ -336,16 +341,27 @@ const StoreItems = ({navigation, route}) => {
                     )}
                   </View>
                   {routeData.category === 'lifestyle' && (
-                    <Text
-                      style={{
-                        fontFamily: 'Pretendard-Medium',
-                        fontSize: 12,
-                        color: colors.fontColorA,
-                      }}
-                      ellipsizeMode="tail"
-                      numberOfLines={1}>
-                      {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
-                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <View style={{}}>
+                        <TextRegular
+                          style={{color: colors.fontColorA2, fontSize: 12}}>
+                          {storeInfo.distance}
+                        </TextRegular>
+                      </View>
+                      <Divider style={{marginHorizontal: 5}} />
+                      <View style={{flex: 1}}>
+                        <Text
+                          style={{
+                            fontFamily: 'Pretendard-Medium',
+                            fontSize: 12,
+                            color: colors.fontColorA,
+                          }}
+                          ellipsizeMode="tail"
+                          numberOfLines={1}>
+                          {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
+                        </Text>
+                      </View>
+                    </View>
                   )}
                 </View>
                 {routeData.category !== 'lifestyle' && (
@@ -359,20 +375,13 @@ const StoreItems = ({navigation, route}) => {
                 <View
                   style={{
                     marginTop: 2,
-                    flexDirection: 'row',
+                    // flexDirection: 'row',
                   }}>
-                  <View style={{marginRight: 10}}>
-                    <TextRegular style={{color: colors.fontColorA2}}>
-                      {storeInfo.distance}
-                    </TextRegular>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <TextRegular
-                      numberOfLines={1}
-                      style={{color: colors.fontColorA2}}>
-                      {storeInfo?.mb_opening_hours2}
-                    </TextRegular>
-                  </View>
+                  <TextRegular
+                    numberOfLines={1}
+                    style={{color: colors.fontColorA2, fontSize: 12}}>
+                    {storeInfo?.mb_opening_hours2}
+                  </TextRegular>
                 </View>
               )}
 
@@ -441,21 +450,23 @@ const StoreItems = ({navigation, route}) => {
                 </View>
               )}
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text style={{color: colors.fontColorA, fontSize: 12}}>
-                {storeInfo?.major_menu}
-              </Text>
-              <Chip
-                coupon={storeInfo.coupon}
-                newStore={storeInfo.new}
-                takeout={storeInfo.wrap}
-              />
-            </View>
+            {routeData.category !== 'lifestyle' && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                <Text style={{color: colors.fontColorA, fontSize: 12}}>
+                  {storeInfo?.major_menu}
+                </Text>
+                <Chip
+                  coupon={storeInfo.coupon}
+                  newStore={storeInfo.new}
+                  takeout={storeInfo.wrap}
+                />
+              </View>
+            )}
           </View>
         </Pressable>
       </Shadow>
@@ -469,6 +480,9 @@ const StoreItems = ({navigation, route}) => {
       {console.log('route cate', routeData.category)}
       {routeData.category === 'lifestyle' ? (
         <FlatList
+          // refreshControl={
+          //   <RefreshControl onRefresh={_init} refreshing={refresh} />
+          // }
           data={storeList}
           keyExtractor={(item, index) => item + index}
           renderItem={item => renderItem(item)}
