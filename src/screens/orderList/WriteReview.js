@@ -78,7 +78,7 @@ const WriteReview = ({navigation, route}) => {
     ImageCropPicker.openCamera({
       compressImageMaxHeight: 3000,
       compressImageMaxWidth: 2000,
-      cropping: true,
+      // cropping: true,
     }).then(image => {
       let temp = image.path.split('.');
       const convert = {
@@ -171,7 +171,8 @@ const WriteReview = ({navigation, route}) => {
                     overflow: 'hidden',
                     marginHorizontal: 3,
                     marginTop: 10,
-                  }}>
+                  }}
+                >
                   <Pressable
                     onPress={() => {
                       _removeImage(item.uri);
@@ -181,7 +182,8 @@ const WriteReview = ({navigation, route}) => {
                       zIndex: 100,
                       right: 3,
                       top: 3,
-                    }}>
+                    }}
+                  >
                     <Image
                       source={require('~/assets/pop_close.png')}
                       style={{
@@ -216,7 +218,8 @@ const WriteReview = ({navigation, route}) => {
                 justifyContent: 'center',
                 marginTop: 30,
                 marginRight: 20,
-              }}>
+              }}
+            >
               <Image
                 source={require('~/assets/btn_add.png')}
                 style={{
@@ -233,7 +236,8 @@ const WriteReview = ({navigation, route}) => {
                   color: colors.fontColor2,
                   includeFontPadding: false,
                   flex: 1,
-                }}>
+                }}
+              >
                 사진 촬영
               </TextBold>
             </Pressable>
@@ -249,7 +253,8 @@ const WriteReview = ({navigation, route}) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginTop: 30,
-              }}>
+              }}
+            >
               <Image
                 source={require('~/assets/btn_add.png')}
                 style={{
@@ -266,7 +271,8 @@ const WriteReview = ({navigation, route}) => {
                   flex: 1,
                   color: colors.fontColor2,
                   includeFontPadding: false,
-                }}>
+                }}
+              >
                 갤러리 가져오기
               </TextBold>
             </Pressable>
@@ -281,7 +287,8 @@ const WriteReview = ({navigation, route}) => {
               alignItems: 'center',
               justifyContent: 'center',
               marginTop: 30,
-            }}>
+            }}
+          >
             <TextBold style={{color: 'white', includeFontPadding: false}}>
               리뷰 등록
             </TextBold>
@@ -292,10 +299,32 @@ const WriteReview = ({navigation, route}) => {
       <Modal
         transparent
         visible={modal}
-        onRequestClose={() => setModal(!modal)}>
+        onRequestClose={() => setModal(!modal)}
+      >
         <ImageViewer
           imageUrls={[imageUrl]}
           useNativeDriver
+          renderHeader={() => (
+            <Pressable
+              hitSlop={20}
+              onPress={() => {
+                setModal(!modal);
+              }}
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
+            >
+              <Image
+                source={require('~/assets/pop_close.png')}
+                style={{
+                  top: 30,
+                  zIndex: 100,
+                  width: 30,
+                  height: 30,
+                  tintColor: 'white',
+                  position: 'absolute',
+                }}
+              />
+            </Pressable>
+          )}
           loadingRender={() => (
             <ActivityIndicator size={'large'} color={colors.primary} />
           )}

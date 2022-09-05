@@ -137,7 +137,7 @@ const EditSummit = ({navigation, route}) => {
     ImageCropPicker.openCamera({
       compressImageMaxHeight: 3000,
       compressImageMaxWidth: 2000,
-      cropping: true,
+      // cropping: true,
     }).then(image => {
       let temp = image.path.split('.');
       const convert = {
@@ -182,7 +182,8 @@ const EditSummit = ({navigation, route}) => {
                 닉네임 변경
               </TextRegular>
               <View
-                style={{flexDirection: 'row', marginTop: 5, marginBottom: 20}}>
+                style={{flexDirection: 'row', marginTop: 5, marginBottom: 20}}
+              >
                 <TextInput
                   value={nickname}
                   onChangeText={e => {
@@ -211,7 +212,8 @@ const EditSummit = ({navigation, route}) => {
                     backgroundColor: colors.primary,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <TextBold style={{color: 'white'}}>중복확인</TextBold>
                 </Pressable>
               </View>
@@ -228,7 +230,8 @@ const EditSummit = ({navigation, route}) => {
                   }}
                   onPress={() => {
                     setModal(!modal);
-                  }}>
+                  }}
+                >
                   <Image
                     source={
                       {uri: profileImg?.uri ?? userInfo.mt_profil_url}
@@ -251,7 +254,8 @@ const EditSummit = ({navigation, route}) => {
                     backgroundColor: colors.inputBoxBG,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <Image
                     source={require('~/assets/ico_plus.png')}
                     style={{width: 30, height: 30}}
@@ -270,14 +274,16 @@ const EditSummit = ({navigation, route}) => {
                   justifyContent: 'center',
                   marginTop: 20,
                   borderRadius: 10,
-                }}>
+                }}
+              >
                 {mutateUpdataUserInfo.isLoading ? (
                   <View
                     style={{
                       flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}>
+                    }}
+                  >
                     <ActivityIndicator color={'white'} />
                   </View>
                 ) : (
@@ -321,7 +327,8 @@ const EditSummit = ({navigation, route}) => {
                 justifyContent: 'center',
                 marginTop: 20,
                 borderRadius: 10,
-              }}>
+              }}
+            >
               {mutateUpdataUserInfo.isLoading ? (
                 <Loading />
               ) : (
@@ -344,7 +351,8 @@ const EditSummit = ({navigation, route}) => {
                   alignItems: 'center',
                   marginTop: 5,
                   marginBottom: 5,
-                }}>
+                }}
+              >
                 <TextInput
                   value={phone}
                   onChangeText={e => _vaildate(e, setPhone)}
@@ -363,7 +371,8 @@ const EditSummit = ({navigation, route}) => {
                 <Pressable
                   onPress={() => {
                     _setDelay();
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       width: 100,
@@ -373,7 +382,8 @@ const EditSummit = ({navigation, route}) => {
                       borderColor: colors.primary,
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}>
+                    }}
+                  >
                     {delay ? (
                       <Loading />
                     ) : (
@@ -408,7 +418,8 @@ const EditSummit = ({navigation, route}) => {
                   justifyContent: 'center',
                   marginTop: 20,
                   borderRadius: 10,
-                }}>
+                }}
+              >
                 <TextBold style={{color: 'white'}}>휴대폰번호 변경</TextBold>
               </Pressable>
             </View>
@@ -455,7 +466,8 @@ const EditSummit = ({navigation, route}) => {
                   justifyContent: 'center',
                   marginTop: 20,
                   borderRadius: 10,
-                }}>
+                }}
+              >
                 <TextBold style={{color: 'white'}}>비밀번호 변경</TextBold>
               </Pressable>
             </View>
@@ -467,10 +479,32 @@ const EditSummit = ({navigation, route}) => {
         visible={modal}
         onRequestClose={() => {
           setModal(!modal);
-        }}>
+        }}
+      >
         <ImageViewer
           imageUrls={[{url: profileImg?.uri}]}
           useNativeDriver
+          renderHeader={() => (
+            <Pressable
+              hitSlop={20}
+              onPress={() => {
+                setModal(!modal);
+              }}
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
+            >
+              <Image
+                source={require('~/assets/pop_close.png')}
+                style={{
+                  top: 30,
+                  zIndex: 100,
+                  width: 30,
+                  height: 30,
+                  tintColor: 'white',
+                  position: 'absolute',
+                }}
+              />
+            </Pressable>
+          )}
           loadingRender={() => (
             <ActivityIndicator size={'large'} color={colors.primary} />
           )}
@@ -482,7 +516,8 @@ const EditSummit = ({navigation, route}) => {
         visible={modalPic}
         onRequestClose={() => {
           setModalPic(!modalPic);
-        }}>
+        }}
+      >
         <View
           style={{
             flex: 1,
@@ -491,7 +526,8 @@ const EditSummit = ({navigation, route}) => {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <View
             style={{
               width: '100%',
@@ -514,7 +550,8 @@ const EditSummit = ({navigation, route}) => {
                   elevation: 5,
                 },
               }),
-            }}>
+            }}
+          >
             <View style={{flexDirection: 'row'}}>
               <Pressable
                 onPress={() => _setProfileImage()}
@@ -525,7 +562,8 @@ const EditSummit = ({navigation, route}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Image
                   source={require('~/assets/btn_add.png')}
                   style={{
@@ -542,7 +580,8 @@ const EditSummit = ({navigation, route}) => {
                     color: colors.fontColor2,
                     includeFontPadding: false,
                     flex: 1,
-                  }}>
+                  }}
+                >
                   사진 촬영
                 </TextBold>
               </Pressable>
@@ -556,7 +595,8 @@ const EditSummit = ({navigation, route}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Image
                   source={require('~/assets/btn_add.png')}
                   style={{
@@ -573,7 +613,8 @@ const EditSummit = ({navigation, route}) => {
                     flex: 1,
                     color: colors.fontColor2,
                     includeFontPadding: false,
-                  }}>
+                  }}
+                >
                   갤러리 가져오기
                 </TextBold>
               </Pressable>

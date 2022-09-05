@@ -71,7 +71,8 @@ const FAQDetail = ({navigation, route}) => {
               marginTop: 5,
               marginBottom: 20,
               justifyContent: 'center',
-            }}>
+            }}
+          >
             <TextRegular>{detail.qa_subject}</TextRegular>
           </View>
 
@@ -83,7 +84,8 @@ const FAQDetail = ({navigation, route}) => {
               marginTop: 5,
               marginBottom: 20,
               height: 200,
-            }}>
+            }}
+          >
             <TextRegular>{detail.qa_content}</TextRegular>
           </View>
           {detail.qa_status === '1' && (
@@ -96,7 +98,8 @@ const FAQDetail = ({navigation, route}) => {
                   marginTop: 5,
                   marginBottom: 20,
                   height: 200,
-                }}>
+                }}
+              >
                 <TextRegular>{detail.answer_content}</TextRegular>
               </View>
             </>
@@ -118,7 +121,8 @@ const FAQDetail = ({navigation, route}) => {
                     overflow: 'hidden',
                     marginHorizontal: 3,
                     marginTop: 10,
-                  }}>
+                  }}
+                >
                   <Image
                     source={{uri: item ? item : null}}
                     style={{
@@ -142,7 +146,8 @@ const FAQDetail = ({navigation, route}) => {
               alignItems: 'center',
               backgroundColor: colors.couponBG,
               borderRadius: 10,
-            }}>
+            }}
+          >
             <TextBold style={{color: colors.fontColor2}}>수정</TextBold>
           </Pressable>
           <Pressable
@@ -153,7 +158,8 @@ const FAQDetail = ({navigation, route}) => {
               alignItems: 'center',
               backgroundColor: colors.inputBoxBG,
               borderRadius: 10,
-            }}>
+            }}
+          >
             <TextBold style={{color: colors.fontColor2}}>삭제</TextBold>
           </Pressable>
         </View>
@@ -163,10 +169,32 @@ const FAQDetail = ({navigation, route}) => {
         saveToLocalByLongPress={false}
         // transparent
         visible={modal}
-        onRequestClose={() => setModal(!modal)}>
+        onRequestClose={() => setModal(!modal)}
+      >
         <ImageViewer
           imageUrls={_convertImage(detail?.pic)}
           useNativeDriver
+          renderHeader={() => (
+            <Pressable
+              hitSlop={20}
+              onPress={() => {
+                setModal(!modal);
+              }}
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
+            >
+              <Image
+                source={require('~/assets/pop_close.png')}
+                style={{
+                  top: 30,
+                  zIndex: 100,
+                  width: 30,
+                  height: 30,
+                  tintColor: 'white',
+                  position: 'absolute',
+                }}
+              />
+            </Pressable>
+          )}
           loadingRender={() => (
             <ActivityIndicator size={'large'} color={colors.primary} />
           )}

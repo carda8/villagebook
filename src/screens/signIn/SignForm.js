@@ -201,7 +201,7 @@ const SignForm = ({navigation}) => {
     ImageCropPicker.openCamera({
       compressImageMaxHeight: 3000,
       compressImageMaxWidth: 2000,
-      cropping: true,
+      // cropping: true,
     }).then(image => {
       let temp = image.path.split('.');
       const convert = {
@@ -344,7 +344,8 @@ const SignForm = ({navigation}) => {
                     marginRight: 10,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <Image
                     source={{uri: fsImage ? fsImage : null}}
                     style={{
@@ -368,7 +369,8 @@ const SignForm = ({navigation}) => {
                   backgroundColor: colors.inputBoxBG,
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Image
                   source={require('~/assets/ico_plus.png')}
                   style={{width: 30, height: 30}}
@@ -399,10 +401,32 @@ const SignForm = ({navigation}) => {
         visible={modal}
         onRequestClose={() => {
           setModal(!modal);
-        }}>
+        }}
+      >
         <ImageViewer
           imageUrls={[{url: fsImage}]}
           useNativeDriver
+          renderHeader={() => (
+            <Pressable
+              hitSlop={20}
+              onPress={() => {
+                setModal(!modal);
+              }}
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
+            >
+              <Image
+                source={require('~/assets/pop_close.png')}
+                style={{
+                  top: 30,
+                  zIndex: 100,
+                  width: 30,
+                  height: 30,
+                  tintColor: 'white',
+                  position: 'absolute',
+                }}
+              />
+            </Pressable>
+          )}
           loadingRender={() => (
             <ActivityIndicator size={'large'} color={colors.primary} />
           )}
@@ -414,7 +438,8 @@ const SignForm = ({navigation}) => {
         visible={modalPic}
         onRequestClose={() => {
           setModalPic(!modalPic);
-        }}>
+        }}
+      >
         <View
           style={{
             flex: 1,
@@ -423,7 +448,8 @@ const SignForm = ({navigation}) => {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <View
             style={{
               width: '100%',
@@ -446,7 +472,8 @@ const SignForm = ({navigation}) => {
                   elevation: 5,
                 },
               }),
-            }}>
+            }}
+          >
             <View style={{flexDirection: 'row'}}>
               <Pressable
                 onPress={() => _setProfileImage()}
@@ -457,7 +484,8 @@ const SignForm = ({navigation}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Image
                   source={require('~/assets/btn_add.png')}
                   style={{
@@ -474,7 +502,8 @@ const SignForm = ({navigation}) => {
                     color: colors.fontColor2,
                     includeFontPadding: false,
                     flex: 1,
-                  }}>
+                  }}
+                >
                   사진 촬영
                 </TextBold>
               </Pressable>
@@ -488,7 +517,8 @@ const SignForm = ({navigation}) => {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Image
                   source={require('~/assets/btn_add.png')}
                   style={{
@@ -505,7 +535,8 @@ const SignForm = ({navigation}) => {
                     flex: 1,
                     color: colors.fontColor2,
                     includeFontPadding: false,
-                  }}>
+                  }}
+                >
                   갤러리 가져오기
                 </TextBold>
               </Pressable>

@@ -90,7 +90,8 @@ const Review = ({navigation}) => {
           flex: 1,
           borderTopWidth: 1,
           borderTopColor: colors.borderColor,
-        }}>
+        }}
+      >
         <View
           style={{
             flex: 1,
@@ -99,7 +100,8 @@ const Review = ({navigation}) => {
             paddingTop: 15,
             flexDirection: 'row',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <FastImage
             source={
               data.mt_profile_url
@@ -109,7 +111,8 @@ const Review = ({navigation}) => {
             style={{width: 70, height: 70, borderRadius: 20}}
           />
           <View
-            style={{marginLeft: 10, flex: 1, justifyContent: 'space-between'}}>
+            style={{marginLeft: 10, flex: 1, justifyContent: 'space-between'}}
+          >
             <TextBold style={{fontSize: 16, color: colors.fontColor2}}>
               {data.mb_company}
             </TextBold>
@@ -130,7 +133,8 @@ const Review = ({navigation}) => {
           onPress={() => {
             if (data.pic.length > 0)
               setModal({visible: !modal.visible, image: data.pic});
-          }}>
+          }}
+        >
           {data?.pic.map((item, index) => (
             <FastImage
               key={index}
@@ -172,7 +176,8 @@ const Review = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
               padding: 22,
-            }}>
+            }}
+          >
             <TextRegular>작성된 리뷰가 없습니다.</TextRegular>
           </View>
         }
@@ -221,13 +226,35 @@ const Review = ({navigation}) => {
         visible={modal.visible}
         onRequestClose={() => {
           setModal({...modal, visible: !modal.visible});
-        }}>
+        }}
+      >
         {/* {console.log('modal img', modal.image)} */}
         <ImageViewer
           useNativeDriver
           enablePreload
           saveToLocalByLongPress={false}
           imageUrls={_convertImage(modal.image)}
+          renderHeader={() => (
+            <Pressable
+              hitSlop={20}
+              onPress={() => {
+                setModal(!modal);
+              }}
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
+            >
+              <Image
+                source={require('~/assets/pop_close.png')}
+                style={{
+                  top: 30,
+                  zIndex: 100,
+                  width: 30,
+                  height: 30,
+                  tintColor: 'white',
+                  position: 'absolute',
+                }}
+              />
+            </Pressable>
+          )}
           loadingRender={() => (
             <ActivityIndicator size={'large'} color={colors.primary} />
           )}

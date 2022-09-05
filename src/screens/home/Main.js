@@ -74,16 +74,12 @@ const Main = ({navigation}) => {
     // if (diff >= 1440) console.log('copyData', copyData);
   };
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     _getAddr();
-  //     return () => {};
-  //   }, []),
-  // );
-
-  useEffect(() => {
-    _getAddr();
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      _getAddr();
+      return () => {};
+    }, []),
+  );
 
   useEffect(() => {
     _getCompanyInfo();
@@ -106,7 +102,8 @@ const Main = ({navigation}) => {
         showCart={true}
       />
       <ScrollView
-        contentContainerStyle={{paddingHorizontal: 22, paddingBottom: 70}}>
+        contentContainerStyle={{paddingHorizontal: 22, paddingBottom: 70}}
+      >
         <Pressable
           onPress={() => {
             navigation.navigate('AddressMain');
@@ -117,7 +114,8 @@ const Main = ({navigation}) => {
             flexDirection: 'row',
             backgroundColor: 'white',
             marginBottom: 10,
-          }}>
+          }}
+        >
           <Image
             source={require('~/assets/ico_location.png')}
             style={{width: 19, height: 19}}
@@ -128,7 +126,8 @@ const Main = ({navigation}) => {
               style={{
                 fontSize: 15,
                 color: colors.fontColor2,
-              }}>
+              }}
+            >
               {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
                 '주소설정') +
                 ' ' +
@@ -167,7 +166,8 @@ const Main = ({navigation}) => {
             height: 141,
             marginBottom: 15,
             marginTop: 17,
-          }}>
+          }}
+        >
           <Pressable
             onPress={() => {
               navigation.navigate('CategoryView', {
@@ -183,7 +183,8 @@ const Main = ({navigation}) => {
               borderColor: colors.mainBG3Border,
               borderRadius: 10,
               overflow: 'hidden',
-            }}>
+            }}
+          >
             <View style={{paddingTop: 39}}>
               <TextJua style={{fontSize: 23, color: colors.fontMain3}}>
                 동네서비스
@@ -212,7 +213,8 @@ const Main = ({navigation}) => {
             height: 220,
             marginBottom: 15,
             flexDirection: 'row',
-          }}>
+          }}
+        >
           <Pressable
             onPress={() => {
               navigation.navigate('CategoryView', {selectedCategory: 'food'});
@@ -226,7 +228,8 @@ const Main = ({navigation}) => {
               borderWidth: 1,
               backgroundColor: colors.mainBG1,
               borderColor: colors.mainBG1Border,
-            }}>
+            }}
+          >
             <TextJua style={{fontSize: 23, color: colors.fontMain1}}>
               동네맛집
             </TextJua>
@@ -257,7 +260,8 @@ const Main = ({navigation}) => {
               backgroundColor: colors.mainBG2,
               borderColor: colors.mainBG2Border,
               borderWidth: 1,
-            }}>
+            }}
+          >
             <TextJua style={{fontSize: 23, color: colors.fontMain2}}>
               동네마켓
             </TextJua>
@@ -290,13 +294,15 @@ const Main = ({navigation}) => {
             alignItems: 'center',
             marginTop: 10,
             marginBottom: 10,
-          }}>
+          }}
+        >
           <Pressable
             onPress={() => {
               navigation.navigate('Policy', {
                 target: policyConfig.target.location,
               });
-            }}>
+            }}
+          >
             <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
               위치기반 서비스 이용약관
             </TextRegular>
@@ -307,7 +313,8 @@ const Main = ({navigation}) => {
               navigation.navigate('Policy', {
                 target: policyConfig.target.personal,
               });
-            }}>
+            }}
+          >
             <TextBold style={{color: colors.fontColor8, fontSize: 10}}>
               개인정보 처리방침
             </TextBold>
@@ -316,7 +323,8 @@ const Main = ({navigation}) => {
           <Pressable
             onPress={() => {
               navigation.navigate('Policy', {target: policyConfig.target.use});
-            }}>
+            }}
+          >
             <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
               이용약관
             </TextRegular>
@@ -327,7 +335,8 @@ const Main = ({navigation}) => {
           onPress={() => {
             setToggleInfo(!toggleInfo);
           }}
-          style={{flexDirection: 'row', alignItems: 'center'}}>
+          style={{flexDirection: 'row', alignItems: 'center'}}
+        >
           <TextSBold>(주)어스닉</TextSBold>
           <Image
             source={require('~/assets/btn_top_left.png')}
@@ -346,7 +355,8 @@ const Main = ({navigation}) => {
             alignItems: 'center',
             marginTop: 10,
             marginBottom: 20,
-          }}>
+          }}
+        >
           <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
             (주)어스닉은 통신판매중개자이며, 따라서 (주)어스닉은 상품, 거래정보
             및 거래에 대하여 책임을 지지 않습니다.
@@ -357,7 +367,8 @@ const Main = ({navigation}) => {
             <View
               style={{
                 alignItems: 'center',
-              }}>
+              }}
+            >
               <View style={{marginBottom: 20}}>
                 <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
                   {companyInfo?.de_admin_company_memo}
