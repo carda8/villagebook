@@ -62,7 +62,7 @@ import {useGeoLocation} from '../hooks/useGeoLocation';
 import DeliveryTipInfo from '../screens/menu/DeliveryTipInfo';
 import CouponSelect from '../screens/menu/orderDetail/CouponSelect';
 import SearchView from '../screens/home/SearchView';
-import {AppState, Linking} from 'react-native';
+import {AppState, Linking, Platform} from 'react-native';
 import AuthStorageModuel from '../store/localStorage/AuthStorageModuel';
 import {setSaveItem, setStoreLogo} from '../store/reducers/CartReducer';
 import SearchResult from '../screens/home/SearchResult';
@@ -246,30 +246,33 @@ const MainStackNavigator = () => {
       'applinks:',
     ],
     async getInitialURL() {
-      const url = await Linking.getInitialURL();
-      Linking.console.log('URLLLL:::', url);
-      console.log(1);
-      if (url != null) {
-        return url;
-      }
-      const link = await dynamicLinks()
-        .getInitialLink()
-        .then(link => {
-          console.log(2);
-          console.log('link::::::::', link);
-          if (link?.url != null) {
-            return link.url;
-          } else return null;
-          // if (link.url === 'https://invertase.io/offer') {
-          //   // ...set initial route as offers screen
-          // }
-        });
-      if (link) {
-        console.log(3);
-        return link;
-      } else {
-        console.log(4);
+      if (Platform.OS === 'android') {
+        const url = await Linking.getInitialURL();
+        Linking.console.log('URLLLL:::', url);
+        // console.log(1);
+        if (url != null) {
+          return url;
+        }
         return null;
+      }
+      if (Platform.OS === 'ios') {
+        const link = await dynamicLinks()
+          .getInitialLink()
+          .then(link => {
+            // console.log(2);
+            console.log('link::::::::', link);
+            if (link?.url != null) {
+              return link.url;
+            } else return null;
+            // if (link.url === 'https://invertase.io/offer') {
+            //   // ...set initial route as offers screen
+            // }
+          });
+        if (link) {
+          return link;
+        } else {
+          return null;
+        }
       }
     },
     subscribe(listener) {
@@ -346,8 +349,7 @@ const MainStackNavigator = () => {
       <Stack.Navigator
         initialRouteName={initRoute}
         // initialRouteName={'Test'}
-        screenOptions={{headerShown: false}}
-      >
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
