@@ -36,6 +36,8 @@ import {customAlert} from '../../component/CustomAlert';
 import TextSBold from '../../component/text/TextSBold';
 import TextNotoR from '../../component/text/TextNotoR';
 import AutoLogin from '../../component/loginScreen/AutoLogin';
+import appleAuth from '@invertase/react-native-apple-authentication';
+import jwtDecode from 'jwt-decode';
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch();
@@ -212,6 +214,89 @@ const Login = ({navigation}) => {
     });
   };
 
+  const _AppleLogin = async () => {
+    // performs login request
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: appleAuth.Operation.LOGIN,
+      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+    });
+    console.log('apple', appleAuthRequestResponse);
+    // get current authentication state for user
+    // /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
+    const credentialState = await appleAuth.getCredentialStateForUser(
+      appleAuthRequestResponse.user,
+    );
+    console.log('apple', appleAuthRequestResponse, credentialState);
+    const decoded = jwtDecode(appleAuthRequestResponse.identityToken);
+    console.log('decode', decoded);
+    const nickname = decoded.email.split('@', 1);
+    // use credentialState response to ensure the user is authenticated
+    if (credentialState === appleAuth.State.AUTHORIZED) {
+      let name =
+        appleAuthRequestResponse.fullName.familyName +
+        appleAuthRequestResponse.fullName.givenName;
+      if (name) {
+        console.log('name1', name);
+      } else {
+        console.log('name2', name);
+      }
+      const userInfo = {
+        social_id: appleAuthRequestResponse.user,
+        email: decoded.email,
+        nickname: nickname,
+      };
+      console.log('USERINFO APPLE', userInfo);
+      const data = {
+        mt_id: userInfo.social_id,
+        // mt_pwd: result.mt_pwd,
+        mt_app_token: fcmToken,
+        mt_login_type: '5',
+        // mt_sns_url: result.mt_image1,
+        // mt_hp: result.mt_hp === 'null' || !result.mt_hp ? '' : result.mt_hp,
+        mt_name: name,
+        mt_email: userInfo.email,
+        mt_nickname: name,
+      };
+      console.log('BEFORE SUMMIT :::', data);
+      mutateSNSlogin.mutate(data, {
+        onSuccess: async e => {
+          if (e.result === 'true') {
+            try {
+              console.log('login e', e);
+              await AuthStorageModuel._setItemAutoLogin(isAuto());
+              await AuthStorageModuel._setItemUserToken(fcmToken);
+              await AuthStorageModuel._setItemLoginType(
+                localStorageConfig.loginType.sns,
+              );
+              await AuthStorageModuel._setItemLoginTypeNum(
+                localStorageConfig.loginTypeNum.kakao,
+              );
+              await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
+
+              dispatch(setUserInfo(e.data.arrItems));
+              navigation.reset({
+                routes: [{name: 'Main'}],
+              });
+            } catch (err) {
+              Errorhandler(err);
+            }
+          }
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      // onCredentialRevoked returns a function that will remove the event listener. useEffect will call this function when the component unmounts
+      return appleAuth.onCredentialRevoked(async () => {
+        console.warn(
+          'If this function executes, User Credentials have been Revoked',
+        );
+      });
+    }
+  }, []); // passing in an empty array as the second argument ensures this is only ran once when component mounts initially.
+
   if (logading) return <Loading />;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -362,10 +447,11 @@ const Login = ({navigation}) => {
                 resizeMode={'contain'}
               ></Image>
             </Pressable>
+
             {/* 애플 */}
             {Platform.OS === 'ios' && (
               <Pressable
-                onPress={() => {}}
+                onPress={() => _AppleLogin()}
                 style={{
                   ...style.snsButton,
                   marginLeft: 37,

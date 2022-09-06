@@ -48,6 +48,9 @@ const LikeShare = ({storeInfo, categoryMain, likeCount}) => {
         android: {
           packageName: 'com.dmonster.dongnaebook',
         },
+        ios: {
+          bundleId: 'com.dmonster.dongnaebook',
+        },
       });
 
       console.log('Current Store ::', storeInfo);
@@ -79,13 +82,15 @@ const LikeShare = ({storeInfo, categoryMain, likeCount}) => {
     <View
       style={{
         flexDirection: 'row',
-      }}>
+      }}
+    >
       <Pressable
         hitSlop={10}
         onPress={() => {
           _onPressLike();
         }}
-        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}>
+        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}
+      >
         <Image
           source={
             like === 'Y'
@@ -104,7 +109,8 @@ const LikeShare = ({storeInfo, categoryMain, likeCount}) => {
         hitSlop={10}
         onPress={() => {
           _share();
-        }}>
+        }}
+      >
         <Image
           source={require('~/assets/top_share_w.png')}
           style={{width: 30, height: 30, tintColor: 'black'}}

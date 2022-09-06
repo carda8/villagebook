@@ -98,7 +98,8 @@ const CategoryView = ({navigation, route}) => {
             // justifyContent: 'space-between',
             alignItems: 'center',
             // marginHorizontal: 10,
-          }}>
+          }}
+        >
           <View style={{width: 80, alignItems: 'center'}}>
             <Image
               source={{uri: item.item.ca_img}}
@@ -109,7 +110,8 @@ const CategoryView = ({navigation, route}) => {
               style={{
                 textAlign: 'center',
                 fontSize: 13,
-              }}>
+              }}
+            >
               {item.item.ca_name}
             </TextMedium>
           </View>
@@ -149,7 +151,8 @@ const CategoryView = ({navigation, route}) => {
                 flexDirection: 'row',
                 backgroundColor: 'white',
                 marginBottom: 10,
-              }}>
+              }}
+            >
               <Image
                 source={require('~/assets/ico_location.png')}
                 style={{width: 19, height: 19, marginRight: 8}}
@@ -160,14 +163,16 @@ const CategoryView = ({navigation, route}) => {
                   style={{
                     fontSize: 15,
                     color: colors.fontColor2,
-                  }}>
-                  {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+                  }}
+                >
+                  주소설정
+                  {/* {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
                     '주소설정') +
                     ' ' +
                     (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
                       ' ') +
                     ' '}
-                  {!mutateGetAddress?.data ?? '주소설정'}
+                  {!mutateGetAddress?.data ?? '주소설정'} */}
                 </TextEBold>
               </View>
               <Image
