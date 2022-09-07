@@ -6,10 +6,13 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import TextRegular from '../text/TextRegular';
 import TextSBold from '../text/TextSBold';
 import colors from '../../styles/colors';
+import {_guestAlert} from '../../config/utils/modules';
 
-const LikeShare = ({storeInfo, categoryMain, likeCount}) => {
+const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
+  const {isGuest} = useSelector(state => state.authReducer);
   const {mutateSetLikeStore} = useCustomMutation();
+
   const [like, setLike] = useState();
   const [likeNum, setLikeNum] = useState(likeCount);
   console.log('likenum', likeNum, likeCount);
@@ -87,7 +90,11 @@ const LikeShare = ({storeInfo, categoryMain, likeCount}) => {
       <Pressable
         hitSlop={10}
         onPress={() => {
-          _onPressLike();
+          if (!isGuest) {
+            _onPressLike();
+          } else {
+            _guestAlert(navigation);
+          }
         }}
         style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}
       >
@@ -108,7 +115,11 @@ const LikeShare = ({storeInfo, categoryMain, likeCount}) => {
       <Pressable
         hitSlop={10}
         onPress={() => {
-          _share();
+          if (!isGuest) {
+            _share();
+          } else {
+            _guestAlert(navigation);
+          }
         }}
       >
         <Image

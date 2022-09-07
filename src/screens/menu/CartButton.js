@@ -24,6 +24,7 @@ import {useCustomMutation} from '../../hooks/useCustomMutation';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import {replace} from 'formik';
 import {resetCoupon} from '../../store/reducers/CouponReducer';
+import {_guestAlert} from '../../config/utils/modules';
 
 const CartButton = ({
   navigation,
@@ -37,6 +38,8 @@ const CartButton = ({
 }) => {
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
+  const {isGuest} = useSelector(state => state.authReducer);
+
   const {mutateDeliveryFee} = useCustomMutation();
   // const payStore = useSelector(state => state.paymentReducer);
   console.log('cartStore  ###', cartStore);
@@ -259,9 +262,14 @@ const CartButton = ({
   return (
     <Pressable
       onPress={() => {
-        _router();
+        if (!isGuest) {
+          _router();
+        } else {
+          _guestAlert(navigation);
+        }
       }}
-      style={{...style.btnContainer}}>
+      style={{...style.btnContainer}}
+    >
       <View style={{...style.innerView}}>
         <View style={{flex: 1}} />
         <View style={{flex: 1, alignItems: 'center'}}>

@@ -14,6 +14,7 @@ import SearchBox from '../../component/mainScreen/SearchBox';
 import TextEBold from '../../component/text/TextEBold';
 import TextMedium from '../../component/text/TextMedium';
 import BannerList from '../../config/BannerList';
+import {_guestAlert} from '../../config/utils/modules';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
@@ -24,6 +25,7 @@ const CategoryView = ({navigation, route}) => {
   const [categoryData, setCategoryData] = useState();
   const {mutateGetAddress} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
+  const {isGuest} = useSelector(state => state.authReducer);
   const dispatch = useDispatch();
 
   const mutateCategory = useMutation(mainAPI._getCategory, {
@@ -143,7 +145,11 @@ const CategoryView = ({navigation, route}) => {
           <>
             <Pressable
               onPress={() => {
-                navigation.navigate('AddressMain');
+                if (!isGuest) {
+                  navigation.navigate('AddressMain');
+                } else {
+                  _guestAlert(navigation);
+                }
               }}
               style={{
                 width: '100%',
@@ -165,14 +171,13 @@ const CategoryView = ({navigation, route}) => {
                     color: colors.fontColor2,
                   }}
                 >
-                  주소설정
-                  {/* {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+                  {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
                     '주소설정') +
                     ' ' +
                     (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
                       ' ') +
                     ' '}
-                  {!mutateGetAddress?.data ?? '주소설정'} */}
+                  {!mutateGetAddress?.data ?? '주소설정'}
                 </TextEBold>
               </View>
               <Image

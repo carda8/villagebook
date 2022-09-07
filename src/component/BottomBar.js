@@ -10,12 +10,16 @@ import React, {useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
 import {setCurrent} from '../store/reducers/BottomBarReducer';
+import {customAlert} from './CustomAlert';
+import {_guestAlert} from '../config/utils/modules';
 
 const BottomBar = ({navigation}) => {
   const {current} = useSelector(state => state.btBarReducer);
+  const {isGuest} = useSelector(state => state.authReducer);
   const dispatch = useDispatch();
   const layout = useWindowDimensions();
   const width = layout.width / 5;
+
   return (
     <View style={{...styles.bottomBar}}>
       <Pressable
@@ -24,9 +28,14 @@ const BottomBar = ({navigation}) => {
           alignItems: 'center',
         }}
         onPress={() => {
-          // dispatch(setCurrent(1));
-          navigation.navigate('LikeMain');
-        }}>
+          if (!isGuest) {
+            // dispatch(setCurrent(1));
+            navigation.navigate('LikeMain');
+          } else {
+            _guestAlert(navigation);
+          }
+        }}
+      >
         <Image
           source={
             current === 1
@@ -41,8 +50,13 @@ const BottomBar = ({navigation}) => {
         style={{flex: 1, alignItems: 'center'}}
         onPress={() => {
           // dispatch(setCurrent(2));
-          navigation.navigate('OrderList');
-        }}>
+          if (!isGuest) {
+            navigation.navigate('OrderList');
+          } else {
+            _guestAlert(navigation);
+          }
+        }}
+      >
         <Image
           source={
             current === 2
@@ -58,7 +72,8 @@ const BottomBar = ({navigation}) => {
         onPress={() => {
           dispatch(setCurrent(0));
           navigation.navigate('Main');
-        }}>
+        }}
+      >
         <Image
           source={require('~/assets/bottom_ic06.png')}
           resizeMode="contain"
@@ -72,9 +87,14 @@ const BottomBar = ({navigation}) => {
           justifyContent: 'center',
         }}
         onPress={() => {
-          dispatch(setCurrent(3));
-          navigation.navigate('DiscountMain');
-        }}>
+          if (!isGuest) {
+            dispatch(setCurrent(3));
+            navigation.navigate('DiscountMain');
+          } else {
+            _guestAlert(navigation);
+          }
+        }}
+      >
         <Image
           source={
             current === 3
@@ -88,9 +108,14 @@ const BottomBar = ({navigation}) => {
       <Pressable
         style={{flex: 1, alignItems: 'center'}}
         onPress={() => {
-          dispatch(setCurrent(4));
-          navigation.navigate('MyPage');
-        }}>
+          if (!isGuest) {
+            dispatch(setCurrent(4));
+            navigation.navigate('MyPage');
+          } else {
+            _guestAlert(navigation);
+          }
+        }}
+      >
         <Image
           source={
             current === 4

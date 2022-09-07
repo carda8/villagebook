@@ -20,12 +20,16 @@ import {useMutation} from 'react-query';
 import authAPI from '../../../api/modules/authAPI';
 import Loading from '../../../component/Loading';
 import AuthStorageModuel from '../../../store/localStorage/AuthStorageModuel';
+import {useDispatch} from 'react-redux';
+import {setUserInfo} from '../../../store/reducers/AuthReducer';
 
 const EditInfo = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const _removeReset = async () => {
+    dispatch(setUserInfo(''));
     await AuthStorage._removeUserTokenID(() => {});
     await AuthStorageModuel._removeCartData(() => {});
     await AuthStorage._removeItemAutoLogin(() => {
@@ -95,7 +99,8 @@ const EditInfo = ({navigation}) => {
             backgroundColor: colors.inputBoxBG,
             justifyContent: 'center',
             paddingHorizontal: 22,
-          }}>
+          }}
+        >
           <TextBold style={{color: colors.fontColor2, fontSize: 16}}>
             정보
           </TextBold>
@@ -105,7 +110,8 @@ const EditInfo = ({navigation}) => {
             paddingHorizontal: 22,
             height: 220,
             flexDirection: 'row',
-          }}>
+          }}
+        >
           {/* 리스트 항목 */}
           <View style={{justifyContent: 'space-evenly'}}>
             <TextMedium style={{color: colors.fontColorA}}>닉네임</TextMedium>
@@ -122,7 +128,8 @@ const EditInfo = ({navigation}) => {
 
           {/* 해당 항목 유저 정보 */}
           <View
-            style={{justifyContent: 'space-evenly', marginLeft: 40, flex: 1}}>
+            style={{justifyContent: 'space-evenly', marginLeft: 40, flex: 1}}
+          >
             <TextMedium style={{color: colors.fontColor2}}>
               {userInfo.mt_nickname ?? userInfo.mt_name}
             </TextMedium>
@@ -148,7 +155,8 @@ const EditInfo = ({navigation}) => {
               hitSlop={10}
               style={{
                 ...styles.btnEdit,
-              }}>
+              }}
+            >
               <TextMedium style={{color: colors.fontColor2, fontSize: 12}}>
                 변경
               </TextMedium>
@@ -162,7 +170,8 @@ const EditInfo = ({navigation}) => {
               hitSlop={10}
               style={{
                 ...styles.btnEdit,
-              }}>
+              }}
+            >
               <TextMedium style={{color: colors.fontColor2, fontSize: 12}}>
                 변경
               </TextMedium>
@@ -176,7 +185,8 @@ const EditInfo = ({navigation}) => {
               hitSlop={10}
               style={{
                 ...styles.btnEdit,
-              }}>
+              }}
+            >
               <TextMedium style={{color: colors.fontColor2, fontSize: 12}}>
                 변경
               </TextMedium>
@@ -191,7 +201,8 @@ const EditInfo = ({navigation}) => {
                 hitSlop={10}
                 style={{
                   ...styles.btnEdit,
-                }}>
+                }}
+              >
                 <TextMedium style={{color: colors.fontColor2, fontSize: 12}}>
                   변경
                 </TextMedium>
@@ -211,12 +222,14 @@ const EditInfo = ({navigation}) => {
             alignSelf: 'flex-end',
             marginTop: 20,
             paddingHorizontal: 22,
-          }}>
+          }}
+        >
           <Pressable
             onPress={() => {
               _pressLogout();
             }}
-            style={{marginRight: 20}}>
+            style={{marginRight: 20}}
+          >
             <TextRegular style={{fontSize: 12, color: colors.fontColorA2}}>
               로그아웃
             </TextRegular>
@@ -225,7 +238,8 @@ const EditInfo = ({navigation}) => {
             onPress={() => {
               _pressSignOut();
             }}
-            style={{marginRight: 20}}>
+            style={{marginRight: 20}}
+          >
             <TextRegular style={{fontSize: 12, color: colors.fontColorA2}}>
               회원탈퇴
             </TextRegular>

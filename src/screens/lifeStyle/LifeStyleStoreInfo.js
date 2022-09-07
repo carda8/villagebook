@@ -20,18 +20,18 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   const _init = () => {
-    if (!userInfo) {
-      Alert.alert('알림', '로그인이 필요합니다.', [
-        {
-          text: '로그인 하러 가기',
-          onPress: () =>
-            navigation.reset({
-              routes: [{name: 'Login'}],
-            }),
-        },
-      ]);
-      return;
-    }
+    // if (!userInfo) {
+    //   Alert.alert('알림', '로그인이 필요합니다.', [
+    //     {
+    //       text: '로그인 하러 가기',
+    //       onPress: () =>
+    //         navigation.reset({
+    //           routes: [{name: 'Login'}],
+    //         }),
+    //     },
+    //   ]);
+    //   return;
+    // }
     dispatch(setIsLifeStyle(true));
 
     const data = {

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Image,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -14,7 +15,6 @@ import FastImage from 'react-native-fast-image';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Input from '../../component/loginScreen/Input';
 import TextMedium from '../../component/text/TextMedium';
-import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 import {_reqAPI} from '../../api/apiModule';
@@ -23,7 +23,7 @@ import {useMutation} from 'react-query';
 import authAPI from '../../api/modules/authAPI';
 import Loading from '../../component/Loading';
 import {useDispatch, useSelector} from 'react-redux';
-import {setUserInfo} from '../../store/reducers/AuthReducer';
+import {setIsGuest, setUserInfo} from '../../store/reducers/AuthReducer';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import localStorageConfig from '../../store/localStorage/localStorageConfig';
@@ -31,9 +31,6 @@ import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import SNSLogin from './SNSLogin';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {Errorhandler} from '../../config/ErrorHandler';
-import ImageCropPicker from 'react-native-image-crop-picker';
-import {customAlert} from '../../component/CustomAlert';
-import TextSBold from '../../component/text/TextSBold';
 import TextNotoR from '../../component/text/TextNotoR';
 import AutoLogin from '../../component/loginScreen/AutoLogin';
 import appleAuth from '@invertase/react-native-apple-authentication';
@@ -77,7 +74,7 @@ const Login = ({navigation}) => {
           localStorageConfig.loginType.local,
         );
         await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
-
+        dispatch(setIsGuest(false));
         dispatch(setUserInfo(e.data.arrItems));
         navigation.reset({
           routes: [{name: 'Main'}],
@@ -157,7 +154,7 @@ const Login = ({navigation}) => {
               localStorageConfig.loginTypeNum.naver,
             );
             await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
-
+            dispatch(setIsGuest(false));
             dispatch(setUserInfo(e.data.arrItems));
             navigation.reset({
               routes: [{name: 'Main'}],
@@ -201,7 +198,7 @@ const Login = ({navigation}) => {
               localStorageConfig.loginTypeNum.kakao,
             );
             await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
-
+            dispatch(setIsGuest(false));
             dispatch(setUserInfo(e.data.arrItems));
             navigation.reset({
               routes: [{name: 'Main'}],
@@ -242,7 +239,7 @@ const Login = ({navigation}) => {
       }
       const userInfo = {
         social_id: appleAuthRequestResponse.user,
-        email: decoded.email,
+        email: decoded.is_private_email === 'true' ? '' : decoded.email,
         nickname: nickname,
       };
       console.log('USERINFO APPLE', userInfo);
@@ -272,7 +269,7 @@ const Login = ({navigation}) => {
                 localStorageConfig.loginTypeNum.kakao,
               );
               await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
-
+              dispatch(setIsGuest(false));
               dispatch(setUserInfo(e.data.arrItems));
               navigation.reset({
                 routes: [{name: 'Main'}],
@@ -284,6 +281,13 @@ const Login = ({navigation}) => {
         },
       });
     }
+  };
+
+  const _guestLogin = () => {
+    dispatch(setIsGuest(true));
+    navigation.reset({
+      routes: [{name: 'Main'}],
+    });
   };
 
   useEffect(() => {
@@ -348,7 +352,7 @@ const Login = ({navigation}) => {
             style={{
               width: '100%',
               flexDirection: 'row',
-              marginBottom: 70,
+              marginBottom: Platform.OS === 'ios' ? 30 : 70,
               justifyContent: 'center',
               alignItems: 'center',
             }}
@@ -382,6 +386,16 @@ const Login = ({navigation}) => {
             </Pressable>
           </View>
 
+          {Platform.OS === 'ios' && (
+            <Pressable
+              hitSlop={5}
+              style={{marginBottom: 20}}
+              onPress={() => _guestLogin()}
+            >
+              <TextNotoR>비회원 로그인</TextNotoR>
+            </Pressable>
+          )}
+
           {/* <Pressable
             style={{
               width: '100%',
@@ -397,7 +411,6 @@ const Login = ({navigation}) => {
               SNS 계정으로 로그인
             </TextMedium>
           </Pressable> */}
-
           <View
             style={{
               flexDirection: 'row',

@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
+import {_guestAlert} from '../config/utils/modules';
 import {useCustomMutation} from '../hooks/useCustomMutation';
 import colors from '../styles/colors';
+import {customAlert} from './CustomAlert';
 import TextBold from './text/TextBold';
 import TextMedium from './text/TextMedium';
 
@@ -40,6 +42,7 @@ const Header = ({
   const {userInfo} = useSelector(state => state.authReducer);
   const {mutateSetLikeStore} = useCustomMutation();
   const [like, setLike] = useState();
+  const {isGuest} = useSelector(state => state.authReducer);
 
   // fadeAnim will be used as the value for opacity. Initial Value: 0
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -180,7 +183,12 @@ const Header = ({
             <Pressable
               hitSlop={10}
               onPress={() => {
-                if (showNoti) navigation.navigate('PushList');
+                if (!isGuest) {
+                  if (showNoti) navigation.navigate('PushList');
+                } else {
+                  _guestAlert(navigation);
+                }
+
                 // if (showLike) {
                 //   if (like === 'Y') setLike('N');
                 //   if (like === 'N') setLike('Y');
@@ -244,7 +252,12 @@ const Header = ({
             <Pressable
               hitSlop={10}
               onPress={() => {
-                if (showCart) navigation.navigate('SummitOrder');
+                if (!isGuest) {
+                  if (showCart) navigation.navigate('SummitOrder');
+                } else {
+                  _guestAlert(navigation);
+                }
+
                 // if (!showCart) _share();
               }}
             >

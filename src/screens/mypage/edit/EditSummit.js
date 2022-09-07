@@ -234,8 +234,9 @@ const EditSummit = ({navigation, route}) => {
                 >
                   <Image
                     source={
-                      {uri: profileImg?.uri ?? userInfo.mt_profil_url}
-                      // : require('~/assets/no_use_img.png')
+                      !userInfo?.mt_profil_url && !profileImg?.uri
+                        ? require('~/assets/no_use_img.png')
+                        : {uri: profileImg?.uri ?? userInfo.mt_profil_url}
                     }
                     style={{width: 100, height: 100, borderRadius: 10}}
                   />
@@ -524,100 +525,122 @@ const EditSummit = ({navigation, route}) => {
             backgroundColor: 'rgba(0,0,0,0.6)',
             paddingHorizontal: 22,
             flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
           }}
         >
-          <View
+          <Pressable
+            hitSlop={20}
+            onPress={() => {
+              setModalPic(!modalPic);
+            }}
             style={{
-              width: '100%',
-              height: 70,
-              borderRadius: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'white',
-              ...Platform.select({
-                ios: {
-                  shadowColor: '#00000029',
-                  shadowOpacity: 0.6,
-                  shadowRadius: 50 / 2,
-                  shadowOffset: {
-                    height: 12,
-                    width: 0,
-                  },
-                },
-                android: {
-                  elevation: 5,
-                },
-              }),
+              alignSelf: 'flex-end',
+              zIndex: 300,
             }}
           >
-            <View style={{flexDirection: 'row'}}>
-              <Pressable
-                onPress={() => _setProfileImage()}
-                style={{
-                  flex: 1,
-                  height: 70,
-                  backgroundColor: colors.mainBG1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Image
-                  source={require('~/assets/btn_add.png')}
+            <Image
+              source={require('~/assets/pop_close.png')}
+              style={{
+                top: 50,
+                width: 30,
+                height: 30,
+                tintColor: 'white',
+              }}
+            />
+          </Pressable>
+          <View
+            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
+          >
+            <View
+              style={{
+                width: '100%',
+                height: 70,
+                borderRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'white',
+                ...Platform.select({
+                  ios: {
+                    shadowColor: '#00000029',
+                    shadowOpacity: 0.6,
+                    shadowRadius: 50 / 2,
+                    shadowOffset: {
+                      height: 12,
+                      width: 0,
+                    },
+                  },
+                  android: {
+                    elevation: 5,
+                  },
+                }),
+              }}
+            >
+              <View style={{flexDirection: 'row'}}>
+                <Pressable
+                  onPress={() => _setProfileImage()}
                   style={{
-                    width: 20,
-                    height: 20,
-                    tintColor: colors.fontColor2,
-                    marginRight: 10,
-                    marginLeft: 10,
-                  }}
-                  resizeMode="contain"
-                />
-                <TextBold
-                  style={{
-                    color: colors.fontColor2,
-                    includeFontPadding: false,
                     flex: 1,
+                    height: 70,
+                    backgroundColor: colors.mainBG1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
-                  사진 촬영
-                </TextBold>
-              </Pressable>
+                  <Image
+                    source={require('~/assets/btn_add.png')}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      tintColor: colors.fontColor2,
+                      marginRight: 10,
+                      marginLeft: 10,
+                    }}
+                    resizeMode="contain"
+                  />
+                  <TextBold
+                    style={{
+                      color: colors.fontColor2,
+                      includeFontPadding: false,
+                      flex: 1,
+                    }}
+                  >
+                    사진 촬영
+                  </TextBold>
+                </Pressable>
 
-              <Pressable
-                onPress={() => _setProfileImageFromLocal()}
-                style={{
-                  flex: 1,
-                  height: 70,
-                  backgroundColor: colors.mainBG2,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Image
-                  source={require('~/assets/btn_add.png')}
-                  style={{
-                    width: 20,
-                    height: 20,
-                    tintColor: colors.fontColor2,
-                    marginRight: 10,
-                    marginLeft: 10,
-                  }}
-                  resizeMode="contain"
-                />
-                <TextBold
+                <Pressable
+                  onPress={() => _setProfileImageFromLocal()}
                   style={{
                     flex: 1,
-                    color: colors.fontColor2,
-                    includeFontPadding: false,
+                    height: 70,
+                    backgroundColor: colors.mainBG2,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                 >
-                  갤러리 가져오기
-                </TextBold>
-              </Pressable>
+                  <Image
+                    source={require('~/assets/btn_add.png')}
+                    style={{
+                      width: 20,
+                      height: 20,
+                      tintColor: colors.fontColor2,
+                      marginRight: 10,
+                      marginLeft: 10,
+                    }}
+                    resizeMode="contain"
+                  />
+                  <TextBold
+                    style={{
+                      flex: 1,
+                      color: colors.fontColor2,
+                      includeFontPadding: false,
+                    }}
+                  >
+                    갤러리 가져오기
+                  </TextBold>
+                </Pressable>
+              </View>
             </View>
           </View>
         </View>

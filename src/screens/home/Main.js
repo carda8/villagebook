@@ -15,18 +15,12 @@ import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 import {useDispatch, useSelector} from 'react-redux';
 import policyConfig from '../signIn/policyConfig';
-import {_showAddr} from '../../config/utils/modules';
+import {_guestAlert, _showAddr} from '../../config/utils/modules';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useFocusEffect} from '@react-navigation/native';
 import BannerList from '../../config/BannerList';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import localStorageConfig from '../../store/localStorage/localStorageConfig';
-import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import dayjs from 'dayjs';
-import {
-  removeSavedItem,
-  resetSavedItem,
-} from '../../store/reducers/CartReducer';
+import {resetSavedItem} from '../../store/reducers/CartReducer';
 import TextSBold from '../../component/text/TextSBold';
 
 const Main = ({navigation}) => {
@@ -37,6 +31,7 @@ const Main = ({navigation}) => {
   const {mutateGetAddress, mutateGetCompanyInfo} = useCustomMutation();
   const [companyInfo, setCompanyInfo] = useState();
   const [toggleInfo, setToggleInfo] = useState(false);
+  const {isGuest} = useSelector(state => state.authReducer);
 
   const _getAddr = () => {
     const data = {
@@ -106,7 +101,11 @@ const Main = ({navigation}) => {
       >
         <Pressable
           onPress={() => {
-            navigation.navigate('AddressMain');
+            if (!isGuest) {
+              navigation.navigate('AddressMain');
+            } else {
+              _guestAlert(navigation);
+            }
           }}
           style={{
             flex: 1,

@@ -4,6 +4,7 @@ import {Image, Linking, Platform, Pressable, Text, View} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
+import {_guestAlert} from '../../config/utils/modules';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
@@ -22,6 +23,8 @@ import MenuDescTab from './MenuDescTab';
 const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
   const {mutateGetStoreCoupon} = useCustomMutation();
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
+  const {isGuest} = useSelector(state => state.authReducer);
+
   const dispatch = useDispatch();
   const [moreInfo, setMoreInfo] = useState(false);
   const [more, setMore] = useState(false);
@@ -63,7 +66,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
           marginHorizontal: 22,
           justifyContent: 'space-between',
           flexDirection: 'row',
-        }}>
+        }}
+      >
         <Shadow distance={5}>
           <View
             style={{
@@ -73,7 +77,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
               alignItems: 'center',
               justifyContent: 'center',
               backgroundColor: colors.storeIcon,
-            }}>
+            }}
+          >
             <Image
               source={{uri: storeInfo.store_logo}}
               resizeMode="contain"
@@ -86,6 +91,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
             storeInfo={storeInfo}
             categoryMain={categoryMain}
             likeCount={likeCount}
+            navigation={navigation}
           />
         </View>
       </View>
@@ -95,13 +101,15 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
           style={{
             justifyContent: 'space-between',
             paddingHorizontal: 22,
-          }}>
+          }}
+        >
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             <View style={{flex: 1}}>
               <TextBold style={{fontSize: 22}}>
                 {storeInfo.mb_biz_name ?? storeInfo.mb_company}
@@ -117,7 +125,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
               style={{
                 flex: 1,
                 paddingHorizontal: 22,
-              }}>
+              }}
+            >
               <Pressable
                 onPress={() => {
                   Linking.openURL(`tel:${storeInfo.mb_tel}`);
@@ -132,20 +141,23 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                   borderRadius: 8,
                   marginTop: 7,
                   marginBottom: 20,
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontWeight: 'bold',
                     fontSize: 15,
                     color: colors.primary,
-                  }}>
+                  }}
+                >
                   전화하기
                 </Text>
                 <Text
                   style={{
                     fontSize: 9,
                     color: colors.primary,
-                  }}>
+                  }}
+                >
                   (동네북보고 전화했어요. 라고 말하면 문의가 빨라요)
                 </Text>
               </Pressable>
@@ -183,7 +195,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     borderColor: colors.borderColor,
-                  }}>
+                  }}
+                >
                   <TextRegular style={{color: colors.primary, fontSize: 12}}>
                     복사
                   </TextRegular>
@@ -195,7 +208,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                   <TextRegular
                     style={{
                       color: colors.fontColor99,
-                    }}>
+                    }}
+                  >
                     연락처
                   </TextRegular>
                 </View>
@@ -214,7 +228,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 </View>
                 <View style={{flex: 1}}>
                   <Pressable
-                    onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}>
+                    onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}
+                  >
                     <TextRegular style={{color: colors.fontColor3}}>
                       {storeInfo?.mb_homepage ? storeInfo?.mb_homepage : '-'}
                     </TextRegular>
@@ -227,12 +242,14 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                   height: moreInfo ? 'auto' : 0,
                   flexDirection: 'row',
                   marginBottom: 11,
-                }}>
+                }}
+              >
                 <View style={{width: 100}}>
                   <TextRegular
                     style={{
                       color: colors.fontColor99,
-                    }}>
+                    }}
+                  >
                     영업시간
                   </TextRegular>
                 </View>
@@ -253,7 +270,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                   alignSelf: 'center',
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Image
                   source={require('~/assets/btn_top_left.png')}
                   style={{
@@ -288,7 +306,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 alignSelf: 'center',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               <Image
                 source={require('~/assets/btn_top_left.png')}
                 style={{
@@ -313,7 +332,11 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
           <>
             <Pressable
               onPress={() => {
-                _getCoupon();
+                if (!isGuest) {
+                  _getCoupon();
+                } else {
+                  _guestAlert(navigation);
+                }
               }}
               style={{
                 alignItems: 'center',
@@ -323,13 +346,15 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 height: 50,
                 borderRadius: 8,
                 marginTop: 19,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontWeight: 'bold',
                   fontSize: 15,
                   color: colors.primary,
-                }}>
+                }}
+              >
                 이 매장의 할인 쿠폰받기
               </Text>
             </Pressable>
@@ -347,13 +372,15 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 height: 50,
                 borderRadius: 8,
                 marginTop: 7,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontWeight: 'bold',
                   fontSize: 15,
                   color: colors.fontColorA2,
-                }}>
+                }}
+              >
                 전화하기
               </Text>
             </Pressable>
