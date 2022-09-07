@@ -56,29 +56,27 @@ const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
 
   const _calcFromCart = down => {
     let savedItem = savedMenu[index];
-    if (savedItem.count > 1 && !down) {
-      let temp = {count: 1, price: 0, index: index};
-      temp.count = down ? savedItem.count - 1 : savedItem.count + 1;
+    let temp = {count: 1, price: 0, index: index};
+    temp.count = down ? savedItem.count - 1 : savedItem.count + 1;
 
-      console.log('temp', temp);
-      console.log('savedItem', savedItem);
-      let temp2 = 0;
-      if (savedItem.main.option.length > 0) {
-        savedItem.main.option.map((item, index) => {
-          temp2 += item.price;
-        });
-      }
-      if (savedItem.sub.length > 0) {
-        savedItem.sub.map((item, index) => {
-          temp2 += item.itemPrice;
-        });
-      }
-      temp2 = (savedItem.main.mainPrice + temp2) * temp.count;
-      temp.price = temp2;
-
-      console.log('temp', temp);
-      dispatch(setMainCountFromCart(temp));
+    console.log('temp', temp);
+    console.log('savedItem', savedItem);
+    let temp2 = 0;
+    if (savedItem.main.option.length > 0) {
+      savedItem.main.option.map((item, index) => {
+        temp2 += item.price;
+      });
     }
+    if (savedItem.sub.length > 0) {
+      savedItem.sub.map((item, index) => {
+        temp2 += item.itemPrice;
+      });
+    }
+    temp2 = (savedItem.main.mainPrice + temp2) * temp.count;
+    temp.price = temp2;
+
+    console.log('temp', temp);
+    if (temp.count > 0) dispatch(setMainCountFromCart(temp));
   };
 
   const _checkRequired = () => {
@@ -93,7 +91,7 @@ const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
 
   const _countUp = () => {
     const result = _checkRequired();
-    console.log('index ::', index);
+    console.log('index ::', index, isSummit);
     if (result) {
       if (isSummit) {
         _calcFromCart();
@@ -106,7 +104,7 @@ const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
   const _countDown = () => {
     const result = _checkRequired();
     if (result) {
-      console.log('cartStore', cartStore);
+      console.log('index ::', index, isSummit);
       if (mainCountNum > 1 || savedMenu[index]?.count > 0)
         if (isSummit) {
           _calcFromCart(true);
@@ -137,14 +135,12 @@ const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
         borderColor: colors.borderColor,
         width: 150,
         height: 50,
-      }}
-    >
+      }}>
       <Pressable
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
         onPress={() => {
           _countDown();
-        }}
-      >
+        }}>
         <Image
           source={require('~/assets/ico_minus.png')}
           style={{width: 20, height: 20}}
@@ -158,8 +154,7 @@ const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
           borderLeftWidth: 1,
           borderRightWidth: 1,
           borderColor: colors.borderColor,
-        }}
-      >
+        }}>
         {isSummit ? (
           <TextBold>
             {cartStore.savedItem.savedItems[index].main.count}
@@ -172,8 +167,7 @@ const OptionCount = ({price, isTest, savedItem, index, isSummit}) => {
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}
         onPress={() => {
           _countUp();
-        }}
-      >
+        }}>
         <Image
           source={require('~/assets/ico_plus.png')}
           style={{width: 20, height: 20}}

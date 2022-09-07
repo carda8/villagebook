@@ -248,20 +248,20 @@ const MainStackNavigator = () => {
     async getInitialURL() {
       if (Platform.OS === 'android') {
         const url = await Linking.getInitialURL();
-        Linking.console.log('URLLLL:::', url);
         // console.log(1);
         if (url != null) {
+          Linking.console.log('URLLLL:::', url);
           return url;
         }
-        return null;
+        return;
       }
       if (Platform.OS === 'ios') {
         const link = await dynamicLinks()
           .getInitialLink()
           .then(link => {
             // console.log(2);
-            console.log('link::::::::', link);
             if (link?.url != null) {
+              console.log('link::::::::', link);
               return link.url;
             } else return null;
             // if (link.url === 'https://invertase.io/offer') {
