@@ -50,8 +50,11 @@ const SummitOrder = ({navigation, route}) => {
     if (isSummit) {
       const DeliveryData = {...deliveryInfo};
 
-      if (deliveryType !== 0) {
+      if (deliveryType === 1) {
         let calc = temp - DeliveryData?.take_out_discount ?? 0;
+        return calc;
+      } else if (deliveryType === 2) {
+        let calc = temp - DeliveryData?.for_here_discount ?? 0;
         return calc;
       } else {
         let calc = temp + DeliveryData?.send_cost + DeliveryData?.send_cost2;
@@ -94,7 +97,7 @@ const SummitOrder = ({navigation, route}) => {
       case 1:
         return deliveryInfo?.min_price_wrap;
       case 2:
-        return deliveryInfo?.min_price_wrap;
+        return deliveryInfo?.min_price_for_here;
       default:
         return '0';
     }
@@ -278,7 +281,7 @@ const SummitOrder = ({navigation, route}) => {
         <View style={{flex: 1, paddingHorizontal: 22, paddingTop: 40}}>
           <TextBold>먹고가기/배달/포장 선택</TextBold>
           <Pressable
-            disabled={deliveryInfo?.take_out === 'true' ? false : true}
+            disabled={deliveryInfo?.for_here === 'true' ? false : true}
             onPress={() => {
               dispatch(setDeliveryType(2));
             }}
@@ -394,7 +397,7 @@ const SummitOrder = ({navigation, route}) => {
                   }}>
                   <TextRegular>먹고가기 할인</TextRegular>
                   <TextRegular>
-                    {replaceString(deliveryInfo?.take_out_discount)}원
+                    {replaceString(deliveryInfo?.for_here_discount)}원
                   </TextRegular>
                 </View>
               </>

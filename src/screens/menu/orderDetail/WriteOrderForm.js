@@ -90,9 +90,9 @@ const WriteOrderForm = ({navigation, route}) => {
           Number(orderForm.od_coupon_price_system) +
           Number(orderForm.od_receipt_point));
     }
-    console.log('ORDER FORM', orderForm);
+    // console.log('ORDER FORM', orderForm);
     console.log('delivery', deliveryData);
-    console.log('calc totla', calcTotal);
+    // console.log('calc totla', calcTotal);
 
     return calcTotal;
   };
