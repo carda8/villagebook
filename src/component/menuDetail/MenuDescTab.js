@@ -132,37 +132,38 @@ const MenuDescTab = ({info, navigation, routeData}) => {
             </Text>
           </View>
         </Pressable>
-
-        <Pressable
-          style={{
-            flex: 1,
-            backgroundColor: 'white',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          onPress={() => {
-            setTabIdx(2);
-            dispatch(setDeliveryType(1));
-            dispatch(setIsDeliveryStore(false));
-          }}>
-          <View
+        {info.wrap && (
+          <Pressable
             style={{
-              width: 70,
-              height: '100%',
-              paddingBottom: 9,
+              flex: 1,
+              backgroundColor: 'white',
               alignItems: 'center',
-              justifyContent: 'flex-end',
-              borderBottomWidth: tabIdx === 2 ? 2 : 0,
-              borderBottomColor: colors.borderColor22,
+              justifyContent: 'center',
+            }}
+            onPress={() => {
+              setTabIdx(2);
+              dispatch(setDeliveryType(1));
+              dispatch(setIsDeliveryStore(false));
             }}>
-            <Text
+            <View
               style={{
-                color: tabIdx === 2 ? colors.fontColor2 : colors.fontColorA2,
+                width: 70,
+                height: '100%',
+                paddingBottom: 9,
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                borderBottomWidth: tabIdx === 2 ? 2 : 0,
+                borderBottomColor: colors.borderColor22,
               }}>
-              포장하기
-            </Text>
-          </View>
-        </Pressable>
+              <Text
+                style={{
+                  color: tabIdx === 2 ? colors.fontColor2 : colors.fontColorA2,
+                }}>
+                포장하기
+              </Text>
+            </View>
+          </Pressable>
+        )}
       </View>
       <View
         style={{
@@ -180,7 +181,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                   </TextRegular>
                 </View>
                 <TextRegular style={{...styles.subTitleTakeout}}>
-                  {replaceString(info.minPriceWrap)}
+                  {replaceString(info.store_service.minPriceForHere)}
                 </TextRegular>
               </View>
               <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -200,7 +201,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                   </TextRegular>
                 </View>
                 <TextRegular style={{...styles.subTitleTakeout}}>
-                  30~40분 소요 예상
+                  {info.cooking_time ? info.cooking_time : '-'}
                 </TextRegular>
               </View>
               <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -249,7 +250,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                 {replaceString(info.minPrice)}
               </TextRegular>
               <TextRegular style={{color: colors.fontColor3}}>
-                30분~60분 소요 예상
+                {info.delivery_time ? info.delivery_time : '-'}
               </TextRegular>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextRegular style={{color: colors.fontColor3}}>
@@ -308,7 +309,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                   </TextRegular>
                 </View>
                 <TextRegular style={{...styles.subTitleTakeout}}>
-                  30~40분 소요 예상
+                  {info.cooking_time ? info.cooking_time : '-'}
                 </TextRegular>
               </View>
               <View style={{flexDirection: 'row', marginBottom: 10}}>

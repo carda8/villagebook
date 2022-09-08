@@ -171,13 +171,20 @@ const CategoryView = ({navigation, route}) => {
                     color: colors.fontColor2,
                   }}
                 >
-                  {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+                  {/* {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
                     '주소설정') +
                     ' ' +
                     (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
                       ' ') +
-                    ' '}
-                  {!mutateGetAddress?.data ?? '주소설정'}
+                    ' '} */}
+                  {mutateGetAddress.data?.data?.arrItems[0]?.ad_addr1
+                    ? mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 +
+                      ' ' +
+                      (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
+                        ' ') +
+                      ' '
+                    : '주소설정'}
+                  {/* {!mutateGetAddress?.data ?? '주소설정'} */}
                 </TextEBold>
               </View>
               <Image
