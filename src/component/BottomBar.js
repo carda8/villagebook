@@ -5,6 +5,7 @@ import {
   Pressable,
   Image,
   useWindowDimensions,
+  Platform,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {useSelector} from 'react-redux';
@@ -135,7 +136,12 @@ export default BottomBar;
 const styles = StyleSheet.create({
   bottomBar: {
     flexDirection: 'row',
-    position: 'absolute',
+    ...Platform.select({
+      ios: {},
+      android: {
+        position: 'absolute',
+      },
+    }),
     width: '100%',
     height: 60,
     bottom: 0,
@@ -148,10 +154,9 @@ const styles = StyleSheet.create({
       ios: {
         shadowColor: '#00000029',
         shadowOpacity: 0.6,
-        shadowRadius: 50 / 2,
+        shadowRadius: 1,
         shadowOffset: {
-          height: 12,
-          width: 0,
+          height: -2,
         },
       },
     }),

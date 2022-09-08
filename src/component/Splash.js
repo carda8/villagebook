@@ -8,9 +8,11 @@ import {
   SafeAreaView,
   Image,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 
 const Splash = () => {
+  const layout = useWindowDimensions();
   // fadeAnim will be used as the value for opacity. Initial Value: 0
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
@@ -48,11 +50,19 @@ const Splash = () => {
       ]}
     >
       <SafeAreaView style={{...styles.container}}>
-        <Image
-          source={require('../assets/splash.png')}
-          style={{width: '100%', height: '100%'}}
-          resizeMode="center"
-        ></Image>
+        {Platform.OS === 'ios' ? (
+          <Image
+            source={require('../assets/splash.png')}
+            style={{width: layout.width, height: layout.height}}
+            resizeMode="contain"
+          ></Image>
+        ) : (
+          <Image
+            source={require('../assets/splash.png')}
+            style={{width: '100%', height: '100%'}}
+            resizeMode="center"
+          ></Image>
+        )}
       </SafeAreaView>
     </Animated.View>
   );

@@ -215,7 +215,7 @@ const CategoryView = ({navigation, route}) => {
         numColumns={4}
         contentContainerStyle={{
           paddingHorizontal: 22,
-          paddingBottom: 70,
+          paddingBottom: 40,
         }}
         columnWrapperStyle={{
           alignSelf: 'center',

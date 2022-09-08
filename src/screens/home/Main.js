@@ -97,7 +97,10 @@ const Main = ({navigation}) => {
         showCart={true}
       />
       <ScrollView
-        contentContainerStyle={{paddingHorizontal: 22, paddingBottom: 70}}
+        contentContainerStyle={{
+          paddingHorizontal: 22,
+          paddingBottom: 40,
+        }}
       >
         <Pressable
           onPress={() => {

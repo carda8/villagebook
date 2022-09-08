@@ -96,7 +96,9 @@ const Header = ({
           {
             width: '100%',
             height: 57,
-            backgroundColor: `rgba(255,255,255,0)`,
+            // backgroundColor: 'red',
+            // paddingBottom: 10,
+            // backgroundColor: `rgba(255,255,255,0)`,
             alignItems: 'center',
             flexDirection: 'row',
             paddingHorizontal: 22,
