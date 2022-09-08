@@ -166,14 +166,27 @@ const CategoryView = ({navigation, route}) => {
                   style={{
                     fontSize: 15,
                     color: colors.fontColor2,
+<<<<<<< HEAD
                   }}>
                   {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+=======
+                  }}
+                >
+                  {/* {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
+>>>>>>> 5029749985afd53e467097e1b7bebb3cbaa6e14d
                     '주소설정') +
                     ' ' +
                     (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
                       ' ') +
-                    ' '}
-                  {!mutateGetAddress?.data ?? '주소설정'}
+                    ' '} */}
+                  {mutateGetAddress.data?.data?.arrItems[0]?.ad_addr1
+                    ? mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 +
+                      ' ' +
+                      (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
+                        ' ') +
+                      ' '
+                    : '주소설정'}
+                  {/* {!mutateGetAddress?.data ?? '주소설정'} */}
                 </TextEBold>
               </View>
               <Image
@@ -211,7 +224,7 @@ const CategoryView = ({navigation, route}) => {
         numColumns={4}
         contentContainerStyle={{
           paddingHorizontal: 22,
-          paddingBottom: 70,
+          paddingBottom: 40,
         }}
         columnWrapperStyle={{
           alignSelf: 'center',

@@ -304,8 +304,11 @@ const Login = ({navigation}) => {
   if (logading) return <Loading />;
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{flex: 1, alignItems: 'center', marginTop: '30%'}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 20}}
+      >
+        <View style={{flex: 1, alignItems: 'center', marginTop: '17%'}}>
           <FastImage
             style={{width: 221, height: 54, marginBottom: 20}}
             source={require('../../assets/logo.png')}
