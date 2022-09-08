@@ -376,9 +376,9 @@ const WriteOrderForm = ({navigation, route}) => {
                     ? '예) 오이 뺴주세요'
                     : '요청사항을 적어주세요'
                 }
-                value={orderForm.od_to_officer}
+                value={orderForm.od_to_seller}
                 onChangeText={e =>
-                  setOrderForm({...orderForm, od_to_officer: e})
+                  setOrderForm({...orderForm, od_to_seller: e})
                 }
                 style={{...styles.inputContainer, backgroundColor: 'white'}}
               />
@@ -392,9 +392,9 @@ const WriteOrderForm = ({navigation, route}) => {
                       ? '예) 조심히 와주세요'
                       : '요청사항을 적어주세요'
                   }
-                  value={orderForm.od_to_seller}
+                  value={orderForm.od_to_officer}
                   onChangeText={e =>
-                    setOrderForm({...orderForm, od_to_seller: e})
+                    setOrderForm({...orderForm, od_to_officer: e})
                   }
                   style={{...styles.inputContainer, backgroundColor: 'white'}}
                 />

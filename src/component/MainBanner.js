@@ -15,6 +15,7 @@ const MainBanner = ({navigation, style, position}) => {
     const data = {
       bn_position: position !== 'lifestyle' ? position : '동네편의',
     };
+    console.log('_getBanner_getBanner', data);
 
     mutateGetBanner.mutate(data, {
       onSettled: e => {
@@ -23,7 +24,7 @@ const MainBanner = ({navigation, style, position}) => {
           setBannerImg(e.data.arrItems);
         } else {
           // console.log('fail');
-          setBannerImg([]);
+          // setBannerImg([]);
         }
         console.log('e', e);
       },
