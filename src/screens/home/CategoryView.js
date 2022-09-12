@@ -1,4 +1,4 @@
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, Image, Text, View} from 'react-native';
 import {Pressable} from 'react-native';
@@ -26,7 +26,9 @@ const CategoryView = ({navigation, route}) => {
   const {mutateGetAddress} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
   const {isGuest} = useSelector(state => state.authReducer);
+  const [addr, setAddr] = useState();
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
   const mutateCategory = useMutation(mainAPI._getCategory, {
     onSuccess: e => {
@@ -43,7 +45,7 @@ const CategoryView = ({navigation, route}) => {
         //   console.log('TEMP ::', temp);
         // }
         setCategoryData(temp);
-      }
+      } else setCategoryData([]);
     },
   });
   console.log('selectedCategory', selectedCategory);
@@ -55,18 +57,16 @@ const CategoryView = ({navigation, route}) => {
     mutateGetAddress.mutate(data, {
       onSuccess: e => {
         if (e.result === 'true') {
-        }
-        console.log('e', e);
+          let tempAddr =
+            e.data.arrItems[0].ad_addr1 +
+            e.data.arrItems[0].ad_addr2 +
+            e.data.arrItems[0].ad_addr3;
+          setAddr(tempAddr);
+        } else setAddr('주소설정');
+        console.log('mutateGetAddress', e);
       },
     });
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      _getAddr();
-      return () => {};
-    }, []),
-  );
 
   const _init = () => {
     const data = {
@@ -78,6 +78,10 @@ const CategoryView = ({navigation, route}) => {
   useEffect(() => {
     _init();
   }, []);
+
+  useEffect(() => {
+    if (isFocused) _getAddr();
+  }, [isFocused]);
 
   const renderItem = item => {
     return (
@@ -133,98 +137,79 @@ const CategoryView = ({navigation, route}) => {
         showNoti={true}
         showCart={true}
       />
+      <View style={{paddingHorizontal: 22, marginBottom: 17}}>
+        <Pressable
+          onPress={() => {
+            if (!isGuest) {
+              navigation.navigate('AddressMain');
+            } else {
+              _guestAlert(navigation);
+            }
+          }}
+          style={{
+            width: '100%',
+            alignItems: 'center',
+            flexDirection: 'row',
+            backgroundColor: 'white',
+            marginBottom: 10,
+          }}>
+          <Image
+            source={require('~/assets/ico_location.png')}
+            style={{width: 19, height: 19, marginRight: 8}}
+          />
+          <View style={{marginLeft: 10, marginRight: 3}}>
+            <TextEBold
+              numberOfLines={1}
+              style={{
+                fontSize: 15,
+                color: colors.fontColor2,
+              }}>
+              {addr}
+            </TextEBold>
+          </View>
+          <Image
+            source={require('~/assets/arrow.png')}
+            style={{
+              tintColor: colors.primary,
+              width: 17,
+              height: 17,
+              // transform: [{rotate: '90deg'}],
+            }}
+            resizeMode={'contain'}
+          />
+        </Pressable>
+
+        <SearchBox
+          isSub={true}
+          navigation={navigation}
+          category={selectedCategory}
+          // onPress={() =>
+          //   navigation.navigate('SearchView', {
+          //     isSub: true,
+          //     category: selectedCategory,
+          //   })
+          // }
+        />
+        {/* 메인배너 */}
+      </View>
 
       <FlatList
         data={categoryData}
         scrollEnabled
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => <Loading />}
-        ListHeaderComponent={() => (
-          <>
-            <Pressable
-              onPress={() => {
-                if (!isGuest) {
-                  navigation.navigate('AddressMain');
-                } else {
-                  _guestAlert(navigation);
-                }
-              }}
-              style={{
-                width: '100%',
-                alignItems: 'center',
-                flexDirection: 'row',
-                backgroundColor: 'white',
-                marginBottom: 10,
-              }}>
-              <Image
-                source={require('~/assets/ico_location.png')}
-                style={{width: 19, height: 19, marginRight: 8}}
-              />
-              <View style={{marginLeft: 10, marginRight: 3}}>
-                <TextEBold
-                  numberOfLines={1}
-                  style={{
-                    fontSize: 15,
-                    color: colors.fontColor2,
-<<<<<<< HEAD
-                  }}>
-                  {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
-=======
-                  }}
-                >
-                  {/* {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
->>>>>>> 5029749985afd53e467097e1b7bebb3cbaa6e14d
-                    '주소설정') +
-                    ' ' +
-                    (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
-                      ' ') +
-                    ' '} */}
-                  {mutateGetAddress.data?.data?.arrItems[0]?.ad_addr1
-                    ? mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 +
-                      ' ' +
-                      (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
-                        ' ') +
-                      ' '
-                    : '주소설정'}
-                  {/* {!mutateGetAddress?.data ?? '주소설정'} */}
-                </TextEBold>
-              </View>
-              <Image
-                source={require('~/assets/arrow.png')}
-                style={{
-                  tintColor: colors.primary,
-                  width: 17,
-                  height: 17,
-                  // transform: [{rotate: '90deg'}],
-                }}
-                resizeMode={'contain'}
-              />
-            </Pressable>
-
-            <SearchBox
-              isSub={true}
-              navigation={navigation}
-              category={selectedCategory}
-              // onPress={() =>
-              //   navigation.navigate('SearchView', {
-              //     isSub: true,
-              //     category: selectedCategory,
-              //   })
-              // }
-            />
-            {/* 메인배너 */}
-            <MainBanner
-              navigation={navigation}
-              style={{marginTop: 17, marginBottom: 17}}
-              position={BannerList[`${selectedCategory}`]}
-            />
-          </>
-        )}
+        ListHeaderComponent={
+          <MainBanner
+            navigation={navigation}
+            style={{marginBottom: 17}}
+            position={BannerList[`${selectedCategory}`]}
+          />
+        }
         renderItem={item => renderItem(item)}
         numColumns={4}
         contentContainerStyle={{
           paddingHorizontal: 22,
-          paddingBottom: 40,
+          paddingBottom: 60,
         }}
         columnWrapperStyle={{
           alignSelf: 'center',

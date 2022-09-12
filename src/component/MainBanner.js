@@ -48,7 +48,7 @@ const MainBanner = ({navigation, style, position}) => {
     );
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex:1}}>
       <Swiper
         loop
         autoplay

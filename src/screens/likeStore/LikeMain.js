@@ -224,9 +224,9 @@ const LikeMain = ({navigation}) => {
     return (
       <View style={{flex: 1}}>
         <FlatList
-          ListHeaderComponent={() => (
+          ListHeaderComponent={
             <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}></View>
-          )}
+          }
           data={data}
           re
           ListEmptyComponent={
@@ -329,10 +329,10 @@ const LikeMain = ({navigation}) => {
       <View style={{flex: 1, paddingHorizontal: 22}}>
         <View style={{flex: 1}}>
           <FlatList
-            ListHeaderComponent={() => (
+            ListHeaderComponent={
               <View
                 style={{flexDirection: 'row', alignSelf: 'flex-end'}}></View>
-            )}
+            }
             data={list}
             ListEmptyComponent={
               <View

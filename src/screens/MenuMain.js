@@ -29,7 +29,7 @@ const MenuMain = ({navigation}) => {
           data={arr}
           stickyHeaderIndices={[0]}
           // StickyHeaderComponent={() => <ListHeaderComponent />}
-          ListHeaderComponent={() => <ListHeaderComponent />}
+          ListHeaderComponent={<ListHeaderComponent />}
           renderItem={item => renderItem(item)}
           keyExtractor={(item, index) => index}
         />

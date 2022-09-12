@@ -107,7 +107,7 @@ const FAQ = ({navigation}) => {
       <Header title={'1:1문의'} navigation={navigation} showCart={true} />
       <FlatList
         data={list}
-        ListHeaderComponent={() => (
+        ListHeaderComponent={
           <>
             <Pressable
               onPress={() => {
@@ -126,7 +126,7 @@ const FAQ = ({navigation}) => {
             </Pressable>
             <DividerL />
           </>
-        )}
+        }
         ListEmptyComponent={
           <View style={{padding: 22, alignItems: 'center'}}>
             <TextRegular>문의 내역이 없습니다.</TextRegular>
