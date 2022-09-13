@@ -4,7 +4,7 @@ import colors from '../styles/colors';
 
 const Chip = ({newStore, coupon, takeout}) => {
   return (
-    <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}>
+    <View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 3}}>
       {newStore && (
         <View
           style={{

@@ -13,6 +13,7 @@ import {useDispatch} from 'react-redux';
 import {setCurrent} from '../store/reducers/BottomBarReducer';
 import {customAlert} from './CustomAlert';
 import {_guestAlert} from '../config/utils/modules';
+import {Shadow} from 'react-native-shadow-2';
 
 const BottomBar = ({navigation}) => {
   const {current} = useSelector(state => state.btBarReducer);
@@ -35,8 +36,7 @@ const BottomBar = ({navigation}) => {
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={
             current === 1
@@ -56,8 +56,7 @@ const BottomBar = ({navigation}) => {
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={
             current === 2
@@ -68,17 +67,23 @@ const BottomBar = ({navigation}) => {
           resizeMode="contain"
         />
       </Pressable>
+
       <Pressable
         style={{flex: 1, alignItems: 'center'}}
+        hitSlop={20}
         onPress={() => {
           dispatch(setCurrent(0));
           navigation.navigate('Main');
-        }}
-      >
+        }}>
         <Image
           source={require('~/assets/bottom_ic06.png')}
           resizeMode="contain"
-          style={{width, height: 60}}
+          style={{
+            width: layout.width / 4,
+            height: 80,
+            top: -20,
+            // borderWidth: 2,
+          }}
         />
       </Pressable>
       <Pressable
@@ -94,8 +99,7 @@ const BottomBar = ({navigation}) => {
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={
             current === 3
@@ -115,8 +119,7 @@ const BottomBar = ({navigation}) => {
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={
             current === 4

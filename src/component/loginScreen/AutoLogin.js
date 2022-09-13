@@ -12,8 +12,9 @@ const AutoLogin = () => {
     <Pressable
       onPress={() => dispatch(setAutoLogin(!autoLogin))}
       style={{
-        marginBottom: 63,
-        alignSelf: 'flex-start',
+        // marginBottom: 63,
+        // alignSelf: 'flex-start',
+        alignItems: 'center',
         flexDirection: 'row',
       }}
       hitSlop={10}>
@@ -28,7 +29,9 @@ const AutoLogin = () => {
           style={{width: 23, height: 23}}
         />
       )}
-      <TextRegular style={{marginLeft: 7}}>자동로그인</TextRegular>
+      <TextRegular style={{marginLeft: 7}} includeFontPadding={false}>
+        자동로그인
+      </TextRegular>
     </Pressable>
   );
 };

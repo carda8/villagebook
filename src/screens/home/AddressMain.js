@@ -127,28 +127,28 @@ const AddressMain = ({navigation, route}) => {
           </TextMedium>
         </Pressable>
       </View>
-      <DividerL style={{marginVertical: 20}} />
+      <DividerL style={{marginTop: 20}} />
       <FlatList
         data={recentAdd}
         renderItem={item => renderItem(item)}
         ItemSeparatorComponent={() => <DividerL style={{height: 1}} />}
         keyExtractor={(item, index) => index}
-        ListHeaderComponentStyle={{
-          paddingBottom: 20,
-          borderBottomWidth: 1,
-          borderColor: colors.borderColor,
-        }}
-        ListHeaderComponent={
-          <TextMedium style={{color: colors.fontColor2, paddingHorizontal: 22}}>
-            최근배송지
-          </TextMedium>
-        }
-        ListEmptyComponent={
-          <View style={{padding: 22, alignSelf: 'center'}}>
-            <TextRegular>최근 주소지가 없습니다</TextRegular>
-          </View>
-        }
-        ListFooterComponent={<></>}
+        // ListHeaderComponentStyle={{
+        //   paddingBottom: 20,
+        //   borderBottomWidth: 1,
+        //   borderColor: colors.borderColor,
+        // }}
+        // ListHeaderComponent={
+        //   <TextMedium style={{color: colors.fontColor2, paddingHorizontal: 22}}>
+        //     최근배송지
+        //   </TextMedium>
+        // }
+        // ListEmptyComponent={
+        //   <View style={{padding: 22, alignSelf: 'center'}}>
+        //     <TextRegular></TextRegular>
+        //   </View>
+        // }
+        // ListFooterComponent={<></>}
       />
     </SafeAreaView>
   );

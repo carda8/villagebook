@@ -89,7 +89,7 @@ const MainBanner = ({navigation, style, position}) => {
               source={{uri: item.bn_img}}
               style={{
                 flex: 1,
-                maxWidth: layout.width - 44,
+                maxWidth: layout.width - 28,
                 maxHeight: 140,
                 borderRadius: 10,
               }}

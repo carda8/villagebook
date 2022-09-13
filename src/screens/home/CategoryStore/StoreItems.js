@@ -113,8 +113,10 @@ const StoreItems = ({navigation, route}) => {
           if (e.result === 'true') {
             console.log('ee', e);
             console.log('list', storeList);
-            setStoreList(prev => prev.concat(e.data.arrItems));
-          }
+            const temp = _fliterList(e.data.arrItems);
+            console.log('temp3333333333', temp);
+            setStoreList(prev => prev.concat(temp));
+          } else return;
         },
       });
     } else {
@@ -137,12 +139,9 @@ const StoreItems = ({navigation, route}) => {
   };
 
   useEffect(() => {
+    console.log('use!!!!');
     _init();
   }, [route.parma, currentFilter]);
-
-  // useEffect(() => {
-  //   console.log('storeList', storeList);
-  // }, [storeList]);
 
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
@@ -155,11 +154,12 @@ const StoreItems = ({navigation, route}) => {
     const storeInfo = item.item;
     return (
       <Shadow
-        offset={[0, 7]}
+        offset={[0, 1]}
+        distance={3}
         style={{width: '100%', height: '100%'}}
         containerStyle={{
-          marginVertical: 10,
-          marginHorizontal: 22,
+          marginVertical: 7,
+          marginHorizontal: 14,
           flex: 1,
         }}>
         <Pressable
@@ -211,6 +211,8 @@ const StoreItems = ({navigation, route}) => {
                 marginRight: 1,
                 backgroundColor: colors.inputBoxBG,
                 borderTopLeftRadius: 10,
+                borderTopRightRadius:
+                  storeInfo.store_image?.length === 1 ? 10 : null,
                 // borderBottomLeftRadius: 10,
                 overflow: 'hidden',
               }}>
@@ -224,55 +226,59 @@ const StoreItems = ({navigation, route}) => {
                 style={{flex: 1}}
               />
             </View>
+            {storeInfo.store_image?.length > 1 && (
+              <>
+                <View
+                  style={{
+                    width: layout.width * 0.24,
+                  }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      borderTopRightRadius: 10,
+                      marginBottom: 1,
+                      overflow: 'hidden',
+                    }}>
+                    {!item?.section?.isOpen &&
+                      routeData.category !== 'lifestyle' && <ImageCover />}
 
-            <View
-              style={{
-                width: layout.width * 0.24,
-              }}>
-              <View
-                style={{
-                  flex: 1,
-                  borderTopRightRadius: 10,
-                  marginBottom: 1,
-                  overflow: 'hidden',
-                }}>
-                {!item?.section?.isOpen &&
-                  routeData.category !== 'lifestyle' && <ImageCover />}
+                    <FastImage
+                      source={
+                        storeInfo.store_image[1]
+                          ? {uri: storeInfo.store_image[1]}
+                          : require('~/assets/no_img.png')
+                      }
+                      resizeMode={FastImage.resizeMode.cover}
+                      style={{flex: 1}}
+                    />
+                  </View>
 
-                <FastImage
-                  source={
-                    storeInfo.store_image[1]
-                      ? {uri: storeInfo.store_image[1]}
-                      : require('~/assets/no_img.png')
-                  }
-                  resizeMode={FastImage.resizeMode.cover}
-                  style={{flex: 1}}
-                />
-              </View>
-
-              <View
-                style={{
-                  flex: 1,
-                  // borderBottomRightRadius: 10,
-                  overflow: 'hidden',
-                }}>
-                {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
-                  <>
-                    <ImageCover />
-                  </>
-                )}
-                <FastImage
-                  source={
-                    storeInfo.store_image[2]
-                      ? {uri: storeInfo.store_image[2]}
-                      : storeInfo.store_image[2] ??
-                        require('~/assets/no_img.png')
-                  }
-                  resizeMode={FastImage.resizeMode.cover}
-                  style={{flex: 1}}
-                />
-              </View>
-            </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      // borderBottomRightRadius: 10,
+                      overflow: 'hidden',
+                    }}>
+                    {!item?.section?.isOpen &&
+                      routeData.category !== 'lifestyle' && (
+                        <>
+                          <ImageCover />
+                        </>
+                      )}
+                    <FastImage
+                      source={
+                        storeInfo.store_image[2]
+                          ? {uri: storeInfo.store_image[2]}
+                          : storeInfo.store_image[2] ??
+                            require('~/assets/no_img.png')
+                      }
+                      resizeMode={FastImage.resizeMode.cover}
+                      style={{flex: 1}}
+                    />
+                  </View>
+                </View>
+              </>
+            )}
           </View>
           <View
             style={{
@@ -457,9 +463,9 @@ const StoreItems = ({navigation, route}) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                <Text style={{color: colors.fontColorA, fontSize: 12}}>
+                {/* <Text style={{color: colors.fontColorA, fontSize: 12}}>
                   {storeInfo?.major_menu}
-                </Text>
+                </Text> */}
                 <Chip
                   coupon={storeInfo.coupon}
                   newStore={storeInfo.new}
@@ -480,13 +486,10 @@ const StoreItems = ({navigation, route}) => {
       {console.log('route cate', routeData.category)}
       {routeData.category === 'lifestyle' ? (
         <FlatList
-          // refreshControl={
-          //   <RefreshControl onRefresh={_init} refreshing={refresh} />
-          // }
           data={storeList}
-          keyExtractor={(item, index) => item + index}
+          keyExtractor={(item, index) => index}
           renderItem={item => renderItem(item)}
-          ListEmptyComponent={() =>
+          ListEmptyComponent={
             mutateGetLifeStyle.isLoading ? (
               <Loading />
             ) : (
@@ -507,7 +510,9 @@ const StoreItems = ({navigation, route}) => {
               )
             )
           }
-          onEndReached={() => _getMoreStoreList()}
+          onEndReached={() => {
+            storeList.length % 20 === 0 && _getMoreStoreList();
+          }}
           showsVerticalScrollIndicator={false}
         />
       ) : (
@@ -538,8 +543,8 @@ const StoreItems = ({navigation, route}) => {
           renderItem={item => renderItem(item)}
           renderSectionHeader={({section: {isOpen}}) =>
             !isOpen && (
-              <View style={{paddingHorizontal: 22}}>
-                <DividerL style={{marginBottom: 20}} />
+              <View style={{paddingHorizontal: 14}}>
+                <DividerL style={{marginVertical: 10}} />
                 <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
               </View>
             )

@@ -43,9 +43,15 @@ export const _showAddr = (userInfo, emtpyText) => {
 };
 
 export const _guestAlert = navigation => {
-  customAlert('알림', '로그인이 필요한 기능입니다.', '로그인 하러 가기', () =>
-    navigation.reset({
-      routes: [{name: 'Login'}],
-    }),
+  customAlert(
+    '알림',
+    '로그인이 필요한 기능입니다.',
+    '로그인 하러 가기',
+    () =>
+      navigation.reset({
+        routes: [{name: 'Login'}],
+      }),
+    '취소',
+    () => {},
   );
 };

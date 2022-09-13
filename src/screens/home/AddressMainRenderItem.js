@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setCurrentAdd, setPostData} from '../../store/reducers/AddressReducer';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {customAlert} from '../../component/CustomAlert';
+import TextBold from '../../component/text/TextBold';
 
 const AddressMainRenderItem = ({data}) => {
   const dispatch = useDispatch();
@@ -74,10 +75,10 @@ const AddressMainRenderItem = ({data}) => {
         />
       </View>
       <View style={{flex: 1, minHeight: 50, justifyContent: 'space-between'}}>
-        <TextRegular style={{fontSize: 13, color: colors.fontColor2}}>
+        <TextBold style={{fontSize: 13, color: colors.fontColor2}}>
           [{data.ad_zip}] {data.ad_addr1} {data.ad_addr2} {data.ad_addr3}
-        </TextRegular>
-        <TextRegular style={{fontSize: 13, color: colors.fontColor2}}>
+        </TextBold>
+        <TextRegular style={{fontSize: 12, color: colors.fontColor2}}>
           [{data.ad_zip}] {data.ad_jibeon} {data.ad_addr2} {data.ad_addr3}
         </TextRegular>
       </View>

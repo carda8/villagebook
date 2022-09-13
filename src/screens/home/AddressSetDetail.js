@@ -45,10 +45,10 @@ const AddressSetDetail = ({navigation, route}) => {
     mutateInsertMainAddr.mutate(data, {
       onSuccess: e => {
         if (e.result === 'true') {
-          customAlert('알림', '배송지 등록이 완료되었습니다.');
+          customAlert('알림', '우리동네 등록이 완료되었습니다.');
           navigation.navigate('Main');
         } else {
-          customAlert('알림', '배송지 등록을 실패하였습니다.');
+          customAlert('알림', '우리동네 등록을 실패하였습니다.');
         }
         console.log('e', e);
       },

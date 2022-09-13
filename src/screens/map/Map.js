@@ -136,7 +136,7 @@ const Map = ({navigation, route}) => {
     mutateInsertMainAddr.mutate(data, {
       onSuccess: e => {
         if (e.result === 'true') {
-          customAlert('알림', '배송지 등록이 완료되었습니다.');
+          customAlert('알림', '우리동네 등록이 완료되었습니다.');
           navigation.navigate('Main');
           dispatch(
             setPostData({
@@ -146,7 +146,7 @@ const Map = ({navigation, route}) => {
             }),
           );
         } else {
-          customAlert('알림', '배송지 등록을 실패하였습니다.');
+          customAlert('알림', '우리동네 등록을 실패하였습니다.');
         }
         console.log('e', e);
       },
@@ -171,8 +171,7 @@ const Map = ({navigation, route}) => {
           top: layout.height / 2 - 87,
           zIndex: 100,
           // opacity: 0.5,
-        }}
-      >
+        }}>
         {!isStore && (
           <Image
             source={require('~/assets/ico_location.png')}
@@ -201,8 +200,7 @@ const Map = ({navigation, route}) => {
           // setPosition({latitude: e.latitude, longitude: e.longitude});
           // _convertCoor({lon: e.longitude, lat: e.latitude});
           // setPosition({latitude: e.latitude, longitude: e.longitude});
-        }}
-      >
+        }}>
         {isStore && (
           <Marker
             animateToCoordinate={e => {
@@ -238,8 +236,7 @@ const Map = ({navigation, route}) => {
                   elevation: 10,
                 },
               }),
-            }}
-          >
+            }}>
             <Text style={{fontSize: 15}}>
               {console.log('converted', converted)}
               {converted
@@ -263,8 +260,7 @@ const Map = ({navigation, route}) => {
                   height: 50,
                   borderRadius: 10,
                   padding: 10,
-                }}
-              ></TextInput>
+                }}></TextInput>
               <Pressable
                 onPress={() => {
                   if (converted) {
@@ -280,8 +276,7 @@ const Map = ({navigation, route}) => {
                   backgroundColor: colors.primary,
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}
-              >
+                }}>
                 <TextBold style={{color: 'white', fontSize: 17}}>저장</TextBold>
               </Pressable>
             </View>

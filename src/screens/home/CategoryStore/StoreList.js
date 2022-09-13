@@ -34,8 +34,7 @@ const StoreList = ({navigation, route}) => {
           zIndex: 300,
           // width: 100,
           // height: 100,
-        }}
-      >
+        }}>
         <FilterView />
       </SafeAreaView>
       <Header
@@ -63,13 +62,13 @@ const StoreList = ({navigation, route}) => {
           flex: 1,
           backgroundColor: 'white',
           paddingTop: 45,
-          // paddingHorizontal: 22,
+          // paddingHorizontal: 14,
         }}
         style={{flex: 1}}
         screenOptions={({route}) => ({
           lazy: true,
           tabBarStyle: {
-            paddingLeft: 22,
+            paddingLeft: 14,
           },
           tabBarLabel: props => (
             <>
@@ -78,15 +77,13 @@ const StoreList = ({navigation, route}) => {
                   flex: 1,
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     fontFamily: 'Pretendard-Bold',
                     // : 'Pretendard-Medium',
                     color: props.focused ? colors.primary : colors.fontColor2,
-                  }}
-                >
+                  }}>
                   {route.name}
                 </Text>
               </View>
@@ -102,7 +99,7 @@ const StoreList = ({navigation, route}) => {
           },
           tabBarIndicatorContainerStyle: {
             justifyContent: 'flex-end',
-            paddingLeft: 22,
+            paddingLeft: 14,
           },
           tabBarIndicator: props => {
             props.position.addListener(value => {
@@ -149,8 +146,7 @@ const StoreList = ({navigation, route}) => {
               </>
             );
           },
-        })}
-      >
+        })}>
         {categoryData.map((item, index) => (
           <Tab.Screen
             key={item.ca_name + index}

@@ -128,7 +128,7 @@ const OptionSelect = ({navigation, route}) => {
             dispatch(setOptionHeader(false));
           // console.log('Native Scroll', e.nativeEvent.contentOffset);
         }}
-        ListHeaderComponent={() => (
+        ListHeaderComponent={
           <>
             <FastImage
               source={
@@ -171,7 +171,7 @@ const OptionSelect = ({navigation, route}) => {
               </View>
             </View>
           </>
-        )}
+        }
         ListFooterComponent={() => (
           <View
             style={{

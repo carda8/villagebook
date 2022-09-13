@@ -94,13 +94,13 @@ const DiscountMain = ({navigation}) => {
         ListEmptyComponent={
           <View
             style={{
+              marginTop: '25%',
               alignItems: 'center',
               justifyContent: 'center',
-              marginVertical: 30,
             }}>
             <Image
               source={require('~/assets/no_coupon.png')}
-              style={{height: layout.width, width: '90%'}}
+              style={{width: 250, height: 250}}
               resizeMode="contain"
             />
           </View>
@@ -131,58 +131,56 @@ const DiscountMain = ({navigation}) => {
           justifyContent: 'center',
           marginVertical: 20,
         }}
-        ListHeaderComponent={() => (
-          <>
-            <View style={{paddingHorizontal: 22, marginTop: 26}}>
-              <View
+        ListHeaderComponent={
+          <View style={{paddingHorizontal: 22, marginTop: 26}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
+                포인트 & 쿠폰 안내
+              </TextBold>
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('UseInfo', {
+                    target: UseInfoList.target.coupon_use,
+                  });
+                }}
                 style={{
-                  flexDirection: 'row',
+                  width: 52,
+                  height: 24,
+                  borderRadius: 12,
+                  backgroundColor: colors.dividerL,
+                  marginLeft: 7,
+                  justifyContent: 'center',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
                 }}>
-                <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
-                  포인트 & 쿠폰 안내
-                </TextBold>
-                <Pressable
-                  onPress={() => {
-                    navigation.navigate('UseInfo', {
-                      target: UseInfoList.target.coupon_use,
-                    });
-                  }}
-                  style={{
-                    width: 52,
-                    height: 24,
-                    borderRadius: 12,
-                    backgroundColor: colors.dividerL,
-                    marginLeft: 7,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <TextNotoM style={{fontSize: 12, color: colors.fontColor2}}>
-                    자세히
-                  </TextNotoM>
-                </Pressable>
-              </View>
-              <View
-                style={{
-                  height: 50,
-                  borderRadius: 5,
-                  marginTop: 23,
-                  marginBottom: 10,
-                  paddingHorizontal: 20,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  backgroundColor: colors.inputBoxBG,
-                }}>
-                <TextRegular>내 포인트</TextRegular>
-                <TextNotoB style={{fontSize: 15, color: colors.primary}}>
-                  {replaceString(userInfo.mt_point)}P
-                </TextNotoB>
-              </View>
+                <TextNotoM style={{fontSize: 12, color: colors.fontColor2}}>
+                  자세히
+                </TextNotoM>
+              </Pressable>
             </View>
-          </>
-        )}
+            <View
+              style={{
+                height: 50,
+                borderRadius: 5,
+                marginTop: 23,
+                marginBottom: 10,
+                paddingHorizontal: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                backgroundColor: colors.inputBoxBG,
+              }}>
+              <TextRegular>내 포인트</TextRegular>
+              <TextNotoB style={{fontSize: 15, color: colors.primary}}>
+                {replaceString(userInfo.mt_point)}P
+              </TextNotoB>
+            </View>
+          </View>
+        }
         data={couponList}
         renderItem={item => renderItem(item)}
         keyExtractor={(item, index) => index}

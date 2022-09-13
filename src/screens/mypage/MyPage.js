@@ -79,8 +79,9 @@ const MyPage = ({navigation}) => {
                 <TextRegular style={{fontSize: 12, color: colors.fontColor2}}>
                   님
                 </TextRegular>
-                <TextBold style={{color: colors.fontColor2}}> / </TextBold>
-                {userInfo.mt_login_type === '1' ? (
+                {/* sns 로고 삭제 */}
+                {/* <TextBold style={{color: colors.fontColor2}}> / </TextBold> */}
+                {/* {userInfo.mt_login_type === '1' ? (
                   <TextBold style={{color: colors.fontColor2}}>
                     {userInfo.mt_id}
                   </TextBold>
@@ -98,7 +99,7 @@ const MyPage = ({navigation}) => {
                       resizeMode="center"
                     />
                   </View>
-                )}
+                )} */}
               </View>
               <TextRegular style={{color: colors.fontColor2}}>
                 {userInfo.mt_email}
@@ -193,7 +194,7 @@ const MyPage = ({navigation}) => {
                 ...styles.btnMenus,
                 borderBottomWidth: index === arr.length - 1 ? 0 : 1,
               }}>
-              <TextBold style={{fontSize: 12, color: colors.fontColor2}}>
+              <TextBold style={{fontSize: 14, color: colors.fontColor2}}>
                 {item}
               </TextBold>
               <Image
