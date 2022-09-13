@@ -166,19 +166,13 @@ const CategoryView = ({navigation, route}) => {
                   style={{
                     fontSize: 15,
                     color: colors.fontColor2,
-<<<<<<< HEAD
                   }}>
                   {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
-=======
-                  }}
-                >
-                  {/* {(mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 ??
->>>>>>> 5029749985afd53e467097e1b7bebb3cbaa6e14d
                     '주소설정') +
                     ' ' +
                     (mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr2 ??
                       ' ') +
-                    ' '} */}
+                    ' '}
                   {mutateGetAddress.data?.data?.arrItems[0]?.ad_addr1
                     ? mutateGetAddress?.data?.data?.arrItems[0]?.ad_addr1 +
                       ' ' +
