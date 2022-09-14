@@ -181,11 +181,11 @@ const Main = ({navigation}) => {
             }}>
             <View style={{paddingTop: 39}}>
               <TextJua style={{fontSize: 23, color: colors.fontMain3}}>
-                동네서비스
+                동네정보
               </TextJua>
               <View style={{marginTop: 8}}>
                 <TextRegular>
-                  우리동네 서비스, {'\n'}시설 검색은 한번에
+                  우리동네의 모든 매장 정보를{'\n'}다 알 수 있어요!
                 </TextRegular>
               </View>
             </View>

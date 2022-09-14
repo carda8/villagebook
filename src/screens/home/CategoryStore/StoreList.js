@@ -1,6 +1,6 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React, {useRef} from 'react';
-import {View, Animated, Text} from 'react-native';
+import {View, Animated, Text, Platform} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 import Header from '../../../component/Header';
@@ -27,16 +27,21 @@ const StoreList = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <SafeAreaView
-        style={{
-          // flex: 1,
-          position: 'absolute',
-          zIndex: 300,
-          // width: 100,
-          // height: 100,
-        }}>
+      {Platform.OS === 'ios' ? (
+        <View
+          style={{
+            // flex: 1,
+            position: 'absolute',
+            zIndex: 500,
+            // width: 100,
+            // height: 100,
+          }}>
+          <FilterView />
+        </View>
+      ) : (
         <FilterView />
-      </SafeAreaView>
+      )}
+
       <Header
         category={true}
         navigation={navigation}

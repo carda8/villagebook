@@ -80,8 +80,8 @@ const BottomBar = ({navigation}) => {
           resizeMode="contain"
           style={{
             width: layout.width / 4,
-            height: 80,
-            top: -20,
+            height: 90,
+            top: -27,
             // borderWidth: 2,
           }}
         />
