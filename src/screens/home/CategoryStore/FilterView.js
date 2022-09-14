@@ -4,6 +4,7 @@ import {
   ScrollView,
   useWindowDimensions,
   Pressable,
+  Platform,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import Filter from '../../../config/Filter';
@@ -32,9 +33,10 @@ const FilterView = () => {
         marginLeft: 22,
         // backgsroundColor: 'teal',
         top: 110,
-        position: 'absolute',
+        position: Platform.OS === 'ios' ? 'relative' : 'absolute',
         minWidth: layout.width,
-      }}>
+      }}
+    >
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -42,7 +44,8 @@ const FilterView = () => {
         contentContainerStyle={{
           alignItems: 'center',
           paddingRight: 22,
-        }}>
+        }}
+      >
         {Filter.filter.map((item, index) =>
           isLifeStyle ? (
             index < 2 ? (
@@ -61,13 +64,15 @@ const FilterView = () => {
                   justifyContent: 'center',
                   borderRadius: 18,
                   paddingHorizontal: 13,
-                }}>
+                }}
+              >
                 {currentFilter === index ? (
                   <TextSBold
                     style={{
                       color:
                         currentFilter === index ? 'white' : colors.fontColorA2,
-                    }}>
+                    }}
+                  >
                     {item}
                   </TextSBold>
                 ) : (
@@ -93,13 +98,15 @@ const FilterView = () => {
                 justifyContent: 'center',
                 borderRadius: 18,
                 paddingHorizontal: 13,
-              }}>
+              }}
+            >
               {currentFilter === index ? (
                 <TextSBold
                   style={{
                     color:
                       currentFilter === index ? 'white' : colors.fontColorA2,
-                  }}>
+                  }}
+                >
                   {item}
                 </TextSBold>
               ) : (
