@@ -32,7 +32,8 @@ const StoreList = ({navigation, route}) => {
           style={{
             // flex: 1,
             position: 'absolute',
-            zIndex: 500,
+            // 헤더 버튼보다 낮도록 설정
+            zIndex: 200,
             // width: 100,
             // height: 100,
           }}
