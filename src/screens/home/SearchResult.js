@@ -24,33 +24,33 @@ const SearchResult = ({navigation, route}) => {
 
   const FirstRoute = () => (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <SearchList navigation={navigation} JType={'food'} />
+      <SearchList navigation={navigation} JType={'lifestyle'} />
     </View>
   );
 
   const SecondRoute = () => (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <SearchList navigation={navigation} JType={'market'} />
+      <SearchList navigation={navigation} JType={'food'} />
     </View>
   );
 
   const ThirdRoute = () => (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <SearchList navigation={navigation} JType={'lifestyle'} />
+      <SearchList navigation={navigation} JType={'market'} />
     </View>
   );
 
   const renderScene = SceneMap(
-    routeData?.category === 'food'
-      ? {food: FirstRoute}
+    routeData?.category === 'lifestyle'
+      ? {lifestyle: FirstRoute}
+      : routeData?.category === 'food'
+      ? {food: SecondRoute}
       : routeData?.category === 'market'
-      ? {market: SecondRoute}
-      : routeData?.category === 'lifestyle'
-      ? {lifestyle: ThirdRoute}
+      ? {market: ThirdRoute}
       : {
-          food: FirstRoute,
-          market: SecondRoute,
-          lifestyle: ThirdRoute,
+          lifestyle: FirstRoute,
+          food: SecondRoute,
+          market: ThirdRoute,
         },
   );
 
@@ -60,11 +60,11 @@ const SearchResult = ({navigation, route}) => {
       : routeData?.category === 'market'
       ? [{key: 'market', title: '마켓'}]
       : routeData?.category === 'lifestyle'
-      ? [{key: 'lifestyle', title: '편의'}]
+      ? [{key: 'lifestyle', title: '동네정보'}]
       : [
+          {key: 'lifestyle', title: '동네정보'},
           {key: 'food', title: '맛집'},
           {key: 'market', title: '마켓'},
-          {key: 'lifestyle', title: '편의'},
         ],
   );
 
@@ -88,7 +88,7 @@ const SearchResult = ({navigation, route}) => {
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{width: layout.width}}
-        sceneContainerStyle={{paddingHorizontal: 22}}
+        sceneContainerStyle={{padingHorizontal: 22}}
         renderTabBar={props => (
           <TabBar
             {...props}

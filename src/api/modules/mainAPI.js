@@ -97,4 +97,8 @@ export default {
     const result = await _reqAPI('proc_store_search_list.php', data);
     return result;
   },
+  _searchLifestyle: async data => {
+    const result = await _reqAPI('proc_lifestyle_search_list.php', data);
+    return result;
+  },
 };

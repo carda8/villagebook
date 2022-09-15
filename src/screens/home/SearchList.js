@@ -36,7 +36,7 @@ const SearchList = ({navigation, JType, route}) => {
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
-
+  console.log('TYPE:::::::::::', type);
   const limitItem = useRef(0);
 
   useEffect(() => {
@@ -114,7 +114,9 @@ const SearchList = ({navigation, JType, route}) => {
                 borderBottomLeftRadius: 10,
                 overflow: 'hidden',
               }}>
-              {!item?.section?.isOpen && type !== 'lifestyle' && <ImageCover />}
+              {!item?.section?.isOpen && JType !== 'lifestyle' && (
+                <ImageCover />
+              )}
 
               <FastImage
                 source={{uri: item.item.store_image[0]}}
@@ -134,7 +136,7 @@ const SearchList = ({navigation, JType, route}) => {
                   marginBottom: 1,
                   overflow: 'hidden',
                 }}>
-                {!item?.section?.isOpen && type !== 'lifestyle' && (
+                {!item?.section?.isOpen && JType !== 'lifestyle' && (
                   <ImageCover />
                 )}
 
@@ -155,7 +157,7 @@ const SearchList = ({navigation, JType, route}) => {
                   borderBottomRightRadius: 10,
                   overflow: 'hidden',
                 }}>
-                {!item?.section?.isOpen && type !== 'lifestyle' && (
+                {!item?.section?.isOpen && JType !== 'lifestyle' && (
                   <>
                     <ImageCover />
                   </>
@@ -296,6 +298,7 @@ const SearchList = ({navigation, JType, route}) => {
         <FlatList
           data={lifestyleResult}
           renderItem={item => renderItem(item)}
+          contentContainerStyle={{paddingHorizontal: 14}}
           ListEmptyComponent={
             <View
               style={{
@@ -339,13 +342,14 @@ const SearchList = ({navigation, JType, route}) => {
           //   )
           // }
           keyExtractor={(item, index) => index}
-          onEndReached={() => {
-            _getMoreSearch();
-          }}
+          // onEndReached={() => {
+          //   _getMoreSearch();
+          // }}
         />
       ) : (
         <SectionList
           sections={JType === 'food' ? foodResult : marketResult}
+          contentContainerStyle={{paddingHorizontal: 14}}
           ListEmptyComponent={
             mutateSearch.isLoading ? (
               <Loading />
@@ -398,14 +402,14 @@ const SearchList = ({navigation, JType, route}) => {
             !isOpen && (
               <>
                 <DividerL style={{marginBottom: 20}} />
-                <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
+                {/* <TextBold style={{fontSize: 20}}>준비중이에요</TextBold> */}
               </>
             )
           }
           showsVerticalScrollIndicator={false}
-          onEndReached={() => {
-            _getMoreSearch();
-          }}
+          // onEndReached={() => {
+          //   _getMoreSearch();
+          // }}
         />
       )}
     </View>

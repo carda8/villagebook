@@ -30,6 +30,7 @@ import {Shadow} from 'react-native-shadow-2';
 import FilterView from './FilterView';
 import {RefreshControl} from 'react-native';
 import Divider from '../../../component/Divider';
+import TextMedium from '../../../component/text/TextMedium';
 
 // 2.1 : 1
 const StoreItems = ({navigation, route}) => {
@@ -217,9 +218,10 @@ const StoreItems = ({navigation, route}) => {
                 overflow: 'hidden',
               }}>
               {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
-                <ImageCover />
+                <>
+                  <ImageCover text />
+                </>
               )}
-
               <FastImage
                 source={{uri: item.item.store_image[0]}}
                 resizeMode={FastImage.resizeMode.cover}
@@ -283,7 +285,7 @@ const StoreItems = ({navigation, route}) => {
           <View
             style={{
               flex: 1,
-              justifyContent: 'flex-end',
+              // justifyContent: 'flex-end',
               padding: 10,
             }}>
             <View style={{}}>
@@ -296,7 +298,7 @@ const StoreItems = ({navigation, route}) => {
                 <View style={{flex: 1}}>
                   <View
                     style={{
-                      marginBottom: 5,
+                      // marginBottom: 5,
                       flexDirection: 'row',
                       alignItems: 'center',
                     }}>
@@ -306,16 +308,30 @@ const StoreItems = ({navigation, route}) => {
                         flexDirection: 'row',
                         alignItems: 'flex-end',
                       }}>
-                      <View style={{}}>
-                        <Text
-                          style={{
-                            fontFamily: 'Pretendard-Medium',
-                            fontSize: 16,
-                          }}
-                          ellipsizeMode="tail"
-                          numberOfLines={1}>
-                          {storeInfo.mb_company}
-                        </Text>
+                      <View
+                        style={{
+                          width: '100%',
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}>
+                        <View style={{flex: 1}}>
+                          <Text
+                            style={{
+                              fontFamily: 'Pretendard-Medium',
+                              fontSize: 16,
+                            }}
+                            ellipsizeMode="tail"
+                            numberOfLines={1}>
+                            {storeInfo.mb_company}
+                          </Text>
+                        </View>
+
+                        {routeData.category !== 'lifestyle' && (
+                          <ReviewSimple
+                            star={storeInfo.stars}
+                            review={storeInfo.store_review}
+                          />
+                        )}
                       </View>
                       <View style={{marginLeft: 5, flex: 1}}>
                         <TextRegular
@@ -346,36 +362,29 @@ const StoreItems = ({navigation, route}) => {
                       </View>
                     )}
                   </View>
-                  {routeData.category === 'lifestyle' && (
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <View style={{}}>
-                        <TextRegular
-                          style={{color: colors.fontColorA2, fontSize: 12}}>
-                          {storeInfo.distance}
-                        </TextRegular>
-                      </View>
-                      <Divider style={{marginHorizontal: 5}} />
-                      <View style={{flex: 1}}>
-                        <Text
-                          style={{
-                            fontFamily: 'Pretendard-Medium',
-                            fontSize: 12,
-                            color: colors.fontColorA,
-                          }}
-                          ellipsizeMode="tail"
-                          numberOfLines={1}>
-                          {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
-                        </Text>
-                      </View>
+
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{}}>
+                      <TextRegular
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
+                        {storeInfo.distance}
+                      </TextRegular>
                     </View>
-                  )}
+                    <Divider style={{marginHorizontal: 5}} />
+                    <View style={{flex: 1}}>
+                      <Text
+                        style={{
+                          fontFamily: 'Pretendard-Medium',
+                          fontSize: 12,
+                          color: colors.fontColorA,
+                        }}
+                        ellipsizeMode="tail"
+                        numberOfLines={1}>
+                        {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
-                {routeData.category !== 'lifestyle' && (
-                  <ReviewSimple
-                    star={storeInfo.stars}
-                    review={storeInfo.store_review}
-                  />
-                )}
               </View>
               {routeData.category === 'lifestyle' && (
                 <View
@@ -391,12 +400,12 @@ const StoreItems = ({navigation, route}) => {
                 </View>
               )}
 
-              {routeData.category !== 'lifestyle' && (
+              {routeData.category === 'market' && (
                 <View
                   style={{
                     flexDirection: 'row',
                     flexWrap: 'wrap',
-                    marginTop: 9,
+                    // marginTop: 9,
                   }}>
                   <View
                     style={{
@@ -446,16 +455,210 @@ const StoreItems = ({navigation, route}) => {
                       </View>
                     </>
 
-                    <View style={{}}>
+                    {/* <View style={{}}>
                       <TextRegular
                         style={{color: colors.fontColorA2, fontSize: 12}}>
                         {storeInfo.distance}
                       </TextRegular>
-                    </View>
+                    </View> */}
                   </View>
                 </View>
               )}
             </View>
+            {routeData.category === 'food' && (
+              <>
+                {storeInfo.forHere && (
+                  <View
+                    style={{
+                      // flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <View
+                      style={{
+                        width: 50,
+                        height: 20,
+                        backgroundColor: '#ff7800',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 5,
+                        marginTop: 4,
+                        marginRight: 10,
+                      }}>
+                      <TextMedium style={{fontSize: 12, color: 'white'}}>
+                        먹고가기
+                      </TextMedium>
+                    </View>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexWrap: 'wrap',
+                        // backgroundColor: 'teal',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        // justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={require('~/assets/time.png')}
+                        style={{width: 14, height: 14}}
+                      />
+                      <TextRegular style={{fontSize: 12}}>
+                        {' ' + storeInfo.cooking_time}
+                      </TextRegular>
+                      <Dot />
+
+                      <TextRegular
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
+                        최소 주문{' '}
+                      </TextRegular>
+
+                      <TextRegular
+                        style={{color: colors.fontColor2, fontSize: 12}}>
+                        {replaceString(storeInfo.minPrice)}원{' '}
+                      </TextRegular>
+
+                      {/* <Dot /> */}
+                      {/* <TextRegular
+                            style={{color: colors.fontColorA2, fontSize: 12}}>
+                            배달팁{' '}
+                          </TextRegular>
+                          <TextRegular
+                            style={{color: colors.fontColor6, fontSize: 12}}>
+                            {replaceString(storeInfo.tipFrom)}원~
+                            {replaceString(storeInfo.tipTo)}원
+                          </TextRegular> */}
+                    </View>
+                  </View>
+                )}
+
+                {storeInfo.delivery && (
+                  <View
+                    style={{
+                      // flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <View
+                      style={{
+                        width: 50,
+                        height: 22,
+                        backgroundColor: '#00bef0',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 5,
+                        marginTop: 4,
+                        marginRight: 10,
+                      }}>
+                      <TextMedium style={{fontSize: 12, color: 'white'}}>
+                        배달하기
+                      </TextMedium>
+                    </View>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexWrap: 'wrap',
+                        // backgroundColor: 'teal',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        // justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={require('~/assets/time.png')}
+                        style={{width: 14, height: 14}}
+                      />
+                      <TextRegular style={{fontSize: 12}}>
+                        {' ' + storeInfo.delivery_time}
+                      </TextRegular>
+                      <Dot />
+
+                      <TextRegular
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
+                        최소 주문{' '}
+                      </TextRegular>
+
+                      <TextRegular
+                        style={{color: colors.fontColor2, fontSize: 12}}>
+                        {replaceString(storeInfo.minPrice)}원{' '}
+                      </TextRegular>
+                      <Dot />
+                      <TextRegular
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
+                        배달팁{' '}
+                      </TextRegular>
+                      <TextRegular
+                        style={{color: colors.fontColor6, fontSize: 12}}>
+                        {replaceString(storeInfo.tipFrom)}원~
+                        {replaceString(storeInfo.tipTo)}원
+                      </TextRegular>
+                    </View>
+                  </View>
+                )}
+
+                {storeInfo.wrap && (
+                  <View
+                    style={{
+                      // flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <View
+                      style={{
+                        width: 50,
+                        height: 22,
+                        backgroundColor: '#57cc98',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 5,
+                        marginTop: 4,
+                        marginRight: 10,
+                      }}>
+                      <TextMedium style={{fontSize: 12, color: 'white'}}>
+                        포장하기
+                      </TextMedium>
+                    </View>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexWrap: 'wrap',
+                        // backgroundColor: 'teal',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        // justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={require('~/assets/time.png')}
+                        style={{width: 14, height: 14}}
+                      />
+                      <TextRegular style={{fontSize: 12}}>
+                        {' ' + storeInfo.cooking_time}
+                      </TextRegular>
+                      <Dot />
+
+                      <TextRegular
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
+                        최소 주문{' '}
+                      </TextRegular>
+
+                      <TextRegular
+                        style={{color: colors.fontColor2, fontSize: 12}}>
+                        {replaceString(storeInfo.minPrice)}원{' '}
+                      </TextRegular>
+
+                      {/* <Dot />
+                          <TextRegular
+                            style={{color: colors.fontColorA2, fontSize: 12}}>
+                            배달팁{' '}
+                          </TextRegular>
+                          <TextRegular
+                            style={{color: colors.fontColor6, fontSize: 12}}>
+                            {replaceString(storeInfo.tipFrom)}원~
+                            {replaceString(storeInfo.tipTo)}원
+                          </TextRegular> */}
+                    </View>
+                  </View>
+                )}
+              </>
+            )}
             {routeData.category !== 'lifestyle' && (
               <View
                 style={{
@@ -543,9 +746,9 @@ const StoreItems = ({navigation, route}) => {
           renderItem={item => renderItem(item)}
           renderSectionHeader={({section: {isOpen}}) =>
             !isOpen && (
-              <View style={{paddingHorizontal: 14}}>
-                <DividerL style={{marginVertical: 10}} />
-                <TextBold style={{fontSize: 20}}>준비중이에요</TextBold>
+              <View>
+                <DividerL style={{marginVertical: 15}} />
+                {/* <TextBold style={{fontSize: 20}}>준비중이에요</TextBold> */}
               </View>
             )
           }

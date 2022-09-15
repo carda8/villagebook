@@ -185,8 +185,10 @@ const PaymentMain = ({navigation, route}) => {
   };
 
   const _callback = res => {
-    _getIamInfo(res);
     console.log('res', res);
+    if (res.imp_success === 'false') {
+      navigation.goBack();
+    } else _getIamInfo(res);
     // navigation.navigate('OrderFinish', res);
   };
 

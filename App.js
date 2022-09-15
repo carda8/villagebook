@@ -13,6 +13,7 @@ import messaging from '@react-native-firebase/messaging';
 import {Alert, AppState, Linking, PermissionsAndroid} from 'react-native';
 import notifee, {AndroidImportance} from '@notifee/react-native';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
+import {Text} from 'react-native';
 
 const qeuryClient = new QueryClient({
   queryCache: new QueryCache({

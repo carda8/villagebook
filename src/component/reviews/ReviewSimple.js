@@ -8,7 +8,7 @@ const ReviewSimple = ({star, review}) => {
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        width: 100,
+        width: 70,
         justifyContent: 'flex-end',
       }}>
       <Image

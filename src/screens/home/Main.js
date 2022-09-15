@@ -255,10 +255,12 @@ const Main = ({navigation}) => {
               borderWidth: 1,
             }}>
             <TextJua style={{fontSize: 23, color: colors.fontMain2}}>
-              동네마켓
+              순간이동 마켓
             </TextJua>
             <View style={{marginTop: 8}}>
-              <TextRegular>우리동네 필요한{'\n'}물건은 마켓으로!</TextRegular>
+              <TextRegular>
+                우리동네 필요한 물건은{'\n'}문앞까지 순간이동!
+              </TextRegular>
             </View>
             <View style={{flex: 1}}>
               <Image
@@ -343,7 +345,7 @@ const Main = ({navigation}) => {
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: 10,
-            marginBottom: 20,
+            marginBottom: toggleInfo ? 10 : 30,
           }}>
           <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
             (주)어스닉은 통신판매중개자이며, 따라서 (주)어스닉은 상품, 거래정보
@@ -354,9 +356,10 @@ const Main = ({navigation}) => {
           <>
             <View
               style={{
-                alignItems: 'center',
+                marginBottom: 30,
+                // alignItems: 'center',
               }}>
-              <View style={{marginBottom: 20}}>
+              <View style={{marginBottom: 10}}>
                 <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
                   {companyInfo?.de_admin_company_memo}
                 </TextRegular>

@@ -335,6 +335,12 @@ export const useCustomMutation = () => {
       console.log('mutateSearch', e);
     },
   });
+  const mutateSearchLifeStyle = useMutation(mainAPI._searchLifestyle, {
+    onSettled: e => {
+      console.log('mutateSearchLifeStyle', e);
+    },
+  });
+
   return {
     mutateSignIn,
     mutateSNSlogin,
@@ -380,5 +386,6 @@ export const useCustomMutation = () => {
     mutateSearch,
     mutateGetFaqDetail,
     mutateLikeLifeStyle,
+    mutateSearchLifeStyle,
   };
 };
