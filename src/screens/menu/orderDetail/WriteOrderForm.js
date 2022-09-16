@@ -81,7 +81,12 @@ const WriteOrderForm = ({navigation, route}) => {
       calcTotal += item.totalPrice;
     });
     if (deliveryType !== 0)
-      calcTotal = calcTotal - deliveryData.take_out_discount;
+      // calcTotal = calcTotal - deliveryData.take_out_discount;
+      calcTotal =
+        calcTotal -
+        (Number(orderForm.od_coupon_price_store) +
+          Number(orderForm.od_coupon_price_system) +
+          Number(orderForm.od_receipt_point));
     else {
       calcTotal =
         calcTotal +
@@ -167,10 +172,18 @@ const WriteOrderForm = ({navigation, route}) => {
       mt_id: userInfo.mt_id,
       item_count: '0',
       limit_count: '10',
+
+      //점주는 보내고
+      //동네북은 id, code 안보냄
+      //store / system 시스템에는 보내지 말고 store에만 보냄
       jumju_id: cartStore.currentStoreCode.jumju_id,
       jumju_code: cartStore.currentStoreCode.code,
+      /////
+
       cp_gubun: type,
+      // cp_type: 1 쿠폰 타입 포장, 배달, 먹고가기 전용 쿠폰만 나오도록
     };
+
     const storeInfo = {
       mb_id: cartStore.currentStoreCode.jumju_id,
       mb_jumju_code: cartStore.currentStoreCode.code,
@@ -480,7 +493,7 @@ const WriteOrderForm = ({navigation, route}) => {
             </View>
           )}
           <TextRegular></TextRegular>
-          {deliveryType === 0 && paymentMethod === PaymentList.card && (
+          {paymentMethod === PaymentList.card && (
             <>
               {/* 포인트 사용 */}
               <View style={{marginTop: 20}}>
@@ -628,7 +641,7 @@ const WriteOrderForm = ({navigation, route}) => {
                   {deliveryType === 2 ? '먹고가기 할인' : '포장할인'}
                 </TextRegular>
                 <TextRegular style={{}}>
-                  -{deliveryData.take_out_discount}
+                  -{replaceString(deliveryData.take_out_discount)}
                 </TextRegular>
               </View>
             )}
@@ -637,7 +650,7 @@ const WriteOrderForm = ({navigation, route}) => {
                 점주 쿠폰 할인
               </TextRegular>
               <TextRegular style={{}}>
-                -{storeCoupon?.cp_price ?? 0}원
+                -{replaceString(storeCoupon?.cp_price) ?? 0}원
               </TextRegular>
             </View>
             <View style={{...styles.paymentText}}>
@@ -645,7 +658,7 @@ const WriteOrderForm = ({navigation, route}) => {
                 동네북 쿠폰 할인
               </TextRegular>
               <TextRegular style={{}}>
-                -{systemCoupon?.cp_price ?? 0}원
+                -{replaceString(systemCoupon?.cp_price) ?? 0}원
               </TextRegular>
             </View>
             {/* 
@@ -661,7 +674,7 @@ const WriteOrderForm = ({navigation, route}) => {
                 포인트 사용
               </TextRegular>
               <TextRegular style={{}}>
-                -{orderForm.od_receipt_point}원
+                -{replaceString(orderForm.od_receipt_point)}원
               </TextRegular>
             </View>
           </View>

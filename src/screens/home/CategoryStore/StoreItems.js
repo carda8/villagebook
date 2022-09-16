@@ -437,22 +437,26 @@ const StoreItems = ({navigation, route}) => {
                       flexDirection: 'row',
                     }}>
                     <>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Image
-                          source={require('~/assets/time.png')}
-                          style={{width: 14, height: 14}}
-                        />
-                        <TextRegular style={{fontSize: 12}}>
-                          {storeInfo.delivery_time}
-                        </TextRegular>
-                        {/* <TextRegular style={{fontSize: 12}}>40분</TextRegular> */}
-                        <Dot />
-                      </View>
+                      {storeInfo.delivery_time ? (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <Image
+                            source={require('~/assets/time.png')}
+                            style={{width: 14, height: 14}}
+                          />
+                          <TextRegular style={{fontSize: 12}}>
+                            {storeInfo.delivery_time}
+                          </TextRegular>
+                          {/* <TextRegular style={{fontSize: 12}}>40분</TextRegular> */}
+                          <Dot />
+                        </View>
+                      ) : (
+                        <></>
+                      )}
                     </>
 
                     {/* <View style={{}}>
@@ -498,14 +502,20 @@ const StoreItems = ({navigation, route}) => {
                         alignItems: 'center',
                         // justifyContent: 'center',
                       }}>
-                      <Image
-                        source={require('~/assets/time.png')}
-                        style={{width: 14, height: 14}}
-                      />
-                      <TextRegular style={{fontSize: 12}}>
-                        {' ' + storeInfo.cooking_time}
-                      </TextRegular>
-                      <Dot />
+                      {storeInfo.cooking_time ? (
+                        <>
+                          <Image
+                            source={require('~/assets/time.png')}
+                            style={{width: 14, height: 14}}
+                          />
+                          <TextRegular style={{fontSize: 12}}>
+                            {' ' + storeInfo.cooking_time}
+                          </TextRegular>
+                          <Dot />
+                        </>
+                      ) : (
+                        <></>
+                      )}
 
                       <TextRegular
                         style={{color: colors.fontColorA2, fontSize: 12}}>
@@ -514,7 +524,7 @@ const StoreItems = ({navigation, route}) => {
 
                       <TextRegular
                         style={{color: colors.fontColor2, fontSize: 12}}>
-                        {replaceString(storeInfo.minPrice)}원{' '}
+                        {replaceString(storeInfo.minPriceForHere)}원{' '}
                       </TextRegular>
 
                       {/* <Dot /> */}
@@ -562,14 +572,20 @@ const StoreItems = ({navigation, route}) => {
                         alignItems: 'center',
                         // justifyContent: 'center',
                       }}>
-                      <Image
-                        source={require('~/assets/time.png')}
-                        style={{width: 14, height: 14}}
-                      />
-                      <TextRegular style={{fontSize: 12}}>
-                        {' ' + storeInfo.delivery_time}
-                      </TextRegular>
-                      <Dot />
+                      {storeInfo.delivery_time ? (
+                        <>
+                          <Image
+                            source={require('~/assets/time.png')}
+                            style={{width: 14, height: 14}}
+                          />
+                          <TextRegular style={{fontSize: 12}}>
+                            {' ' + storeInfo.delivery_time}
+                          </TextRegular>
+                          <Dot />
+                        </>
+                      ) : (
+                        <></>
+                      )}
 
                       <TextRegular
                         style={{color: colors.fontColorA2, fontSize: 12}}>
@@ -625,14 +641,20 @@ const StoreItems = ({navigation, route}) => {
                         alignItems: 'center',
                         // justifyContent: 'center',
                       }}>
-                      <Image
-                        source={require('~/assets/time.png')}
-                        style={{width: 14, height: 14}}
-                      />
-                      <TextRegular style={{fontSize: 12}}>
-                        {' ' + storeInfo.cooking_time}
-                      </TextRegular>
-                      <Dot />
+                      {storeInfo.cooking_time ? (
+                        <>
+                          <Image
+                            source={require('~/assets/time.png')}
+                            style={{width: 14, height: 14}}
+                          />
+                          <TextRegular style={{fontSize: 12}}>
+                            {' ' + storeInfo.cooking_time}
+                          </TextRegular>
+                          <Dot />
+                        </>
+                      ) : (
+                        <></>
+                      )}
 
                       <TextRegular
                         style={{color: colors.fontColorA2, fontSize: 12}}>
@@ -641,7 +663,7 @@ const StoreItems = ({navigation, route}) => {
 
                       <TextRegular
                         style={{color: colors.fontColor2, fontSize: 12}}>
-                        {replaceString(storeInfo.minPrice)}원{' '}
+                        {replaceString(storeInfo.minPriceWrap)}원{' '}
                       </TextRegular>
 
                       {/* <Dot />

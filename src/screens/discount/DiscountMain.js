@@ -132,7 +132,7 @@ const DiscountMain = ({navigation}) => {
           marginVertical: 20,
         }}
         ListHeaderComponent={
-          <View style={{paddingHorizontal: 22, marginTop: 26}}>
+          <View style={{paddingHorizontal: 14, marginTop: 26}}>
             <View
               style={{
                 flexDirection: 'row',

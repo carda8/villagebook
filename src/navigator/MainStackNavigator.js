@@ -66,7 +66,7 @@ import {AppState, Linking, Platform} from 'react-native';
 import AuthStorageModuel from '../store/localStorage/AuthStorageModuel';
 import {setSaveItem, setStoreLogo} from '../store/reducers/CartReducer';
 import SearchResult from '../screens/home/SearchResult';
-import MenuDetail2 from '../screens/menu/MenuDetail2';
+
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 
 const Stack = createNativeStackNavigator();
@@ -380,7 +380,7 @@ const MainStackNavigator = () => {
         <Stack.Screen name="DiscountMain" component={DiscountMain} />
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
-        <Stack.Screen name="MenuDetail2" component={MenuDetail2} />
+
         <Stack.Screen
           name="DeliveryTipInfo"
           component={DeliveryTipInfo}

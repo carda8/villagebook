@@ -191,12 +191,12 @@ const MenuDetail = ({navigation, route}) => {
   const StoreBreakeTimes = StoreServiceTime?.serviceBreakTime[0];
   const StoreService = mutateGetStoreService.data.data.arrItems;
 
-  // console.log('StoreInfo', StoreInfo);
+  // console.warn('StoreInfo', StoreInfo);
   // console.log('StoreTopMenu', StoreTopMenu);
   // console.log('StoreTopMenu', StoreAllMenu);
 
   const _pressMenu = item => {
-    if (StoreInfo.isOpen === 'N')
+    if (StoreInfo.isOpen === false)
       return customAlert('알림', '현재 가게는 오픈 준비중 입니다.');
     navigation.navigate('OptionSelect', {
       it_id: item.it_id,

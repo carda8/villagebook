@@ -329,6 +329,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 }
               }}
               style={{
+                borderWidth: 1,
+                borderColor: colors.borderColor,
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: colors.couponBG,

@@ -14,14 +14,15 @@ import SearchList from './SearchList';
 import colors from '../../styles/colors';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
+import TextSBold from '../../component/text/TextSBold';
 
 const SearchResult = ({navigation, route}) => {
   const routeData = route.params;
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const {keyword} = useSelector(state => state.searchReducer);
-  console.log('Search Route', route.params);
-
+  const {keyword, resultCount} = useSelector(state => state.searchReducerSub);
+  // console.log('Search Route', route.params);
+  // console.warn('resultCount', resultCount);
   const FirstRoute = () => (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <SearchList navigation={navigation} JType={'lifestyle'} />
@@ -56,17 +57,38 @@ const SearchResult = ({navigation, route}) => {
 
   const [routes] = useState(
     routeData?.category === 'food'
-      ? [{key: 'food', title: '맛집'}]
+      ? [{key: 'food', title: `맛집`}]
       : routeData?.category === 'market'
-      ? [{key: 'market', title: '마켓'}]
+      ? [{key: 'market', title: `마켓`}]
       : routeData?.category === 'lifestyle'
-      ? [{key: 'lifestyle', title: '동네정보'}]
+      ? [
+          {
+            key: 'lifestyle',
+            title: `동네정보`,
+          },
+        ]
       : [
-          {key: 'lifestyle', title: '동네정보'},
-          {key: 'food', title: '맛집'},
-          {key: 'market', title: '마켓'},
+          {
+            key: 'lifestyle',
+            title: `동네정보`,
+          },
+          {key: 'food', title: `맛집`},
+          {key: 'market', title: `마켓`},
         ],
   );
+
+  const _convertCount = title => {
+    switch (title) {
+      case '맛집':
+        return `${resultCount?.countFood ?? ''}`;
+      case '마켓':
+        return `${resultCount?.countMarket ?? ''}`;
+      case '동네정보':
+        return `${resultCount?.countLifesstyle ?? ''}`;
+      default:
+        return '-';
+    }
+  };
 
   useEffect(() => {
     setIndex(0);
@@ -97,8 +119,21 @@ const SearchResult = ({navigation, route}) => {
                 ? colors.borderColor
                 : 'black',
             }}
-            tabStyle={{height: routeData?.category ? 10 : null}}
-            labelStyle={{color: routeData?.category ? 'white' : 'black'}}
+            // tabStyle={{height: routeData?.category ? 10 : null}}
+            labelStyle={{
+              color: routeData?.category ? 'white' : 'black',
+              fontFamily: 'Pretendard-SemiBold',
+              fontSize: 14,
+            }}
+            renderLabel={props => (
+              <View style={{flexDirection: 'row'}}>
+                {/* {console.warn('props', props)} */}
+                <TextSBold>{props.route.title + ' '}</TextSBold>
+                <TextSBold style={{color: colors.primary}}>
+                  {props?.route?.title ? _convertCount(props.route.title) : ''}
+                </TextSBold>
+              </View>
+            )}
             indicatorContainerStyle={{alignItems: 'center'}}
             style={{
               backgroundColor: 'white',

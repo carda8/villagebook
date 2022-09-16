@@ -25,10 +25,11 @@ export const API = axios.create({
 
   transformResponse: data => {
     if (data) {
-      // console.log('## ORIGIN API RES DATA ::', data);
+      // console.warn('## ORIGIN API RES DATA ::', data);
       try {
         const parsedData = JSON.parse(data);
         const resData = parsedData.encodeJson;
+        // console.warn(parsedData);
         return {
           result:
             resData?.resultItem.result ??

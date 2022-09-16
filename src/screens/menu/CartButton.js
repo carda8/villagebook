@@ -35,6 +35,7 @@ const CartButton = ({
   deliveryInfo,
   data,
   isLoading,
+  isOption,
 }) => {
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
@@ -214,23 +215,25 @@ const CartButton = ({
   console.log('dil:::::::::::::::::::::::', deliveryInfo);
   const _checkMin = () => {
     const price = Number(String(lastPrice).replace(/[,]/gi, ''));
-    if (deliveryType === 0) {
-      if (price < deliveryInfo.min_price) {
-        // customAlert('알림', '배달주문 금액이 최소주문금액 보다 작습니다.');
-        return false;
-      } else return true;
-    } else if (deliveryType === 1) {
-      if (price < deliveryInfo.min_price_wrap) {
-        // customAlert('알림', '포장주문 금액이 최소주문금액 보다 작습니다.');
-        return false;
-      } else return true;
-    } else if (deliveryType === 2) {
-      // customAlert('알림', '먹고가기 금액이 최소주문금액 보다 작습니다.');
-      if (price < deliveryInfo.min_price_for_here) {
-        // customAlert('알림', '포장주문 금액이 최소주문금액 보다 작습니다.');
-        return false;
-      } else return true;
-    }
+    if (!isOption) {
+      if (deliveryType === 0) {
+        if (price < deliveryInfo?.min_price) {
+          // customAlert('알림', '배달주문 금액이 최소주문금액 보다 작습니다.');
+          return false;
+        } else return true;
+      } else if (deliveryType === 1) {
+        if (price < deliveryInfo?.min_price_wrap) {
+          // customAlert('알림', '포장주문 금액이 최소주문금액 보다 작습니다.');
+          return false;
+        } else return true;
+      } else if (deliveryType === 2) {
+        // customAlert('알림', '먹고가기 금액이 최소주문금액 보다 작습니다.');
+        if (price < deliveryInfo?.min_price_for_here) {
+          // customAlert('알림', '포장주문 금액이 최소주문금액 보다 작습니다.');
+          return false;
+        } else return true;
+      }
+    } else return true;
   };
 
   const _goToOrderPage = () => {

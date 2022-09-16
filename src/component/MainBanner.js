@@ -8,7 +8,7 @@ import Swiper from 'react-native-swiper';
 
 const MainBanner = ({navigation, style, position}) => {
   const {mutateGetBanner} = useCustomMutation();
-  const [bannerImg, setBannerImg] = useState();
+  const [bannerImg, setBannerImg] = useState([]);
   const layout = useWindowDimensions();
 
   const _getBanner = () => {
@@ -33,9 +33,12 @@ const MainBanner = ({navigation, style, position}) => {
 
   useEffect(() => {
     _getBanner();
+    return () => {
+      // setBannerImg([]);
+    };
   }, []);
 
-  if (!bannerImg || bannerImg.length === 0)
+  if (bannerImg.length === 0)
     return (
       <View
         style={{
@@ -51,11 +54,13 @@ const MainBanner = ({navigation, style, position}) => {
     <View style={{flex: 1}}>
       <Swiper
         loop
+        key={bannerImg.length}
         autoplay
         autoplayDirection={true}
         autoplayTimeout={1.5}
         style={{height: 140}}
         containerStyle={style}
+        // renderToHardwareTextureAndroid
         removeClippedSubviews={false}
         renderPagination={(index, total, context) => (
           <View

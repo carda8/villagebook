@@ -6,9 +6,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {
   setIsLoading,
+  setResultCount,
   setSearchResult,
   setType,
 } from '../../store/reducers/SearchReducer';
+import {
+  setKeywordSub,
+  setResultCountSub,
+} from '../../store/reducers/SearchReducerSub';
 import colors from '../../styles/colors';
 import {customAlert} from '../CustomAlert';
 import Loading from '../Loading';
@@ -21,10 +26,11 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
   const {currentLocation} = useSelector(state => state.locationReducer);
   const search = useSelector(state => state.searchReducer);
   const list = ['lifestyle', 'food', 'market'];
+
   // const _pressSearch = () => {
   //   if (!isMain && !isSub) setModal(true);
   // };
-  console.log('props,', isSub, category);
+  // console.log('props,', isSub, category);
   const limitItem = useRef(0);
 
   const _getResult = async (data, index) => {
@@ -34,6 +40,8 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
         onSettled: e => {
           if (e.result === 'true') {
             console.log('mutateSearchLifeStyle', e);
+            console.warn(e.data.resultItem.countItem);
+            dispatch(setResultCountSub(e.data.resultItem.countItem));
           }
         },
       });
@@ -57,7 +65,8 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
   const _search = type => {
     if (!keyword.trim()) return customAlert('알림', '검색어를 입력해주세요');
     dispatch(setIsLoading(true));
-    dispatch(setType({type: type, keyword: keyword}));
+    dispatch(setType({type: type}));
+    dispatch(setKeywordSub({keyword: keyword}));
     list.map(async (item, index) => {
       const data = {
         item_count: limitItem.current,
@@ -68,6 +77,7 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
         mb_lng: currentLocation.lon,
       };
       console.log('ITEM:::::', item);
+      console.warn(data);
       let temp = await _getResult(data, index);
       console.log('_search :::::', temp);
       dispatch(setSearchResult({type: item, item: temp}));
@@ -79,6 +89,9 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
   useEffect(() => {
     if (mutateSearch.isLoading) dispatch(setIsLoading(true));
     else dispatch(setIsLoading(false));
+    return () => {
+      setKeyword('');
+    };
   }, [mutateSearch.isLoading]);
 
   return (

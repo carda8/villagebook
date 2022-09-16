@@ -47,7 +47,7 @@ const CouponTicket = ({
     switch (type) {
       case '0':
         return {
-          type: '배달/포장',
+          type: '배달/포장/먹고가기',
           color: colors.primary,
           fontColor: 'white',
         };
@@ -62,6 +62,12 @@ const CouponTicket = ({
           type: '배달용',
           color: colors.mainBG2,
           fontColor: colors.fontMain2,
+        };
+      case '3':
+        return {
+          type: '먹고가기용',
+          color: colors.mainBG3,
+          fontColor: colors.fontMain3,
         };
       default:
         return type;
@@ -109,12 +115,12 @@ const CouponTicket = ({
         borderRadius: 10,
         borderColor: colors.borderColor,
         marginBottom: 10,
-        marginHorizontal: 22,
+        marginHorizontal: 14,
         flexDirection: 'row',
         alignItems: 'center',
         overflow: 'hidden',
       }}>
-      <View style={{flex: 3, paddingLeft: 20}}>
+      <View style={{flex: 3, paddingLeft: 10}}>
         <View
           style={{
             flexDirection: 'row',
@@ -123,14 +129,14 @@ const CouponTicket = ({
           <View style={{flex: 1}}>
             <TextBold style={{fontSize: 22, color: colors.primary}}>
               {/* 0: 고정금액 할인 , 1: 퍼센트 할인 */}
-              {itemInfo.cp_price_type ?? itemInfo.cz_price_type === '0'
-                ? replaceString(itemInfo.cp_price ?? itemInfo.cz_price) + '원'
-                : itemInfo.cp_price ?? itemInfo.cz_price + '%'}
+              {/* cz type ???? */}
+              {console.log('item', itemInfo)}
+              {itemInfo.cp_price_type === '0'
+                ? replaceString(itemInfo.cp_price) + '원'
+                : itemInfo.cp_price + '%'}
             </TextBold>
-            <TextMedium style={{color: colors.fontColor2}}>
-              {itemInfo.cp_subject ?? itemInfo.cz_subject}
-            </TextMedium>
           </View>
+
           <View
             style={{
               paddingHorizontal: 10,
@@ -152,6 +158,11 @@ const CouponTicket = ({
           </View>
         </View>
         <View style={{marginTop: 8}}>
+          <TextMedium style={{color: colors.fontColor2}}>
+            {itemInfo.cp_subject ?? itemInfo.cz_subject}
+          </TextMedium>
+        </View>
+        <View>
           <TextRegular>
             {itemInfo.cp_start ?? itemInfo.cz_start} ~{' '}
             {itemInfo.cp_end ?? itemInfo.cz_end}
