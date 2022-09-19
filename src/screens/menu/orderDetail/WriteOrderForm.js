@@ -61,8 +61,9 @@ const WriteOrderForm = ({navigation, route}) => {
     od_send_cost2: deliveryType === 0 ? deliveryData.send_cost2 : 0,
     od_receipt_point: 0,
     od_takeout_discount:
-      deliveryType === 0 ? '0' : deliveryData.take_out_discount,
-
+      deliveryType === 1 ? deliveryData.take_out_discount : '0',
+    od_for_here_discount:
+      deliveryType === 2 ? deliveryData.for_here_discount : '0',
     od_no_spoon: false,
     od_coupon_id_system: '', //관리자 발행 쿠폰번호
     od_coupon_id_store: '', //점주 발행 쿠폰번호 GQ2B-J4VZ-KJRQ-C1H4
@@ -75,30 +76,83 @@ const WriteOrderForm = ({navigation, route}) => {
     // od_menu_data: '', //메뉴 데이터
   });
 
+  useEffect(() => {
+    console.warn(deliveryType);
+  }, []);
+
+  const storeCpType = storeCoupon.cp_price_type;
+  const storeCpPrice = storeCoupon.cp_price ?? 0;
+  const systemCpType = systemCoupon.cp_price_type;
+  const systemCpPrice = systemCoupon.cp_price ?? 0;
+
+  const _getCpDiscount = type => {
+    let calcTotal = 0;
+
+    cartStore.savedItem.savedItems.map((item, index) => {
+      calcTotal += item.totalPrice;
+    });
+    // console.warn(calcTotal);
+    const discountStore = calcTotal * (Number(storeCpPrice) / 100);
+    const discountSystem = calcTotal * (Number(systemCpPrice) / 100);
+    if (type === 'store') return discountStore;
+    if (type === 'system') return discountSystem;
+  };
+
+  //deliveryData.take_out_discount
   const _calcSummary = () => {
     let calcTotal = 0;
     cartStore.savedItem.savedItems.map((item, index) => {
       calcTotal += item.totalPrice;
     });
+    // console.warn(calcTotal);
+
+    const discountStore = calcTotal * (Number(storeCpPrice) / 100);
+    const discountSystem = calcTotal * (Number(systemCpPrice) / 100);
+
+    // (1)
+    // 퍼센트 할인의 경우 상품 원가격에서 퍼센트 만큼 할인 적용
+    // (2) 에서 쿠폰 가격 0으로 계산 (이 부분에서 할인률 만큼 차감됨)
+
+    if (
+      (storeCpType === '1' && storeCpPrice > 0) ||
+      (systemCpType === '1' && systemCpPrice > 0)
+    ) {
+      calcTotal =
+        calcTotal -
+        ((storeCpType === '1' ? discountStore : 0) +
+          (systemCpType === '1' ? discountSystem : 0));
+      console.log('path1');
+    }
+
+    console.warn(
+      storeCpType,
+      systemCpType,
+      systemCpPrice,
+      discountStore,
+      discountSystem,
+    );
+
     if (deliveryType !== 0)
+      // (2)
       // calcTotal = calcTotal - deliveryData.take_out_discount;
       calcTotal =
         calcTotal -
-        (Number(orderForm.od_coupon_price_store) +
-          Number(orderForm.od_coupon_price_system) +
-          Number(orderForm.od_receipt_point));
+        (Number(storeCpType !== '1' ? orderForm.od_coupon_price_store : 0) +
+          Number(systemCpType !== '1' ? orderForm.od_coupon_price_system : 0) +
+          Number(orderForm.od_receipt_point) +
+          Number(orderForm.od_takeout_discount) +
+          Number(orderForm.od_for_here_discount));
     else {
       calcTotal =
         calcTotal +
         (Number(deliveryData.send_cost) + Number(deliveryData.send_cost2)) -
-        (Number(orderForm.od_coupon_price_store) +
-          Number(orderForm.od_coupon_price_system) +
-          Number(orderForm.od_receipt_point));
+        (Number(storeCpType !== '1' ? orderForm.od_coupon_price_store : 0) +
+          Number(systemCpType !== '1' ? orderForm.od_coupon_price_system : 0) +
+          Number(orderForm.od_receipt_point) +
+          Number(orderForm.od_takeout_discount) +
+          Number(orderForm.od_for_here_discount));
     }
-    // console.log('ORDER FORM', orderForm);
     console.log('delivery', deliveryData);
-    // console.log('calc totla', calcTotal);
-
     return calcTotal;
   };
 
@@ -167,6 +221,24 @@ const WriteOrderForm = ({navigation, route}) => {
     //   return customAlert('알림', '500포인트 이상 부터 사용가능합니다.');
   };
 
+  const _convertType = () => {
+    //포장 : 1, 배달 : 2, 먹고가기 : 3
+    //api로 보낼떄 값
+
+    /// 0 : 배달, 1 : 포장, 2 : 먹고가기
+    // redux에 설정된 값
+    switch (deliveryType) {
+      case 0:
+        return 2;
+      case 1:
+        return 1;
+      case 2:
+        return 3;
+      default:
+        return;
+    }
+  };
+
   const _getCouponList = type => {
     const data = {
       mt_id: userInfo.mt_id,
@@ -176,11 +248,13 @@ const WriteOrderForm = ({navigation, route}) => {
       //점주는 보내고
       //동네북은 id, code 안보냄
       //store / system 시스템에는 보내지 말고 store에만 보냄
-      jumju_id: cartStore.currentStoreCode.jumju_id,
-      jumju_code: cartStore.currentStoreCode.code,
+      jumju_id:
+        type !== 'system' && cartStore.savedItem.savedStoreCode.jumju_id,
+      jumju_code: type !== 'system' && cartStore.savedItem.savedStoreCode.code,
       /////
 
       cp_gubun: type,
+      cp_type: _convertType(),
       // cp_type: 1 쿠폰 타입 포장, 배달, 먹고가기 전용 쿠폰만 나오도록
     };
 
@@ -188,7 +262,7 @@ const WriteOrderForm = ({navigation, route}) => {
       mb_id: cartStore.currentStoreCode.jumju_id,
       mb_jumju_code: cartStore.currentStoreCode.code,
     };
-    console.log('data', data);
+    // console.warn('data', data);
 
     mutateGetCoupon.mutate(data, {
       onSettled: e => {
@@ -224,8 +298,14 @@ const WriteOrderForm = ({navigation, route}) => {
       ...orderForm,
       od_coupon_id_store: storeCoupon?.cp_id ?? '',
       od_coupon_id_system: systemCoupon?.cp_id ?? '',
-      od_coupon_price_store: storeCoupon?.cp_price ?? '',
-      od_coupon_price_system: systemCoupon?.cp_price ?? '',
+      od_coupon_price_store:
+        storeCpType === '0'
+          ? storeCoupon?.cp_price ?? ''
+          : _getCpDiscount('store'),
+      od_coupon_price_system:
+        systemCpType === '0'
+          ? systemCoupon?.cp_price ?? ''
+          : _getCpDiscount('system'),
     });
   }, [storeCoupon, systemCoupon]);
 
@@ -562,7 +642,10 @@ const WriteOrderForm = ({navigation, route}) => {
                   <TextInput
                     editable={false}
                     value={
-                      storeCoupon.cp_price && `${'- ' + storeCoupon.cp_price}`
+                      storeCpPrice &&
+                      `${
+                        '- ' + storeCpPrice + (storeCpType === '1' ? '%' : '')
+                      }`
                     }
                     style={{...styles.inputContainer, marginLeft: 10}}
                   />
@@ -590,7 +673,10 @@ const WriteOrderForm = ({navigation, route}) => {
                   <TextInput
                     editable={false}
                     value={
-                      systemCoupon.cp_price && `${'- ' + systemCoupon.cp_price}`
+                      systemCpPrice &&
+                      `${
+                        '- ' + systemCpPrice + (systemCpType === '1' ? '%' : '')
+                      }`
                     }
                     style={{...styles.inputContainer, marginLeft: 10}}
                   />
@@ -641,7 +727,13 @@ const WriteOrderForm = ({navigation, route}) => {
                   {deliveryType === 2 ? '먹고가기 할인' : '포장할인'}
                 </TextRegular>
                 <TextRegular style={{}}>
-                  -{replaceString(deliveryData.take_out_discount)}
+                  -
+                  {replaceString(
+                    deliveryType === 2
+                      ? deliveryData.for_here_discount
+                      : deliveryData.take_out_discount,
+                  )}
+                  원
                 </TextRegular>
               </View>
             )}
@@ -650,7 +742,13 @@ const WriteOrderForm = ({navigation, route}) => {
                 점주 쿠폰 할인
               </TextRegular>
               <TextRegular style={{}}>
-                -{replaceString(storeCoupon?.cp_price) ?? 0}원
+                {/* -{replaceString(storeCoupon?.cp_price) ?? 0}원 */}-
+                {replaceString(
+                  storeCpType === '0'
+                    ? storeCoupon?.cp_price
+                    : _getCpDiscount('store'),
+                ) ?? 0}
+                원
               </TextRegular>
             </View>
             <View style={{...styles.paymentText}}>
@@ -658,7 +756,13 @@ const WriteOrderForm = ({navigation, route}) => {
                 동네북 쿠폰 할인
               </TextRegular>
               <TextRegular style={{}}>
-                -{replaceString(systemCoupon?.cp_price) ?? 0}원
+                -
+                {replaceString(
+                  systemCpType === '0'
+                    ? systemCoupon?.cp_price
+                    : _getCpDiscount('system'),
+                ) ?? 0}
+                원
               </TextRegular>
             </View>
             {/* 

@@ -26,11 +26,13 @@ import {customAlert} from '../../../component/CustomAlert';
 
 const SummitOrder = ({navigation, route}) => {
   const dispatch = useDispatch();
-  const {mutateDeliveryFee} = useCustomMutation();
+  const {mutateDeliveryFee, mutateStoreInfo} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
+  const [storeInfo, setStoreInfo] = useState();
   const {isDelivery, deliveryType} = useSelector(
     state => state.deliveryReducer,
   );
+  console.log('deliveryType', deliveryType);
   const [deliveryInfo, setDeliveryInfo] = useState();
   const _filterOption = prop => {
     const temp = prop.main.option;
@@ -42,6 +44,7 @@ const SummitOrder = ({navigation, route}) => {
 
     return arr;
   };
+  console.warn('deliveryType', route.params);
 
   const _getTotalPrice = isSummit => {
     let temp = 0;
@@ -118,7 +121,29 @@ const SummitOrder = ({navigation, route}) => {
   useEffect(() => {
     if (deliveryInfo) {
       console.log('path1 :::', deliveryInfo);
+      console.log('deliveryType', deliveryType);
       dispatch(setDeliveryData(deliveryInfo));
+    }
+  }, [deliveryInfo]);
+
+  useEffect(() => {
+    if (deliveryType == undefined && deliveryInfo) {
+      console.warn(deliveryInfo);
+      if (deliveryInfo.for_here === 'true') {
+        console.log(1);
+        dispatch(setDeliveryType(2));
+        return;
+      }
+      if (deliveryInfo.delivery === 'true') {
+        console.log(2);
+        dispatch(setDeliveryType(0));
+        return;
+      }
+      if (deliveryInfo.take_out === 'true') {
+        console.log(3);
+        dispatch(setDeliveryType(1));
+        return;
+      }
     }
   }, [deliveryInfo]);
 
@@ -304,7 +329,12 @@ const SummitOrder = ({navigation, route}) => {
               justifyContent: 'center',
             }}>
             <TextBold
-              style={{color: deliveryType === 2 ? 'white' : colors.fontColor2}}>
+              style={{
+                color:
+                  deliveryType === 2 || deliveryInfo?.for_here === 'false'
+                    ? 'white'
+                    : colors.fontColor2,
+              }}>
               먹고가기
             </TextBold>
           </Pressable>
@@ -312,8 +342,12 @@ const SummitOrder = ({navigation, route}) => {
           <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
             <Pressable
               onPress={() => {
-                dispatch(setDeliveryType(0));
-                dispatch(setIsDeliveryStore(true));
+                if (deliveryInfo?.delivery === 'true') {
+                  dispatch(setDeliveryType(0));
+                  dispatch(setIsDeliveryStore(true));
+                } else {
+                  customAlert('알림', '해당 가게는 배달을 지원하지 않습니다.');
+                }
               }}
               style={{
                 flex: 1,
@@ -327,7 +361,10 @@ const SummitOrder = ({navigation, route}) => {
               }}>
               <TextBold
                 style={{
-                  color: deliveryType === 0 ? 'white' : colors.fontColor2,
+                  color:
+                    deliveryType === 0 || deliveryInfo?.delivery === 'false'
+                      ? 'white'
+                      : colors.fontColor2,
                 }}>
                 배달
               </TextBold>
@@ -353,7 +390,10 @@ const SummitOrder = ({navigation, route}) => {
               }}>
               <TextBold
                 style={{
-                  color: deliveryType === 1 ? 'white' : colors.fontColor2,
+                  color:
+                    deliveryType === 1 || deliveryInfo?.take_out === 'false'
+                      ? 'white'
+                      : colors.fontColor2,
                 }}>
                 포장
               </TextBold>

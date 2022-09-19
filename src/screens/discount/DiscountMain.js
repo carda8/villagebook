@@ -32,7 +32,7 @@ const DiscountMain = ({navigation}) => {
   const [couponList, setCouponList] = useState();
 
   const renderItem = item => {
-    return <CouponTicket data={item} />;
+    return <CouponTicket data={item} navigation={navigation} />;
   };
 
   const {mutateGetCoupon} = useCustomMutation();

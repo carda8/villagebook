@@ -42,6 +42,8 @@ const Receipt = ({orderResult, isSummary}) => {
       (Number(orderData.od_send_cost) + Number(orderData.od_send_cost2)) -
       (Number(orderData.od_coupon_price_store) +
         Number(orderData.od_coupon_price_system) +
+        Number(summitedData.od_takeout_discount) +
+        Number(summitedData.od_for_here_discount) +
         Number(orderData.od_receipt_point));
     console.log('temp', temp);
     return temp;
@@ -134,7 +136,7 @@ const Receipt = ({orderResult, isSummary}) => {
               {orderData?.od_method === 'wrap' ? '포장할인' : '먹고가기 할인'}
             </TextRegular>
             <TextRegular style={{color: colors.primary}}>
-              - {replaceString(orderData?.od_take_out_discount)}원
+              - {replaceString(summitedData?.od_takeout_discount)}원
               {/* - {replaceString(summitedData?.od_takeout_discount)}원 */}
             </TextRegular>
           </View>

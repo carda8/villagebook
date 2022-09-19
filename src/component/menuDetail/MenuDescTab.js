@@ -50,7 +50,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
       onSettled: e => {
         if (e.result === 'true' && e.data.arrItems.length > 0)
           dispatch(setDeliveryInfo(e.data.arrItems));
-        console.log('e', e);
+        console.log('ee3', e);
       },
     });
   };
@@ -71,6 +71,26 @@ const MenuDescTab = ({info, navigation, routeData}) => {
     }
     if (type.do_take_out === true) {
       setTabIdx(2);
+      return;
+    }
+  }, []);
+
+  useEffect(() => {
+    // console.warn(' ++++++++++++++++++++++++++++++++++ ');
+    // 0 : 배달, 1 : 포장, 2 : 먹고가기
+    if (info.store_service.do_for_here) {
+      console.log(1);
+      dispatch(setDeliveryType(2));
+      return;
+    }
+    if (info.store_service.do_delivery) {
+      console.log(2);
+      dispatch(setDeliveryType(0));
+      return;
+    }
+    if (info.store_service.do_take_out) {
+      console.log(3);
+      dispatch(setDeliveryType(1));
       return;
     }
   }, []);

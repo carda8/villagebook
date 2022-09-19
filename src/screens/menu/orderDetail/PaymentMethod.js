@@ -39,6 +39,7 @@ const PaymentMethod = ({navigation, route}) => {
           select={routeData.select}
           type={routeData.type}
           navigation={navigation}
+          useCoupon={routeData?.useCoupon}
         />
       </>
     );
@@ -57,7 +58,11 @@ const PaymentMethod = ({navigation, route}) => {
               <View style={{marginTop: '40%', marginHorizontal: 22}}>
                 <Image
                   source={require('~/assets/no_coupon.png')}
-                  style={{height: layout.width, width: '100%'}}
+                  style={{
+                    height: layout.width,
+                    width: '70%',
+                    alignSelf: 'center',
+                  }}
                   resizeMode="contain"
                 />
               </View>

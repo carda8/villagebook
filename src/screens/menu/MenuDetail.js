@@ -826,14 +826,18 @@ const MenuDetail = ({navigation, route}) => {
       {savedItem.savedItems.length > 0 && (
         <Pressable
           onPress={() => {
-            navigation.navigate('SummitOrder', {data: StoreInfo});
+            StoreInfo.isOpen
+              ? navigation.navigate('SummitOrder', {data: StoreInfo})
+              : null;
           }}
           style={{
             position: 'absolute',
             top: layout.height - 60,
             height: 60,
             width: '100%',
-            backgroundColor: colors.primary,
+            backgroundColor: StoreInfo.isOpen
+              ? colors.primary
+              : colors.borderColor,
             justifyContent: 'center',
           }}>
           <View
@@ -842,44 +846,52 @@ const MenuDetail = ({navigation, route}) => {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'flex-start',
-                justifyContent: 'center',
-              }}>
+            {StoreInfo.isOpen && (
               <View
                 style={{
-                  backgroundColor: 'white',
-                  width: 30,
-                  height: 30,
-                  borderRadius: 30 / 2,
-                  marginLeft: 30,
-                  alignItems: 'center',
+                  flex: 1,
+                  alignItems: 'flex-start',
                   justifyContent: 'center',
                 }}>
-                <TextBold
+                <View
                   style={{
-                    fontSize: 16,
-                    color: colors.primary,
-                    includeFontPadding: false,
+                    backgroundColor: 'white',
+                    width: 30,
+                    height: 30,
+                    borderRadius: 30 / 2,
+                    marginLeft: 30,
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  {savedItem.savedItems.length > 9
-                    ? '9+'
-                    : savedItem.savedItems.length}
+                  <TextBold
+                    style={{
+                      fontSize: 16,
+                      color: colors.primary,
+                      includeFontPadding: false,
+                    }}>
+                    {savedItem.savedItems.length > 9
+                      ? '9+'
+                      : savedItem.savedItems.length}
+                  </TextBold>
+                </View>
+              </View>
+            )}
+
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <TextBold style={{fontSize: 18, color: 'white'}}>
+                {StoreInfo.isOpen
+                  ? '카트 확인하기'
+                  : '동네사람들을 만날 준비 중이에요!'}
+              </TextBold>
+            </View>
+
+            {StoreInfo.isOpen && (
+              <View style={{flex: 1, alignItems: 'center'}}>
+                <TextBold style={{fontSize: 16, color: 'white'}}>
+                  {replaceString(_calcTotalPrice())}원
                 </TextBold>
               </View>
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <TextBold style={{fontSize: 16, color: 'white'}}>
-                카트 확인하기
-              </TextBold>
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <TextBold style={{fontSize: 16, color: 'white'}}>
-                {replaceString(_calcTotalPrice())}원
-              </TextBold>
-            </View>
+            )}
           </View>
         </Pressable>
       )}

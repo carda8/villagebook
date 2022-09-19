@@ -3,6 +3,7 @@ import {Alert} from 'react-native';
 export const customAlert = (
   title,
   text,
+  onPress,
   btnTitle,
   btnPress,
   btnSubTitle,
@@ -16,6 +17,6 @@ export const customAlert = (
           {text: btnTitle, onPress: btnPress},
           {text: btnSubTitle, onPress: btnSubPress},
         ]
-      : [{text: '확인', onPress: () => {}}],
+      : [{text: '확인', onPress: onPress ? onPress : () => {}}],
   );
 };

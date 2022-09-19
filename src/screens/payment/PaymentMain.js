@@ -90,6 +90,8 @@ const PaymentMain = ({navigation, route}) => {
 
       od_receipt_point: orderForm.od_receipt_point,
       od_takeout_discount: orderForm.od_takeout_discount,
+      od_for_here_discount: orderForm.od_for_here_discount,
+
       od_coupon_id_system: '',
       od_coupon_id_store: '',
       od_coupon_price_system: orderForm.od_coupon_price_system,
