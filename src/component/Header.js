@@ -101,7 +101,7 @@ const Header = ({
             // backgroundColor: `rgba(255,255,255,0)`,
             alignItems: 'center',
             flexDirection: 'row',
-            paddingHorizontal: 22,
+            paddingHorizontal: 14,
           },
           style,
         ]}

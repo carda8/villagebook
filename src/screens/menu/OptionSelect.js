@@ -108,13 +108,15 @@ const OptionSelect = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header
-        title={''}
-        navigation={navigation}
-        fadeTitle={DetailInfo.it_name}
-        style={{position: 'absolute', zIndex: 500}}
-        isOption={true}
-      />
+      <View style={{zIndex: 500}}>
+        <Header
+          title={''}
+          navigation={navigation}
+          fadeTitle={DetailInfo.it_name}
+          style={{position: 'absolute', zIndex: 500}}
+          isOption={true}
+        />
+      </View>
       {console.log('option selec data', route.params)}
       <CartButton navigation={navigation} data={routeData} isOption />
       {/* <SectionList sections={convertedData} renderItem={item => <></>} /> */}
@@ -153,7 +155,8 @@ const OptionSelect = ({navigation, route}) => {
                 marginTop: 10,
                 borderTopWidth: 1,
                 borderColor: colors.borderColor,
-              }}>
+              }}
+            >
               <View
                 style={{
                   paddingHorizontal: 22,
@@ -161,7 +164,8 @@ const OptionSelect = ({navigation, route}) => {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                }}>
+                }}
+              >
                 <TextBold style={{fontSize: 16, color: colors.fontColor2}}>
                   가격
                 </TextBold>
@@ -183,7 +187,8 @@ const OptionSelect = ({navigation, route}) => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <TextBold style={{color: colors.fontColor2}}>수량</TextBold>
             <OptionCount price={DetailInfo.it_price} />
           </View>
@@ -204,7 +209,8 @@ const OptionSelect = ({navigation, route}) => {
               borderColor: colors.borderColor,
               paddingHorizontal: 22,
               paddingVertical: 15,
-            }}>
+            }}
+          >
             <TextBold style={{color: colors.fontColor2}}>
               {option_subject || supply_subject}
               {required ? ' (필수)' : ' (선택)'}
