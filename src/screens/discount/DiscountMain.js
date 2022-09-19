@@ -32,7 +32,7 @@ const DiscountMain = ({navigation}) => {
   const [couponList, setCouponList] = useState();
 
   const renderItem = item => {
-    return <CouponTicket data={item} />;
+    return <CouponTicket data={item} navigation={navigation} />;
   };
 
   const {mutateGetCoupon} = useCustomMutation();
@@ -132,7 +132,7 @@ const DiscountMain = ({navigation}) => {
           marginVertical: 20,
         }}
         ListHeaderComponent={
-          <View style={{paddingHorizontal: 22, marginTop: 26}}>
+          <View style={{paddingHorizontal: 14, marginTop: 26}}>
             <View
               style={{
                 flexDirection: 'row',

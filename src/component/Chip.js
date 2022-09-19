@@ -4,13 +4,13 @@ import colors from '../styles/colors';
 
 const Chip = ({newStore, coupon, takeout}) => {
   return (
-    <View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 3}}>
+    <View style={{flexDirection: 'row', alignSelf: 'flex-end', marginTop: 5}}>
       {newStore && (
         <View
           style={{
             width: 42,
             height: 22,
-            borderRadius: 12,
+            borderRadius: 5,
             backgroundColor: 'rgba(252,134,0, 0.1)',
             justifyContent: 'center',
             alignItems: 'center',
@@ -31,7 +31,7 @@ const Chip = ({newStore, coupon, takeout}) => {
           style={{
             width: 42,
             height: 22,
-            borderRadius: 12,
+            borderRadius: 5,
             backgroundColor: 'rgba(32,171,200, 0.1)',
             justifyContent: 'center',
             alignItems: 'center',
@@ -48,7 +48,7 @@ const Chip = ({newStore, coupon, takeout}) => {
         </View>
       )}
 
-      {takeout && (
+      {/* {takeout && (
         <View
           style={{
             width: 42,
@@ -68,7 +68,7 @@ const Chip = ({newStore, coupon, takeout}) => {
             포장
           </Text>
         </View>
-      )}
+      )} */}
     </View>
   );
 };

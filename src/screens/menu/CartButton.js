@@ -35,10 +35,12 @@ const CartButton = ({
   deliveryInfo,
   data,
   isLoading,
+  isOption,
 }) => {
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
   const {isGuest} = useSelector(state => state.authReducer);
+  const {deliveryType} = useSelector(state => state.deliveryReducer);
 
   const {mutateDeliveryFee} = useCustomMutation();
   // const payStore = useSelector(state => state.paymentReducer);
@@ -210,20 +212,28 @@ const CartButton = ({
       if (data.store_logo) dispatch(setStoreLogo(data.store_logo));
     }
   };
-
+  console.log('dil:::::::::::::::::::::::', deliveryInfo);
   const _checkMin = () => {
     const price = Number(String(lastPrice).replace(/[,]/gi, ''));
-    if (isDelivery) {
-      if (price < deliveryInfo.min_price) {
-        customAlert('알림', '배달주문 금액이 최소주문금액 보다 작습니다.');
-        return false;
-      } else return true;
-    } else {
-      if (price < deliveryInfo.min_price_wrap) {
-        customAlert('알림', '포장주문 금액이 최소주문금액 보다 작습니다.');
-        return false;
-      } else return true;
-    }
+    if (!isOption) {
+      if (deliveryType === 0) {
+        if (price < deliveryInfo?.min_price) {
+          // customAlert('알림', '배달주문 금액이 최소주문금액 보다 작습니다.');
+          return false;
+        } else return true;
+      } else if (deliveryType === 1) {
+        if (price < deliveryInfo?.min_price_wrap) {
+          // customAlert('알림', '포장주문 금액이 최소주문금액 보다 작습니다.');
+          return false;
+        } else return true;
+      } else if (deliveryType === 2) {
+        // customAlert('알림', '먹고가기 금액이 최소주문금액 보다 작습니다.');
+        if (price < deliveryInfo?.min_price_for_here) {
+          // customAlert('알림', '포장주문 금액이 최소주문금액 보다 작습니다.');
+          return false;
+        } else return true;
+      }
+    } else return true;
   };
 
   const _goToOrderPage = () => {
@@ -262,14 +272,18 @@ const CartButton = ({
   return (
     <Pressable
       onPress={() => {
-        if (!isGuest) {
-          _router();
-        } else {
-          _guestAlert(navigation);
+        if (_checkMin()) {
+          if (!isGuest) {
+            _router();
+          } else {
+            _guestAlert(navigation);
+          }
         }
       }}
-      style={{...style.btnContainer}}
-    >
+      style={{
+        ...style.btnContainer,
+        backgroundColor: _checkMin() ? colors.primary : colors.borderColor,
+      }}>
       <View style={{...style.innerView}}>
         <View style={{flex: 1}} />
         <View style={{flex: 1, alignItems: 'center'}}>
@@ -301,7 +315,6 @@ const style = StyleSheet.create({
     height: 60,
     bottom: 0,
     zIndex: 100,
-    backgroundColor: colors.primary,
     justifyContent: 'center',
   },
   innerView: {

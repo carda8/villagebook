@@ -272,12 +272,13 @@ const LikeMain = ({navigation}) => {
               borderBottomWidth: tabIdx === 0 ? 2 : 0,
               ...styles.tabItem,
             }}>
-            <Text
+            <TextBold
               style={{
+                fontSize: 16,
                 color: tabIdx === 0 ? colors.fontColor2 : colors.fontColorA2,
               }}>
               맛집
-            </Text>
+            </TextBold>
           </View>
         </Pressable>
         <Pressable
@@ -294,12 +295,13 @@ const LikeMain = ({navigation}) => {
               borderBottomWidth: tabIdx === 1 ? 2 : 0,
               ...styles.tabItem,
             }}>
-            <Text
+            <TextBold
               style={{
+                fontSize: 16,
                 color: tabIdx === 1 ? colors.fontColor2 : colors.fontColorA2,
               }}>
               마켓
-            </Text>
+            </TextBold>
           </View>
         </Pressable>
         <Pressable
@@ -316,12 +318,13 @@ const LikeMain = ({navigation}) => {
               borderBottomWidth: tabIdx === 2 ? 2 : 0,
               ...styles.tabItem,
             }}>
-            <Text
+            <TextBold
               style={{
+                fontSize: 16,
                 color: tabIdx === 2 ? colors.fontColor2 : colors.fontColorA2,
               }}>
-              편의
-            </Text>
+              동네정보
+            </TextBold>
           </View>
         </Pressable>
       </View>

@@ -270,7 +270,7 @@ const OrderSumary = ({navigation, route}) => {
                 동네북쿠폰 할인
               </TextRegular>
               <TextRegular style={{color: colors.primary}}>
-                - {replaceString(orderData.data.order.order_coupon_ohjoo)}원
+                - {replaceString(orderData.data.order.order_coupon_system)}원
               </TextRegular>
             </View>
 

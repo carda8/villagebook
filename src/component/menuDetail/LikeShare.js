@@ -34,11 +34,11 @@ const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
   const _onPressLike = () => {
     if (like === 'Y') {
       setLike('N');
-      if (categoryMain === 'lifestyle') setLikeNum(Number(likeNum) - 1);
+      setLikeNum(Number(likeNum) - 1);
     }
     if (like === 'N') {
       setLike('Y');
-      if (categoryMain === 'lifestyle') setLikeNum(Number(likeNum) + 1);
+      setLikeNum(Number(likeNum) + 1);
     }
     _setLikeStore();
   };
@@ -85,8 +85,7 @@ const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
     <View
       style={{
         flexDirection: 'row',
-      }}
-    >
+      }}>
       <Pressable
         hitSlop={10}
         onPress={() => {
@@ -96,8 +95,7 @@ const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
             _guestAlert(navigation);
           }
         }}
-        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}
-      >
+        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}>
         <Image
           source={
             like === 'Y'
@@ -106,11 +104,9 @@ const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
           }
           style={{width: 30, height: 30}}
         />
-        {categoryMain === 'lifestyle' && (
-          <TextSBold style={{fontSize: 16, color: colors.fontColor2}}>
-            {likeNum}
-          </TextSBold>
-        )}
+        <TextSBold style={{fontSize: 16, color: colors.fontColor2}}>
+          {likeNum}
+        </TextSBold>
       </Pressable>
       <Pressable
         hitSlop={10}
@@ -120,8 +116,7 @@ const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={require('~/assets/top_share_w.png')}
           style={{width: 30, height: 30, tintColor: 'black'}}

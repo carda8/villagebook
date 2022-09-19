@@ -6,9 +6,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {
   setIsLoading,
+  setResultCount,
   setSearchResult,
   setType,
 } from '../../store/reducers/SearchReducer';
+import {
+  setKeywordSub,
+  setResultCountSub,
+} from '../../store/reducers/SearchReducerSub';
 import colors from '../../styles/colors';
 import {customAlert} from '../CustomAlert';
 import Loading from '../Loading';
@@ -17,34 +22,51 @@ import TextBold from '../text/TextBold';
 const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
   const dispatch = useDispatch();
   const [keyword, setKeyword] = useState('');
-  const {mutateSearch} = useCustomMutation();
+  const {mutateSearch, mutateSearchLifeStyle} = useCustomMutation();
   const {currentLocation} = useSelector(state => state.locationReducer);
   const search = useSelector(state => state.searchReducer);
-  const list = ['food', 'market', 'lifestyle'];
+  const list = ['lifestyle', 'food', 'market'];
+
   // const _pressSearch = () => {
   //   if (!isMain && !isSub) setModal(true);
   // };
-  console.log('props,', isSub, category);
+  // console.log('props,', isSub, category);
   const limitItem = useRef(0);
 
-  const _getResult = async data => {
+  const _getResult = async (data, index) => {
     let result;
-    result = await mutateSearch.mutateAsync(data, {
-      onSettled: e => {
-        if (e.result === 'true') {
-          console.log('e', e);
-        }
-      },
-    });
-    let temp = result.data.arrItems;
-    temp = temp.filter(item => item !== null);
-    return temp;
+    if (index === 0) {
+      result = await mutateSearchLifeStyle.mutateAsync(data, {
+        onSettled: e => {
+          if (e.result === 'true') {
+            console.log('mutateSearchLifeStyle', e);
+            console.warn(e.data.resultItem.countItem);
+            dispatch(setResultCountSub(e.data.resultItem.countItem));
+          }
+        },
+      });
+      let temp = result.data.arrItems;
+      temp = temp.filter(item => item !== null);
+      return temp;
+    } else {
+      result = await mutateSearch.mutateAsync(data, {
+        onSettled: e => {
+          if (e.result === 'true') {
+            console.log('mutateSearch', e);
+          }
+        },
+      });
+      let temp = result.data.arrItems;
+      temp = temp.filter(item => item !== null);
+      return temp;
+    }
   };
 
   const _search = type => {
     if (!keyword.trim()) return customAlert('알림', '검색어를 입력해주세요');
     dispatch(setIsLoading(true));
-    dispatch(setType({type: type, keyword: keyword}));
+    dispatch(setType({type: type}));
+    dispatch(setKeywordSub({keyword: keyword}));
     list.map(async (item, index) => {
       const data = {
         item_count: limitItem.current,
@@ -54,8 +76,10 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
         mb_lat: currentLocation.lat,
         mb_lng: currentLocation.lon,
       };
-      let temp = await _getResult(data);
-      console.log('temp', temp);
+      console.log('ITEM:::::', item);
+      console.warn(data);
+      let temp = await _getResult(data, index);
+      console.log('_search :::::', temp);
       dispatch(setSearchResult({type: item, item: temp}));
     });
     console.log('route', route);
@@ -65,6 +89,9 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
   useEffect(() => {
     if (mutateSearch.isLoading) dispatch(setIsLoading(true));
     else dispatch(setIsLoading(false));
+    return () => {
+      setKeyword('');
+    };
   }, [mutateSearch.isLoading]);
 
   return (

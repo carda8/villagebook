@@ -116,7 +116,7 @@ const OptionSelect = ({navigation, route}) => {
         isOption={true}
       />
       {console.log('option selec data', route.params)}
-      <CartButton navigation={navigation} data={routeData} />
+      <CartButton navigation={navigation} data={routeData} isOption />
       {/* <SectionList sections={convertedData} renderItem={item => <></>} /> */}
 
       <SectionList

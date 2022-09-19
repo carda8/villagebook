@@ -107,7 +107,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
               justifyContent: 'space-between',
             }}>
             <View style={{flex: 1}}>
-              <TextBold style={{fontSize: 22}}>
+              <TextBold style={{fontSize: 26}}>
                 {storeInfo.mb_biz_name ?? storeInfo.mb_company}
               </TextBold>
             </View>
@@ -142,7 +142,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                   <Text
                     style={{
                       fontWeight: 'bold',
-                      fontSize: 17,
+                      fontSize: 18,
                       color: colors.primary,
                     }}>
                     전화하기
@@ -329,6 +329,8 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 }
               }}
               style={{
+                borderWidth: 1,
+                borderColor: colors.borderColor,
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: colors.couponBG,
@@ -340,7 +342,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
               <Text
                 style={{
                   fontWeight: 'bold',
-                  fontSize: 15,
+                  fontSize: 17,
                   color: colors.primary,
                 }}>
                 이 매장의 할인 쿠폰받기
@@ -353,22 +355,35 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: 'white',
+                backgroundColor: colors.couponBG,
                 borderWidth: 1,
                 borderColor: colors.borderColor,
-                marginHorizontal: 22,
                 height: 50,
                 borderRadius: 8,
                 marginTop: 7,
+                marginBottom: 20,
+                flexDirection: 'row',
+                marginHorizontal: 22,
               }}>
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: 15,
-                  color: colors.fontColorA2,
-                }}>
-                전화하기
-              </Text>
+              <View style={{flex: 1.6, alignItems: 'center'}}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 18,
+                    color: colors.primary,
+                  }}>
+                  전화하기
+                </Text>
+              </View>
+              <View style={{flex: 2}}>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    color: colors.primary,
+                  }}>
+                  동네북보고 전화했어요.{'\n'}라고 말하면 문의가 빨라요
+                </Text>
+              </View>
             </Pressable>
             <MenuDescTab
               info={storeInfo}

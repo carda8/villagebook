@@ -80,6 +80,7 @@ const MenuDetail = ({navigation, route}) => {
     const data = {
       jumju_id: routeData.jumju_id,
       jumju_code: routeData.jumju_code,
+      jumju_type: routeData.category,
       mt_id: userInfo.mt_id,
     };
     console.log('_init data', data);
@@ -190,12 +191,12 @@ const MenuDetail = ({navigation, route}) => {
   const StoreBreakeTimes = StoreServiceTime?.serviceBreakTime[0];
   const StoreService = mutateGetStoreService.data.data.arrItems;
 
-  // console.log('StoreInfo', StoreInfo);
+  // console.warn('StoreInfo', StoreInfo);
   // console.log('StoreTopMenu', StoreTopMenu);
   // console.log('StoreTopMenu', StoreAllMenu);
 
   const _pressMenu = item => {
-    if (StoreInfo.isOpen === 'N')
+    if (StoreInfo.isOpen === false)
       return customAlert('알림', '현재 가게는 오픈 준비중 입니다.');
     navigation.navigate('OptionSelect', {
       it_id: item.it_id,
@@ -272,14 +273,16 @@ const MenuDetail = ({navigation, route}) => {
           info={mutateStoreInfo.data}
           navigation={navigation}
           routeData={routeData}
+          likeCount={StoreInfo.mb_zzim_count}
         />
         <View>
           {/* 메뉴, 정보, 리뷰 탭 */}
           <View
             style={{
               flexDirection: 'row',
-              borderTopColor: colors.borderColor,
+              // borderTopColor: colors.borderColor,
               height: 50,
+              zIndex: 1000,
             }}>
             <Pressable
               style={{
@@ -294,11 +297,12 @@ const MenuDetail = ({navigation, route}) => {
                 borderTopColor:
                   index === 0 ? colors.borderColor22 : colors.borderColor,
                 borderBottomColor: colors.borderColor,
+                zIndex: 1000,
               }}
               onPress={() => {
                 setIndex(0);
               }}>
-              <TextMedium style={{fontSize: 14}}>메뉴</TextMedium>
+              <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
             </Pressable>
             <Pressable
               style={{
@@ -319,7 +323,7 @@ const MenuDetail = ({navigation, route}) => {
               onPress={() => {
                 setIndex(1);
               }}>
-              <TextMedium style={{fontSize: 14}}>정보</TextMedium>
+              <TextMedium style={{fontSize: 17}}>정보</TextMedium>
             </Pressable>
             <Pressable
               style={{
@@ -338,26 +342,26 @@ const MenuDetail = ({navigation, route}) => {
               onPress={() => {
                 setIndex(2);
               }}>
-              <TextMedium style={{fontSize: 14}}>리뷰</TextMedium>
+              <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
             </Pressable>
           </View>
 
           <View
             style={{
               height: index === 0 ? 'auto' : 0,
-              // top: 50,
+              top: -1,
               // position: 'absolute',
+              zIndex: 500,
               opacity: trigger && index === 0 ? 1 : 0,
               // zIndex: trigger && index === 0 ? 1000 : -1,
-              zIndex: 200,
               backgroundColor: 'white',
               minWidth: layout.width,
-              // zIndex: 100,
               // paddingTop: 30,
             }}>
             <ScrollView
               horizontal
               ref={scrollRefSub}
+              // contentContainerStyle={{backgroundColor: 'white'}}
               showsHorizontalScrollIndicator={false}>
               {mutateAllMunu.data.data.arrItems?.map((item, index) => (
                 <Pressable
@@ -369,7 +373,7 @@ const MenuDetail = ({navigation, route}) => {
                       scrollRef.current,
                       (left, top, width, height) => {
                         scrollRef.current.scrollTo({
-                          y: top - 160,
+                          y: top - 150,
                           animated: true,
                         });
                         console.log('position', left, top, width, height);
@@ -389,23 +393,29 @@ const MenuDetail = ({navigation, route}) => {
                     setSelected({idx: index, isScrolling: false});
                   }}
                   style={{
-                    height: 40,
+                    height: 34,
                     // width: chipWidth,
                     minWidth: 67,
-                    backgroundColor: 'white',
+                    backgroundColor:
+                      selected.idx === index ? colors.primary : 'white',
                     borderWidth: 1,
                     borderColor:
-                      selected.idx === index
-                        ? colors.chipBorder
-                        : colors.colorE3,
+                      selected.idx === index ? 'white' : colors.colorE3,
                     marginVertical: 10,
                     paddingHorizontal: 5,
                     marginHorizontal: 5,
-                    borderRadius: 30,
+                    borderRadius: 10,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <TextMedium style={{fontSize: 14}}>{item.ca_name}</TextMedium>
+                  <TextMedium
+                    style={{
+                      fontSize: 14,
+                      color:
+                        selected.idx === index ? 'white' : colors.fontColor2,
+                    }}>
+                    {item.ca_name}
+                  </TextMedium>
                 </Pressable>
               ))}
             </ScrollView>
@@ -816,14 +826,18 @@ const MenuDetail = ({navigation, route}) => {
       {savedItem.savedItems.length > 0 && (
         <Pressable
           onPress={() => {
-            navigation.navigate('SummitOrder', {data: StoreInfo});
+            StoreInfo.isOpen
+              ? navigation.navigate('SummitOrder', {data: StoreInfo})
+              : null;
           }}
           style={{
             position: 'absolute',
             top: layout.height - 60,
             height: 60,
             width: '100%',
-            backgroundColor: colors.primary,
+            backgroundColor: StoreInfo.isOpen
+              ? colors.primary
+              : colors.borderColor,
             justifyContent: 'center',
           }}>
           <View
@@ -832,44 +846,52 @@ const MenuDetail = ({navigation, route}) => {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'flex-start',
-                justifyContent: 'center',
-              }}>
+            {StoreInfo.isOpen && (
               <View
                 style={{
-                  backgroundColor: 'white',
-                  width: 30,
-                  height: 30,
-                  borderRadius: 30 / 2,
-                  marginLeft: 30,
-                  alignItems: 'center',
+                  flex: 1,
+                  alignItems: 'flex-start',
                   justifyContent: 'center',
                 }}>
-                <TextBold
+                <View
                   style={{
-                    fontSize: 16,
-                    color: colors.primary,
-                    includeFontPadding: false,
+                    backgroundColor: 'white',
+                    width: 30,
+                    height: 30,
+                    borderRadius: 30 / 2,
+                    marginLeft: 30,
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  {savedItem.savedItems.length > 9
-                    ? '9+'
-                    : savedItem.savedItems.length}
+                  <TextBold
+                    style={{
+                      fontSize: 16,
+                      color: colors.primary,
+                      includeFontPadding: false,
+                    }}>
+                    {savedItem.savedItems.length > 9
+                      ? '9+'
+                      : savedItem.savedItems.length}
+                  </TextBold>
+                </View>
+              </View>
+            )}
+
+            <View style={{flex: 1, alignItems: 'center'}}>
+              <TextBold style={{fontSize: 18, color: 'white'}}>
+                {StoreInfo.isOpen
+                  ? '카트 확인하기'
+                  : '동네사람들을 만날 준비 중이에요!'}
+              </TextBold>
+            </View>
+
+            {StoreInfo.isOpen && (
+              <View style={{flex: 1, alignItems: 'center'}}>
+                <TextBold style={{fontSize: 16, color: 'white'}}>
+                  {replaceString(_calcTotalPrice())}원
                 </TextBold>
               </View>
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <TextBold style={{fontSize: 16, color: 'white'}}>
-                카트 확인하기
-              </TextBold>
-            </View>
-            <View style={{flex: 1, alignItems: 'center'}}>
-              <TextBold style={{fontSize: 16, color: 'white'}}>
-                {replaceString(_calcTotalPrice())}원
-              </TextBold>
-            </View>
+            )}
           </View>
         </Pressable>
       )}

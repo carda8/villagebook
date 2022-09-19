@@ -8,7 +8,7 @@ const searchSlice = createSlice({
     marketResult: [],
     lifestyleResult: [],
     type: '',
-    keyword: '',
+    resultCount: {},
     isLoading: false,
   },
   reducers: {
@@ -16,7 +16,7 @@ const searchSlice = createSlice({
       switch (action.payload.type) {
         case 'food':
           state.foodResult = action.payload.item;
-          // console.log(action.payload);
+          // console.warn(action.payload);
           break;
         case 'market':
           state.marketResult = action.payload.item;
@@ -32,14 +32,16 @@ const searchSlice = createSlice({
     },
     setType: (state, action) => {
       state.type = action.payload.type;
-      state.keyword = action.payload.keyword;
     },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
+    },
+    setResultCount: (state, action) => {
+      state.resultCount = action.payload;
     },
   },
 });
 
 const {actions, reducer} = searchSlice;
-export const {setSearchResult, setType, setIsLoading} = actions;
+export const {setSearchResult, setType, setIsLoading, setResultCount} = actions;
 export const searchReducer = reducer;
