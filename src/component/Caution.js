@@ -52,15 +52,18 @@ const Caution = () => {
               style={{
                 paddingHorizontal: 22,
                 paddingVertical: 20,
+                paddingBottom: 60,
                 backgroundColor: colors.inputBoxBG,
-              }}>
+              }}
+            >
               <TextNotoB
                 style={{
                   fontSize: 14,
                   color: colors.fontColor3,
                   includeFontPadding: false,
                   marginBottom: 7,
-                }}>
+                }}
+              >
                 {_convertTitle(item)}
               </TextNotoB>
               {info[`${item}`]?.map((item2, index2) => (
@@ -70,7 +73,8 @@ const Caution = () => {
                     fontSize: 13,
                     color: colors.fontColor8,
                     includeFontPadding: false,
-                  }}>
+                  }}
+                >
                   {item2}
                 </TextNotoR>
               ))}

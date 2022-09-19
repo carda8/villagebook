@@ -177,13 +177,14 @@ const SummitOrder = ({navigation, route}) => {
         data={route.params?.data}
         isLoading={mutateDeliveryFee.isLoading}
       />
-      <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+      <ScrollView contentContainerStyle={{}}>
         <View
           style={{
             paddingHorizontal: 22,
             alignItems: 'center',
             paddingTop: 20,
-          }}>
+          }}
+        >
           <Image
             source={{uri: cartStore.storeLogoUrl}}
             style={{
@@ -210,9 +211,11 @@ const SummitOrder = ({navigation, route}) => {
                 borderRadius: 5,
                 borderColor: colors.borderColor,
                 marginBottom: 10,
-              }}>
+              }}
+            >
               <View
-                style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
+                style={{flexDirection: 'row', alignItems: 'center', flex: 1}}
+              >
                 <View style={{flex: 1}}>
                   <TextBold>
                     {item.main.menuName}
@@ -231,7 +234,8 @@ const SummitOrder = ({navigation, route}) => {
                     // );
                     // console.log('temp arr', temp);
                     dispatch(removeItem({index: index}));
-                  }}>
+                  }}
+                >
                   <Image
                     source={require('~/assets/pop_close.png')}
                     style={{width: 20, height: 20}}
@@ -243,7 +247,8 @@ const SummitOrder = ({navigation, route}) => {
                 item.sub.map((item, index) => (
                   <TextRegular
                     key={index}
-                    style={{fontSize: 12, color: colors.fontColorA}}>
+                    style={{fontSize: 12, color: colors.fontColorA}}
+                  >
                     {item.itemCategory +
                       ' / ' +
                       item.itemName +
@@ -263,7 +268,8 @@ const SummitOrder = ({navigation, route}) => {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   marginTop: 10,
-                }}>
+                }}
+              >
                 <TextBold>
                   {replaceString(
                     cartStore.savedItem.savedItems[index].totalPrice,
@@ -295,7 +301,8 @@ const SummitOrder = ({navigation, route}) => {
               flexDirection: 'row',
               alignItems: 'center',
               marginVertical: 20,
-            }}>
+            }}
+          >
             <Image
               source={require('~/assets/ico_plus.png')}
               style={{width: 20, height: 20}}
@@ -327,14 +334,16 @@ const SummitOrder = ({navigation, route}) => {
                 deliveryType === 2 ? colors.primary : colors.inputBoxBG,
               alignItems: 'center',
               justifyContent: 'center',
-            }}>
+            }}
+          >
             <TextBold
               style={{
                 color:
                   deliveryType === 2 || deliveryInfo?.for_here === 'false'
                     ? 'white'
                     : colors.fontColor2,
-              }}>
+              }}
+            >
               먹고가기
             </TextBold>
           </Pressable>
@@ -358,14 +367,16 @@ const SummitOrder = ({navigation, route}) => {
                 marginRight: 10,
                 backgroundColor:
                   deliveryType === 0 ? colors.primary : colors.inputBoxBG,
-              }}>
+              }}
+            >
               <TextBold
                 style={{
                   color:
                     deliveryType === 0 || deliveryInfo?.delivery === 'false'
                       ? 'white'
                       : colors.fontColor2,
-                }}>
+                }}
+              >
                 배달
               </TextBold>
             </Pressable>
@@ -387,14 +398,16 @@ const SummitOrder = ({navigation, route}) => {
                   deliveryType === 1 ? colors.primary : colors.inputBoxBG,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               <TextBold
                 style={{
                   color:
                     deliveryType === 1 || deliveryInfo?.take_out === 'false'
                       ? 'white'
                       : colors.fontColor2,
-                }}>
+                }}
+              >
                 포장
               </TextBold>
             </Pressable>
@@ -407,7 +420,8 @@ const SummitOrder = ({navigation, route}) => {
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                  }}>
+                  }}
+                >
                   <TextRegular>배달팁</TextRegular>
                   <TextRegular>
                     {replaceString(deliveryInfo?.send_cost)}원
@@ -418,7 +432,8 @@ const SummitOrder = ({navigation, route}) => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     marginVertical: 10,
-                  }}>
+                  }}
+                >
                   <TextRegular>추가 배달팁</TextRegular>
                   <TextRegular>
                     {replaceString(deliveryInfo?.send_cost2)}원
@@ -432,7 +447,8 @@ const SummitOrder = ({navigation, route}) => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     marginVertical: 10,
-                  }}>
+                  }}
+                >
                   <TextRegular>포장할인</TextRegular>
                   <TextRegular>
                     {replaceString(deliveryInfo?.take_out_discount)}원
@@ -446,7 +462,8 @@ const SummitOrder = ({navigation, route}) => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     marginVertical: 10,
-                  }}>
+                  }}
+                >
                   <TextRegular>먹고가기 할인</TextRegular>
                   <TextRegular>
                     {replaceString(deliveryInfo?.for_here_discount)}원
@@ -456,14 +473,16 @@ const SummitOrder = ({navigation, route}) => {
             )}
 
             <View
-              style={{height: 1, backgroundColor: colors.borderColor}}></View>
+              style={{height: 1, backgroundColor: colors.borderColor}}
+            ></View>
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginTop: 20,
                 marginBottom: 10,
-              }}>
+              }}
+            >
               <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
               <TextBold style={{fontSize: 18}}>
                 {replaceString(_getTotalPrice(true))}
@@ -474,7 +493,8 @@ const SummitOrder = ({navigation, route}) => {
                 alignSelf: 'flex-end',
                 marginBottom: 20,
                 flexDirection: 'row',
-              }}>
+              }}
+            >
               <TextMedium style={{fontSize: 12}}>최소주문금액 : </TextMedium>
               <TextMedium style={{fontSize: 12}}>
                 {replaceString(_getMinPrice())}

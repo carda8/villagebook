@@ -283,11 +283,14 @@ const CartButton = ({
       style={{
         ...style.btnContainer,
         backgroundColor: _checkMin() ? colors.primary : colors.borderColor,
-      }}>
+      }}
+    >
       <View style={{...style.innerView}}>
         <View style={{flex: 1}} />
         <View style={{flex: 1, alignItems: 'center'}}>
-          <TextBold style={{color: 'white', fontSize: 16}}>
+          <TextBold
+            style={{color: _checkMin() ? 'white' : 'gray', fontSize: 16}}
+          >
             {goTo === 'OrderPage'
               ? '주문하기'
               : cartStore.mainCount.count + '개 담기'}
@@ -295,7 +298,9 @@ const CartButton = ({
         </View>
 
         <View style={{flex: 1, alignItems: 'center'}}>
-          <TextMedium style={{color: 'white', fontSize: 16}}>
+          <TextMedium
+            style={{color: _checkMin() ? 'white' : 'gray', fontSize: 16}}
+          >
             {goTo === 'OrderPage'
               ? replaceString(lastPrice)
               : ' ' + replaceString(cartStore.totalPrice) + '원'}

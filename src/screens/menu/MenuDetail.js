@@ -219,7 +219,7 @@ const MenuDetail = ({navigation, route}) => {
         alwaysBounceVertical={false}
         // contentOffset={{x: 0, y: 100}}
         // scrollEnabled={false}
-        contentContainerStyle={{paddingBottom: 60}}
+        // contentContainerStyle={{paddingBottom: 60}}
         scrollEventThrottle={100}
         onScrollBeginDrag={e => {
           if (selected.isScrolling !== true) {
@@ -251,7 +251,8 @@ const MenuDetail = ({navigation, route}) => {
               );
             });
           }
-        }}>
+        }}
+      >
         <Header
           title={''}
           showLike={true}
@@ -283,7 +284,8 @@ const MenuDetail = ({navigation, route}) => {
               // borderTopColor: colors.borderColor,
               height: 50,
               zIndex: 1000,
-            }}>
+            }}
+          >
             <Pressable
               style={{
                 flex: 1,
@@ -301,7 +303,8 @@ const MenuDetail = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(0);
-              }}>
+              }}
+            >
               <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
             </Pressable>
             <Pressable
@@ -322,7 +325,8 @@ const MenuDetail = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(1);
-              }}>
+              }}
+            >
               <TextMedium style={{fontSize: 17}}>정보</TextMedium>
             </Pressable>
             <Pressable
@@ -341,7 +345,8 @@ const MenuDetail = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(2);
-              }}>
+              }}
+            >
               <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
             </Pressable>
           </View>
@@ -357,12 +362,14 @@ const MenuDetail = ({navigation, route}) => {
               backgroundColor: 'white',
               minWidth: layout.width,
               // paddingTop: 30,
-            }}>
+            }}
+          >
             <ScrollView
               horizontal
               ref={scrollRefSub}
               // contentContainerStyle={{backgroundColor: 'white'}}
-              showsHorizontalScrollIndicator={false}>
+              showsHorizontalScrollIndicator={false}
+            >
               {mutateAllMunu.data.data.arrItems?.map((item, index) => (
                 <Pressable
                   disabled={!trigger && index === 0}
@@ -407,13 +414,15 @@ const MenuDetail = ({navigation, route}) => {
                     borderRadius: 10,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <TextMedium
                     style={{
                       fontSize: 14,
                       color:
                         selected.idx === index ? 'white' : colors.fontColor2,
-                    }}>
+                    }}
+                  >
                     {item.ca_name}
                   </TextMedium>
                 </Pressable>
@@ -428,13 +437,15 @@ const MenuDetail = ({navigation, route}) => {
               style={{flex: 1}}
               onLayout={e => {
                 setTemp(e.nativeEvent.layout.y + 20);
-              }}>
+              }}
+            >
               <View
                 style={{
                   paddingHorizontal: 22,
                   paddingBottom: 29,
                   top: -20,
-                }}>
+                }}
+              >
                 <TextRegular style={{fontSize: 15}}>
                   {StoreInfo.store_service?.do_jumju_introduction}
                 </TextRegular>
@@ -446,14 +457,16 @@ const MenuDetail = ({navigation, route}) => {
                   paddingBottom: 20,
                   paddingHorizontal: 22,
                   backgroundColor: colors.couponBG,
-                }}>
+                }}
+              >
                 <View
                   style={{
                     flexDirection: 'row',
                     marginBottom: 11,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <Dot
                     style={{
                       width: 8,
@@ -468,7 +481,8 @@ const MenuDetail = ({navigation, route}) => {
                       color: colors.fontColor2,
                       fontSize: 22,
                       marginHorizontal: 14,
-                    }}>
+                    }}
+                  >
                     대표메뉴
                   </Text>
                   <Dot
@@ -497,7 +511,8 @@ const MenuDetail = ({navigation, route}) => {
                         borderColor: colors.primary,
                         marginBottom: 10,
                         borderRadius: 12,
-                      }}>
+                      }}
+                    >
                       <View style={{flexDirection: 'row'}}>
                         <Shadow distance={4} offset={[0, 2]}>
                           <View
@@ -509,7 +524,8 @@ const MenuDetail = ({navigation, route}) => {
                               marginRight: 15,
                               borderColor: colors.borderColor,
                               overflow: 'hidden',
-                            }}>
+                            }}
+                          >
                             <FastImage
                               source={
                                 item.it_img1
@@ -523,19 +539,22 @@ const MenuDetail = ({navigation, route}) => {
                         </Shadow>
                         <View style={{flex: 1}}>
                           <TextMedium
-                            style={{fontSize: 17, color: colors.fontColor2}}>
+                            style={{fontSize: 17, color: colors.fontColor2}}
+                          >
                             {item.it_name}
                           </TextMedium>
                           <TextMedium
                             numberOfLines={2}
-                            style={{fontSize: 12, color: colors.fontColor8}}>
+                            style={{fontSize: 12, color: colors.fontColor8}}
+                          >
                             {item.it_explan}
                           </TextMedium>
                         </View>
                       </View>
                       <View style={{alignItems: 'flex-end'}}>
                         <TextBold
-                          style={{fontSize: 17, color: colors.fontColor2}}>
+                          style={{fontSize: 17, color: colors.fontColor2}}
+                        >
                           {replaceString(item.it_price)}원
                         </TextBold>
                       </View>
@@ -553,7 +572,8 @@ const MenuDetail = ({navigation, route}) => {
                       paddingHorizontal: 22,
                       borderBottomWidth: 1,
                       borderColor: colors.borderColor,
-                    }}>
+                    }}
+                  >
                     <Text style={{color: colors.fontColor2}}>
                       {item.ca_name}
                     </Text>
@@ -564,7 +584,8 @@ const MenuDetail = ({navigation, route}) => {
                     style={{
                       flex: 1,
                       backgroundColor: 'white',
-                    }}>
+                    }}
+                  >
                     {/* ALL */}
                     <View style={{flex: 1}}>
                       {item.menus.map((item, index) => (
@@ -579,12 +600,14 @@ const MenuDetail = ({navigation, route}) => {
                             backgroundColor: 'white',
                             borderBottomWidth: 1,
                             borderColor: colors.borderColor,
-                          }}>
+                          }}
+                        >
                           <View
                             style={{
                               flexDirection: 'row',
                               alignItems: 'center',
-                            }}>
+                            }}
+                          >
                             <Shadow distance={4} offset={[0, 2]}>
                               <View
                                 style={{
@@ -595,7 +618,8 @@ const MenuDetail = ({navigation, route}) => {
                                   marginRight: 15,
                                   borderColor: colors.borderColor,
                                   overflow: 'hidden',
-                                }}>
+                                }}
+                              >
                                 <FastImage
                                   source={
                                     item.it_img1
@@ -612,7 +636,8 @@ const MenuDetail = ({navigation, route}) => {
                                 style={{
                                   fontSize: 17,
                                   color: colors.fontColor2,
-                                }}>
+                                }}
+                              >
                                 {item.it_name}
                               </TextMedium>
                               <TextMedium
@@ -620,14 +645,16 @@ const MenuDetail = ({navigation, route}) => {
                                 style={{
                                   fontSize: 12,
                                   color: colors.fontColor8,
-                                }}>
+                                }}
+                              >
                                 {item.it_explan}
                               </TextMedium>
                               <TextBold
                                 style={{
                                   fontSize: 17,
                                   color: colors.fontColor2,
-                                }}>
+                                }}
+                              >
                                 {replaceString(item.it_price)}
                               </TextBold>
                             </View>
@@ -648,14 +675,16 @@ const MenuDetail = ({navigation, route}) => {
               style={{
                 paddingVertical: 32,
                 paddingHorizontal: 22,
-              }}>
+              }}
+            >
               <TextNotoM style={{fontSize: 17}}>매장정보</TextNotoM>
               <View
                 style={{
                   flex: 1,
                   paddingTop: 13,
                   flexDirection: 'row',
-                }}>
+                }}
+              >
                 <View style={{}}>
                   <View style={{flexDirection: 'row', marginBottom: 10}}>
                     <View style={{width: 100}}>
@@ -718,21 +747,25 @@ const MenuDetail = ({navigation, route}) => {
               style={{
                 paddingVertical: 32,
                 paddingHorizontal: 22,
-              }}>
+              }}
+            >
               <TextNotoM style={{fontSize: 17}}>영업시간</TextNotoM>
               <View
                 style={{
                   flex: 1,
                   paddingTop: 13,
                   flexDirection: 'row',
-                }}>
+                }}
+              >
                 <View style={{}}>
                   <TextRegular
-                    style={{color: colors.fontColor99, marginBottom: 11}}>
+                    style={{color: colors.fontColor99, marginBottom: 11}}
+                  >
                     영업일
                   </TextRegular>
                   <TextRegular
-                    style={{color: colors.fontColor99, marginBottom: 11}}>
+                    style={{color: colors.fontColor99, marginBottom: 11}}
+                  >
                     영업시간
                   </TextRegular>
                   {/* <TextRegular
@@ -740,11 +773,13 @@ const MenuDetail = ({navigation, route}) => {
                       토요일
                     </TextRegular> */}
                   <TextRegular
-                    style={{color: colors.fontColor99, marginBottom: 11}}>
+                    style={{color: colors.fontColor99, marginBottom: 11}}
+                  >
                     BREAK TIME
                   </TextRegular>
                   <TextRegular
-                    style={{color: colors.fontColor99, marginBottom: 11}}>
+                    style={{color: colors.fontColor99, marginBottom: 11}}
+                  >
                     휴무일
                   </TextRegular>
                 </View>
@@ -754,11 +789,13 @@ const MenuDetail = ({navigation, route}) => {
                 )}
                 <View style={{marginLeft: 22, flex: 1}}>
                   <TextRegular
-                    style={{color: colors.fontColor3, marginBottom: 11}}>
+                    style={{color: colors.fontColor3, marginBottom: 11}}
+                  >
                     {StoreServiceTimes?.service_open ?? '-'}
                   </TextRegular>
                   <TextRegular
-                    style={{color: colors.fontColor3, marginBottom: 11}}>
+                    style={{color: colors.fontColor3, marginBottom: 11}}
+                  >
                     {!StoreServiceTimes
                       ? '-'
                       : StoreServiceTimes?.service_stime +
@@ -766,7 +803,8 @@ const MenuDetail = ({navigation, route}) => {
                         StoreServiceTimes?.service_etime}
                   </TextRegular>
                   <TextRegular
-                    style={{color: colors.fontColor3, marginBottom: 11}}>
+                    style={{color: colors.fontColor3, marginBottom: 11}}
+                  >
                     {!StoreBreakeTimes?.service_breakstime &&
                     !StoreBreakeTimes?.service_breaketime
                       ? '-'
@@ -798,14 +836,16 @@ const MenuDetail = ({navigation, route}) => {
                 paddingHorizontal: 22,
                 paddingVertical: 20,
                 backgroundColor: 'white',
-              }}>
+              }}
+            >
               <TextNotoM
                 style={{
                   fontSize: 17,
                   color: colors.fontColor2,
                   includeFontPadding: false,
                   marginBottom: 7,
-                }}>
+                }}
+              >
                 원산지 표기
               </TextNotoM>
               <TextNotoR
@@ -813,7 +853,8 @@ const MenuDetail = ({navigation, route}) => {
                   fontSize: 13,
                   color: colors.fontColor8,
                   includeFontPadding: false,
-                }}>
+                }}
+              >
                 {StoreInfo.store_service.do_jumju_origin}
               </TextNotoR>
             </View>
@@ -823,7 +864,7 @@ const MenuDetail = ({navigation, route}) => {
       </ScrollView>
 
       {/* 장바구니 아이템 존재시 카트 버튼 표시 */}
-      {savedItem.savedItems.length > 0 && (
+      {(savedItem.savedItems.length > 0 || !StoreInfo.isOpen) && (
         <Pressable
           onPress={() => {
             StoreInfo.isOpen
@@ -839,20 +880,23 @@ const MenuDetail = ({navigation, route}) => {
               ? colors.primary
               : colors.borderColor,
             justifyContent: 'center',
-          }}>
+          }}
+        >
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             {StoreInfo.isOpen && (
               <View
                 style={{
                   flex: 1,
                   alignItems: 'flex-start',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <View
                   style={{
                     backgroundColor: 'white',
@@ -862,13 +906,15 @@ const MenuDetail = ({navigation, route}) => {
                     marginLeft: 30,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <TextBold
                     style={{
                       fontSize: 16,
                       color: colors.primary,
                       includeFontPadding: false,
-                    }}>
+                    }}
+                  >
                     {savedItem.savedItems.length > 9
                       ? '9+'
                       : savedItem.savedItems.length}
@@ -878,7 +924,12 @@ const MenuDetail = ({navigation, route}) => {
             )}
 
             <View style={{flex: 1, alignItems: 'center'}}>
-              <TextBold style={{fontSize: 18, color: 'white'}}>
+              <TextBold
+                style={{
+                  fontSize: 18,
+                  color: StoreInfo.isOpen ? 'white' : 'gray',
+                }}
+              >
                 {StoreInfo.isOpen
                   ? '카트 확인하기'
                   : '동네사람들을 만날 준비 중이에요!'}
