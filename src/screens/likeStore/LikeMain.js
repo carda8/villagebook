@@ -15,12 +15,15 @@ import TextBold from '../../component/text/TextBold';
 import FastImage from 'react-native-fast-image';
 import TextMedium from '../../component/text/TextMedium';
 import {customAlert} from '../../component/CustomAlert';
+import {useDispatch} from 'react-redux';
+import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 
 const LikeMain = ({navigation}) => {
   const [tabIdx, setTabIdx] = useState(0);
   const {mutateGetLikeList, mutateSetLikeStore, mutateLikeLifeStyle} =
     useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
+  const dispatch = useDispatch();
   const [list, setList] = useState([]);
   const limit = 20;
   const itemLimit = useRef(0);
@@ -228,7 +231,6 @@ const LikeMain = ({navigation}) => {
             <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}></View>
           }
           data={data}
-          re
           ListEmptyComponent={
             <View
               style={{
@@ -264,6 +266,7 @@ const LikeMain = ({navigation}) => {
           }}
           onPress={() => {
             itemLimit.current = 0;
+            dispatch(setIsLifeStyle(false));
             setTabIdx(0);
             _getList('food');
           }}>
@@ -287,6 +290,7 @@ const LikeMain = ({navigation}) => {
           }}
           onPress={() => {
             itemLimit.current = 0;
+            dispatch(setIsLifeStyle(false));
             setTabIdx(1);
             _getList('market');
           }}>
@@ -310,6 +314,7 @@ const LikeMain = ({navigation}) => {
           }}
           onPress={() => {
             itemLimit.current = 0;
+            dispatch(setIsLifeStyle(true));
             setTabIdx(2);
             _getLifeList();
           }}>

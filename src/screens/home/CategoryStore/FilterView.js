@@ -15,7 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setcurrentFilter} from '../../../store/reducers/CategoryReducer';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-const FilterView = () => {
+const FilterView = ({isSearch}) => {
   const layout = useWindowDimensions();
   //   const [selectedFilter, setSelectedFilter] = useState(0);
   const dispatch = useDispatch();
@@ -30,13 +30,12 @@ const FilterView = () => {
         flex: 1,
         height: 40,
         zIndex: 200,
-        marginLeft: 22,
+        marginLeft: 14,
         // backgsroundColor: 'teal',
         top: 110,
         position: Platform.OS === 'ios' ? 'relative' : 'absolute',
         minWidth: layout.width,
-      }}
-    >
+      }}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -44,8 +43,7 @@ const FilterView = () => {
         contentContainerStyle={{
           alignItems: 'center',
           paddingRight: 22,
-        }}
-      >
+        }}>
         {Filter.filter.map((item, index) =>
           isLifeStyle ? (
             index < 2 ? (
@@ -64,15 +62,13 @@ const FilterView = () => {
                   justifyContent: 'center',
                   borderRadius: 18,
                   paddingHorizontal: 13,
-                }}
-              >
+                }}>
                 {currentFilter === index ? (
                   <TextSBold
                     style={{
                       color:
                         currentFilter === index ? 'white' : colors.fontColorA2,
-                    }}
-                  >
+                    }}>
                     {item}
                   </TextSBold>
                 ) : (
@@ -98,15 +94,14 @@ const FilterView = () => {
                 justifyContent: 'center',
                 borderRadius: 18,
                 paddingHorizontal: 13,
-              }}
-            >
+                // marginRight: isSearch ? 13 : null,
+              }}>
               {currentFilter === index ? (
                 <TextSBold
                   style={{
                     color:
                       currentFilter === index ? 'white' : colors.fontColorA2,
-                  }}
-                >
+                  }}>
                   {item}
                 </TextSBold>
               ) : (

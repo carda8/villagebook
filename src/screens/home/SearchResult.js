@@ -15,6 +15,8 @@ import colors from '../../styles/colors';
 import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import {useSelector} from 'react-redux';
 import TextSBold from '../../component/text/TextSBold';
+import FilterView from './CategoryStore/FilterView';
+import {Platform} from 'react-native';
 
 const SearchResult = ({navigation, route}) => {
   const routeData = route.params;
@@ -100,17 +102,35 @@ const SearchResult = ({navigation, route}) => {
         title={routeData?.category ? routes[0].title + ' 검색' : '검색'}
         navigation={navigation}
       />
+
       <View style={{paddingHorizontal: 22}}>
-        <View>
-          <SearchBox navigation={navigation} category={routeData.category} />
-        </View>
+        <SearchBox navigation={navigation} category={routeData.category} />
+        {/* {Platform.OS === 'ios' ? (
+          <View
+            style={{
+              // flex: 1,
+              position: 'absolute',
+              // 헤더 버튼보다 낮도록 설정
+              zIndex: 200,
+              // width: 100,
+              // height: 100,
+            }}>
+            <FilterView isSearch={true} />
+          </View>
+        ) : (
+          <FilterView isSearch={true} />
+        )} */}
       </View>
+
       <TabView
         navigationState={{index, routes}}
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{width: layout.width}}
-        sceneContainerStyle={{padingHorizontal: 22}}
+        sceneContainerStyle={{
+          padingHorizontal: 22,
+          //  paddingTop: 60
+        }}
         renderTabBar={props => (
           <TabBar
             {...props}

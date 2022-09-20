@@ -14,6 +14,7 @@ import {setCurrent} from '../store/reducers/BottomBarReducer';
 import {customAlert} from './CustomAlert';
 import {_guestAlert} from '../config/utils/modules';
 import {Shadow} from 'react-native-shadow-2';
+import {setIsLifeStyle} from '../store/reducers/CategoryReducer';
 
 const BottomBar = ({navigation}) => {
   const {current} = useSelector(state => state.btBarReducer);
@@ -32,12 +33,12 @@ const BottomBar = ({navigation}) => {
         onPress={() => {
           if (!isGuest) {
             // dispatch(setCurrent(1));
+            dispatch(setIsLifeStyle(false));
             navigation.navigate('LikeMain');
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={
             current === 1
@@ -57,8 +58,7 @@ const BottomBar = ({navigation}) => {
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={
             current === 2
@@ -76,8 +76,7 @@ const BottomBar = ({navigation}) => {
         onPress={() => {
           dispatch(setCurrent(0));
           navigation.navigate('Main');
-        }}
-      >
+        }}>
         <Image
           source={require('~/assets/bottom_ic06.png')}
           resizeMode="contain"
@@ -102,8 +101,7 @@ const BottomBar = ({navigation}) => {
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={
             current === 3
@@ -123,8 +121,7 @@ const BottomBar = ({navigation}) => {
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={
             current === 4

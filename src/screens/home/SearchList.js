@@ -41,6 +41,7 @@ const SearchList = ({navigation, JType, route}) => {
   } = useSelector(state => state.searchReducer);
   const {keyword} = useSelector(state => state.searchReducerSub);
   const {currentLocation} = useSelector(state => state.locationReducer);
+  const {currentFilter} = useSelector(state => state.categoryReducer);
   // console.log('searchResult', searchResult);
   const layout = useWindowDimensions();
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
@@ -111,9 +112,46 @@ const SearchList = ({navigation, JType, route}) => {
     }
   };
 
+  const _init = () => {
+    const data = {
+      item_count: 0,
+      limit_count: 20,
+      stx: keyword,
+      mb_jumju_type: JType,
+      mb_ca_sort: currentFilter + 1,
+      mb_lat: currentLocation.lat,
+      mb_lng: currentLocation.lon,
+    };
+
+    if (JType === 'lifestyle') {
+      mutateSearchLifeStyle.mutate(data, {
+        onSuccess: e => {
+          if (e.result === 'true') {
+            let temp = e.data.arrItems;
+            dispatch(setSearchResult({type: JType, item: temp}));
+          }
+        },
+      });
+    } else {
+      mutateSearch.mutate(data, {
+        onSuccess: e => {
+          if (e.result === 'true') {
+            let temp = e.data.arrItems;
+            temp = temp.filter(item => item !== null);
+            dispatch(setSearchResult({type: JType, item: temp}));
+          }
+        },
+      });
+    }
+  };
+
   // useEffect(() => {
   //   console.warn('food changed', foodResult);
   // }, [foodResult]);
+
+  // useEffect(() => {
+  //   _init();
+  // }, [currentFilter]);
 
   const renderItem = item => {
     // console.log('items', item);
@@ -686,6 +724,7 @@ const SearchList = ({navigation, JType, route}) => {
           //   )
           // }
           keyExtractor={(item, index) => item + index}
+          onEndReachedThreshold={0.5}
           onEndReached={() => {
             if (lifestyleResult.length % 20 === 0) _getMoreSearch();
           }}
@@ -747,6 +786,7 @@ const SearchList = ({navigation, JType, route}) => {
             )
           }
           showsVerticalScrollIndicator={false}
+          onEndReachedThreshold={0.5}
           onEndReached={() => {
             // console.warn('length', foodResult);
             if (foodResult.length % 20 === 0 || marketResult.length % 20 === 0)
