@@ -76,7 +76,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>사진을 촬영하여 등록하기 위해 권한이 필요합니다</string>
+	<string>리뷰, 1:1 문의, 프로필 사진 등록시 사진을 촬영하여 첨부하기 위해 권한이 필요합니다.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>주문시 필요한 주소 및 위치를 설정하기 위해 권한이 필요합니다</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -84,7 +84,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>주문시 필요한 주소 및 위치를 설정하기 위해 권한이 필요합니다</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>갤러리에서 사진을 가져오기 위해 권한이 필요합니다</string>
+	<string>리뷰, 1:1 문의, 프로필 사진 등록시 갤러리에서 사진을 선택하기 위해 권한이 필요합니다.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Black.otf</string>

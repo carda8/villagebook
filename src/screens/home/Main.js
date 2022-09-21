@@ -106,7 +106,8 @@ const Main = ({navigation}) => {
         contentContainerStyle={{
           paddingHorizontal: 14,
           paddingBottom: 50,
-        }}>
+        }}
+      >
         <Pressable
           onPress={() => {
             if (!isGuest) {
@@ -121,7 +122,8 @@ const Main = ({navigation}) => {
             flexDirection: 'row',
             backgroundColor: 'white',
             marginBottom: 10,
-          }}>
+          }}
+        >
           <Image
             source={require('~/assets/ico_location.png')}
             style={{width: 19, height: 19}}
@@ -132,7 +134,8 @@ const Main = ({navigation}) => {
               style={{
                 fontSize: 15,
                 color: colors.fontColor2,
-              }}>
+              }}
+            >
               {addr}
             </TextEBold>
           </View>
@@ -162,7 +165,8 @@ const Main = ({navigation}) => {
             height: 141,
             marginBottom: 10,
             marginTop: 17,
-          }}>
+          }}
+        >
           <Pressable
             onPress={() => {
               navigation.navigate('CategoryView', {
@@ -178,7 +182,8 @@ const Main = ({navigation}) => {
               borderColor: colors.mainBG3Border,
               borderRadius: 10,
               overflow: 'hidden',
-            }}>
+            }}
+          >
             <View style={{paddingTop: 39}}>
               <TextJua style={{fontSize: 23, color: colors.fontMain3}}>
                 동네정보
@@ -189,13 +194,17 @@ const Main = ({navigation}) => {
                 </TextRegular>
               </View>
             </View>
-            <View style={{flex: 1}}>
-              <Image
-                source={require('~/assets/main_ico03.png')}
-                style={{width: '100%', height: '100%'}}
-                resizeMode="contain"
-              />
-            </View>
+
+            <Image
+              source={require('~/assets/main_ico03.png')}
+              style={{
+                width: '80%',
+                height: '100%',
+                right: '-4%',
+                position: 'absolute',
+              }}
+              resizeMode="contain"
+            />
           </Pressable>
         </View>
 
@@ -206,7 +215,8 @@ const Main = ({navigation}) => {
             height: 220,
             marginBottom: 10,
             flexDirection: 'row',
-          }}>
+          }}
+        >
           <Pressable
             onPress={() => {
               navigation.navigate('CategoryView', {selectedCategory: 'food'});
@@ -220,24 +230,26 @@ const Main = ({navigation}) => {
               borderWidth: 1,
               backgroundColor: colors.mainBG1,
               borderColor: colors.mainBG1Border,
-            }}>
+            }}
+          >
             <TextJua style={{fontSize: 23, color: colors.fontMain1}}>
               동네맛집
             </TextJua>
             <View style={{marginTop: 8}}>
               <TextRegular>우리동네 맛집 {'\n'}다있다!</TextRegular>
             </View>
-            <View style={{flex: 1}}>
-              <Image
-                source={require('~/assets/main_ico01.png')}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  alignSelf: 'flex-end',
-                }}
-                resizeMode="contain"
-              />
-            </View>
+
+            <Image
+              source={require('~/assets/main_ico01.png')}
+              style={{
+                position: 'absolute',
+                bottom: '-4%',
+                width: '100%',
+                height: '80%',
+                alignSelf: 'flex-end',
+              }}
+              resizeMode="contain"
+            />
           </Pressable>
 
           {/* 동네마켓 */}
@@ -253,7 +265,8 @@ const Main = ({navigation}) => {
               backgroundColor: colors.mainBG2,
               borderColor: colors.mainBG2Border,
               borderWidth: 1,
-            }}>
+            }}
+          >
             <TextJua style={{fontSize: 23, color: colors.fontMain2}}>
               순간이동 마켓
             </TextJua>
@@ -262,17 +275,17 @@ const Main = ({navigation}) => {
                 우리동네 필요한 물건은{'\n'}문앞까지 순간이동!
               </TextRegular>
             </View>
-            <View style={{flex: 1}}>
-              <Image
-                source={require('~/assets/main_ico02.png')}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  alignSelf: 'flex-end',
-                }}
-                resizeMode="contain"
-              />
-            </View>
+            <Image
+              source={require('~/assets/main_ico02.png')}
+              style={{
+                position: 'absolute',
+                bottom: '-5%',
+                width: '100%',
+                height: '80%',
+                alignSelf: 'flex-end',
+              }}
+              resizeMode="contain"
+            />
           </Pressable>
         </View>
 
@@ -290,13 +303,15 @@ const Main = ({navigation}) => {
             alignItems: 'center',
             marginTop: 10,
             marginBottom: 10,
-          }}>
+          }}
+        >
           <Pressable
             onPress={() => {
               navigation.navigate('Policy', {
                 target: policyConfig.target.location,
               });
-            }}>
+            }}
+          >
             <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
               위치기반 서비스 이용약관
             </TextRegular>
@@ -307,7 +322,8 @@ const Main = ({navigation}) => {
               navigation.navigate('Policy', {
                 target: policyConfig.target.personal,
               });
-            }}>
+            }}
+          >
             <TextBold style={{color: colors.fontColor8, fontSize: 10}}>
               개인정보 처리방침
             </TextBold>
@@ -316,7 +332,8 @@ const Main = ({navigation}) => {
           <Pressable
             onPress={() => {
               navigation.navigate('Policy', {target: policyConfig.target.use});
-            }}>
+            }}
+          >
             <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
               이용약관
             </TextRegular>
@@ -327,7 +344,8 @@ const Main = ({navigation}) => {
           onPress={() => {
             setToggleInfo(!toggleInfo);
           }}
-          style={{flexDirection: 'row', alignItems: 'center'}}>
+          style={{flexDirection: 'row', alignItems: 'center'}}
+        >
           <TextSBold>(주)어스닉</TextSBold>
           <Image
             source={require('~/assets/btn_top_left.png')}
@@ -346,7 +364,8 @@ const Main = ({navigation}) => {
             alignItems: 'center',
             marginTop: 10,
             marginBottom: toggleInfo ? 10 : 30,
-          }}>
+          }}
+        >
           <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
             (주)어스닉은 통신판매중개자이며, 따라서 (주)어스닉은 상품, 거래정보
             및 거래에 대하여 책임을 지지 않습니다.
@@ -358,7 +377,8 @@ const Main = ({navigation}) => {
               style={{
                 marginBottom: 30,
                 // alignItems: 'center',
-              }}>
+              }}
+            >
               <View style={{marginBottom: 10}}>
                 <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
                   {companyInfo?.de_admin_company_memo}
