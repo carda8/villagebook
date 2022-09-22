@@ -99,7 +99,8 @@ const Header = ({
             opacity: fadeAnim,
             zIndex: 100,
             justifyContent: 'center',
-          }}>
+          }}
+        >
           <TextBold style={{marginLeft: 70}}>{fadeTitle}</TextBold>
         </Animated.View>
       )}
@@ -117,7 +118,8 @@ const Header = ({
             paddingHorizontal: 14,
           },
           style,
-        ]}>
+        ]}
+      >
         <Pressable
           hitSlop={15}
           onPress={() => {
@@ -131,7 +133,8 @@ const Header = ({
               if (!showLogo && navigation.canGoBack()) navigation.goBack();
               else navigation.navigate('Main');
             }
-          }}>
+          }}
+        >
           {showLogo ? (
             <Image
               source={require('~/assets/logo.png')}
@@ -162,12 +165,14 @@ const Header = ({
               flex: 1,
               marginLeft: 18,
               flexDirection: 'row',
-            }}>
+            }}
+          >
             <TextMedium
               style={{
                 fontSize: 17,
                 color: colors.fontColor2,
-              }}>
+              }}
+            >
               {title}{' '}
             </TextMedium>
             {title !== '검색' && (
@@ -182,12 +187,14 @@ const Header = ({
             style={{
               flex: 1,
               marginLeft: 18,
-            }}>
+            }}
+          >
             <TextMedium
               style={{
                 fontSize: 17,
                 color: colors.fontColor2,
-              }}>
+              }}
+            >
               {currentCategory}
             </TextMedium>
           </View>
@@ -209,7 +216,8 @@ const Header = ({
                 //   if (like === 'N') setLike('Y');
                 //   _setLikeStore();
                 // }
-              }}>
+              }}
+            >
               <Image
                 source={
                   showNoti ? require('~/assets/top_ball.png') : null
@@ -241,7 +249,8 @@ const Header = ({
                 hitSlop={10}
                 onPress={() => {
                   navigation.navigate('Main');
-                }}>
+                }}
+              >
                 <Image
                   source={require('~/assets/top_home.png')}
                   style={{
@@ -272,7 +281,8 @@ const Header = ({
                 }
 
                 // if (!showCart) _share();
-              }}>
+              }}
+            >
               {showCart && (
                 <>
                   <View
@@ -287,13 +297,15 @@ const Header = ({
                       zIndex: 100,
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}>
+                    }}
+                  >
                     <TextBold
                       style={{
                         color: 'white',
                         includeFontPadding: false,
                         fontSize: 11,
-                      }}>
+                      }}
+                    >
                       {savedItem.savedItems.length > 9
                         ? '9+'
                         : savedItem.savedItems.length}

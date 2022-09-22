@@ -2,11 +2,13 @@
  * @format
  */
 
-import {AppRegistry, Text, TextInput} from 'react-native';
+import {AppRegistry, Linking, Text, TextInput} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
 import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
+import VersionCheck from 'react-native-version-check';
+import {customAlert} from './src/component/CustomAlert';
 
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
@@ -50,5 +52,4 @@ notifee.onBackgroundEvent(async ({type, detail, ...etc}) => {
   //   await notifee.cancelNotification(notification.id);
   // }
 });
-
 AppRegistry.registerComponent(appName, () => App);
