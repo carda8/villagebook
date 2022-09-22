@@ -43,6 +43,7 @@ const Header = ({
   const {mutateSetLikeStore} = useCustomMutation();
   const [like, setLike] = useState();
   const {isGuest} = useSelector(state => state.authReducer);
+  const {resultCount} = useSelector(state => state.searchReducerSub);
 
   // fadeAnim will be used as the value for opacity. Initial Value: 0
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -73,6 +74,19 @@ const Header = ({
     // console.log('optionHeader', optionHeader);
   }, [optionHeader]);
 
+  const _getCount = () => {
+    switch (title) {
+      case '맛집 검색':
+        return resultCount.countFood ?? '';
+      case '마켓 검색':
+        return resultCount.countMarket ?? '';
+      case '동네정보 검색':
+        return resultCount.countLifestyle ?? '';
+      default:
+        return '';
+    }
+  };
+
   return (
     <>
       {fadeTitle && (
@@ -85,8 +99,7 @@ const Header = ({
             opacity: fadeAnim,
             zIndex: 100,
             justifyContent: 'center',
-          }}
-        >
+          }}>
           <TextBold style={{marginLeft: 70}}>{fadeTitle}</TextBold>
         </Animated.View>
       )}
@@ -96,7 +109,7 @@ const Header = ({
           {
             width: '100%',
             height: 57,
-            // backgroundColor: 'red',
+            backgroundColor: 'white',
             // paddingBottom: 10,
             // backgroundColor: `rgba(255,255,255,0)`,
             alignItems: 'center',
@@ -104,8 +117,7 @@ const Header = ({
             paddingHorizontal: 14,
           },
           style,
-        ]}
-      >
+        ]}>
         <Pressable
           hitSlop={15}
           onPress={() => {
@@ -119,8 +131,7 @@ const Header = ({
               if (!showLogo && navigation.canGoBack()) navigation.goBack();
               else navigation.navigate('Main');
             }
-          }}
-        >
+          }}>
           {showLogo ? (
             <Image
               source={require('~/assets/logo.png')}
@@ -150,16 +161,20 @@ const Header = ({
             style={{
               flex: 1,
               marginLeft: 18,
-            }}
-          >
+              flexDirection: 'row',
+            }}>
             <TextMedium
               style={{
                 fontSize: 17,
                 color: colors.fontColor2,
-              }}
-            >
-              {title}
+              }}>
+              {title}{' '}
             </TextMedium>
+            {title !== '검색' && (
+              <TextMedium style={{fontSize: 17, color: colors.primary}}>
+                {_getCount()}
+              </TextMedium>
+            )}
           </View>
         ) : null}
         {category && (
@@ -167,14 +182,12 @@ const Header = ({
             style={{
               flex: 1,
               marginLeft: 18,
-            }}
-          >
+            }}>
             <TextMedium
               style={{
                 fontSize: 17,
                 color: colors.fontColor2,
-              }}
-            >
+              }}>
               {currentCategory}
             </TextMedium>
           </View>
@@ -196,8 +209,7 @@ const Header = ({
                 //   if (like === 'N') setLike('Y');
                 //   _setLikeStore();
                 // }
-              }}
-            >
+              }}>
               <Image
                 source={
                   showNoti ? require('~/assets/top_ball.png') : null
@@ -229,8 +241,7 @@ const Header = ({
                 hitSlop={10}
                 onPress={() => {
                   navigation.navigate('Main');
-                }}
-              >
+                }}>
                 <Image
                   source={require('~/assets/top_home.png')}
                   style={{
@@ -261,8 +272,7 @@ const Header = ({
                 }
 
                 // if (!showCart) _share();
-              }}
-            >
+              }}>
               {showCart && (
                 <>
                   <View
@@ -277,15 +287,13 @@ const Header = ({
                       zIndex: 100,
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}
-                  >
+                    }}>
                     <TextBold
                       style={{
                         color: 'white',
                         includeFontPadding: false,
                         fontSize: 11,
-                      }}
-                    >
+                      }}>
                       {savedItem.savedItems.length > 9
                         ? '9+'
                         : savedItem.savedItems.length}

@@ -46,7 +46,7 @@ const FilterView = ({isSearch}) => {
         }}>
         {Filter.filter.map((item, index) =>
           isLifeStyle ? (
-            index < 2 ? (
+            index === 0 || index === 4 || index === 7 ? (
               <Pressable
                 ref={filterRef[index]}
                 key={index}

@@ -12,12 +12,20 @@ import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useSelector} from 'react-redux';
 import Loading from '../../component/Loading';
 import AddressMainRenderItem from './AddressMainRenderItem';
+import {useDispatch} from 'react-redux';
+import {setCurrentAdd, setPostData} from '../../store/reducers/AddressReducer';
+import {customAlert} from '../../component/CustomAlert';
 
 const AddressMain = ({navigation, route}) => {
   const addData = route.params?.addData;
+  const dispatch = useDispatch();
   const {userInfo} = useSelector(state => state.authReducer);
-  const {mutateGetRecentAddress} = useCustomMutation();
+  const {currentAdd} = useSelector(state => state.addressReducer);
+  const {mutateGetRecentAddress, mutateDeleteUserAddr, mutateSetMainAddr} =
+    useCustomMutation();
   const [recentAdd, setRecentAdd] = useState([]);
+  // const [currentAdd, setCurrentAdd] = useState();
+  // const {trigger} = useSelector(state => state.addressReducer);
 
   const itemLimit = useRef(0);
   console.log('addData', addData);
@@ -39,34 +47,122 @@ const AddressMain = ({navigation, route}) => {
     });
   };
 
-  const _getMoreRecentAdd = () => {
-    const data = {
+  // const _getMoreRecentAdd = () => {
+  //   const data = {
+  //     mt_id: userInfo.mt_id,
+  //     item_count: itemLimit.current,
+  //     limit_count: 20,
+  //   };
+  //   console.log('data', data);
+  //   mutateGetRecentAddress.mutate(data, {
+  //     onSuccess: e => {
+  //       if (e.result === 'true' && e.data.arrItems.length > 0)
+  //         setRecentAdd(e.data.arrItems);
+  //       else setRecentAdd([]);
+  //       console.log('e', e);
+  //     },
+  //   });
+  // };
+
+  const _setAdd = data => {
+    _setMainAddr(data);
+    if (data.isRoad) {
+      dispatch(
+        setPostData({
+          addrId: data.ad_id,
+          addrMain: data.ad_addr1,
+          addrSub: data.ad_addr2 + data.ad_addr3,
+          zipCode: data.ad_zip,
+        }),
+      );
+      dispatch(setCurrentAdd({ad_id: data.ad_id}));
+    } else {
+      dispatch(
+        setPostData({
+          addrId: data.ad_id,
+          addrMain: data.ad_jibeon,
+          addrSub: data.ad_addr2 + data.ad_addr3,
+          zipCode: data.ad_zip,
+        }),
+      );
+    }
+  };
+
+  const _setMainAddr = data => {
+    const info = {
       mt_id: userInfo.mt_id,
-      item_count: itemLimit.current,
-      limit_count: 20,
+      ad_id: data.ad_id,
+      mt_app_token: userInfo.mt_app_token,
     };
-    console.log('data', data);
-    mutateGetRecentAddress.mutate(data, {
+    console.log('data _setMainAddr', info);
+
+    mutateSetMainAddr.mutate(info, {
       onSuccess: e => {
-        if (e.result === 'true' && e.data.arrItems.length > 0)
-          setRecentAdd(e.data.arrItems);
-        else setRecentAdd([]);
+        if (e.result === 'true')
+          return customAlert('알림', '우리동네 등록이 완료되었습니다.');
         console.log('e', e);
       },
     });
   };
 
+  const _deleteAddr = data => {
+    const info = {
+      mt_id: userInfo.mt_id,
+      ad_id: data.ad_id,
+    };
+
+    mutateDeleteUserAddr.mutate(info, {
+      onSuccess: e => {
+        if (e.result === 'true') _getRecentAdd();
+        // return customAlert('알림', '');
+      },
+    });
+    console.warn('currentAdd', currentAdd);
+  };
+
   const renderItem = item => {
     const data = item.item;
     console.log('data', data);
-    return <AddressMainRenderItem data={data} />;
-  };
-
-  const _getAddFromSearch = () => {
-    if (!addData) return '주소를 직접 입력해주세요';
-    else {
-      // if (addData) return;
-    }
+    return (
+      <>
+        <Pressable
+          onPress={() => {
+            if (currentAdd.ad_id !== data.ad_id) _setAdd(data);
+          }}
+          style={{
+            paddingVertical: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor:
+              currentAdd.ad_id === data.ad_id ? colors.mainBG3 : null,
+            paddingHorizontal: 22,
+          }}>
+          <View style={{marginRight: 20}}>
+            <Image
+              source={require('~/assets/ico_location.png')}
+              style={{width: 20, height: 20}}
+            />
+          </View>
+          <View
+            style={{flex: 1, minHeight: 50, justifyContent: 'space-between'}}>
+            <TextBold style={{fontSize: 13, color: colors.fontColor2}}>
+              [{data.ad_zip}] {data.ad_addr1} {data.ad_addr2} {data.ad_addr3}
+            </TextBold>
+            <TextRegular style={{fontSize: 12, color: colors.fontColor2}}>
+              [{data.ad_zip}] {data.ad_jibeon} {data.ad_addr2} {data.ad_addr3}
+            </TextRegular>
+          </View>
+          {currentAdd?.ad_id !== data?.ad_id && (
+            <Pressable hitSlop={10} onPress={() => _deleteAddr(data)}>
+              <Image
+                source={require('~/assets/pop_close.png')}
+                style={{width: 20, height: 20}}
+              />
+            </Pressable>
+          )}
+        </Pressable>
+      </>
+    );
   };
 
   useEffect(() => {
@@ -74,7 +170,7 @@ const AddressMain = ({navigation, route}) => {
     return () => {};
   }, []);
 
-  if (mutateGetRecentAddress.isLoading) return <Loading />;
+  // if (mutateGetRecentAddress.isLoading) return <Loading />;
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>

@@ -103,7 +103,7 @@ const SearchResult = ({navigation, route}) => {
         navigation={navigation}
       />
 
-      <View style={{paddingHorizontal: 22}}>
+      <View style={{paddingHorizontal: 14}}>
         <SearchBox navigation={navigation} category={routeData.category} />
         {/* {Platform.OS === 'ios' ? (
           <View
@@ -121,7 +121,6 @@ const SearchResult = ({navigation, route}) => {
           <FilterView isSearch={true} />
         )} */}
       </View>
-
       <TabView
         navigationState={{index, routes}}
         renderScene={renderScene}
@@ -129,7 +128,7 @@ const SearchResult = ({navigation, route}) => {
         initialLayout={{width: layout.width}}
         sceneContainerStyle={{
           padingHorizontal: 22,
-          //  paddingTop: 60
+          marginVertical: 15,
         }}
         renderTabBar={props => (
           <TabBar
@@ -139,21 +138,25 @@ const SearchResult = ({navigation, route}) => {
                 ? colors.borderColor
                 : 'black',
             }}
-            // tabStyle={{height: routeData?.category ? 10 : null}}
+            tabStyle={{height: routeData?.category ? 10 : null}}
             labelStyle={{
               color: routeData?.category ? 'white' : 'black',
               fontFamily: 'Pretendard-SemiBold',
               fontSize: 14,
             }}
-            renderLabel={props => (
-              <View style={{flexDirection: 'row'}}>
-                {/* {console.warn('props', props)} */}
-                <TextSBold>{props.route.title + ' '}</TextSBold>
-                <TextSBold style={{color: colors.primary}}>
-                  {props?.route?.title ? _convertCount(props.route.title) : ''}
-                </TextSBold>
-              </View>
-            )}
+            renderLabel={props =>
+              !routeData?.category && (
+                <View style={{flexDirection: 'row'}}>
+                  {/* {console.warn('props', props)} */}
+                  <TextSBold>{props.route.title + ' '}</TextSBold>
+                  <TextSBold style={{color: colors.primary}}>
+                    {props?.route?.title
+                      ? _convertCount(props.route.title)
+                      : ''}
+                  </TextSBold>
+                </View>
+              )
+            }
             indicatorContainerStyle={{alignItems: 'center'}}
             style={{
               backgroundColor: 'white',

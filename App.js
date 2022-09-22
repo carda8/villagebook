@@ -10,13 +10,22 @@ import Splash from './src/component/Splash';
 import MainStackNavigator from './src/navigator/MainStackNavigator';
 import store from './src/store/store';
 import messaging from '@react-native-firebase/messaging';
-import {Alert, AppState, Linking, PermissionsAndroid} from 'react-native';
+import {
+  Alert,
+  AppState,
+  Linking,
+  PermissionsAndroid,
+  Platform,
+} from 'react-native';
 import notifee, {
   AndroidBadgeIconType,
   AndroidImportance,
 } from '@notifee/react-native';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import {Text} from 'react-native';
+import VersionCheck from 'react-native-version-check';
+import {APP_VERSION_AOS, APP_VERSION_IOS} from '@env';
+import {customAlert} from './src/component/CustomAlert';
 
 const qeuryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -38,6 +47,34 @@ const qeuryClient = new QueryClient({
 });
 
 const App = () => {
+  // VersionCheck.getCountry().then(country => console.log(country)); // KR
+  // console.log(VersionCheck.getPackageName()); // com.reactnative.app
+  // console.log(VersionCheck.getCurrentBuildNumber()); // 10
+  // console.log(VersionCheck.getCurrentVersion()); // 0.1.1
+
+  VersionCheck.needUpdate().then(async res => {
+    console.log(res?.isNeeded); // true
+    // VersionCheck.getLatestVersion().then(res => console.warn(res));
+    if (res?.isNeeded) {
+      customAlert(
+        '알림',
+        '현재 최신버전이 아닙니다. 업데이트를 위해 스토어 페이지로 이동합니다.',
+        () =>
+          VersionCheck.getStoreUrl().then(e => Linking.openURL(res.storeUrl)),
+      );
+      // VersionCheck.getStoreUrl().then(e => Linking.openURL(res.storeUrl)); // open store if update is needed.
+    }
+  });
+
+  // if (Platform.OS === 'android' && version !== APP_VERSION_AOS) {
+  // return <>{VersionCheck.needUpdate()}</>;
+  // return <>{customAlert('알림', '최신 버전이 아닙니다.', () => {})}</>;
+  // }
+
+  // if (Platform.OS === 'ios' && version !== APP_VERSION_IOS) {
+  // return customAlert('알림', '최신 버전이 아닙니다.', () => {});
+  // }
+
   const [isSplash, setIsSplash] = useState(true);
 
   const onMessageReceived = async message => {

@@ -19,9 +19,21 @@ import {customAlert} from '../CustomAlert';
 import Loading from '../Loading';
 import TextBold from '../text/TextBold';
 
-const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
+const SearchBox = ({
+  onPress,
+  isMain,
+  isSub,
+  navigation,
+  category,
+  route,
+  style,
+}) => {
   const dispatch = useDispatch();
-  const [keyword, setKeyword] = useState('');
+  const sStore = useSelector(state => state.searchReducerSub);
+  const {keyword} = useSelector(state => state.searchReducerSub);
+
+  // console.warn('key', sStore);
+  const [searchWord, setSearchWord] = useState(keyword);
   const {mutateSearch, mutateSearchLifeStyle} = useCustomMutation();
   const {currentLocation} = useSelector(state => state.locationReducer);
   const search = useSelector(state => state.searchReducer);
@@ -41,37 +53,44 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
           if (e.result === 'true') {
             console.log('mutateSearchLifeStyle', e);
             console.warn(e.data.resultItem.countItem);
-            dispatch(setResultCountSub(e.data.resultItem.countItem));
+            if (e.data.resultItem?.countItem)
+              dispatch(setResultCountSub(e.data.resultItem.countItem));
           }
         },
       });
       let temp = result.data.arrItems;
-      temp = temp.filter(item => item !== null);
+      if (temp) {
+        temp = temp.filter(item => item !== null);
+      }
       return temp;
     } else {
       result = await mutateSearch.mutateAsync(data, {
         onSettled: e => {
           if (e.result === 'true') {
             console.log('mutateSearch', e);
+            if (e.data.resultItem?.countItem)
+              dispatch(setResultCountSub(e.data.resultItem.countItem));
           }
         },
       });
       let temp = result.data.arrItems;
-      temp = temp.filter(item => item !== null);
+      if (temp) {
+        temp = temp.filter(item => item !== null);
+      }
       return temp;
     }
   };
 
   const _search = type => {
-    if (!keyword.trim()) return customAlert('알림', '검색어를 입력해주세요');
+    if (!searchWord.trim()) return customAlert('알림', '검색어를 입력해주세요');
     dispatch(setIsLoading(true));
     dispatch(setType({type: type}));
-    dispatch(setKeywordSub({keyword: keyword}));
+    dispatch(setKeywordSub({keyword: searchWord}));
     list.map(async (item, index) => {
       const data = {
         item_count: limitItem.current,
         limit_count: 20,
-        stx: keyword,
+        stx: searchWord,
         mb_jumju_type: item,
         mb_lat: currentLocation.lat,
         mb_lng: currentLocation.lon,
@@ -87,10 +106,11 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
   };
 
   useEffect(() => {
+    if (isSub) setSearchWord('');
     if (mutateSearch.isLoading) dispatch(setIsLoading(true));
     else dispatch(setIsLoading(false));
     return () => {
-      setKeyword('');
+      if (isMain || isSub) setSearchWord('');
     };
   }, [mutateSearch.isLoading]);
 
@@ -98,19 +118,28 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
     <>
       <Pressable
         onPress={() => (onPress ? onPress() : _search())}
-        style={{width: '100%', height: 50, flexDirection: 'row'}}>
+        style={{
+          width: '100%',
+          height: 60,
+          flexDirection: 'row',
+          borderWidth: 2,
+          borderColor: colors.primary,
+          borderRadius: 18,
+          alignItems: 'center',
+        }}>
         <TextInput
           // editable={isMain || isSub ? false : true}
           style={{
             flex: 1,
-            backgroundColor: colors.inputBoxBG,
+            // backgroundColor: colors.inputBoxBG,
             paddingHorizontal: 17,
             borderRadius: 10,
             marginRight: 8,
             height: 50,
           }}
-          value={keyword}
-          onChangeText={setKeyword}
+          value={searchWord}
+          // defaultValue={keyword}
+          onChangeText={setSearchWord}
           onSubmitEditing={() => (onPress ? onPress() : _search())}
           placeholder={'동네북을 펼쳐주세요.'}
         />
@@ -131,9 +160,10 @@ const SearchBox = ({onPress, isMain, isSub, navigation, category, route}) => {
             onPress ? onPress() : _search();
           }}
           style={{
-            width: 50,
-            height: 50,
+            width: 40,
+            height: 40,
             borderRadius: 10,
+            right: 10,
             backgroundColor: colors.primary,
             justifyContent: 'center',
             alignItems: 'center',

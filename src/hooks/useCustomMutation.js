@@ -340,6 +340,11 @@ export const useCustomMutation = () => {
       console.log('mutateSearchLifeStyle', e);
     },
   });
+  const mutateDeleteUserAddr = useMutation(mainAPI._deleteUserAddr, {
+    onSettled: e => {
+      console.log('mutateDeleteUserAddr', e);
+    },
+  });
 
   return {
     mutateSignIn,
@@ -387,5 +392,6 @@ export const useCustomMutation = () => {
     mutateGetFaqDetail,
     mutateLikeLifeStyle,
     mutateSearchLifeStyle,
+    mutateDeleteUserAddr,
   };
 };

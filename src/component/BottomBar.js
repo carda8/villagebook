@@ -72,7 +72,7 @@ const BottomBar = ({navigation}) => {
 
       <Pressable
         style={{flex: 1, alignItems: 'center'}}
-        hitSlop={20}
+        hitSlop={10}
         onPress={() => {
           dispatch(setCurrent(0));
           navigation.navigate('Main');
@@ -82,8 +82,8 @@ const BottomBar = ({navigation}) => {
           resizeMode="contain"
           style={{
             width: layout.width / 4,
-            height: 90,
-            top: -27,
+            height: 62,
+            top: -10,
             // borderWidth: 2,
           }}
         />

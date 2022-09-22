@@ -242,6 +242,20 @@ const OrderSumary = ({navigation, route}) => {
                 marginBottom: 11,
               }}>
               <TextRegular style={{color: colors.fontColor99}}>
+                포인트
+              </TextRegular>
+              <TextRegular style={{color: colors.primary}}>
+                - {replaceString(orderData.data.order.order_point)}원
+              </TextRegular>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 11,
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
                 포장 할인
               </TextRegular>
               <TextRegular style={{color: colors.primary}}>

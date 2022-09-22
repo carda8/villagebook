@@ -79,6 +79,7 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
           info={lifeInfo}
           likeCount={lifeInfo.mb_zzim_count}
           categoryMain={routeData.category}
+          navigation={navigation}
         />
         <MiniMap lat={lifeInfo.mb_lat} lng={lifeInfo.mb_lng} />
       </ScrollView>

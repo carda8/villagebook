@@ -31,6 +31,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
   const storeInfo = info?.data?.arrItems ?? info;
   console.log('info', storeInfo);
   // return <Loading />;
+  console.warn('route', routeData);
 
   const _getCoupon = () => {
     const data = {
@@ -365,23 +366,14 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 flexDirection: 'row',
                 marginHorizontal: 22,
               }}>
-              <View style={{flex: 1.6, alignItems: 'center'}}>
+              <View style={{flex: 1, alignItems: 'center'}}>
                 <Text
                   style={{
                     fontWeight: 'bold',
-                    fontSize: 18,
+                    fontSize: 17,
                     color: colors.primary,
                   }}>
                   전화하기
-                </Text>
-              </View>
-              <View style={{flex: 2}}>
-                <Text
-                  style={{
-                    fontSize: 11,
-                    color: colors.primary,
-                  }}>
-                  동네북보고 전화했어요.{'\n'}라고 말하면 문의가 빨라요
                 </Text>
               </View>
             </Pressable>

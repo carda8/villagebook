@@ -67,7 +67,7 @@ const StoreItems = ({navigation, route}) => {
     console.log('mutateGetStoreList ::', data);
 
     if (routeData.category === 'lifestyle') {
-      delete data.mb_ca_sort;
+      // delete data.mb_ca_sort;
       mutateGetLifeStyle.mutate(data, {
         onError: e => {
           setStoreList('');
@@ -140,7 +140,6 @@ const StoreItems = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    console.log('use!!!!');
     _init();
   }, [route.parma, currentFilter]);
 

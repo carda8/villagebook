@@ -4,6 +4,7 @@ import {
   Image,
   StyleSheet,
   Pressable,
+  Text,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import commonStyles from '../../styles/commonStyle';
@@ -181,6 +182,8 @@ const PushSetting = ({navigation}) => {
             />
           </Pressable>
         </View>
+        <View style={{paddingHorizontal: 14}}></View>
+        <Text>hi</Text>
         {/* 
         <View
           style={{
@@ -214,7 +217,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    paddingHorizontal: 22,
+    paddingHorizontal: 14,
     borderBottomWidth: 1,
     borderBottomColor: colors.borderColor,
   },

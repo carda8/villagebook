@@ -8,6 +8,7 @@ const searchSlice = createSlice({
   },
   reducers: {
     setKeywordSub: (state, action) => {
+      console.log('payload', action.payload);
       state.keyword = action.payload.keyword;
     },
     setResultCountSub: (state, action) => {

@@ -14,6 +14,7 @@ import com.facebook.soloader.SoLoader;
 import com.dmonster.dongnaebook.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import io.xogus.reactnative.versioncheck.RNVersionCheckPackage;
 // import io.invertase.firebase.links.RNFirebaseLinksPackage;
 
 
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
+          new RNVersionCheckPackage();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           // packages.add(new RNNaverLoginPackage());

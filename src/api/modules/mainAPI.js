@@ -101,4 +101,8 @@ export default {
     const result = await _reqAPI('proc_lifestyle_search_list.php', data);
     return result;
   },
+  _deleteUserAddr: async data => {
+    const result = await _reqAPI('proc_address_delete.php', data);
+    return result;
+  },
 };
