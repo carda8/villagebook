@@ -38,7 +38,7 @@ const StoreList = ({navigation, route}) => {
             // height: 100,
           }}
         >
-          <FilterView />
+          <FilterView category={category} />
         </SafeAreaView>
       ) : (
         <FilterView />
