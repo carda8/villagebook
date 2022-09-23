@@ -69,6 +69,7 @@ import SearchResult from '../screens/home/SearchResult';
 
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import MenuDetail2 from '../screens/menu/MenuDetail2';
+import IamCertification from '../screens/IamCertification';
 
 const Stack = createNativeStackNavigator();
 
@@ -350,8 +351,7 @@ const MainStackNavigator = () => {
       <Stack.Navigator
         initialRouteName={initRoute}
         // initialRouteName={'Test'}
-        screenOptions={{headerShown: false}}
-      >
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
@@ -434,6 +434,8 @@ const MainStackNavigator = () => {
         <Stack.Screen name="EventDetail" component={EventDetail} />
         <Stack.Screen name="Review" component={Review} />
         <Stack.Screen name="PushSetting" component={PushSetting} />
+
+        <Stack.Screen name="IamCertification" component={IamCertification} />
 
         <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>

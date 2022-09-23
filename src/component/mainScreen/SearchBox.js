@@ -52,7 +52,7 @@ const SearchBox = ({
         onSettled: e => {
           if (e.result === 'true') {
             console.log('mutateSearchLifeStyle', e);
-            console.warn(e.data.resultItem.countItem);
+            // console.warn(e.data.resultItem.countItem);
             if (e.data.resultItem?.countItem)
               dispatch(setResultCountSub(e.data.resultItem.countItem));
           }
@@ -96,7 +96,7 @@ const SearchBox = ({
         mb_lng: currentLocation.lon,
       };
       console.log('ITEM:::::', item);
-      console.warn(data);
+      // console.warn(data);
       let temp = await _getResult(data, index);
       console.log('_search :::::', temp);
       dispatch(setSearchResult({type: item, item: temp}));
@@ -126,8 +126,7 @@ const SearchBox = ({
           borderColor: colors.primary,
           borderRadius: 18,
           alignItems: 'center',
-        }}
-      >
+        }}>
         <TextInput
           // editable={isMain || isSub ? false : true}
           style={{
@@ -168,8 +167,7 @@ const SearchBox = ({
             backgroundColor: colors.primary,
             justifyContent: 'center',
             alignItems: 'center',
-          }}
-        >
+          }}>
           <Image
             source={require('~/assets/ico_search.png')}
             style={{width: 18, height: 18}}

@@ -136,8 +136,13 @@ const Receipt = ({orderResult, isSummary}) => {
               {orderData?.od_method === 'wrap' ? '포장할인' : '먹고가기 할인'}
             </TextRegular>
             <TextRegular style={{color: colors.primary}}>
-              - {replaceString(summitedData?.od_takeout_discount)}원
-              {/* - {replaceString(summitedData?.od_takeout_discount)}원 */}
+              -{' '}
+              {replaceString(
+                orderData?.od_method === 'wrap'
+                  ? summitedData?.od_takeout_discount
+                  : summitedData?.od_for_here_discount,
+              )}
+              원{/* - {replaceString(summitedData?.od_takeout_discount)}원 */}
             </TextRegular>
           </View>
         )}

@@ -66,7 +66,9 @@ const App = () => {
   const _checkVersion = () => {
     VersionCheck.needUpdate().then(async res => {
       console.log(res.isNeeded); // true
-      VersionCheck.getLatestVersion().then(res => console.warn(res));
+      VersionCheck.getLatestVersion().then(res =>
+        console.log('getLatestVersion', res),
+      );
       if (res.isNeeded) {
         customAlert(
           '알림',

@@ -183,7 +183,6 @@ const PushSetting = ({navigation}) => {
           </Pressable>
         </View>
         <View style={{paddingHorizontal: 14}}></View>
-        <Text>hi</Text>
         {/* 
         <View
           style={{

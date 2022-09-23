@@ -86,7 +86,7 @@ const SearchResult = ({navigation, route}) => {
       case '마켓':
         return `${resultCount?.countMarket ?? ''}`;
       case '동네정보':
-        return `${resultCount?.countLifesstyle ?? ''}`;
+        return `${resultCount?.countLifestyle ?? ''}`;
       default:
         return '-';
     }

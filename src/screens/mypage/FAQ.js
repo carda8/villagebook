@@ -25,7 +25,7 @@ const FAQ = ({navigation}) => {
     itemLimit.current = 0;
     const data = {
       item_count: itemLimit.current,
-      limit_count: '10',
+      limit_count: 20,
       mt_id: userInfo.mt_id,
     };
 
@@ -38,11 +38,11 @@ const FAQ = ({navigation}) => {
   };
 
   const _getMoreList = () => {
-    itemLimit.current += 10;
+    itemLimit.current += 20;
 
     const data = {
       item_count: itemLimit.current,
-      limit_count: '10',
+      limit_count: 20,
       mt_id: userInfo.mt_id,
     };
 

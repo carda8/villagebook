@@ -24,12 +24,14 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
 import {setUserInfo} from '../../../store/reducers/AuthReducer';
+import CertificationList from '../../../config/CertificationList';
 
 const EditSummit = ({navigation, route}) => {
-  const routeData = route.params?.target;
+  const target = route.params?.target;
   const dispatch = useDispatch();
 
-  const {mutateCheckNickName, mutateUpdataUserInfo} = useCustomMutation();
+  const {mutateCheckNickName, mutateUpdateUserInfo, mutateUpdatePhone} =
+    useCustomMutation();
 
   const [delay, setDelay] = useState(false);
   const [sendedTime, setSendedTime] = useState('');
@@ -78,7 +80,7 @@ const EditSummit = ({navigation, route}) => {
     if (!checkNickname && !isEmail)
       return customAlert('알림', '닉네임 중복 체크가 필요합니다.');
 
-    mutateUpdataUserInfo.mutate(data, {
+    mutateUpdateUserInfo.mutate(data, {
       onSettled: e => {
         if (e.result === 'true') {
           Alert.alert('알림', '회원정보 수정이 완료되었습니다.', [
@@ -119,19 +121,66 @@ const EditSummit = ({navigation, route}) => {
     });
   };
 
-  const _vaildate = (str, setState) => {
-    let temp = str.trim();
-    temp = temp.replace(/[^0-9]/gi, '');
-    setState(temp);
+  const _updatePhone = () => {
+    const res = route.params?.res;
+
+    if (res && res?.certified == true) {
+      const data = {
+        mt_id: userInfo.mt_id,
+        mt_hp: phone,
+        mt_auth: res?.certified ? true : false,
+      };
+
+      console.warn(data);
+
+      mutateUpdatePhone.mutate(data, {
+        onSettled: e => {
+          console.log('e', e);
+
+          if (e.result === 'true') {
+            Alert.alert('알림', '휴대폰번호 수정이 완료되었습니다.', [
+              {
+                text: '확인',
+                onPress: () => {
+                  dispatch(
+                    setUserInfo({
+                      ...userInfo,
+                      mt_hp: e.data.arrItems.mt_hp,
+                    }),
+                  );
+                  navigation.goBack();
+                },
+              },
+            ]);
+          } else {
+            Alert.alert('알림', '현재 해당 기능을 사용 할 수 없습니다.', [
+              {
+                text: '확인',
+                onPress: () => {
+                  navigation.goBack();
+                },
+              },
+            ]);
+          }
+        },
+      });
+    } else {
+      customAlert('알림', '본인인증이 필요합니다.', () => {});
+    }
   };
 
-  const _setDelay = () => {
-    setDelay(true);
-    setTimeout(() => {
-      console.log('hi');
-      setDelay(false);
-    }, 1000);
-  };
+  // const _vaildate = (str, setState) => {
+  //   let temp = str.trim();
+  //   temp = temp.replace(/[^0-9]/gi, '');
+  //   setState(temp);
+  // };
+
+  // const _setDelay = () => {
+  //   setDelay(true);
+  //   setTimeout(() => {
+  //     setDelay(false);
+  //   }, 1000);
+  // };
 
   const _setProfileImage = () => {
     ImageCropPicker.openCamera({
@@ -167,23 +216,40 @@ const EditSummit = ({navigation, route}) => {
     });
   };
 
+  const _convertPhoneNumber = str => {
+    const phone = str.replace(
+      /(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,
+      '$1-$2-$3',
+    );
+    return phone;
+  };
+
   useEffect(() => {
     if (checkNickname) setCheckNickname(false);
   }, [nickname]);
+
+  useEffect(() => {
+    const res = route.params?.res;
+    const res2 = route.params;
+    console.log(':: RES2 ', res2);
+    if (res && res?.certified == true) {
+      setPhone(res.phone);
+    }
+    console.log(':: RES CERTIFI', res);
+  }, [route]);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'정보 수정'} navigation={navigation} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {routeData === EditConfig.target.nickname && (
+        {target === EditConfig.target.nickname && (
           <>
             <View style={{padding: 22}}>
               <TextRegular style={{color: colors.fontColor2}}>
                 닉네임 변경
               </TextRegular>
               <View
-                style={{flexDirection: 'row', marginTop: 5, marginBottom: 20}}
-              >
+                style={{flexDirection: 'row', marginTop: 5, marginBottom: 20}}>
                 <TextInput
                   value={nickname}
                   onChangeText={e => {
@@ -212,8 +278,7 @@ const EditSummit = ({navigation, route}) => {
                     backgroundColor: colors.primary,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <TextBold style={{color: 'white'}}>중복확인</TextBold>
                 </Pressable>
               </View>
@@ -230,8 +295,7 @@ const EditSummit = ({navigation, route}) => {
                   }}
                   onPress={() => {
                     setModal(!modal);
-                  }}
-                >
+                  }}>
                   <Image
                     source={
                       !userInfo?.mt_profil_url && !profileImg?.uri
@@ -255,8 +319,7 @@ const EditSummit = ({navigation, route}) => {
                     backgroundColor: colors.inputBoxBG,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/ico_plus.png')}
                     style={{width: 30, height: 30}}
@@ -275,16 +338,14 @@ const EditSummit = ({navigation, route}) => {
                   justifyContent: 'center',
                   marginTop: 20,
                   borderRadius: 10,
-                }}
-              >
-                {mutateUpdataUserInfo.isLoading ? (
+                }}>
+                {mutateUpdateUserInfo.isLoading ? (
                   <View
                     style={{
                       flex: 1,
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}
-                  >
+                    }}>
                     <ActivityIndicator color={'white'} />
                   </View>
                 ) : (
@@ -295,7 +356,7 @@ const EditSummit = ({navigation, route}) => {
           </>
         )}
 
-        {routeData === EditConfig.target.email && (
+        {target === EditConfig.target.email && (
           <View style={{padding: 22}}>
             <TextRegular style={{color: colors.fontColor2}}>
               이메일 변경
@@ -328,9 +389,8 @@ const EditSummit = ({navigation, route}) => {
                 justifyContent: 'center',
                 marginTop: 20,
                 borderRadius: 10,
-              }}
-            >
-              {mutateUpdataUserInfo.isLoading ? (
+              }}>
+              {mutateUpdateUserInfo.isLoading ? (
                 <Loading />
               ) : (
                 <TextBold style={{color: 'white'}}>내정보수정</TextBold>
@@ -339,7 +399,7 @@ const EditSummit = ({navigation, route}) => {
           </View>
         )}
 
-        {routeData === EditConfig.target.phone && (
+        {target === EditConfig.target.phone && (
           <>
             <View style={{padding: 22}}>
               <TextRegular style={{color: colors.fontColor2}}>
@@ -352,11 +412,11 @@ const EditSummit = ({navigation, route}) => {
                   alignItems: 'center',
                   marginTop: 5,
                   marginBottom: 5,
-                }}
-              >
+                }}>
                 <TextInput
-                  value={phone}
-                  onChangeText={e => _vaildate(e, setPhone)}
+                  editable={false}
+                  value={phone ? _convertPhoneNumber(phone) : userInfo.mt_hp}
+                  // onChangeText={e => _vaildate(e, setPhone)}
                   keyboardType="numeric"
                   style={{
                     flex: 1,
@@ -367,13 +427,15 @@ const EditSummit = ({navigation, route}) => {
                     paddingHorizontal: 10,
                     marginRight: 10,
                   }}
-                  placeholder="휴대폰 번호를 입력하세요"
+                  // placeholder="본인인증이 필요합니다."
                 />
                 <Pressable
                   onPress={() => {
-                    _setDelay();
-                  }}
-                >
+                    navigation.navigate('IamCertification', {
+                      target: CertificationList.isEdit,
+                    });
+                    // _setDelay();
+                  }}>
                   <View
                     style={{
                       width: 100,
@@ -383,19 +445,14 @@ const EditSummit = ({navigation, route}) => {
                       borderColor: colors.primary,
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}
-                  >
-                    {delay ? (
-                      <Loading />
-                    ) : (
-                      <TextMedium style={{color: colors.fontColor2}}>
-                        인증번호
-                      </TextMedium>
-                    )}
+                    }}>
+                    <TextMedium style={{color: colors.fontColor2}}>
+                      재인증
+                    </TextMedium>
                   </View>
                 </Pressable>
               </View>
-
+              {/* 
               <TextInput
                 value={code}
                 onChangeText={e => _vaildate(e, setCode)}
@@ -408,10 +465,13 @@ const EditSummit = ({navigation, route}) => {
                   borderColor: colors.borderColor,
                   paddingHorizontal: 10,
                 }}
-                placeholder="인증번호를 입력하세요"
-              />
+                placeholder="새로운 휴대폰 번호를 입력하세요."
+              /> */}
 
               <Pressable
+                onPress={() => {
+                  _updatePhone();
+                }}
                 style={{
                   height: 50,
                   backgroundColor: colors.primary,
@@ -419,14 +479,13 @@ const EditSummit = ({navigation, route}) => {
                   justifyContent: 'center',
                   marginTop: 20,
                   borderRadius: 10,
-                }}
-              >
+                }}>
                 <TextBold style={{color: 'white'}}>휴대폰번호 변경</TextBold>
               </Pressable>
             </View>
           </>
         )}
-        {routeData === EditConfig.target.password && (
+        {target === EditConfig.target.password && (
           <>
             <View style={{padding: 22}}>
               <TextRegular style={{color: colors.fontColor2}}>
@@ -467,8 +526,7 @@ const EditSummit = ({navigation, route}) => {
                   justifyContent: 'center',
                   marginTop: 20,
                   borderRadius: 10,
-                }}
-              >
+                }}>
                 <TextBold style={{color: 'white'}}>비밀번호 변경</TextBold>
               </Pressable>
             </View>
@@ -480,8 +538,7 @@ const EditSummit = ({navigation, route}) => {
         visible={modal}
         onRequestClose={() => {
           setModal(!modal);
-        }}
-      >
+        }}>
         <ImageViewer
           imageUrls={[{url: profileImg?.uri}]}
           useNativeDriver
@@ -491,8 +548,7 @@ const EditSummit = ({navigation, route}) => {
               onPress={() => {
                 setModal(!modal);
               }}
-              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
-            >
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}>
               <Image
                 source={require('~/assets/pop_close.png')}
                 style={{
@@ -517,16 +573,14 @@ const EditSummit = ({navigation, route}) => {
         visible={modalPic}
         onRequestClose={() => {
           setModalPic(!modalPic);
-        }}
-      >
+        }}>
         <View
           style={{
             flex: 1,
             backgroundColor: 'rgba(0,0,0,0.6)',
             paddingHorizontal: 22,
             flexDirection: 'column',
-          }}
-        >
+          }}>
           <Pressable
             hitSlop={20}
             onPress={() => {
@@ -535,8 +589,7 @@ const EditSummit = ({navigation, route}) => {
             style={{
               alignSelf: 'flex-end',
               zIndex: 300,
-            }}
-          >
+            }}>
             <Image
               source={require('~/assets/pop_close.png')}
               style={{
@@ -548,8 +601,7 @@ const EditSummit = ({navigation, route}) => {
             />
           </Pressable>
           <View
-            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
-          >
+            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
             <View
               style={{
                 width: '100%',
@@ -572,8 +624,7 @@ const EditSummit = ({navigation, route}) => {
                     elevation: 5,
                   },
                 }),
-              }}
-            >
+              }}>
               <View style={{flexDirection: 'row'}}>
                 <Pressable
                   onPress={() => _setProfileImage()}
@@ -584,8 +635,7 @@ const EditSummit = ({navigation, route}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/btn_add.png')}
                     style={{
@@ -602,8 +652,7 @@ const EditSummit = ({navigation, route}) => {
                       color: colors.fontColor2,
                       includeFontPadding: false,
                       flex: 1,
-                    }}
-                  >
+                    }}>
                     사진 촬영
                   </TextBold>
                 </Pressable>
@@ -617,8 +666,7 @@ const EditSummit = ({navigation, route}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/btn_add.png')}
                     style={{
@@ -635,8 +683,7 @@ const EditSummit = ({navigation, route}) => {
                       flex: 1,
                       color: colors.fontColor2,
                       includeFontPadding: false,
-                    }}
-                  >
+                    }}>
                     갤러리 가져오기
                   </TextBold>
                 </Pressable>

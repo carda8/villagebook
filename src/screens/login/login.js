@@ -475,6 +475,18 @@ const Login = ({navigation}) => {
                   resizeMode={'contain'}></Image>
               </Pressable>
             )}
+            {/* 본인인증 테스트 버튼 */}
+            {/* <Pressable
+              onPress={() => navigation.navigate('IamCertification')}
+              style={{
+                ...style.snsButton,
+                marginLeft: 37,
+              }}>
+              <Image
+                source={require('../../assets/sns_apple.png')}
+                style={{...style.snsImage}}
+                resizeMode={'contain'}></Image>
+            </Pressable> */}
           </View>
         </View>
       </ScrollView>

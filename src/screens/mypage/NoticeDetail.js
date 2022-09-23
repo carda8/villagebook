@@ -14,12 +14,34 @@ import TextBold from '../../component/text/TextBold';
 import TextRegular from '../../component/text/TextRegular';
 import colors from '../../styles/colors';
 import dayjs from 'dayjs';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import Loading from '../../component/Loading';
 
 const NoticeDetail = ({navigation, route}) => {
   const routeData = route.params.data;
   const [HEIGHT, setHEIGHT] = useState({height: 0, rate: 0});
   const layout = useWindowDimensions();
+  const {mutateBoardDetail} = useCustomMutation();
+  const [boardData, setBoardData] = useState();
   console.log('route', routeData);
+
+  const _getBoardDetail = () => {
+    const data = {
+      bo_table: 'notice',
+      wr_id: routeData.wr_id,
+    };
+    mutateBoardDetail.mutate(data, {
+      onSettled: e => {
+        setBoardData(e.data.arrItems);
+      },
+    });
+  };
+
+  useEffect(() => {
+    _getBoardDetail();
+  }, []);
+
+  if (!boardData) return <Loading />;
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -34,13 +56,13 @@ const NoticeDetail = ({navigation, route}) => {
             justifyContent: 'space-between',
           }}>
           <TextBold style={{color: colors.fontColor2}}>
-            {routeData.subject}
+            {boardData.subject}
           </TextBold>
           <TextRegular style={{fontSize: 11, color: colors.fontColorA2}}>
-            {routeData.datetime}
+            {boardData.datetime}
           </TextRegular>
         </View>
-        {routeData?.pic.map((item, index) => (
+        {boardData?.pic.map((item, index) => (
           <Image
             key={index}
             source={{uri: item.file}}
@@ -58,7 +80,7 @@ const NoticeDetail = ({navigation, route}) => {
           />
         ))}
         <View style={{paddingHorizontal: 22, paddingTop: 22}}>
-          <TextRegular>{routeData.content}</TextRegular>
+          <TextRegular>{boardData.content}</TextRegular>
         </View>
       </ScrollView>
     </SafeAreaView>

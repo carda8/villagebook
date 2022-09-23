@@ -78,6 +78,13 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mutateBoardDetail = useMutation(mainAPI._getBoardDetail, {
+    onSettled: e => {
+      console.log('mutateBoardDetail', e);
+      return e;
+    },
+  });
+
   const mutateGetMyReview = useMutation(mainAPI._getMyReview, {
     onSettled: e => {
       console.log('mutateGetMyReview', e);
@@ -324,9 +331,15 @@ export const useCustomMutation = () => {
       return e;
     },
   });
-  const mutateUpdataUserInfo = useMutation(mainAPI._updataUserInfo, {
+  const mutateUpdateUserInfo = useMutation(mainAPI._updataUserInfo, {
     onSettled: e => {
-      console.log('mutateUpdataUserInfo', e);
+      console.log('mutateUpdateUserInfo', e);
+      return e;
+    },
+  });
+  const mutateUpdatePhone = useMutation(mainAPI._updatePhone, {
+    onSettled: e => {
+      console.log('mutateUpdatePhone', e);
       return e;
     },
   });
@@ -384,7 +397,7 @@ export const useCustomMutation = () => {
     mutateGetStoreList,
     mutateDownloadCoupon,
     mutateCheckNickName,
-    mutateUpdataUserInfo,
+    mutateUpdateUserInfo,
     mutateGetFaqList,
     mutatePostFaq,
     mutateNotification,
@@ -393,5 +406,7 @@ export const useCustomMutation = () => {
     mutateLikeLifeStyle,
     mutateSearchLifeStyle,
     mutateDeleteUserAddr,
+    mutateBoardDetail,
+    mutateUpdatePhone,
   };
 };

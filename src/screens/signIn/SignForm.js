@@ -29,8 +29,11 @@ import {Errorhandler} from '../../config/ErrorHandler';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {useSelector} from 'react-redux';
+import CertificationList from '../../config/CertificationList';
+import {useEffect} from 'react';
 
-const SignForm = ({navigation}) => {
+const SignForm = ({navigation, route}) => {
+  console.log('ROUTE', route.params);
   const {fcmToken} = useSelector(state => state.authReducer);
   const [fsImage, setFsImage] = useState();
   const [modal, setModal] = useState(false);
@@ -65,20 +68,20 @@ const SignForm = ({navigation}) => {
     },
   });
 
-  const mutateSendCode = useMutation(authAPI._sendCode, {
-    onSuccess: e => {
-      if (e.result === 'false') {
-        Alert.alert('알림', `${e.msg}`);
-      } else {
-        Alert.alert(
-          '알림',
-          `인증번호가 발송 되었습니다.\n받은 번호를 입력 후 인증확인을 해주세요.`,
-        );
-        console.log('e', e);
-        fm.setFieldValue('mt_certify_check', String(e.data.arrItems.certno));
-      }
-    },
-  });
+  // const mutateSendCode = useMutation(authAPI._sendCode, {
+  //   onSuccess: e => {
+  //     if (e.result === 'false') {
+  //       Alert.alert('알림', `${e.msg}`);
+  //     } else {
+  //       Alert.alert(
+  //         '알림',
+  //         `인증번호가 발송 되었습니다.\n받은 번호를 입력 후 인증확인을 해주세요.`,
+  //       );
+  //       console.log('e', e);
+  //       fm.setFieldValue('mt_certify_check', String(e.data.arrItems.certno));
+  //     }
+  //   },
+  // });
 
   const mutateSignIn = useMutation(authAPI._submitForm, {
     onSettled: e => {
@@ -102,9 +105,9 @@ const SignForm = ({navigation}) => {
       mt_pwd: '',
       mt_pwd_re: '',
       mt_hp: '',
-      mt_code: '', // 프론트에서 인증코드 확인용
+      // mt_code: '', // 프론트에서 인증코드 확인용 // 이니시스 본인인증으로 변경
       mt_certify: '',
-      mt_certify_check: '',
+      // mt_certify_check: '',
       mt_nickname: '',
       mt_email: '',
       mt_level: '2',
@@ -119,17 +122,18 @@ const SignForm = ({navigation}) => {
         .string()
         .required('비밀번호를 입력해주세요.')
         .oneOf([yup.ref('mt_pwd'), null], '비밀번호가 일치하지 않습니다.'),
-      mt_hp: yup
-        .number('올바른 휴대폰 번호를 입력해주세요.')
-        .integer('올바른 휴대폰 번호를 입력해주세요.')
-        .required('휴대폰번호를 입력해주세요.'),
-      mt_code: yup
-        .string()
-        .required('인증번호를 입력해주세요.')
-        .oneOf(
-          [yup.ref('mt_certify_check'), null],
-          '인증번호가 일치하지 않습니다.',
-        ),
+      // mt_hp: yup
+      //   .number('올바른 휴대폰 번호를 입력해주세요.')
+      //   .integer('올바른 휴대폰 번호를 입력해주세요.')
+      //   .required('휴대폰번호를 입력해주세요.'),
+      mt_hp: yup.string().required('본인인증을 해주세요.'),
+      // mt_code: yup
+      //   .string()
+      //   .required('인증번호를 입력해주세요.')
+      //   .oneOf(
+      //     [yup.ref('mt_certify_check'), null],
+      //     '인증번호가 일치하지 않습니다.',
+      //   ),
       mt_nickname: yup.string().required('닉네임을 입력해주세요.'),
       mt_email: yup
         .string()
@@ -141,6 +145,16 @@ const SignForm = ({navigation}) => {
     onSubmit: info => handleSubmit(info),
   });
 
+  useEffect(() => {
+    const res = route.params?.res;
+    if (res && res?.certified == true) {
+      fm.setFieldValue('mt_hp', res.phone);
+      fm.setFieldValue('mt_certify', 1);
+    }
+    console.log(':: RES CERTIFI', res);
+  }, [route.params]);
+
+  // console.log(fm.errors);
   const handleSubmit = e => {
     // console.log('summited', e);
     const data = {
@@ -172,30 +186,31 @@ const SignForm = ({navigation}) => {
     else Alert.alert('알림', '닉네임을 입력해주세요.');
   };
 
-  const _sendCode = () => {
-    const data = {mt_hp: fm.values.mt_hp};
-    if (!data.mt_hp.trim() || fm.errors.mt_hp)
-      Errorhandler('올바른 휴대폰 번호를 입력해주세요.');
-    else mutateSendCode.mutate(data);
+  const _onPressCertification = () => {
+    navigation.navigate('IamCertification', {target: CertificationList.isSign});
+    // const data = {mt_hp: fm.values.mt_hp};
+    // if (!data.mt_hp.trim() || fm.errors.mt_hp)
+    //   Errorhandler('올바른 휴대폰 번호를 입력해주세요.');
+    // else mutateSendCode.mutate(data);
   };
 
-  const _vaildateCode = () => {
-    console.log('certify', fm.values.mt_certify_check);
-    console.log('mt_code', fm.values.mt_code);
+  // const _vaildateCode = () => {
+  //   console.log('certify', fm.values.mt_certify_check);
+  //   console.log('mt_code', fm.values.mt_code);
 
-    if (
-      fm.values.mt_certify_check &&
-      fm.values.mt_code == fm.values.mt_certify_check
-    ) {
-      Alert.alert('휴대폰인증', '휴대폰인증이 완료되었습니다.');
-      //인증 완료시 1
-      fm.setFieldValue('mt_certify', '1');
-    } else {
-      Alert.alert('휴대폰인증', '인증번호가 일치하지 않습니다.');
-      //인증 미완료시 0
-      fm.setFieldValue('mt_certify', '0');
-    }
-  };
+  //   if (
+  //     fm.values.mt_certify_check &&
+  //     fm.values.mt_code == fm.values.mt_certify_check
+  //   ) {
+  //     Alert.alert('휴대폰인증', '휴대폰인증이 완료되었습니다.');
+  //     //인증 완료시 1
+  //     fm.setFieldValue('mt_certify', '1');
+  //   } else {
+  //     Alert.alert('휴대폰인증', '인증번호가 일치하지 않습니다.');
+  //     //인증 미완료시 0
+  //     fm.setFieldValue('mt_certify', '0');
+  //   }
+  // };
 
   const _setProfileImage = () => {
     ImageCropPicker.openCamera({
@@ -271,25 +286,25 @@ const SignForm = ({navigation}) => {
           </View>
 
           <View style={{marginTop: 20}}>
-            <TextBold>휴대폰 번호</TextBold>
+            <TextBold>휴대폰 인증</TextBold>
             <View style={{flexDirection: 'row', marginTop: 10}}>
               <Input
+                editable={false}
                 value={'mt_hp'}
                 formik={fm}
                 flex={1}
-                placeholder={'번호(숫자만)를 입력해주세요'}
+                placeholder={'본인인증이 필요합니다.'}
                 keyboardType={'numeric'}
               />
               <Button
                 hitSlop={10}
-                text={'인증번호 발송'}
-                onPress={() => _sendCode()}
-                isLoading={mutateSendCode.isLoading}
+                text={'본인인증'}
+                onPress={() => _onPressCertification()}
+                // isLoading={mutateSendCode.isLoading}
               />
             </View>
             {/* 인증번호 작성 */}
-            <View style={{flexDirection: 'row', marginTop: 7}}>
-              {/* <TextInput keyboardType='numeric'></TextInput> */}
+            {/* <View style={{flexDirection: 'row', marginTop: 7}}>
               <Input
                 formik={fm}
                 value={'mt_code'}
@@ -303,7 +318,7 @@ const SignForm = ({navigation}) => {
                 text={'인증확인'}
                 onPress={() => _vaildateCode()}
               />
-            </View>
+            </View> */}
           </View>
 
           <View style={{marginTop: 20}}>
@@ -344,8 +359,7 @@ const SignForm = ({navigation}) => {
                     marginRight: 10,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={{uri: fsImage ? fsImage : null}}
                     style={{
@@ -369,8 +383,7 @@ const SignForm = ({navigation}) => {
                   backgroundColor: colors.inputBoxBG,
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}
-              >
+                }}>
                 <Image
                   source={require('~/assets/ico_plus.png')}
                   style={{width: 30, height: 30}}
@@ -401,8 +414,7 @@ const SignForm = ({navigation}) => {
         visible={modal}
         onRequestClose={() => {
           setModal(!modal);
-        }}
-      >
+        }}>
         <ImageViewer
           imageUrls={[{url: fsImage}]}
           useNativeDriver
@@ -412,8 +424,7 @@ const SignForm = ({navigation}) => {
               onPress={() => {
                 setModal(!modal);
               }}
-              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
-            >
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}>
               <Image
                 source={require('~/assets/pop_close.png')}
                 style={{
@@ -438,16 +449,14 @@ const SignForm = ({navigation}) => {
         visible={modalPic}
         onRequestClose={() => {
           setModalPic(!modalPic);
-        }}
-      >
+        }}>
         <View
           style={{
             flex: 1,
             backgroundColor: 'rgba(0,0,0,0.6)',
             paddingHorizontal: 22,
             flexDirection: 'column',
-          }}
-        >
+          }}>
           <Pressable
             hitSlop={20}
             onPress={() => {
@@ -456,8 +465,7 @@ const SignForm = ({navigation}) => {
             style={{
               alignSelf: 'flex-end',
               zIndex: 300,
-            }}
-          >
+            }}>
             <Image
               source={require('~/assets/pop_close.png')}
               style={{
@@ -469,8 +477,7 @@ const SignForm = ({navigation}) => {
             />
           </Pressable>
           <View
-            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
-          >
+            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
             <View
               style={{
                 width: '100%',
@@ -493,8 +500,7 @@ const SignForm = ({navigation}) => {
                     elevation: 5,
                   },
                 }),
-              }}
-            >
+              }}>
               <View style={{flexDirection: 'row'}}>
                 <Pressable
                   onPress={() => _setProfileImage()}
@@ -505,8 +511,7 @@ const SignForm = ({navigation}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/btn_add.png')}
                     style={{
@@ -523,8 +528,7 @@ const SignForm = ({navigation}) => {
                       color: colors.fontColor2,
                       includeFontPadding: false,
                       flex: 1,
-                    }}
-                  >
+                    }}>
                     사진 촬영
                   </TextBold>
                 </Pressable>
@@ -538,8 +542,7 @@ const SignForm = ({navigation}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/btn_add.png')}
                     style={{
@@ -556,8 +559,7 @@ const SignForm = ({navigation}) => {
                       flex: 1,
                       color: colors.fontColor2,
                       includeFontPadding: false,
-                    }}
-                  >
+                    }}>
                     갤러리 가져오기
                   </TextBold>
                 </Pressable>

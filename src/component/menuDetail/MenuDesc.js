@@ -356,7 +356,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: colors.couponBG,
+                backgroundColor: 'white',
                 borderWidth: 1,
                 borderColor: colors.borderColor,
                 height: 50,
@@ -371,7 +371,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                   style={{
                     fontWeight: 'bold',
                     fontSize: 17,
-                    color: colors.primary,
+                    color: colors.fontColorA,
                   }}>
                   전화하기
                 </Text>

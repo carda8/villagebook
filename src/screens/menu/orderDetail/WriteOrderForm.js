@@ -23,6 +23,10 @@ import {customAlert} from '../../../component/CustomAlert';
 import PaymentList from '../../../config/PaymentList';
 import {or, set} from 'react-native-reanimated';
 import {useCustomMutation} from '../../../hooks/useCustomMutation';
+import CertificationList from '../../../config/CertificationList';
+import {Alert} from 'react-native';
+import {setUserInfo} from '../../../store/reducers/AuthReducer';
+import {useDispatch} from 'react-redux';
 
 const WriteOrderForm = ({navigation, route}) => {
   const addData = route.params?.addData;
@@ -33,9 +37,13 @@ const WriteOrderForm = ({navigation, route}) => {
   const {deliveryData, paymentMethod} = useSelector(
     state => state.paymentReducer,
   );
-
-  const {mutateGetCouponPoint, mutateGetCoupon, mutateGetAddress} =
-    useCustomMutation();
+  const dispatch = useDispatch();
+  const {
+    mutateGetCouponPoint,
+    mutateGetCoupon,
+    mutateGetAddress,
+    mutateUpdatePhone,
+  } = useCustomMutation();
 
   const currentStore = cartStore.currentStoreCode;
   // const {deliveryType === 0} = useSelector(state => state.paymentReducer);
@@ -77,7 +85,7 @@ const WriteOrderForm = ({navigation, route}) => {
   });
 
   useEffect(() => {
-    console.warn(deliveryType);
+    // console.warn(deliveryType);
   }, []);
 
   const storeCpType = storeCoupon.cp_price_type;
@@ -124,13 +132,13 @@ const WriteOrderForm = ({navigation, route}) => {
       console.log('path1');
     }
 
-    console.warn(
-      storeCpType,
-      systemCpType,
-      systemCpPrice,
-      discountStore,
-      discountSystem,
-    );
+    // console.warn(
+    //   storeCpType,
+    //   systemCpType,
+    //   systemCpPrice,
+    //   discountStore,
+    //   discountSystem,
+    // );
 
     if (deliveryType !== 0)
       // (2)
@@ -315,6 +323,49 @@ const WriteOrderForm = ({navigation, route}) => {
     }
   }, [paymentMethod]);
 
+  useEffect(() => {
+    const res = route.params?.res;
+
+    if (res && res?.certified == true) {
+      const data = {
+        mt_id: userInfo.mt_id,
+        mt_hp: res.phone,
+        mt_auth: res?.certified ? true : false,
+      };
+      mutateUpdatePhone.mutate(data, {
+        onSettled: e => {
+          console.log('e', e);
+
+          if (e.result === 'true') {
+            Alert.alert('알림', '휴대폰번호 수정이 완료되었습니다.', [
+              {
+                text: '확인',
+                onPress: () => {
+                  dispatch(
+                    setUserInfo({
+                      ...userInfo,
+                      mt_hp: e.data.arrItems.mt_hp,
+                    }),
+                  );
+                  // navigation.goBack();
+                },
+              },
+            ]);
+          } else {
+            Alert.alert('알림', '현재 해당 기능을 사용 할 수 없습니다.', [
+              {
+                text: '확인',
+                onPress: () => {
+                  // navigation.goBack();
+                },
+              },
+            ]);
+          }
+        },
+      });
+    }
+  }, [route]);
+
   const _checkForm = () => {
     if (deliveryType === 0 && !orderForm.od_addr1 && !orderForm.od_addr2) {
       return customAlert('알림', '배달정보를 확인해주세요.');
@@ -404,16 +455,22 @@ const WriteOrderForm = ({navigation, route}) => {
             <TextInput
               editable={false}
               style={{...styles.inputContainer}}
-              placeholder={'휴대폰 번호(숫자만 입력)'}
-              defaultValue={userInfo.mt_hp}
+              // placeholder={'휴대폰 번호(숫자만 입력)'}
+              value={userInfo.mt_hp}
             />
-            {/* <Pressable
-              // onPress={()=>customAlert()}
+            <Pressable
+              onPress={() =>
+                navigation.navigate('IamCertification', {
+                  addData: addData,
+                  target: CertificationList.isOrder,
+                })
+              }
               style={{
+                marginLeft: 10,
                 ...styles.infoBtn,
               }}>
               <TextBold style={{fontSize: 16, color: 'white'}}>변경</TextBold>
-            </Pressable> */}
+            </Pressable>
           </View>
 
           {deliveryType === 2 && (

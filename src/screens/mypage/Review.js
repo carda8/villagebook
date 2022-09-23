@@ -29,6 +29,8 @@ const Review = ({navigation}) => {
   const [modal, setModal] = useState({visible: false, image: []});
   const layout = useWindowDimensions();
 
+  const limitItem = useRef(0);
+
   const _getMyReview = () => {
     const data = {
       item_count: 0,
@@ -43,6 +45,28 @@ const Review = ({navigation}) => {
       onSettled: e => {
         if (e.result === 'true' && e.data.arrItems.length > 0)
           setReviews(e.data.arrItems);
+        console.log('e', e);
+      },
+    });
+  };
+
+  const _getMore = () => {
+    limitItem.current += 20;
+
+    const data = {
+      item_count: limitItem.current,
+      limit_count: 20,
+      bo_table: 'review',
+      mt_id: userInfo.mt_id,
+    };
+
+    mutateGetMyReview.mutate(data, {
+      onError: e => {
+        Errorhandler(e);
+      },
+      onSettled: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0)
+          setReviews(prev => prev.concat(e.data.arrItems));
         console.log('e', e);
       },
     });
@@ -90,8 +114,7 @@ const Review = ({navigation}) => {
           flex: 1,
           borderTopWidth: 1,
           borderTopColor: colors.borderColor,
-        }}
-      >
+        }}>
         <View
           style={{
             flex: 1,
@@ -100,8 +123,7 @@ const Review = ({navigation}) => {
             paddingTop: 15,
             flexDirection: 'row',
             alignItems: 'center',
-          }}
-        >
+          }}>
           <FastImage
             source={
               data.mt_profile_url
@@ -111,8 +133,7 @@ const Review = ({navigation}) => {
             style={{width: 70, height: 70, borderRadius: 20}}
           />
           <View
-            style={{marginLeft: 10, flex: 1, justifyContent: 'space-between'}}
-          >
+            style={{marginLeft: 10, flex: 1, justifyContent: 'space-between'}}>
             <TextBold style={{fontSize: 16, color: colors.fontColor2}}>
               {data.mb_company}
             </TextBold>
@@ -133,8 +154,7 @@ const Review = ({navigation}) => {
           onPress={() => {
             if (data.pic.length > 0)
               setModal({visible: !modal.visible, image: data.pic});
-          }}
-        >
+          }}>
           {data?.pic.map((item, index) => (
             <FastImage
               key={index}
@@ -176,8 +196,7 @@ const Review = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
               padding: 22,
-            }}
-          >
+            }}>
             <TextRegular>작성된 리뷰가 없습니다.</TextRegular>
           </View>
         }
@@ -218,7 +237,10 @@ const Review = ({navigation}) => {
         ItemSeparatorComponent={() => <View style={{marginVertical: 20}} />}
         renderItem={item => renderItem(item)}
         keyExtractor={(item, index) => index}
-        onEndReached={() => {}}
+        onEndReached={() => {
+          console.warn('Get More Review');
+          _getMore();
+        }}
       />
 
       <Modal
@@ -226,8 +248,7 @@ const Review = ({navigation}) => {
         visible={modal.visible}
         onRequestClose={() => {
           setModal({...modal, visible: !modal.visible});
-        }}
-      >
+        }}>
         {/* {console.log('modal img', modal.image)} */}
         <ImageViewer
           useNativeDriver
@@ -240,8 +261,7 @@ const Review = ({navigation}) => {
               onPress={() => {
                 setModal(!modal);
               }}
-              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
-            >
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}>
               <Image
                 source={require('~/assets/pop_close.png')}
                 style={{

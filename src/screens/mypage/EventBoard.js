@@ -19,24 +19,50 @@ import DividerL from '../../component/DividerL';
 import dayjs from 'dayjs';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import Loading from '../../component/Loading';
+import {useRef} from 'react';
 
 const EventBoard = ({navigation}) => {
   const [input, setInput] = useState();
   const {mutateBoardList} = useCustomMutation();
   const [boardList, setBoardList] = useState([]);
 
+  const limitItem = useRef(0);
+
+  const _getMore = () => {
+    limitItem.current += 40;
+
+    const data = {
+      bo_table: 'event',
+      item_count: limitItem.current,
+      limit_count: 40,
+    };
+    mutateBoardList.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true' && e.data.arrItems.length > 0) {
+          const temp = e.data.arrItems;
+          let origin = JSON.parse(JSON.stringify(boardList));
+          console.log('originnnnn', origin);
+          origin = origin.concat(temp);
+          console.warn('origin', origin);
+          setBoardList(origin);
+        }
+        console.log('e', e);
+      },
+    });
+  };
+
   const _getBoardList = () => {
     const data = {
       bo_table: 'event',
       item_count: 0,
-      limit_count: 20,
+      limit_count: 40,
     };
     mutateBoardList.mutate(data, {
       onSuccess: e => {
-        if (e.result === 'true' && e.data.arrItems.length > 0)
+        if (e.result === 'true' && e.data.arrItems.length > 0) {
           setBoardList(e.data.arrItems);
-        else setBoardList([]);
-        console.log('e', e);
+          console.log('original', e.data.arrItems);
+        } else setBoardList([]);
       },
     });
   };
@@ -67,7 +93,7 @@ const EventBoard = ({navigation}) => {
     _getBoardList();
   }, []);
 
-  if (mutateBoardList.isLoading) return <Loading />;
+  // if (mutateBoardList.isLoading) return <Loading />;
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -123,7 +149,9 @@ const EventBoard = ({navigation}) => {
         )}
         renderItem={item => renderItem(item)}
         keyExtractor={(item, index) => index}
-        onEndReached={() => {}}
+        onEndReached={() => {
+          if (boardList.length % 40 === 0) _getMore();
+        }}
       />
     </SafeAreaView>
   );

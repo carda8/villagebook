@@ -5,17 +5,28 @@ import colors from '../styles/colors';
 import TextRegular from './text/TextRegular';
 import {useCustomMutation} from '../hooks/useCustomMutation';
 import Swiper from 'react-native-swiper';
+import {Linking} from 'react-native';
+import {useDispatch} from 'react-redux';
+import {setIsLifeStyle} from '../store/reducers/CategoryReducer';
 
 const MainBanner = ({navigation, style, position}) => {
   const {mutateGetBanner} = useCustomMutation();
   const [bannerImg, setBannerImg] = useState([]);
   const layout = useWindowDimensions();
+  const dispatch = useDispatch();
 
   const _getBanner = () => {
     const data = {
       bn_position: position !== 'lifestyle' ? position : '동네편의',
     };
     console.log('_getBanner_getBanner', data);
+
+    //market, food
+    // jumju_id: routeData.jumju_id,
+    // jumju_code: routeData.jumju_code,
+    // jumju_type: routeData.category,
+
+    //lifestyle
 
     mutateGetBanner.mutate(data, {
       onSettled: e => {
@@ -29,6 +40,44 @@ const MainBanner = ({navigation, style, position}) => {
         console.log('e', e);
       },
     });
+  };
+
+  const _onPressBanner = item => {
+    console.log('itme', item);
+    switch (item?.bn_link_type) {
+      case 'food':
+        dispatch(setIsLifeStyle(false));
+        return navigation.navigate('MenuDetail', {
+          jumju_id: item.bn_jumju_id,
+          jumju_code: item.bn_jumju_code,
+          jumju_type: 'food',
+        });
+      case 'marekt':
+        dispatch(setIsLifeStyle(false));
+        return navigation.navigate('MenuDetail', {
+          jumju_id: item.bn_jumju_id,
+          jumju_code: item.bn_jumju_code,
+          jumju_type: 'market',
+        });
+      case 'lifestyle':
+        dispatch(setIsLifeStyle(true));
+        return navigation.navigate('LifeStyleStoreInfo', {
+          jumju_id: item.bn_jumju_id,
+          jumju_code: item.bn_jumju_code,
+        });
+      case 'site':
+        return Linking.openURL(item.bn_link);
+      case 'event':
+        return navigation.navigate('EventDetail', {
+          data: {wr_id: item.bn_link},
+        });
+      case 'notice':
+        return navigation.navigate('NoticeDetail', {
+          data: {wr_id: item.bn_link},
+        });
+      default:
+        return;
+    }
   };
 
   useEffect(() => {
@@ -83,7 +132,12 @@ const MainBanner = ({navigation, style, position}) => {
         {bannerImg.map((item, idx) => (
           <Pressable
             key={idx}
-            onPress={() => {}}
+            onPress={() => {
+              _onPressBanner(item);
+              // console.log('item', item);
+              // if(item.)
+              // navigation.navigate("")
+            }}
             style={{
               flex: 1,
               backgroundColor: colors.mainBG3,

@@ -34,6 +34,7 @@ const PaymentMain = ({navigation, route}) => {
   console.log('userinfo', userInfo);
   console.log('orderForm', orderForm);
   console.log('route data', route.params);
+  console.log('store', cartStore);
   const _deleteCount = () => {
     return {savedItems: cartStore.savedItem.savedItems};
   };
@@ -174,7 +175,13 @@ const PaymentMain = ({navigation, route}) => {
   const data = {
     pg: 'html5_inicis',
     pay_method: 'card',
-    name: '아임포트 결제 테스트',
+    name:
+      cartStore.savedItem.savedItems.length === 1
+        ? cartStore.mainCount.menuName
+        : cartStore.savedItem.savedItems[0].main.menuName +
+          '외 ' +
+          (cartStore.savedItem.savedItems.length - 1) +
+          '건',
     merchant_uid: `mid_${new Date().getTime()}`,
     amount: totalOrderPrice,
     buyer_name: orderForm.mt_name,

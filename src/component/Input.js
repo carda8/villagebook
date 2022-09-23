@@ -11,9 +11,11 @@ export const Input = ({
   formik,
   value,
   keyboardType,
+  editable,
 }) => {
   return (
     <TextInput
+      editable={editable}
       autoCapitalize="none"
       value={formik.values[value]}
       onChangeText={

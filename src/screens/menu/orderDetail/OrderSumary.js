@@ -256,6 +256,21 @@ const OrderSumary = ({navigation, route}) => {
                 marginBottom: 11,
               }}>
               <TextRegular style={{color: colors.fontColor99}}>
+                먹고가기 할인
+              </TextRegular>
+              <TextRegular style={{color: colors.primary}}>
+                - {replaceString(orderData.data.order.order_for_here_discount)}
+                원
+              </TextRegular>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 11,
+              }}>
+              <TextRegular style={{color: colors.fontColor99}}>
                 포장 할인
               </TextRegular>
               <TextRegular style={{color: colors.primary}}>
@@ -302,7 +317,9 @@ const OrderSumary = ({navigation, route}) => {
               <TextRegular style={{color: colors.primary}}>
                 {orderData.data.order.od_method === 'delivery'
                   ? '배달'
-                  : '포장'}
+                  : orderData.data.order.od_method === 'warp'
+                  ? '포장'
+                  : '먹고가기'}
               </TextRegular>
             </View>
 

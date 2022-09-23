@@ -44,7 +44,7 @@ const SummitOrder = ({navigation, route}) => {
 
     return arr;
   };
-  console.warn('deliveryType', route.params);
+  // console.warn('deliveryType', route.params);
 
   const _getTotalPrice = isSummit => {
     let temp = 0;

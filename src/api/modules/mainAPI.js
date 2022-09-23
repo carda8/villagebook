@@ -65,6 +65,10 @@ export default {
     const result = await _reqAPI('proc_board_list.php', data);
     return result;
   },
+  _getBoardDetail: async data => {
+    const result = await _reqAPI('proc_board_detail.php', data);
+    return result;
+  },
   _getMyReview: async data => {
     const result = await _reqAPI('proc_review_list.php', data);
     return result;
@@ -75,6 +79,10 @@ export default {
   },
   _updataUserInfo: async data => {
     const result = await _reqImageAPI('proc_member_update.php', data);
+    return result;
+  },
+  _updatePhone: async data => {
+    const result = await _reqAPI('proc_member_hp_change.php', data);
     return result;
   },
   _getFaqList: async data => {
