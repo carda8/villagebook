@@ -25,6 +25,8 @@ import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import {replace} from 'formik';
 import {resetCoupon} from '../../store/reducers/CouponReducer';
 import {_guestAlert} from '../../config/utils/modules';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import commonStyles from '../../styles/commonStyle';
 
 const CartButton = ({
   navigation,
@@ -316,8 +318,10 @@ export default React.memo(CartButton);
 const style = StyleSheet.create({
   btnContainer: {
     position: 'absolute',
+    flex: 1,
     width: '100%',
     height: 60,
+    // top: 100,
     bottom: 0,
     zIndex: 100,
     justifyContent: 'center',

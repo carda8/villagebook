@@ -18,6 +18,7 @@ import {
   Platform,
 } from 'react-native';
 import notifee, {
+  EventType,
   AndroidBadgeIconType,
   AndroidImportance,
 } from '@notifee/react-native';
@@ -26,7 +27,7 @@ import {Text} from 'react-native';
 import VersionCheck from 'react-native-version-check';
 import {APP_VERSION_AOS, APP_VERSION_IOS} from '@env';
 import {customAlert} from './src/component/CustomAlert';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 const qeuryClient = new QueryClient({
   queryCache: new QueryCache({
@@ -84,23 +85,34 @@ const App = () => {
     });
   };
 
-  const onMessageReceived = async message => {
-    console.log('message', message);
-    const channelId2 = await notifee.createChannel({
-      id: 'onForeground',
-      name: 'Default Channel onForeground',
-      importance: AndroidImportance.HIGH,
-    });
-    // Display a notification
-    await notifee.displayNotification({
-      title: message.notification.title,
-      body: message.notification.body,
-      android: {
-        channelId: channelId2,
-        importance: AndroidImportance.HIGH,
-      },
-    });
-  };
+  // const onMessageReceived = async message => {
+  //   console.log('message', message);
+  //   const channelId2 = await notifee.createChannel({
+  //     id: 'onForeground',
+  //     name: 'Default Channel onForeground',
+  //     importance: AndroidImportance.HIGH,
+  //   });
+  //   // Display a notification
+  //   notifee.onForegroundEvent(e => {
+  //     console.log('onForegroundEvent', e);
+  //     if (e.type === 1) {
+  //       switch (message.data.type) {
+  //         case 'order':
+  //           navi.navigate('Main');
+  //       }
+  //     }
+  //   });
+
+  //   await notifee.displayNotification({
+  //     title: message.notification.title,
+  //     body: message.notification.body,
+  //     android: {
+  //       channelId: channelId2,
+  //       importance: AndroidImportance.HIGH,
+  //     },
+  //     ios: {},
+  //   });
+  // };
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
     let enabled;
@@ -126,13 +138,13 @@ const App = () => {
     // return () => unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      onMessageReceived(remoteMessage);
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-    return unsubscribe;
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
+  //     onMessageReceived(remoteMessage);
+  //     // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  //   });
+  //   return unsubscribe;
+  // }, []);
 
   useEffect(() => {
     _checkVersion();

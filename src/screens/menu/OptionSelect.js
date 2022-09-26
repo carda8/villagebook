@@ -1,4 +1,4 @@
-import {View, useWindowDimensions, SectionList} from 'react-native';
+import {View, useWindowDimensions, SectionList, StatusBar} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
@@ -18,6 +18,7 @@ import CartButton from './CartButton';
 import {initOption, setRequiredCount} from '../../store/reducers/CartReducer';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import Loading from '../../component/Loading';
+import {hasNotch} from 'react-native-device-info';
 
 const OptionSelect = ({navigation, route}) => {
   const routeData = route.params;
@@ -107,114 +108,132 @@ const OptionSelect = ({navigation, route}) => {
   // return <Loading />;
 
   return (
-    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <View style={{zIndex: 500}}>
-        <Header
-          title={''}
-          navigation={navigation}
-          fadeTitle={DetailInfo.it_name}
-          style={{position: 'absolute', zIndex: 500}}
-          isOption={true}
-        />
-      </View>
-      {console.log('option selec data', route.params)}
-      <CartButton navigation={navigation} data={routeData} isOption />
-      {/* <SectionList sections={convertedData} renderItem={item => <></>} /> */}
+    <>
+      {/* <SafeAreaView style={{flex: 0, backgroundColor: 'white'}} edges={} /> */}
+      <SafeAreaView
+        style={{...commonStyles.safeAreaStyle, backgroundColor: colors.primary}}
+        edges={['bottom', 'left', 'right']}
+      >
+        <View style={{zIndex: 500}}>
+          <Header
+            title={''}
+            navigation={navigation}
+            fadeTitle={DetailInfo.it_name}
+            style={{
+              position: 'absolute',
+              zIndex: 500,
+              marginTop: hasNotch() ? '9%' : null,
+            }}
+            isOption={true}
+          />
+        </View>
+        {/* {console.log('option selec data', route.params)} */}
 
-      <SectionList
-        onScroll={e => {
-          let positionY = e.nativeEvent.contentOffset.y;
-          if (positionY > layout.width && optionHeader !== true)
-            dispatch(setOptionHeader(true));
-          else if (positionY < layout.width && optionHeader !== false)
-            dispatch(setOptionHeader(false));
-          // console.log('Native Scroll', e.nativeEvent.contentOffset);
-        }}
-        ListHeaderComponent={
-          <>
-            <FastImage
-              source={
-                routeData.it_img1
-                  ? {uri: routeData.it_img1}
-                  : require('~/assets/no_img.png')
-              }
-              style={{width: layout.width, height: layout.width / 1.2}}
-            />
-            <View style={{paddingHorizontal: 22, paddingTop: 10}}>
-              <TextBold style={{fontSize: 20, color: colors.fontColor2}}>
-                {DetailInfo.it_name}
-              </TextBold>
-              <View style={{marginVertical: 10}}>
-                <TextMedium style={{color: colors.fontColorA}}>
-                  {DetailInfo.it_explan}
-                </TextMedium>
+        {/* <SectionList sections={convertedData} renderItem={item => <></>} /> */}
+
+        <SectionList
+          style={{backgroundColor: 'white'}}
+          onScroll={e => {
+            let positionY = e.nativeEvent.contentOffset.y;
+            if (positionY > layout.width && optionHeader !== true)
+              dispatch(setOptionHeader(true));
+            else if (positionY < layout.width && optionHeader !== false)
+              dispatch(setOptionHeader(false));
+            // console.log('Native Scroll', e.nativeEvent.contentOffset);
+          }}
+          ListHeaderComponent={
+            <>
+              <FastImage
+                source={
+                  routeData.it_img1
+                    ? {uri: routeData.it_img1}
+                    : require('~/assets/no_img.png')
+                }
+                style={{width: layout.width, height: layout.width / 1.2}}
+              />
+              <View style={{paddingHorizontal: 22, paddingTop: 10}}>
+                <TextBold style={{fontSize: 20, color: colors.fontColor2}}>
+                  {DetailInfo.it_name}
+                </TextBold>
+                <View style={{marginVertical: 10}}>
+                  <TextMedium style={{color: colors.fontColorA}}>
+                    {DetailInfo.it_explan}
+                  </TextMedium>
+                </View>
               </View>
-            </View>
-            <View
-              style={{
-                marginTop: 10,
-                borderTopWidth: 1,
-                borderColor: colors.borderColor,
-              }}>
               <View
                 style={{
-                  paddingHorizontal: 22,
-                  marginVertical: 20,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <TextBold style={{fontSize: 16, color: colors.fontColor2}}>
-                  가격
-                </TextBold>
-                <TextBold style={{color: colors.fontColor2}}>
-                  {replaceString(DetailInfo.it_price)}원
-                </TextBold>
+                  marginTop: 10,
+                  borderTopWidth: 1,
+                  borderColor: colors.borderColor,
+                }}
+              >
+                <View
+                  style={{
+                    paddingHorizontal: 22,
+                    marginVertical: 20,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <TextBold style={{fontSize: 16, color: colors.fontColor2}}>
+                    가격
+                  </TextBold>
+                  <TextBold style={{color: colors.fontColor2}}>
+                    {replaceString(DetailInfo.it_price)}원
+                  </TextBold>
+                </View>
               </View>
+            </>
+          }
+          ListFooterComponent={() => (
+            <View
+              style={{
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderColor: colors.borderColor,
+                paddingHorizontal: 22,
+                paddingVertical: 15,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <TextBold style={{color: colors.fontColor2}}>수량</TextBold>
+              <OptionCount price={DetailInfo.it_price} />
             </View>
-          </>
-        }
-        ListFooterComponent={() => (
-          <View
-            style={{
-              borderTopWidth: 1,
-              borderBottomWidth: 1,
-              borderColor: colors.borderColor,
-              paddingHorizontal: 22,
-              paddingVertical: 15,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <TextBold style={{color: colors.fontColor2}}>수량</TextBold>
-            <OptionCount price={DetailInfo.it_price} />
-          </View>
-        )}
-        sections={convertedData}
-        contentContainerStyle={{paddingBottom: 100}}
-        keyExtractor={(item, index) => item + index}
-        renderItem={item => (
-          <OptionRenderItem item={item} data={convertedData} />
-        )}
-        renderSectionHeader={({
-          section: {option_subject, supply_subject, required},
-        }) => (
-          <View
-            style={{
-              borderTopWidth: 1,
-              borderBottomWidth: 1,
-              borderColor: colors.borderColor,
-              paddingHorizontal: 22,
-              paddingVertical: 15,
-            }}>
-            <TextBold style={{color: colors.fontColor2}}>
-              {option_subject || supply_subject}
-              {required ? ' (필수)' : ' (선택)'}
-            </TextBold>
-          </View>
-        )}
-      />
-    </SafeAreaView>
+          )}
+          sections={convertedData}
+          contentContainerStyle={{paddingBottom: 100}}
+          keyExtractor={(item, index) => item + index}
+          renderItem={item => (
+            <OptionRenderItem item={item} data={convertedData} />
+          )}
+          renderSectionHeader={({
+            section: {option_subject, supply_subject, required},
+          }) => (
+            <View
+              style={{
+                borderTopWidth: 1,
+                borderBottomWidth: 1,
+                borderColor: colors.borderColor,
+                paddingHorizontal: 22,
+                paddingVertical: 15,
+              }}
+            >
+              <TextBold style={{color: colors.fontColor2}}>
+                {option_subject || supply_subject}
+                {required ? ' (필수)' : ' (선택)'}
+              </TextBold>
+            </View>
+          )}
+        />
+        <View style={{flex: 1}}>
+          <CartButton navigation={navigation} data={routeData} isOption />
+        </View>
+      </SafeAreaView>
+    </>
   );
 };
 

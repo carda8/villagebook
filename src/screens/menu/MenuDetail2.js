@@ -63,7 +63,8 @@ const MenuDetail2 = ({navigation, route}) => {
           flex: 1,
           height: 1000,
           backgroundColor: 'tomato',
-        }}>
+        }}
+      >
         <Text style={{fontSize: 30}}>{item.item}</Text>
       </View>
     );
@@ -99,7 +100,8 @@ const MenuDetail2 = ({navigation, route}) => {
             flexDirection: 'row',
             height: 55,
             // borderTopColor: colors.borderColor,
-          }}>
+          }}
+        >
           <Pressable
             style={{
               flex: 1,
@@ -117,7 +119,8 @@ const MenuDetail2 = ({navigation, route}) => {
             }}
             onPress={() => {
               setIndex(0);
-            }}>
+            }}
+          >
             <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
           </Pressable>
           <Pressable
@@ -139,7 +142,8 @@ const MenuDetail2 = ({navigation, route}) => {
             }}
             onPress={() => {
               setIndex(1);
-            }}>
+            }}
+          >
             <TextMedium style={{fontSize: 17}}>정보</TextMedium>
           </Pressable>
           <Pressable
@@ -159,7 +163,8 @@ const MenuDetail2 = ({navigation, route}) => {
             }}
             onPress={() => {
               setIndex(2);
-            }}>
+            }}
+          >
             <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
           </Pressable>
         </View>
@@ -167,7 +172,8 @@ const MenuDetail2 = ({navigation, route}) => {
           <ScrollView
             style={{backgroundColor: 'white', top: -1}}
             showsHorizontalScrollIndicator={false}
-            horizontal>
+            horizontal
+          >
             {data.map((item, index) => (
               <View key={index}>
                 <Pressable
@@ -186,13 +192,15 @@ const MenuDetail2 = ({navigation, route}) => {
                     borderRadius: 10,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <TextMedium
                     style={{
                       fontSize: 14,
                       // color:
                       //   selected.idx === index ? 'white' : colors.fontColor2,
-                    }}>
+                    }}
+                  >
                     hihihihihi
                     {item.ca_name}
                   </TextMedium>
@@ -212,17 +220,23 @@ const MenuDetail2 = ({navigation, route}) => {
   return (
     <>
       <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-        <View style={{zIndex: 500, position: 'absolute'}}>
+        {/* <View style={{flex: 1, zIndex: 500, position: 'absolute'}}> */}
+        <View style={{flex: 1, zIndex: 500}}>
           <Header
-            style={{backgroundColor: showHeader ? 'white' : 'rgba(0,0,0,0)'}}
+            style={{
+              backgroundColor: showHeader ? 'white' : 'rgba(0,0,0,0)',
+              // position: 'absolute',
+            }}
           />
         </View>
+
+        {/* </View> */}
         <SectionList
           onScroll={e => {
             const offset = e.nativeEvent.contentOffset;
 
-            if (offset.y < 400) setShowHeader(false);
-            if (offset.y > 350) setShowHeader(true);
+            if (offset.y < 800) setShowHeader(false);
+            if (offset.y > 940) setShowHeader(true);
             // console.log('tabPosition', tabPosition);
             if (offset.y > tabPosition * 2 + 170) setShowFilter(true);
             if (offset.y < tabPosition * 2 + 170) setShowFilter(false);
@@ -236,7 +250,7 @@ const MenuDetail2 = ({navigation, route}) => {
           keyExtractor={(item, index) => item.key}
           renderItem={item => renderItem(item)}
           renderSectionHeader={({section}) => sectionHeader(section)}
-          contentInset={{top: 57}}
+          // contentInset={{top: showHeader ? 57 : null}}
           alwaysBounceHorizontal={false}
           alwaysBounceVertical={false}
           bounces={false}

@@ -9,6 +9,8 @@ import axios from 'axios';
 import {IAM_API_KEY, IAM_SECRET} from '@env';
 import CertificationList from '../config/CertificationList';
 import EditConfig from './mypage/edit/EditConfig';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import commonStyles from '../styles/commonStyle';
 
 const IamCertification = ({navigation, route}) => {
   // const _updatePhone = () => {
@@ -125,12 +127,14 @@ const IamCertification = ({navigation, route}) => {
   };
 
   return (
-    <IMP.Certification
-      userCode={'imp72538339'}
-      loading={<Loading />} // 로딩 컴포넌트
-      data={data}
-      callback={_callback}
-    />
+    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
+      <IMP.Certification
+        userCode={'imp72538339'}
+        loading={<Loading />} // 로딩 컴포넌트
+        data={data}
+        callback={_callback}
+      />
+    </SafeAreaView>
   );
 };
 

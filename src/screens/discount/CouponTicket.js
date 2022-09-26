@@ -116,7 +116,8 @@ const CouponTicket = ({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: colors.borderColor,
-      }}>
+      }}
+    >
       <Pressable
         onPress={() => {
           download && _downloadCoupon();
@@ -128,13 +129,15 @@ const CouponTicket = ({
           alignItems: 'center',
           overflow: 'hidden',
           paddingLeft: 10,
-        }}>
+        }}
+      >
         <View style={{flex: 3}}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <View style={{flex: 1}}>
               <TextBold style={{fontSize: 22, color: colors.primary}}>
                 {/* 0: 고정금액 할인 , 1: 퍼센트 할인 */}
@@ -159,7 +162,8 @@ const CouponTicket = ({
                 marginRight: 15,
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}>
+              }}
+            >
               {/* 0 : 모두 사용 가능
                 1 : 포장용 쿠폰
                 2 : 배달용 쿠폰 */}
@@ -167,7 +171,8 @@ const CouponTicket = ({
                 style={{
                   fontSize: 12,
                   color: _convertCpType().fontColor,
-                }}>
+                }}
+              >
                 {_convertCpType().type}
               </TextNotoM>
             </View>
@@ -200,7 +205,8 @@ const CouponTicket = ({
             borderLeftWidth: 1,
             borderColor: colors.borderColor,
             backgroundColor: colors.couponBG,
-          }}>
+          }}
+        >
           <TextNotoM style={{color: colors.fontMain3, fontSize: 12}}>
             남은기한
           </TextNotoM>
@@ -209,6 +215,7 @@ const CouponTicket = ({
           </TextNotoM>
         </Pressable>
       </Pressable>
+      {console.warn(itemInfo)}
       {itemInfo.cp_gubun === 'store' && !useCoupon && (
         <Pressable
           onPress={() => {
@@ -216,6 +223,7 @@ const CouponTicket = ({
             navigation.navigate('MenuDetail', {
               jumju_id: itemInfo.cp_jumju_id,
               jumju_code: itemInfo.cp_jumju_code,
+              category: itemInfo.cp_jumju_type,
               mb_company: itemInfo?.cp_mb_company,
             });
           }}
@@ -227,7 +235,8 @@ const CouponTicket = ({
             paddingLeft: 10,
             alignItems: 'center',
             justifyContent: 'center',
-          }}>
+          }}
+        >
           <TextMedium style={{fontSize: 14, color: colors.primary}}>
             가게 바로가기
           </TextMedium>

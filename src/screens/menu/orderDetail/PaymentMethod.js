@@ -21,7 +21,7 @@ import {resetCoupon} from '../../../store/reducers/CouponReducer';
 const PaymentMethod = ({navigation, route}) => {
   const routeData = route.params;
   const layout = useWindowDimensions();
-  console.log('routeData', routeData);
+  // console.log('routeData', routeData);
   const dispatch = useDispatch();
 
   const _getTitle = () => {
@@ -84,7 +84,8 @@ const PaymentMethod = ({navigation, route}) => {
               justifyContent: 'space-between',
               borderBottomWidth: 1,
               borderColor: colors.borderColor,
-            }}>
+            }}
+          >
             <TextRegular>{PaymentList.card}</TextRegular>
             <Image
               source={require('~/assets/arrow_r.png')}
@@ -104,7 +105,8 @@ const PaymentMethod = ({navigation, route}) => {
               justifyContent: 'space-between',
               borderBottomWidth: 1,
               borderColor: colors.borderColor,
-            }}>
+            }}
+          >
             <TextRegular>{PaymentList.offlineCard}</TextRegular>
             <Image
               source={require('~/assets/arrow_r.png')}
@@ -124,7 +126,8 @@ const PaymentMethod = ({navigation, route}) => {
               justifyContent: 'space-between',
               borderBottomWidth: 1,
               borderColor: colors.borderColor,
-            }}>
+            }}
+          >
             <TextRegular>{PaymentList.offlineCash}</TextRegular>
             <Image
               source={require('~/assets/arrow_r.png')}

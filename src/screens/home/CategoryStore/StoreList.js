@@ -26,7 +26,10 @@ const StoreList = ({navigation, route}) => {
   console.log('route', route.params?.category);
 
   return (
-    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
+    <SafeAreaView
+      style={{...commonStyles.safeAreaStyle}}
+      edges={['left', 'right', 'top']}
+    >
       {Platform.OS === 'ios' ? (
         <SafeAreaView
           style={{
@@ -36,7 +39,8 @@ const StoreList = ({navigation, route}) => {
             zIndex: 200,
             // width: 100,
             // height: 100,
-          }}>
+          }}
+        >
           <FilterView category={category} />
         </SafeAreaView>
       ) : (
@@ -83,13 +87,15 @@ const StoreList = ({navigation, route}) => {
                   flex: 1,
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontFamily: 'Pretendard-Bold',
                     // : 'Pretendard-Medium',
                     color: props.focused ? colors.primary : colors.fontColor2,
-                  }}>
+                  }}
+                >
                   {route.name}
                 </Text>
               </View>
@@ -152,7 +158,8 @@ const StoreList = ({navigation, route}) => {
               </>
             );
           },
-        })}>
+        })}
+      >
         {categoryData.map((item, index) => (
           <Tab.Screen
             key={item.ca_name + index}

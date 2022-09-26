@@ -165,332 +165,381 @@ const SummitOrder = ({navigation, route}) => {
   // console.log('mutate data', mutateDeliveryFee.data);
 
   return (
-    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header title={'카트'} navigation={navigation} />
-      {console.log('sumoder data', route.params)}
-      <CartButton
-        navigation={navigation}
-        goTo={'OrderPage'}
-        isDelivery={deliveryType === 0 ? true : false}
-        lastPrice={_getTotalPrice(true)}
-        deliveryInfo={deliveryInfo}
-        data={route.params?.data}
-        isLoading={mutateDeliveryFee.isLoading}
+    <>
+      <SafeAreaView
+        style={{flex: 0, backgroundColor: 'white'}}
+        edges={['top']}
       />
-      <ScrollView contentContainerStyle={{}}>
-        <View
-          style={{
-            paddingHorizontal: 22,
-            alignItems: 'center',
-            paddingTop: 20,
-          }}>
-          <Image
-            source={{uri: cartStore.storeLogoUrl}}
+      <SafeAreaView
+        style={{...commonStyles.safeAreaStyle, backgroundColor: colors.primary}}
+        edges={['bottom', 'left', 'right']}
+      >
+        <Header
+          title={'카트'}
+          navigation={navigation}
+          style={{backgroundColor: 'white'}}
+        />
+        {/* {console.log('sumoder data', route.params)} */}
+
+        <ScrollView
+          // contentContainerStyle={{backgroundColor: 'white'}}
+          style={{backgroundColor: 'white'}}
+        >
+          <View
             style={{
-              width: 130,
-              height: 130,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: colors.borderColor,
+              paddingHorizontal: 22,
+              alignItems: 'center',
+              paddingTop: 20,
             }}
-          />
-          <View style={{marginVertical: 10}}>
-            <TextMedium style={{fontSize: 18}}>
-              {cartStore.currentStoreCode.storeName}
-            </TextMedium>
+          >
+            <Image
+              source={{uri: cartStore.storeLogoUrl}}
+              style={{
+                width: 130,
+                height: 130,
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: colors.borderColor,
+              }}
+            />
+            <View style={{marginVertical: 10}}>
+              <TextMedium style={{fontSize: 18}}>
+                {cartStore.currentStoreCode.storeName}
+              </TextMedium>
+            </View>
+            {cartStore.savedItem.savedItems.map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  flex: 1,
+                  padding: 10,
+                  width: '100%',
+                  borderWidth: 1,
+                  borderRadius: 5,
+                  borderColor: colors.borderColor,
+                  marginBottom: 10,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flex: 1,
+                  }}
+                >
+                  <View style={{flex: 1}}>
+                    <TextBold>
+                      {item.main.menuName}
+                      {'  '}
+                    </TextBold>
+                    <TextRegular style={{color: colors.fontColorA}}>
+                      {_filterOption(item)}
+                    </TextRegular>
+                    {/* <TextRegular>{item.main.option}</TextRegular> */}
+                  </View>
+                  <Pressable
+                    hitSlop={12}
+                    onPress={() => {
+                      // const temp = cartStore.savedItem.savedItems.filter(
+                      //   (item, index2) => index2 !== index,
+                      // );
+                      // console.log('temp arr', temp);
+                      dispatch(removeItem({index: index}));
+                    }}
+                  >
+                    <Image
+                      source={require('~/assets/pop_close.png')}
+                      style={{width: 20, height: 20}}
+                    />
+                  </Pressable>
+                </View>
+                <TextRegular>사이드 메뉴 추가선택 : </TextRegular>
+                {item.sub.length !== 0 ? (
+                  item.sub.map((item, index) => (
+                    <TextRegular
+                      key={index}
+                      style={{fontSize: 12, color: colors.fontColorA}}
+                    >
+                      {item.itemCategory +
+                        ' / ' +
+                        item.itemName +
+                        ' / ' +
+                        replaceString(item.itemPrice)}
+                      원
+                    </TextRegular>
+                  ))
+                ) : (
+                  <TextRegular style={{fontSize: 12, color: colors.fontColorA}}>
+                    없음
+                  </TextRegular>
+                )}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: 10,
+                  }}
+                >
+                  <TextBold>
+                    {replaceString(
+                      cartStore.savedItem.savedItems[index].totalPrice,
+                    )}
+                  </TextBold>
+                  <OptionCount
+                    price={cartStore.mainCount.mainPrice}
+                    savedItem={item}
+                    index={index}
+                    isSummit
+                  />
+                </View>
+              </View>
+            ))}
+
+            <Pressable
+              onPress={() => {
+                console.log('path1', cartStore.currentStoreCode);
+                navigation.navigate('MenuDetail', {
+                  jumju_id:
+                    cartStore.currentStoreCode?.jumju_id ??
+                    cartStore.savedItem.savedStoreCode.jumju_id,
+                  jumju_code:
+                    cartStore.currentStoreCode?.code ??
+                    cartStore.savedItem.savedStoreCode.code,
+                });
+              }}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 20,
+              }}
+            >
+              <Image
+                source={require('~/assets/ico_plus.png')}
+                style={{width: 20, height: 20}}
+              />
+              <TextBold>더 담으러 가기</TextBold>
+            </Pressable>
           </View>
-          {cartStore.savedItem.savedItems.map((item, index) => (
-            <View
-              key={index}
+          <DividerL />
+          <View style={{flex: 1, paddingHorizontal: 22, paddingTop: 40}}>
+            <TextBold>먹고가기/배달/포장 선택</TextBold>
+            <Pressable
+              // disabled={deliveryInfo?.for_here === 'true' ? false : true}
+              onPress={() => {
+                if (deliveryInfo?.for_here === 'true') {
+                  dispatch(setDeliveryType(2));
+                } else {
+                  customAlert(
+                    '알림',
+                    '해당 가게는 먹고가기를 지원하지 않습니다.',
+                  );
+                }
+              }}
               style={{
                 flex: 1,
-                padding: 10,
-                width: '100%',
-                borderWidth: 1,
-                borderRadius: 5,
-                borderColor: colors.borderColor,
-                marginBottom: 10,
-              }}>
-              <View
-                style={{flexDirection: 'row', alignItems: 'center', flex: 1}}>
-                <View style={{flex: 1}}>
-                  <TextBold>
-                    {item.main.menuName}
-                    {'  '}
-                  </TextBold>
-                  <TextRegular style={{color: colors.fontColorA}}>
-                    {_filterOption(item)}
-                  </TextRegular>
-                  {/* <TextRegular>{item.main.option}</TextRegular> */}
-                </View>
-                <Pressable
-                  hitSlop={12}
-                  onPress={() => {
-                    // const temp = cartStore.savedItem.savedItems.filter(
-                    //   (item, index2) => index2 !== index,
-                    // );
-                    // console.log('temp arr', temp);
-                    dispatch(removeItem({index: index}));
-                  }}>
-                  <Image
-                    source={require('~/assets/pop_close.png')}
-                    style={{width: 20, height: 20}}
-                  />
-                </Pressable>
-              </View>
-              <TextRegular>사이드 메뉴 추가선택 : </TextRegular>
-              {item.sub.length !== 0 ? (
-                item.sub.map((item, index) => (
-                  <TextRegular
-                    key={index}
-                    style={{fontSize: 12, color: colors.fontColorA}}>
-                    {item.itemCategory +
-                      ' / ' +
-                      item.itemName +
-                      ' / ' +
-                      replaceString(item.itemPrice)}
-                    원
-                  </TextRegular>
-                ))
+                height: 50,
+                borderRadius: 7,
+                marginTop: 10,
+                backgroundColor:
+                  deliveryType === 2 ? colors.primary : colors.inputBoxBG,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <TextBold
+                style={{
+                  color:
+                    deliveryType === 2
+                      ? 'white'
+                      : deliveryInfo?.for_here === 'false'
+                      ? 'gray'
+                      : colors.fontColor2,
+                }}
+              >
+                먹고가기
+              </TextBold>
+            </Pressable>
+
+            <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
+              <Pressable
+                onPress={() => {
+                  if (deliveryInfo?.delivery === 'true') {
+                    dispatch(setDeliveryType(0));
+                    dispatch(setIsDeliveryStore(true));
+                  } else {
+                    customAlert(
+                      '알림',
+                      '해당 가게는 배달을 지원하지 않습니다.',
+                    );
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  borderRadius: 7,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: 50,
+                  marginRight: 10,
+                  backgroundColor:
+                    deliveryType === 0 ? colors.primary : colors.inputBoxBG,
+                }}
+              >
+                <TextBold
+                  style={{
+                    color:
+                      deliveryType === 0
+                        ? 'white'
+                        : deliveryInfo?.delivery === 'false'
+                        ? 'gray'
+                        : colors.fontColor2,
+                  }}
+                >
+                  배달
+                </TextBold>
+              </Pressable>
+              <Pressable
+                // disabled={deliveryInfo?.take_out === 'true' ? false : true}
+                onPress={() => {
+                  // dispatch(setIsDelivery(false));
+                  if (deliveryInfo?.take_out === 'true') {
+                    dispatch(setDeliveryType(1));
+                    dispatch(setIsDeliveryStore(false));
+                  } else {
+                    customAlert(
+                      '알림',
+                      '해당 가게는 포장을 지원하지 않습니다.',
+                    );
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  borderRadius: 7,
+                  backgroundColor:
+                    deliveryType === 1 ? colors.primary : colors.inputBoxBG,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <TextBold
+                  style={{
+                    color:
+                      deliveryType === 1
+                        ? 'white'
+                        : deliveryInfo?.take_out === 'false'
+                        ? 'gray'
+                        : colors.fontColor2,
+                  }}
+                >
+                  포장
+                </TextBold>
+              </Pressable>
+            </View>
+
+            <View style={{marginTop: 10}}>
+              {deliveryType === 0 ? (
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <TextRegular>배달팁</TextRegular>
+                    <TextRegular>
+                      {replaceString(deliveryInfo?.send_cost)}원
+                    </TextRegular>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      marginVertical: 10,
+                    }}
+                  >
+                    <TextRegular>추가 배달팁</TextRegular>
+                    <TextRegular>
+                      {replaceString(deliveryInfo?.send_cost2)}원
+                    </TextRegular>
+                  </View>
+                </>
+              ) : deliveryType === 1 ? (
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      marginVertical: 10,
+                    }}
+                  >
+                    <TextRegular>포장할인</TextRegular>
+                    <TextRegular>
+                      {replaceString(deliveryInfo?.take_out_discount)}원
+                    </TextRegular>
+                  </View>
+                </>
               ) : (
-                <TextRegular style={{fontSize: 12, color: colors.fontColorA}}>
-                  없음
-                </TextRegular>
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      marginVertical: 10,
+                    }}
+                  >
+                    <TextRegular>먹고가기 할인</TextRegular>
+                    <TextRegular>
+                      {replaceString(deliveryInfo?.for_here_discount)}원
+                    </TextRegular>
+                  </View>
+                </>
               )}
+
+              <View
+                style={{height: 1, backgroundColor: colors.borderColor}}
+              ></View>
               <View
                 style={{
                   flexDirection: 'row',
-                  alignItems: 'center',
                   justifyContent: 'space-between',
-                  marginTop: 10,
-                }}>
-                <TextBold>
-                  {replaceString(
-                    cartStore.savedItem.savedItems[index].totalPrice,
-                  )}
+                  marginTop: 20,
+                  marginBottom: 10,
+                }}
+              >
+                <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
+                <TextBold style={{fontSize: 18}}>
+                  {replaceString(_getTotalPrice(true))}
                 </TextBold>
-                <OptionCount
-                  price={cartStore.mainCount.mainPrice}
-                  savedItem={item}
-                  index={index}
-                  isSummit
-                />
+              </View>
+              <View
+                style={{
+                  alignSelf: 'flex-end',
+                  marginBottom: 20,
+                  flexDirection: 'row',
+                }}
+              >
+                <TextMedium style={{fontSize: 12}}>최소주문금액 : </TextMedium>
+                <TextMedium style={{fontSize: 12}}>
+                  {replaceString(_getMinPrice())}
+                </TextMedium>
               </View>
             </View>
-          ))}
-
-          <Pressable
-            onPress={() => {
-              console.log('path1', cartStore.currentStoreCode);
-              navigation.navigate('MenuDetail', {
-                jumju_id:
-                  cartStore.currentStoreCode?.jumju_id ??
-                  cartStore.savedItem.savedStoreCode.jumju_id,
-                jumju_code:
-                  cartStore.currentStoreCode?.code ??
-                  cartStore.savedItem.savedStoreCode.code,
-              });
-            }}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginVertical: 20,
-            }}>
-            <Image
-              source={require('~/assets/ico_plus.png')}
-              style={{width: 20, height: 20}}
-            />
-            <TextBold>더 담으러 가기</TextBold>
-          </Pressable>
-        </View>
-        <DividerL />
-        <View style={{flex: 1, paddingHorizontal: 22, paddingTop: 40}}>
-          <TextBold>먹고가기/배달/포장 선택</TextBold>
-          <Pressable
-            // disabled={deliveryInfo?.for_here === 'true' ? false : true}
-            onPress={() => {
-              if (deliveryInfo?.for_here === 'true') {
-                dispatch(setDeliveryType(2));
-              } else {
-                customAlert(
-                  '알림',
-                  '해당 가게는 먹고가기를 지원하지 않습니다.',
-                );
-              }
-            }}
-            style={{
-              flex: 1,
-              height: 50,
-              borderRadius: 7,
-              marginTop: 10,
-              backgroundColor:
-                deliveryType === 2 ? colors.primary : colors.inputBoxBG,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <TextBold
-              style={{
-                color:
-                  deliveryType === 2
-                    ? 'white'
-                    : deliveryInfo?.for_here === 'false'
-                    ? 'gray'
-                    : colors.fontColor2,
-              }}>
-              먹고가기
-            </TextBold>
-          </Pressable>
-
-          <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
-            <Pressable
-              onPress={() => {
-                if (deliveryInfo?.delivery === 'true') {
-                  dispatch(setDeliveryType(0));
-                  dispatch(setIsDeliveryStore(true));
-                } else {
-                  customAlert('알림', '해당 가게는 배달을 지원하지 않습니다.');
-                }
-              }}
-              style={{
-                flex: 1,
-                borderRadius: 7,
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: 50,
-                marginRight: 10,
-                backgroundColor:
-                  deliveryType === 0 ? colors.primary : colors.inputBoxBG,
-              }}>
-              <TextBold
-                style={{
-                  color:
-                    deliveryType === 0
-                      ? 'white'
-                      : deliveryInfo?.delivery === 'false'
-                      ? 'gray'
-                      : colors.fontColor2,
-                }}>
-                배달
-              </TextBold>
-            </Pressable>
-            <Pressable
-              // disabled={deliveryInfo?.take_out === 'true' ? false : true}
-              onPress={() => {
-                // dispatch(setIsDelivery(false));
-                if (deliveryInfo?.take_out === 'true') {
-                  dispatch(setDeliveryType(1));
-                  dispatch(setIsDeliveryStore(false));
-                } else {
-                  customAlert('알림', '해당 가게는 포장을 지원하지 않습니다.');
-                }
-              }}
-              style={{
-                flex: 1,
-                borderRadius: 7,
-                backgroundColor:
-                  deliveryType === 1 ? colors.primary : colors.inputBoxBG,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <TextBold
-                style={{
-                  color:
-                    deliveryType === 1
-                      ? 'white'
-                      : deliveryInfo?.take_out === 'false'
-                      ? 'gray'
-                      : colors.fontColor2,
-                }}>
-                포장
-              </TextBold>
-            </Pressable>
           </View>
-
-          <View style={{marginTop: 10}}>
-            {deliveryType === 0 ? (
-              <>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <TextRegular>배달팁</TextRegular>
-                  <TextRegular>
-                    {replaceString(deliveryInfo?.send_cost)}원
-                  </TextRegular>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginVertical: 10,
-                  }}>
-                  <TextRegular>추가 배달팁</TextRegular>
-                  <TextRegular>
-                    {replaceString(deliveryInfo?.send_cost2)}원
-                  </TextRegular>
-                </View>
-              </>
-            ) : deliveryType === 1 ? (
-              <>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginVertical: 10,
-                  }}>
-                  <TextRegular>포장할인</TextRegular>
-                  <TextRegular>
-                    {replaceString(deliveryInfo?.take_out_discount)}원
-                  </TextRegular>
-                </View>
-              </>
-            ) : (
-              <>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginVertical: 10,
-                  }}>
-                  <TextRegular>먹고가기 할인</TextRegular>
-                  <TextRegular>
-                    {replaceString(deliveryInfo?.for_here_discount)}원
-                  </TextRegular>
-                </View>
-              </>
-            )}
-
-            <View
-              style={{height: 1, backgroundColor: colors.borderColor}}></View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 20,
-                marginBottom: 10,
-              }}>
-              <TextBold style={{fontSize: 18}}>총 주문 금액</TextBold>
-              <TextBold style={{fontSize: 18}}>
-                {replaceString(_getTotalPrice(true))}
-              </TextBold>
-            </View>
-            <View
-              style={{
-                alignSelf: 'flex-end',
-                marginBottom: 20,
-                flexDirection: 'row',
-              }}>
-              <TextMedium style={{fontSize: 12}}>최소주문금액 : </TextMedium>
-              <TextMedium style={{fontSize: 12}}>
-                {replaceString(_getMinPrice())}
-              </TextMedium>
-            </View>
-          </View>
+          <Caution />
+        </ScrollView>
+        <View style={{flex: 1}}>
+          <CartButton
+            navigation={navigation}
+            goTo={'OrderPage'}
+            isDelivery={deliveryType === 0 ? true : false}
+            lastPrice={_getTotalPrice(true)}
+            deliveryInfo={deliveryInfo}
+            data={route.params?.data}
+            isLoading={mutateDeliveryFee.isLoading}
+          />
         </View>
-        <Caution />
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 

@@ -14,7 +14,8 @@ const ImageSwipe = ({images, imageStyle}) => {
         autoplayDirection={true}
         showsPagination={false}
         removeClippedSubviews={false}
-        style={{height: 300}}>
+        style={{height: 300}}
+      >
         {images.map((item, index) => (
           <View style={{flex: 1}} key={index}>
             <FastImage

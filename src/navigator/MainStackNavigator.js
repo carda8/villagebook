@@ -1,6 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
+import notifee, {
+  EventType,
+  AndroidBadgeIconType,
+  AndroidImportance,
+} from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
 
-import {NavigationContainer, useIsFocused} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Main from '../screens/home/Main';
@@ -49,7 +59,6 @@ import authAPI from '../api/modules/authAPI';
 import {useDispatch, useSelector} from 'react-redux';
 import {setFcmToken, setUserInfo} from '../store/reducers/AuthReducer';
 import PaymentMain from '../screens/payment/PaymentMain';
-import messaging from '@react-native-firebase/messaging';
 import {Errorhandler} from '../config/ErrorHandler';
 import UseInfo from '../screens/policy/UseInfo';
 import {useCustomMutation} from '../hooks/useCustomMutation';
@@ -79,6 +88,65 @@ const MainStackNavigator = () => {
   const {mutateSNSlogin} = useCustomMutation();
   const cartStore = useSelector(state => state.cartReducer);
   const {_getCurrentLocation, _requestPermissions} = useGeoLocation();
+  const naviRef = useRef();
+
+  const onMessageReceived = async message => {
+    console.log('message', message);
+    const channelId2 = await notifee.createChannel({
+      id: 'onForeground',
+      name: 'Default Channel onForeground',
+      importance: AndroidImportance.HIGH,
+    });
+
+    // Display a notification
+    notifee.onForegroundEvent(e => {
+      console.log('onForegroundEvent', e);
+      if (e.type === 1) {
+        switch (message.data.type) {
+          case 'order':
+            naviRef.current?.navigate('OrderList');
+        }
+      }
+    });
+
+    notifee.onBackgroundEvent(e => {
+      console.log('onBackgroundEvent', e);
+    });
+
+    await notifee.displayNotification({
+      title: message.notification.title,
+      body: message.notification.body,
+      android: {
+        channelId: channelId2,
+        importance: AndroidImportance.HIGH,
+      },
+      ios: {},
+    });
+  };
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    let enabled;
+    if (
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL
+    )
+      enabled = true;
+
+    // const enabled =
+    //   authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    //   authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      onMessageReceived(remoteMessage);
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
+  }, []);
 
   const _getFcmToken = async () => {
     try {
@@ -344,14 +412,48 @@ const MainStackNavigator = () => {
     _initRoute();
   }, []);
 
+  const _routeBackGround = () => {
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.data,
+          );
+          switch (remoteMessage.data.type) {
+            case 'order':
+              return naviRef.current?.navigate('OrderList');
+            default:
+              return;
+          }
+          // console.log(
+          //   'Notification caused app to open from quit state:',
+          //   remoteMessage.data.type,
+          // );
+          // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+        }
+        // setLoading(false);
+      });
+  };
+
+  // useEffect(() => {
+
+  // }, [naviRef.current]);
+
   if (!initRoute) return <Loading />;
 
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer
+      ref={naviRef}
+      linking={linking}
+      onReady={_routeBackGround}
+    >
       <Stack.Navigator
         initialRouteName={initRoute}
         // initialRouteName={'Test'}
-        screenOptions={{headerShown: false}}>
+        screenOptions={{headerShown: false}}
+      >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
