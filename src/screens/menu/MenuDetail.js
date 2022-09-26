@@ -224,7 +224,15 @@ const MenuDetail = ({navigation, route}) => {
             ? colors.primary
             : colors.borderColor,
         }}
-        edges={['bottom', 'left', 'right']}
+        edges={
+          savedItem.savedItems.length > 0 || !StoreInfo.isOpen
+            ? ['bottom', 'left', 'right']
+            : [
+                // 'bottom',
+                'left',
+                'right',
+              ]
+        }
       >
         <ScrollView
           ref={scrollRef}
