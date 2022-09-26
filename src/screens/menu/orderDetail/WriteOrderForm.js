@@ -373,8 +373,14 @@ const WriteOrderForm = ({navigation, route}) => {
     if (!paymentMethod) {
       return customAlert('알림', '결제방법을 선택해주세요..');
     }
-    if (Number(orderForm.od_forhere_num) < 2 && deliveryType === 2) {
-      return customAlert('알림', '식사인원은 최소 2명 이상입니다.');
+    if (
+      Number(orderForm.od_forhere_num) < deliveryData.for_here_minimum &&
+      deliveryType === 2
+    ) {
+      return customAlert(
+        '알림',
+        `식사인원은 최소 ${deliveryData.for_here_minimum}명 이상입니다.`,
+      );
     }
     // setOrderForm({
     //   ...orderForm,
