@@ -13,12 +13,14 @@ import Loading from '../../component/Loading';
 import {customAlert} from '../../component/CustomAlert';
 import TextBold from '../../component/text/TextBold';
 import NoHistory from '../../component/NoHistory';
+import {useDispatch} from 'react-redux';
+import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 
 const OrderList = ({navigation}) => {
   const [history, setHistory] = useState([]);
   const {mutateOrderHistory} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
-
+  const dispatch = useDispatch();
   const itemLimit = useRef(0);
 
   const _getHistory = () => {
@@ -131,6 +133,7 @@ const OrderList = ({navigation}) => {
           }}>
           <Pressable
             onPress={() => {
+              dispatch(setIsLifeStyle(false));
               navigation.navigate('MenuDetail', {
                 jumju_id: data.jumju_id,
                 jumju_code: data.jumju_code,

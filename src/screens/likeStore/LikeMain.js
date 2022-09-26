@@ -127,9 +127,9 @@ const LikeMain = ({navigation}) => {
           flex: 1,
           backgroundColor: 'white',
           borderBottomWidth: 1,
-          paddingVertical: 25,
+          paddingVertical: 12,
           borderBottomColor: colors.borderColor,
-          marginBottom: 10,
+          // marginBottom: 10,
           borderRadius: 12,
         }}>
         <View style={{flexDirection: 'row'}}>
@@ -223,35 +223,35 @@ const LikeMain = ({navigation}) => {
     );
   };
 
-  const LikeItems = ({data, navigation}) => {
-    return (
-      <View style={{flex: 1}}>
-        <FlatList
-          ListHeaderComponent={
-            <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}></View>
-          }
-          data={data}
-          ListEmptyComponent={
-            <View
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginVertical: 25,
-              }}>
-              <TextBold>찜내역이 없습니다.</TextBold>
-            </View>
-          }
-          showsVerticalScrollIndicator={false}
-          renderItem={item => <RenderItem item={item} />}
-          keyExtractor={(item, index) => index}
-          onEndReached={() => {
-            let type = tabIdx === 0 ? 'food' : 'market';
-            if (list.length > 4) _getList(type, true);
-          }}
-        />
-      </View>
-    );
-  };
+  // const LikeItems = ({data, navigation}) => {
+  //   return (
+  //     <View style={{flex: 1}}>
+  //       <FlatList
+  //         ListHeaderComponent={
+  //           <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}></View>
+  //         }
+  //         data={data}
+  //         ListEmptyComponent={
+  //           <View
+  //             style={{
+  //               alignItems: 'center',
+  //               justifyContent: 'center',
+  //               marginVertical: 25,
+  //             }}>
+  //             <TextBold>찜내역이 없습니다.</TextBold>
+  //           </View>
+  //         }
+  //         showsVerticalScrollIndicator={false}
+  //         renderItem={item => <RenderItem item={item} />}
+  //         keyExtractor={(item, index) => index}
+  //         onEndReached={() => {
+  //           let type = tabIdx === 0 ? 'food' : 'market';
+  //           if (list.length > 4) _getList(type, true);
+  //         }}
+  //       />
+  //     </View>
+  //   );
+  // };
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>

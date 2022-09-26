@@ -540,75 +540,6 @@ const StoreItems = ({navigation, route}) => {
                   </View>
                 )}
 
-                {storeInfo.delivery && (
-                  <View
-                    style={{
-                      // flex: 1,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <View
-                      style={{
-                        width: 50,
-                        height: 22,
-                        backgroundColor: '#00bef0',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 5,
-                        marginTop: 4,
-                        marginRight: 10,
-                      }}>
-                      <TextMedium style={{fontSize: 12, color: 'white'}}>
-                        배달하기
-                      </TextMedium>
-                    </View>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexWrap: 'wrap',
-                        // backgroundColor: 'teal',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        // justifyContent: 'center',
-                      }}>
-                      {storeInfo.delivery_time ? (
-                        <>
-                          <Image
-                            source={require('~/assets/time.png')}
-                            style={{width: 14, height: 14}}
-                          />
-                          <TextRegular style={{fontSize: 12}}>
-                            {' ' + storeInfo.delivery_time}
-                          </TextRegular>
-                          <Dot />
-                        </>
-                      ) : (
-                        <></>
-                      )}
-
-                      <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}>
-                        최소 주문{' '}
-                      </TextRegular>
-
-                      <TextRegular
-                        style={{color: colors.fontColor2, fontSize: 12}}>
-                        {replaceString(storeInfo.minPrice)}원{' '}
-                      </TextRegular>
-                      <Dot />
-                      <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}>
-                        배달팁{' '}
-                      </TextRegular>
-                      <TextRegular
-                        style={{color: colors.fontColor6, fontSize: 12}}>
-                        {replaceString(storeInfo.tipFrom)}원~
-                        {replaceString(storeInfo.tipTo)}원
-                      </TextRegular>
-                    </View>
-                  </View>
-                )}
-
                 {storeInfo.wrap && (
                   <View
                     style={{
@@ -680,6 +611,94 @@ const StoreItems = ({navigation, route}) => {
                 )}
               </>
             )}
+
+            {storeInfo.delivery && (
+              <View
+                style={{
+                  // flex: 1,
+                  flexDirection: 'row',
+                  // alignItems: 'center',
+                  // justifyContent: 'center',
+                }}>
+                <View
+                  style={{
+                    width: 50,
+                    height: 22,
+                    backgroundColor: '#00bef0',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: 5,
+                    marginTop: 4,
+                    marginRight: 10,
+                  }}>
+                  <TextMedium style={{fontSize: 12, color: 'white'}}>
+                    배달하기
+                  </TextMedium>
+                </View>
+                <View
+                  style={{
+                    // backgroundColor: 'teal',
+                    // flexDirection: 'row',
+                    flex: 1,
+                    justifyContent: 'center',
+                    // alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      flex: 1,
+                      flexWrap: 'wrap',
+                    }}>
+                    {storeInfo.delivery_time ? (
+                      <>
+                        <Image
+                          source={require('~/assets/time.png')}
+                          style={{width: 14, height: 14}}
+                        />
+                        <TextRegular style={{fontSize: 12}}>
+                          {' ' + storeInfo.delivery_time}
+                        </TextRegular>
+                        <Dot />
+                      </>
+                    ) : (
+                      <></>
+                    )}
+
+                    <TextRegular
+                      style={{color: colors.fontColorA2, fontSize: 12}}>
+                      최소 주문{' '}
+                    </TextRegular>
+
+                    <TextRegular
+                      style={{color: colors.fontColor2, fontSize: 12}}>
+                      {replaceString(storeInfo.minPrice)}원{' '}
+                    </TextRegular>
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      flex: 1,
+                      flexWrap: 'wrap',
+                      marginLeft: 8,
+                    }}>
+                    <Dot />
+                    <TextRegular
+                      style={{color: colors.fontColorA2, fontSize: 12}}>
+                      배달팁{' '}
+                    </TextRegular>
+                    <TextRegular
+                      style={{color: colors.fontColor6, fontSize: 12}}>
+                      {replaceString(storeInfo.tipFrom)}원~
+                      {replaceString(storeInfo.tipTo)}원
+                    </TextRegular>
+                  </View>
+                </View>
+              </View>
+            )}
+
             {routeData.category !== 'lifestyle' && (
               <View
                 style={{
