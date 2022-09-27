@@ -255,6 +255,7 @@ const MenuDetail2 = ({navigation, route}) => {
             console.log(offset);
             if (offset.y < tabPosition * 0.5) setShowHeader(false);
             if (offset.y > tabPosition * 0.6) setShowHeader(true);
+
             console.log('tabPosition', tabPosition, '::', 'offset', offset.y);
             if (offset.y > tabPosition) setShowFilter(true);
             if (offset.y < tabPosition) setShowFilter(false);
