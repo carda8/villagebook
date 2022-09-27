@@ -44,16 +44,10 @@ const MenuDetail2 = ({navigation, route}) => {
   const [index, setIndex] = useState();
   const [showHeader, setShowHeader] = useState(false);
   const tempRef = useRef();
-  const tempRef2 = useRef();
   const [tabPosition, setTabPosition] = useState();
   const [showFilter, setShowFilter] = useState(false);
 
-  const data = [
-    {key: 0, title: 'title1', data: [1]},
-    {key: 1, title: 'title2', data: [5]},
-    // {key: 2, title: 'title3', data: [21]},
-    // {key: 3, title: 'title4', data: [21]},
-  ];
+  const data = [{key: 0, title: 'title1', data: [1]}];
 
   const renderItem = item => {
     console.log('ITEM::', item);
@@ -61,7 +55,7 @@ const MenuDetail2 = ({navigation, route}) => {
       <View
         style={{
           flex: 1,
-          height: 1000,
+          height: 1200,
           backgroundColor: 'tomato',
         }}
       >
@@ -71,145 +65,156 @@ const MenuDetail2 = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    console.log(
-      'tempRef',
-      tempRef2.current.measureLayout(
-        tempRef.current,
-        (left, top, width, height) => {
-          console.log(left, top, height, width);
-          setTabPosition(384);
-        },
-      ),
-    );
+    tempRef.current.measure((fx, fy, width, height, px, py) => {
+      console.log('Component width is: ' + width);
+      console.log('Component height is: ' + height);
+      console.log('X offset to frame: ' + fx);
+      console.log('Y offset to frame: ' + fy);
+      console.log('X offset to page: ' + px);
+      console.log('Y offset to page: ' + py);
+      setTabPosition(py);
+    });
   }, []);
 
-  const sectionHeader = section => {
-    if (section.key !== 1) return <></>;
+  const ListHeader = () => {
     return (
-      <View ref={tempRef}>
-        {/* <View
-          ref={tempRef2}
-          style={{
-            height: 57,
-            backgroundColor: section.key === 1 ? 'teal' : 'gray',
-          }}></View> */}
+      <View>
+        {/* <Image
+        source={require('~/assets/no_use_img.png')}
+        style={{width: '100%', height: 400}}
+      /> */}
+        <ImageSwipe />
+      </View>
+    );
+  };
 
-        <View
-          ref={tempRef2}
-          style={{
-            flexDirection: 'row',
-            height: 55,
-            // borderTopColor: colors.borderColor,
-          }}
-        >
-          <Pressable
+  const sectionHeader = section => {
+    // if (section.key !== 1)
+    //   return (
+    //     <View
+    //       style={{backgroundColor: 'teal', width: '100%', height: 50}}
+    //     ></View>
+    //   );
+    return (
+      <SafeAreaView edges={['left', 'right']} style={{marginTop: 101}}>
+        <View>
+          <View
+            ref={tempRef}
             style={{
-              flex: 1,
-              backgroundColor: 'white',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderTopWidth: index === 0 ? 2 : 1,
-              borderBottomWidth: index === 0 ? 0 : 1,
-              borderRightWidth: index === 0 ? 1 : 0,
-              borderRightColor: colors.borderColor,
-              borderTopColor:
-                index === 0 ? colors.borderColor22 : colors.borderColor,
-              borderBottomColor: colors.borderColor,
-              zIndex: 300,
-            }}
-            onPress={() => {
-              setIndex(0);
+              flexDirection: 'row',
+              height: 55,
+              // borderTopColor: colors.borderColor,
             }}
           >
-            <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
-          </Pressable>
-          <Pressable
-            style={{
-              flex: 1,
-              backgroundColor: 'white',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderTopWidth: index === 1 ? 2 : 1,
-              borderBottomWidth: index === 1 ? 0 : 1,
-              borderRightWidth: index === 1 ? 1 : 0,
-              borderRightColor: colors.borderColor,
-              borderLeftWidth: index === 1 ? 1 : 0,
-              borderLeftColor: colors.borderColor,
-              borderTopColor:
-                index === 1 ? colors.borderColor22 : colors.borderColor,
-              borderBottomColor: colors.borderColor,
-              zIndex: 300,
-            }}
-            onPress={() => {
-              setIndex(1);
-            }}
-          >
-            <TextMedium style={{fontSize: 17}}>정보</TextMedium>
-          </Pressable>
-          <Pressable
-            style={{
-              flex: 1,
-              backgroundColor: 'white',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderTopWidth: index === 2 ? 2 : 1,
-              borderBottomWidth: index === 2 ? 0 : 1,
-              borderLeftWidth: index === 2 ? 1 : 0,
-              borderLeftColor: colors.borderColor,
-              borderTopColor:
-                index === 2 ? colors.borderColor22 : colors.borderColor,
-              borderBottomColor: colors.borderColor,
-              zIndex: 300,
-            }}
-            onPress={() => {
-              setIndex(2);
-            }}
-          >
-            <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
-          </Pressable>
-        </View>
-        {showFilter && (
-          <ScrollView
-            style={{backgroundColor: 'white', top: -1}}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-          >
-            {data.map((item, index) => (
-              <View key={index}>
-                <Pressable
-                  style={{
-                    height: 34,
-                    // width: chipWidth,
-                    minWidth: 67,
-                    // backgroundColor:
-                    //   selected.idx === index ? colors.primary : 'white',
-                    borderWidth: 1,
-                    // borderColor:
-                    //   selected.idx === index ? 'white' : colors.colorE3,
-                    marginVertical: 10,
-                    paddingHorizontal: 5,
-                    marginHorizontal: 5,
-                    borderRadius: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <TextMedium
+            <Pressable
+              style={{
+                flex: 1,
+                backgroundColor: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderTopWidth: index === 0 ? 2 : 1,
+                borderBottomWidth: index === 0 ? 0 : 1,
+                borderRightWidth: index === 0 ? 1 : 0,
+                borderRightColor: colors.borderColor,
+                borderTopColor:
+                  index === 0 ? colors.borderColor22 : colors.borderColor,
+                borderBottomColor: colors.borderColor,
+                zIndex: 300,
+              }}
+              onPress={() => {
+                setIndex(0);
+              }}
+            >
+              {/* 헤더에 설명 쭉 넣고 섹션 1번 헤더는 탭으로  */}
+              <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
+            </Pressable>
+            <Pressable
+              style={{
+                flex: 1,
+                backgroundColor: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderTopWidth: index === 1 ? 2 : 1,
+                borderBottomWidth: index === 1 ? 0 : 1,
+                borderRightWidth: index === 1 ? 1 : 0,
+                borderRightColor: colors.borderColor,
+                borderLeftWidth: index === 1 ? 1 : 0,
+                borderLeftColor: colors.borderColor,
+                borderTopColor:
+                  index === 1 ? colors.borderColor22 : colors.borderColor,
+                borderBottomColor: colors.borderColor,
+                zIndex: 300,
+              }}
+              onPress={() => {
+                setIndex(1);
+              }}
+            >
+              <TextMedium style={{fontSize: 17}}>정보</TextMedium>
+            </Pressable>
+            <Pressable
+              style={{
+                flex: 1,
+                backgroundColor: 'white',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderTopWidth: index === 2 ? 2 : 1,
+                borderBottomWidth: index === 2 ? 0 : 1,
+                borderLeftWidth: index === 2 ? 1 : 0,
+                borderLeftColor: colors.borderColor,
+                borderTopColor:
+                  index === 2 ? colors.borderColor22 : colors.borderColor,
+                borderBottomColor: colors.borderColor,
+                zIndex: 300,
+              }}
+              onPress={() => {
+                setIndex(2);
+              }}
+            >
+              <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
+            </Pressable>
+          </View>
+          {showFilter && (
+            <ScrollView
+              style={{backgroundColor: 'white'}}
+              showsHorizontalScrollIndicator={false}
+              horizontal
+            >
+              {data.map((item, index) => (
+                <View key={index}>
+                  <Pressable
                     style={{
-                      fontSize: 14,
-                      // color:
-                      //   selected.idx === index ? 'white' : colors.fontColor2,
+                      height: 34,
+                      // width: chipWidth,
+                      minWidth: 67,
+                      // backgroundColor:
+                      //   selected.idx === index ? colors.primary : 'white',
+                      borderWidth: 1,
+                      // borderColor:
+                      //   selected.idx === index ? 'white' : colors.colorE3,
+                      marginVertical: 10,
+                      paddingHorizontal: 5,
+                      marginHorizontal: 5,
+                      borderRadius: 10,
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}
                   >
-                    hihihihihi
-                    {item.ca_name}
-                  </TextMedium>
-                </Pressable>
-              </View>
-            ))}
-          </ScrollView>
-        )}
-      </View>
+                    <TextMedium
+                      style={{
+                        fontSize: 14,
+                        // color:
+                        //   selected.idx === index ? 'white' : colors.fontColor2,
+                      }}
+                    >
+                      {item.ca_name}
+                    </TextMedium>
+                  </Pressable>
+                </View>
+              ))}
+            </ScrollView>
+          )}
+        </View>
+      </SafeAreaView>
     );
   };
 
@@ -219,44 +224,52 @@ const MenuDetail2 = ({navigation, route}) => {
 
   return (
     <>
-      <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-        {/* <View style={{flex: 1, zIndex: 500, position: 'absolute'}}> */}
-        <View style={{flex: 1, zIndex: 500}}>
-          <Header
-            style={{
-              backgroundColor: showHeader ? 'white' : 'rgba(0,0,0,0)',
-              // position: 'absolute',
-            }}
-          />
-        </View>
-
-        {/* </View> */}
+      {/* <SafeAreaView style={{flex: 0}} edges={['top']} /> */}
+      <View style={{...commonStyles.safeAreaStyle}}>
+        <SafeAreaView
+          style={{
+            zIndex: 100,
+            backgroundColor: showHeader ? 'white' : 'rgba(0,0,0,0)',
+          }}
+          edges={['top']}
+        >
+          <View style={{flex: 1}}>
+            <Header
+              style={{
+                backgroundColor: showHeader ? 'white' : 'rgba(0,0,0,0)',
+                position: 'absolute',
+                zIndex: 100,
+              }}
+            />
+          </View>
+        </SafeAreaView>
         <SectionList
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+          }}
+          // contentInset={{top: 57}}
           onScroll={e => {
             const offset = e.nativeEvent.contentOffset;
+            console.log(offset);
+            if (offset.y < tabPosition * 0.5) setShowHeader(false);
+            if (offset.y > tabPosition * 0.6) setShowHeader(true);
+            console.log('tabPosition', tabPosition, '::', 'offset', offset.y);
+            if (offset.y > tabPosition) setShowFilter(true);
+            if (offset.y < tabPosition) setShowFilter(false);
 
-            if (offset.y < 800) setShowHeader(false);
-            if (offset.y > 940) setShowHeader(true);
-            // console.log('tabPosition', tabPosition);
-            if (offset.y > tabPosition * 2 + 170) setShowFilter(true);
-            if (offset.y < tabPosition * 2 + 170) setShowFilter(false);
-
-            console.warn(e.nativeEvent.contentOffset);
+            // console.warn(e.nativeEvent.contentOffset);
             // if(e.nai)
           }}
           sections={data}
           // contentContainerStyle={{}}
+          ListHeaderComponent={<ListHeader />}
+          ListHeaderComponentStyle={{marginBottom: -101}}
           stickySectionHeadersEnabled={true}
           keyExtractor={(item, index) => item.key}
           renderItem={item => renderItem(item)}
           renderSectionHeader={({section}) => sectionHeader(section)}
-          // contentInset={{top: showHeader ? 57 : null}}
-          alwaysBounceHorizontal={false}
-          alwaysBounceVertical={false}
-          bounces={false}
-          bouncesZoom={false}
-          // style={{}}
-          // contentContainerStyle={{backgroundColor: 'gray'}}
           // onViewableItemsChanged={item => {
           //   if (
           //     item.viewableItems.length === 1 &&
@@ -268,10 +281,9 @@ const MenuDetail2 = ({navigation, route}) => {
           //     setTabVisible(false);
           //     console.log('false');
           //   }
-          //   console.log('Changed', item);
           // }}
         />
-      </SafeAreaView>
+      </View>
     </>
   );
 };

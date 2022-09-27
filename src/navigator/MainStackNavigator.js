@@ -450,7 +450,7 @@ const MainStackNavigator = () => {
       onReady={_routeBackGround}
     >
       <Stack.Navigator
-        initialRouteName={initRoute}
+        initialRouteName={'MenuDetail2'}
         // initialRouteName={'Test'}
         screenOptions={{headerShown: false}}
       >
