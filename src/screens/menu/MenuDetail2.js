@@ -3,6 +3,7 @@ import {
   Alert,
   Image,
   PermissionsAndroid,
+  Platform,
   Pressable,
   ScrollView,
   SectionList,
@@ -38,6 +39,7 @@ import Caution from '../../component/Caution';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import {Shadow} from 'react-native-shadow-2';
 import {FlatList} from 'react-native';
+import {hasNotch} from 'react-native-device-info';
 
 const MenuDetail2 = ({navigation, route}) => {
   const [tabVisible, setTabVisible] = useState(false);
@@ -57,15 +59,14 @@ const MenuDetail2 = ({navigation, route}) => {
           flex: 1,
           height: 1200,
           backgroundColor: 'tomato',
-        }}
-      >
+        }}>
         <Text style={{fontSize: 30}}>{item.item}</Text>
       </View>
     );
   };
 
   useEffect(() => {
-    tempRef.current.measure((fx, fy, width, height, px, py) => {
+    tempRef?.current.measure((fx, fy, width, height, px, py) => {
       console.log('Component width is: ' + width);
       console.log('Component height is: ' + height);
       console.log('X offset to frame: ' + fx);
@@ -96,16 +97,20 @@ const MenuDetail2 = ({navigation, route}) => {
     //     ></View>
     //   );
     return (
-      <SafeAreaView edges={['left', 'right']} style={{marginTop: 101}}>
+      <SafeAreaView
+        edges={['left', 'right']}
+        // style={{marginTop: 101}}
+        style={{marginTop: hasNotch() ? 101 : 57}}>
         <View>
           <View
+            //aos
+            collapsable={false}
             ref={tempRef}
             style={{
               flexDirection: 'row',
               height: 55,
               // borderTopColor: colors.borderColor,
-            }}
-          >
+            }}>
             <Pressable
               style={{
                 flex: 1,
@@ -123,8 +128,7 @@ const MenuDetail2 = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(0);
-              }}
-            >
+              }}>
               {/* 헤더에 설명 쭉 넣고 섹션 1번 헤더는 탭으로  */}
               <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
             </Pressable>
@@ -147,8 +151,7 @@ const MenuDetail2 = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(1);
-              }}
-            >
+              }}>
               <TextMedium style={{fontSize: 17}}>정보</TextMedium>
             </Pressable>
             <Pressable
@@ -168,17 +171,18 @@ const MenuDetail2 = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(2);
-              }}
-            >
+              }}>
               <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
             </Pressable>
           </View>
           {showFilter && (
             <ScrollView
-              style={{backgroundColor: 'white'}}
+              style={{
+                backgroundColor: 'white',
+                top: Platform.OS === 'android' ? -0.1 : null,
+              }}
               showsHorizontalScrollIndicator={false}
-              horizontal
-            >
+              horizontal>
               {data.map((item, index) => (
                 <View key={index}>
                   <Pressable
@@ -197,15 +201,13 @@ const MenuDetail2 = ({navigation, route}) => {
                       borderRadius: 10,
                       alignItems: 'center',
                       justifyContent: 'center',
-                    }}
-                  >
+                    }}>
                     <TextMedium
                       style={{
                         fontSize: 14,
                         // color:
                         //   selected.idx === index ? 'white' : colors.fontColor2,
-                      }}
-                    >
+                      }}>
                       {item.ca_name}
                     </TextMedium>
                   </Pressable>
@@ -231,8 +233,7 @@ const MenuDetail2 = ({navigation, route}) => {
             zIndex: 100,
             backgroundColor: showHeader ? 'white' : 'rgba(0,0,0,0)',
           }}
-          edges={['top']}
-        >
+          edges={['top']}>
           <View style={{flex: 1}}>
             <Header
               style={{
@@ -244,6 +245,7 @@ const MenuDetail2 = ({navigation, route}) => {
           </View>
         </SafeAreaView>
         <SectionList
+          overScrollMode="never"
           style={{
             position: 'absolute',
             width: '100%',
@@ -252,6 +254,7 @@ const MenuDetail2 = ({navigation, route}) => {
           // contentInset={{top: 57}}
           onScroll={e => {
             const offset = e.nativeEvent.contentOffset;
+
             console.log(offset);
             if (offset.y < tabPosition * 0.5) setShowHeader(false);
             if (offset.y > tabPosition * 0.6) setShowHeader(true);
@@ -261,12 +264,12 @@ const MenuDetail2 = ({navigation, route}) => {
             if (offset.y < tabPosition) setShowFilter(false);
 
             // console.warn(e.nativeEvent.contentOffset);
-            // if(e.nai)
           }}
           sections={data}
           // contentContainerStyle={{}}
           ListHeaderComponent={<ListHeader />}
-          ListHeaderComponentStyle={{marginBottom: -101}}
+          ListHeaderComponentStyle={{marginBottom: hasNotch() ? -101 : -57}}
+          // ListHeaderComponentStyle={{marginBottom: -101}}
           stickySectionHeadersEnabled={true}
           keyExtractor={(item, index) => item.key}
           renderItem={item => renderItem(item)}
