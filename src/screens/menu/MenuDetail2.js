@@ -269,7 +269,7 @@ const MenuDetail2 = ({navigation, route}) => {
           // contentContainerStyle={{}}
           ListHeaderComponent={<ListHeader />}
           ListHeaderComponentStyle={{marginBottom: hasNotch() ? -101 : -57}}
-          // ListHeaderComponentStyle={{marginBottom: -101}}
+          // ListHeaderComponentStyle={{marginBottom: -101}
           stickySectionHeadersEnabled={true}
           keyExtractor={(item, index) => item.key}
           renderItem={item => renderItem(item)}
