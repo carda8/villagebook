@@ -48,6 +48,7 @@ const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
       const link = await dynamicLinks().buildShortLink({
         link: `https://www.dongnaebook.com/${categoryMain}/${storeInfo.mb_id}/${storeInfo.mb_jumju_code}`,
         domainUriPrefix: 'https://dongnaebook.page.link',
+        navigation: {forcedRedirectEnabled: true},
         android: {
           packageName: 'com.dmonster.dongnaebook',
         },
