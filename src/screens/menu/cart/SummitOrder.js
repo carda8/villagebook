@@ -306,6 +306,7 @@ const SummitOrder = ({navigation, route}) => {
                   jumju_code:
                     cartStore.currentStoreCode?.code ??
                     cartStore.savedItem.savedStoreCode.code,
+                  category: cartStore.savedItem.savedStoreCode.category,
                 });
               }}
               style={{

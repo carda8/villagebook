@@ -6,27 +6,16 @@ import colors from '../../styles/colors';
 import TextMedium from '../../component/text/TextMedium';
 import {replaceString} from '../../config/utils/Price';
 import {
-  removeSavedItem,
   resetSavedItem,
   saveItem,
-  setCurrentStoreCode,
   setStoreLogo,
   updateItem,
 } from '../../store/reducers/CartReducer';
 import {customAlert} from '../../component/CustomAlert';
-import {
-  resetPayment,
-  setLastPrice,
-  setPaymentMethod,
-} from '../../store/reducers/PaymentReducer';
-import Loading from '../../component/Loading';
+import {setPaymentMethod} from '../../store/reducers/PaymentReducer';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
-import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
-import {replace} from 'formik';
 import {resetCoupon} from '../../store/reducers/CouponReducer';
 import {_guestAlert} from '../../config/utils/modules';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import commonStyles from '../../styles/commonStyle';
 
 const CartButton = ({
   navigation,
@@ -44,16 +33,17 @@ const CartButton = ({
   const {isGuest} = useSelector(state => state.authReducer);
   const {deliveryType} = useSelector(state => state.deliveryReducer);
 
+  // console.warn('deliveryData', deliveryData);
+
   const {mutateDeliveryFee} = useCustomMutation();
-  // const payStore = useSelector(state => state.paymentReducer);
   console.log('cartStore  ###', cartStore);
-  const _getTotalPrice = () => {
-    let temp = 0;
-    cartStore.savedItem.savedItems.map((item, index) => {
-      temp += item.totalPrice;
-    });
-    return replaceString(temp);
-  };
+  // const _getTotalPrice = () => {
+  //   let temp = 0;
+  //   cartStore.savedItem.savedItems.map((item, index) => {
+  //     temp += item.totalPrice;
+  //   });
+  //   return replaceString(temp);
+  // };
 
   const _goToCart = () => {
     console.log('currrent cart', cartStore.currentStoreCode);
@@ -131,6 +121,7 @@ const CartButton = ({
               code: data.jumju_code,
               jumju_id: data.jumju_id,
               storeName: data.mb_company,
+              category: data.category,
             },
             items: {
               count: cartStore.mainCount.count,
@@ -152,6 +143,7 @@ const CartButton = ({
             code: data.jumju_code,
             jumju_id: data.jumju_id,
             storeName: data.mb_company,
+            category: data.category,
           },
           items: {
             count: cartStore.mainCount.count,

@@ -83,18 +83,18 @@ const FilterView = ({isSearch, category}) => {
         {Filter.filter.map((item, index) =>
           isLifeStyle ? (
             index === 0 || index === 4 || index === 7 ? (
-              <Fliter item={item} index={index} />
+              <Fliter key={index} item={item} index={index} />
             ) : (
               <View key={index}></View>
             )
           ) : category === 'market' ? (
             index !== 1 ? (
-              <Fliter item={item} index={index} />
+              <Fliter key={index} item={item} index={index} />
             ) : (
               <View key={index}></View>
             )
           ) : (
-            <Fliter item={item} index={index} />
+            <Fliter key={index} item={item} index={index} />
           ),
         )}
       </ScrollView>

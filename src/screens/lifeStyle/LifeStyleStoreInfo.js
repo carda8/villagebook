@@ -13,6 +13,7 @@ import MiniMap from '../map/MiniMap';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import {useFocusEffect} from '@react-navigation/native';
 import {useCallback} from 'react';
+import {hasNotch} from 'react-native-device-info';
 
 const LifeStyleStoreInfo = ({navigation, route}) => {
   const {mutateGetLifeStyleStoreInfo} = useCustomMutation();
@@ -68,7 +69,10 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
   console.warn('lifeinfo', lifeInfo);
 
   return (
-    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
+    <SafeAreaView
+      style={{...commonStyles.safeAreaStyle}}
+      edges={['left', 'right']}
+    >
       <ScrollView contentContainerStyle={{paddingBottom: 60}}>
         <Header
           navigation={navigation}
@@ -81,6 +85,7 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
           style={{
             backgroundColor: 'rgba(0,0,0,0)',
             zIndex: 100,
+            marginTop: hasNotch() ? '9%' : null,
             position: 'absolute',
           }}
         />

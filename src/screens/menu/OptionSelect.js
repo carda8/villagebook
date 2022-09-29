@@ -22,7 +22,7 @@ import {hasNotch} from 'react-native-device-info';
 
 const OptionSelect = ({navigation, route}) => {
   const routeData = route.params;
-  // console.log('routeData', routeData);
+  console.warn('routeData', routeData);
   const {mutateMenuDetail} = useCustomMutation();
   const [convertedData, setConvertedData] = useState([]);
   const {optionHeader, currentStoreCode} = useSelector(

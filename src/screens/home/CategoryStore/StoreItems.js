@@ -38,9 +38,7 @@ const StoreItems = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {currentLocation} = useSelector(state => state.locationReducer);
   const {currentFilter} = useSelector(state => state.categoryReducer);
-  const [refresh, setRefresh] = useState(false);
 
-  // console.log('roueteData', routeData);
   const [storeList, setStoreList] = useState([]);
   const {mutateGetLifeStyle, mutateGetStoreList} = useCustomMutation();
 
@@ -52,8 +50,6 @@ const StoreItems = ({navigation, route}) => {
   const itemLimit = useRef(0);
 
   const _init = () => {
-    // console.log('storeitem', routeData);
-    // setRefresh(true)
     itemLimit.current = 0;
     const data = {
       mb_ca_code: routeData.ca_code,
@@ -67,13 +63,11 @@ const StoreItems = ({navigation, route}) => {
     console.log('mutateGetStoreList ::', data);
 
     if (routeData.category === 'lifestyle') {
-      // delete data.mb_ca_sort;
       mutateGetLifeStyle.mutate(data, {
         onError: e => {
           setStoreList('');
         },
         onSuccess: e => {
-          // setRefresh(false)
           if (e.result === 'true') {
             console.log('ee', e);
             const temp = _fliterList(e.data.arrItems);
@@ -108,7 +102,6 @@ const StoreItems = ({navigation, route}) => {
     };
     console.log('itemLImit ::::::::', itemLimit.current);
     if (routeData.category === 'lifestyle') {
-      // delete data.mb_ca_sort;
       mutateGetLifeStyle.mutate(data, {
         onSuccess: e => {
           if (e.result === 'true') {
@@ -147,9 +140,7 @@ const StoreItems = ({navigation, route}) => {
   const IMG_CONTAINER = layout.width * 0.66; //레이아웃 높이
   const IMG_HEIGHT = IMG_CONTAINER * 0.64; //이미지
 
-  //368 88 279
   const renderItem = item => {
-    // console.log('itemssss', item);
     const storeCode = item.item.storeCode;
     const storeInfo = item.item;
     return (
@@ -161,17 +152,11 @@ const StoreItems = ({navigation, route}) => {
           marginVertical: 7,
           marginHorizontal: 14,
           flex: 1,
-        }}>
+        }}
+      >
         <Pressable
           onPress={() => {
             console.log('code', storeInfo.mb_jumju_code);
-            // dispatch(
-            //   setCurrentStoreCode({
-            //     code: storeInfo.mb_jumju_code,
-            //     jumju_id: storeInfo.mb_id,
-            //     storeName: storeInfo.mb_company,
-            //   }),
-            // );
             if (routeData.category === 'lifestyle') {
               dispatch(setIsLifeStyle(true));
               navigation.navigate('LifeStyleStoreInfo', {
@@ -198,13 +183,15 @@ const StoreItems = ({navigation, route}) => {
             // marginVertical: 11,
             borderRadius: 10,
             backgroundColor: 'white',
-          }}>
+          }}
+        >
           <View
             style={{
               height: IMG_HEIGHT,
               borderRadius: 10,
               flexDirection: 'row',
-            }}>
+            }}
+          >
             <View
               style={{
                 flex: 1,
@@ -215,7 +202,8 @@ const StoreItems = ({navigation, route}) => {
                   storeInfo.store_image?.length === 1 ? 10 : null,
                 // borderBottomLeftRadius: 10,
                 overflow: 'hidden',
-              }}>
+              }}
+            >
               {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
                 <>
                   <ImageCover text />
@@ -232,14 +220,16 @@ const StoreItems = ({navigation, route}) => {
                 <View
                   style={{
                     width: layout.width * 0.24,
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       flex: 1,
                       borderTopRightRadius: 10,
                       marginBottom: 1,
                       overflow: 'hidden',
-                    }}>
+                    }}
+                  >
                     {!item?.section?.isOpen &&
                       routeData.category !== 'lifestyle' && <ImageCover />}
 
@@ -259,7 +249,8 @@ const StoreItems = ({navigation, route}) => {
                       flex: 1,
                       // borderBottomRightRadius: 10,
                       overflow: 'hidden',
-                    }}>
+                    }}
+                  >
                     {!item?.section?.isOpen &&
                       routeData.category !== 'lifestyle' && (
                         <>
@@ -286,33 +277,38 @@ const StoreItems = ({navigation, route}) => {
               flex: 1,
               // justifyContent: 'flex-end',
               padding: 10,
-            }}>
+            }}
+          >
             <View style={{}}>
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                }}>
+                }}
+              >
                 <View style={{flex: 1}}>
                   <View
                     style={{
                       // marginBottom: 5,
                       flexDirection: 'row',
                       alignItems: 'center',
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         flex: 1,
                         flexDirection: 'row',
                         alignItems: 'flex-end',
-                      }}>
+                      }}
+                    >
                       <View
                         style={{
                           width: '100%',
                           flexDirection: 'row',
                           justifyContent: 'space-between',
-                        }}>
+                        }}
+                      >
                         <View style={{flex: 1}}>
                           <Text
                             style={{
@@ -320,7 +316,8 @@ const StoreItems = ({navigation, route}) => {
                               fontSize: 16,
                             }}
                             ellipsizeMode="tail"
-                            numberOfLines={1}>
+                            numberOfLines={1}
+                          >
                             {storeInfo.mb_company}
                           </Text>
                         </View>
@@ -335,7 +332,8 @@ const StoreItems = ({navigation, route}) => {
                       <View style={{marginLeft: 5, flex: 1}}>
                         <TextRegular
                           numberOfLines={1}
-                          style={{color: colors.fontColorA2, fontSize: 12}}>
+                          style={{color: colors.fontColorA2, fontSize: 12}}
+                        >
                           {storeInfo.mb_jongmog}
                         </TextRegular>
                       </View>
@@ -348,7 +346,8 @@ const StoreItems = ({navigation, route}) => {
                           flexDirection: 'row',
                           alignItems: 'center',
                           marginRight: 5,
-                        }}>
+                        }}
+                      >
                         <Image
                           source={require('~/assets/top_heart_on.png')}
                           style={{width: 20, height: 20, marginRight: 5}}
@@ -365,7 +364,8 @@ const StoreItems = ({navigation, route}) => {
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <View style={{}}>
                       <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}>
+                        style={{color: colors.fontColorA2, fontSize: 12}}
+                      >
                         {storeInfo.distance}
                       </TextRegular>
                     </View>
@@ -378,7 +378,8 @@ const StoreItems = ({navigation, route}) => {
                           color: colors.fontColorA,
                         }}
                         ellipsizeMode="tail"
-                        numberOfLines={1}>
+                        numberOfLines={1}
+                      >
                         {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
                       </Text>
                     </View>
@@ -390,84 +391,123 @@ const StoreItems = ({navigation, route}) => {
                   style={{
                     marginTop: 2,
                     // flexDirection: 'row',
-                  }}>
+                  }}
+                >
                   <TextRegular
                     numberOfLines={1}
-                    style={{color: colors.fontColorA2, fontSize: 12}}>
+                    style={{color: colors.fontColorA2, fontSize: 12}}
+                  >
                     {storeInfo?.mb_opening_hours2}
                   </TextRegular>
                 </View>
               )}
 
               {routeData.category === 'market' && (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    // marginTop: 9,
-                  }}>
-                  <View
+                <>
+                  {/* <View
                     style={{
                       flexDirection: 'row',
-                    }}>
-                    <TextRegular
-                      style={{color: colors.fontColorA2, fontSize: 12}}>
-                      배달팁{' '}
-                    </TextRegular>
-                    <TextRegular
-                      style={{color: colors.fontColor6, fontSize: 12}}>
-                      {replaceString(storeInfo.tipFrom)}원~
-                      {replaceString(storeInfo.tipTo)}원
-                    </TextRegular>
-                    <Dot />
-                    <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                      <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}>
-                        최소 주문{' '}
-                      </TextRegular>
-                      <TextRegular style={{fontSize: 12}}>
-                        {replaceString(storeInfo.minPrice)}원{' '}
-                      </TextRegular>
+                      flexWrap: 'wrap',
+                      // marginTop: 9,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <>
+                        {storeInfo.delivery_time ? (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Image
+                              source={require('~/assets/time.png')}
+                              style={{width: 14, height: 14}}
+                            />
+                            <TextRegular style={{fontSize: 12}}>
+                              {storeInfo.delivery_time}
+                            </TextRegular>
+                            <Dot />
+                          </View>
+                        ) : (
+                          <></>
+                        )}
+                      </>
                     </View>
-                  </View>
+                  </View> */}
 
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                    }}>
-                    <>
-                      {storeInfo.delivery_time ? (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                          <Image
-                            source={require('~/assets/time.png')}
-                            style={{width: 14, height: 14}}
-                          />
-                          <TextRegular style={{fontSize: 12}}>
-                            {storeInfo.delivery_time}
-                          </TextRegular>
-                          {/* <TextRegular style={{fontSize: 12}}>40분</TextRegular> */}
-                          <Dot />
-                        </View>
-                      ) : (
-                        <></>
-                      )}
-                    </>
+                  {storeInfo.wrap && (
+                    <View
+                      style={{
+                        // flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: 50,
+                          height: 22,
+                          backgroundColor: '#57cc98',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: 5,
+                          marginTop: 4,
+                          marginRight: 10,
+                        }}
+                      >
+                        <TextMedium style={{fontSize: 12, color: 'white'}}>
+                          포장하기
+                        </TextMedium>
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexWrap: 'wrap',
+                          // backgroundColor: 'teal',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          // justifyContent: 'center',
+                        }}
+                      >
+                        {storeInfo.cooking_time ? (
+                          <>
+                            <Image
+                              source={require('~/assets/time.png')}
+                              style={{width: 14, height: 14}}
+                            />
+                            <TextRegular style={{fontSize: 12}}>
+                              {' ' + storeInfo.cooking_time}
+                            </TextRegular>
+                            <Dot />
+                          </>
+                        ) : (
+                          <></>
+                        )}
 
-                    {/* <View style={{}}>
-                      <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}>
-                        {storeInfo.distance}
-                      </TextRegular>
-                    </View> */}
-                  </View>
-                </View>
+                        <TextRegular
+                          style={{color: colors.fontColorA2, fontSize: 12}}
+                        >
+                          최소 주문{' '}
+                        </TextRegular>
+
+                        <TextRegular
+                          style={{color: colors.fontColor2, fontSize: 12}}
+                        >
+                          {replaceString(storeInfo.minPriceWrap)}원{' '}
+                        </TextRegular>
+                      </View>
+                    </View>
+                  )}
+                </>
               )}
             </View>
+
             {routeData.category === 'food' && (
               <>
                 {storeInfo.forHere && (
@@ -476,7 +516,8 @@ const StoreItems = ({navigation, route}) => {
                       // flex: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         width: 50,
@@ -487,7 +528,8 @@ const StoreItems = ({navigation, route}) => {
                         borderRadius: 5,
                         marginTop: 4,
                         marginRight: 10,
-                      }}>
+                      }}
+                    >
                       <TextMedium style={{fontSize: 12, color: 'white'}}>
                         먹고가기
                       </TextMedium>
@@ -496,11 +538,10 @@ const StoreItems = ({navigation, route}) => {
                       style={{
                         flex: 1,
                         flexWrap: 'wrap',
-                        // backgroundColor: 'teal',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        // justifyContent: 'center',
-                      }}>
+                      }}
+                    >
                       {storeInfo.cooking_time ? (
                         <>
                           <Image
@@ -517,25 +558,16 @@ const StoreItems = ({navigation, route}) => {
                       )}
 
                       <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}>
+                        style={{color: colors.fontColorA2, fontSize: 12}}
+                      >
                         최소 주문{' '}
                       </TextRegular>
 
                       <TextRegular
-                        style={{color: colors.fontColor2, fontSize: 12}}>
+                        style={{color: colors.fontColor2, fontSize: 12}}
+                      >
                         {replaceString(storeInfo.minPriceForHere)}원{' '}
                       </TextRegular>
-
-                      {/* <Dot /> */}
-                      {/* <TextRegular
-                            style={{color: colors.fontColorA2, fontSize: 12}}>
-                            배달팁{' '}
-                          </TextRegular>
-                          <TextRegular
-                            style={{color: colors.fontColor6, fontSize: 12}}>
-                            {replaceString(storeInfo.tipFrom)}원~
-                            {replaceString(storeInfo.tipTo)}원
-                          </TextRegular> */}
                     </View>
                   </View>
                 )}
@@ -546,7 +578,8 @@ const StoreItems = ({navigation, route}) => {
                       // flex: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
-                    }}>
+                    }}
+                  >
                     <View
                       style={{
                         width: 50,
@@ -557,7 +590,8 @@ const StoreItems = ({navigation, route}) => {
                         borderRadius: 5,
                         marginTop: 4,
                         marginRight: 10,
-                      }}>
+                      }}
+                    >
                       <TextMedium style={{fontSize: 12, color: 'white'}}>
                         포장하기
                       </TextMedium>
@@ -566,11 +600,10 @@ const StoreItems = ({navigation, route}) => {
                       style={{
                         flex: 1,
                         flexWrap: 'wrap',
-                        // backgroundColor: 'teal',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        // justifyContent: 'center',
-                      }}>
+                      }}
+                    >
                       {storeInfo.cooking_time ? (
                         <>
                           <Image
@@ -587,12 +620,14 @@ const StoreItems = ({navigation, route}) => {
                       )}
 
                       <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}>
+                        style={{color: colors.fontColorA2, fontSize: 12}}
+                      >
                         최소 주문{' '}
                       </TextRegular>
 
                       <TextRegular
-                        style={{color: colors.fontColor2, fontSize: 12}}>
+                        style={{color: colors.fontColor2, fontSize: 12}}
+                      >
                         {replaceString(storeInfo.minPriceWrap)}원{' '}
                       </TextRegular>
 
@@ -619,7 +654,8 @@ const StoreItems = ({navigation, route}) => {
                   flexDirection: 'row',
                   // alignItems: 'center',
                   // justifyContent: 'center',
-                }}>
+                }}
+              >
                 <View
                   style={{
                     width: 50,
@@ -630,26 +666,26 @@ const StoreItems = ({navigation, route}) => {
                     borderRadius: 5,
                     marginTop: 4,
                     marginRight: 10,
-                  }}>
+                  }}
+                >
                   <TextMedium style={{fontSize: 12, color: 'white'}}>
                     배달하기
                   </TextMedium>
                 </View>
                 <View
                   style={{
-                    // backgroundColor: 'teal',
-                    // flexDirection: 'row',
                     flex: 1,
                     justifyContent: 'center',
-                    // alignItems: 'center',
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
                       flex: 1,
                       flexWrap: 'wrap',
-                    }}>
+                    }}
+                  >
                     {storeInfo.delivery_time ? (
                       <>
                         <Image
@@ -666,12 +702,14 @@ const StoreItems = ({navigation, route}) => {
                     )}
 
                     <TextRegular
-                      style={{color: colors.fontColorA2, fontSize: 12}}>
+                      style={{color: colors.fontColorA2, fontSize: 12}}
+                    >
                       최소 주문{' '}
                     </TextRegular>
 
                     <TextRegular
-                      style={{color: colors.fontColor2, fontSize: 12}}>
+                      style={{color: colors.fontColor2, fontSize: 12}}
+                    >
                       {replaceString(storeInfo.minPrice)}원{' '}
                     </TextRegular>
                   </View>
@@ -683,14 +721,17 @@ const StoreItems = ({navigation, route}) => {
                       flex: 1,
                       flexWrap: 'wrap',
                       marginLeft: 8,
-                    }}>
+                    }}
+                  >
                     <Dot />
                     <TextRegular
-                      style={{color: colors.fontColorA2, fontSize: 12}}>
+                      style={{color: colors.fontColorA2, fontSize: 12}}
+                    >
                       배달팁{' '}
                     </TextRegular>
                     <TextRegular
-                      style={{color: colors.fontColor6, fontSize: 12}}>
+                      style={{color: colors.fontColor6, fontSize: 12}}
+                    >
                       {replaceString(storeInfo.tipFrom)}원~
                       {replaceString(storeInfo.tipTo)}원
                     </TextRegular>
@@ -705,10 +746,8 @@ const StoreItems = ({navigation, route}) => {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                }}>
-                {/* <Text style={{color: colors.fontColorA, fontSize: 12}}>
-                  {storeInfo?.major_menu}
-                </Text> */}
+                }}
+              >
                 <Chip
                   coupon={storeInfo.coupon}
                   newStore={storeInfo.new}
@@ -722,8 +761,6 @@ const StoreItems = ({navigation, route}) => {
     );
   };
 
-  // storeList[0] !== null && storeList[1] !== null ? storeList : []
-  // console.log('storeligttt', storeList);
   return (
     <View style={{flex: 1}}>
       {console.log('route cate', routeData.category)}
@@ -744,7 +781,8 @@ const StoreItems = ({navigation, route}) => {
                     marginTop: '30%',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <Image
                     source={require('~/assets/no_store.png')}
                     style={{width: 250, height: 250}}
@@ -773,7 +811,8 @@ const StoreItems = ({navigation, route}) => {
                     marginTop: '30%',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
+                  }}
+                >
                   <Image
                     source={require('~/assets/no_store.png')}
                     style={{width: 250, height: 250}}
@@ -788,13 +827,11 @@ const StoreItems = ({navigation, route}) => {
             !isOpen && (
               <View>
                 <DividerL style={{marginVertical: 15}} />
-                {/* <TextBold style={{fontSize: 20}}>준비중이에요</TextBold> */}
               </View>
             )
           }
           showsVerticalScrollIndicator={false}
           onEndReached={() => {
-            // console.log('end reached');
             _getMoreStoreList();
           }}
         />

@@ -18,6 +18,8 @@ import {
 import {resetCoupon} from '../../store/reducers/CouponReducer';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import {setDeliveryType} from '../../store/reducers/DeliveryInfoReducer';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import commonStyles from '../../styles/commonStyle';
 
 const PaymentMain = ({navigation, route}) => {
   const deliveryType = route.params?.deliveryType;
@@ -208,13 +210,15 @@ const PaymentMain = ({navigation, route}) => {
     return <Loading />;
   } else {
     return (
-      <IMP.Payment
-        userCode={'imp72538339'} // 가맹점 식별코드
-        //tierCode={'AAA'} // 티어 코드: agency 기능 사용자에 한함
-        loading={<Loading />} // 로딩 컴포넌트
-        data={data} // 결제 데이터
-        callback={_callback} // 결제 종료 후 콜백
-      />
+      <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
+        <IMP.Payment
+          userCode={'imp72538339'} // 가맹점 식별코드
+          //tierCode={'AAA'} // 티어 코드: agency 기능 사용자에 한함
+          loading={<Loading />} // 로딩 컴포넌트
+          data={data} // 결제 데이터
+          callback={_callback} // 결제 종료 후 콜백
+        />
+      </SafeAreaView>
     );
   }
 

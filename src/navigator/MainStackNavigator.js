@@ -87,25 +87,30 @@ const MainStackNavigator = () => {
   const [initRoute, setInitRoute] = useState();
   const dispatch = useDispatch();
   const {mutateSNSlogin} = useCustomMutation();
-  const cartStore = useSelector(state => state.cartReducer);
+  // const cartStore = useSelector(state => state.cartReducer);
   const {_getCurrentLocation, _requestPermissions} = useGeoLocation();
   const naviRef = useRef();
 
   const onMessageReceived = async message => {
-    console.log('message', message);
+    console.log('message onForeground', message);
     const channelId2 = await notifee.createChannel({
       id: 'onForeground',
       name: 'Default Channel onForeground',
       importance: AndroidImportance.HIGH,
     });
-
     // Display a notification
+
     notifee.onForegroundEvent(e => {
       console.log('onForegroundEvent', e);
       if (e.type === 1) {
-        switch (message.data.type) {
-          case 'order':
-            naviRef.current?.navigate('OrderList');
+        if (message.data.od_id) return naviRef.current?.navigate('OrderList');
+        else {
+          return naviRef.current?.navigate('MenuDetail', {
+            jumju_id: message.data.jumju_id,
+            jumju_code: message.data.jumju_code,
+            // mb_company: message.data.mb_company,
+            category: message.data.jumju_type,
+          });
         }
       }
     });
@@ -124,22 +129,6 @@ const MainStackNavigator = () => {
       ios: {},
     });
   };
-  async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    let enabled;
-    if (
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL
-    )
-      enabled = true;
-
-    // const enabled =
-    //   authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    //   authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
-    }
-  }
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -172,47 +161,6 @@ const MainStackNavigator = () => {
     },
   });
 
-  // const _typeNumOfsns = async (loginTypeNum, token) => {
-  //   let result;
-  //   let data;
-  //   switch (loginTypeNum) {
-  //     case localStorageConfig.loginTypeNum.naver:
-  //       result = await SNSLogin._NaverLogin(token);
-  //       data = {
-  //         mt_id: result.mt_id,
-  //         mt_pwd: result.mt_pwd,
-  //         mt_app_token: result.mt_app_token,
-  //         mt_login_type: '2',
-  //         mt_sns_url: result.mt_image1,
-  //         mt_hp: result.mt_hp,
-  //         mt_name: result.mt_name,
-  //         mt_email: result.mt_email,
-  //         mt_nickname: result.mt_nickname,
-  //       };
-  //       return data;
-  //     case localStorageConfig.loginTypeNum.kakao:
-  //       result = await SNSLogin._KakaoLogin(token);
-  //       data = {
-  //         mt_id: result.mt_id,
-  //         mt_pwd: result.mt_pwd,
-  //         mt_app_token: result.mt_app_token,
-  //         mt_login_type: '3',
-  //         mt_sns_url: result.mt_image1,
-  //         mt_hp: result.mt_hp,
-  //         mt_name: result.mt_name,
-  //         mt_email: result.mt_email,
-  //         mt_nickname: result.mt_nickname,
-  //       };
-  //       return data;
-  //     case localStorageConfig.loginTypeNum.facebook:
-  //       return;
-  //     case localStorageConfig.loginTypeNum.apple:
-  //       return;
-  //     default:
-  //       return customAlert('알림', '현재 sns 로그인을 사용 할 수 없습니다.');
-  //   }
-  // };
-
   const _autoLogin = async (token, id, type, loginTypeNum) => {
     let data;
     if (type !== localStorageConfig.loginType.sns) {
@@ -221,30 +169,12 @@ const MainStackNavigator = () => {
         mt_app_token: token,
       };
     } else {
-      //자동로그인시 해당 sns 계정 서버는 최초 1회 로그인시 경유
-      //로그아웃 이후 재로그인 시 에도 경유
-      //아래 주석 해제시 항상 서버 경유
-      // data = await _typeNumOfsns(loginTypeNum, token);
       data = {
         mt_id: id,
         mt_app_token: token,
         mt_login_type: loginTypeNum,
       };
       console.log('## autoLogin data', data);
-
-      // const result = await SNSLogin._KakaoLogin(token);
-      // console.log('_KakaoLogin result', result);
-      // data = {
-      //   mt_id: result.mt_id,
-      //   mt_pwd: result.mt_pwd,
-      //   mt_app_token: result.mt_app_token,
-      //   mt_login_type: '3',
-      //   mt_sns_url: result.mt_image1,
-      //   mt_hp: result.mt_hp,
-      //   mt_name: result.mt_name,
-      //   mt_email: result.mt_email,
-      //   mt_nickname: result.mt_nickname,
-      // };
     }
 
     if (type === localStorageConfig.loginType.sns) {
@@ -280,12 +210,14 @@ const MainStackNavigator = () => {
   };
 
   const _decodeUri = url => {
-    let temp = url.split('=');
-    let decodedUrl = decodeURIComponent(temp[1]);
+    if (url) {
+      let temp = url.split('=');
+      let decodedUrl = decodeURIComponent(temp[1]);
+      if (decodedUrl == undefined) return url;
 
-    decodedUrl = decodedUrl.substring(0, decodedUrl.length - 3);
-
-    return decodedUrl;
+      decodedUrl = decodedUrl.substring(0, decodedUrl.length - 3);
+      return decodedUrl;
+    }
   };
 
   const config = {
@@ -295,9 +227,6 @@ const MainStackNavigator = () => {
       Main: 'main',
       MenuDetail: {
         path: '/main/:category/:jumju_id/:jumju_code/:link',
-        // parse: {
-        //   category: String,
-        // },
       },
       LifeStyleStoreInfo: {
         path: '/mainlife/lifestyle/:jumju_id/:jumju_code/:link',
@@ -305,18 +234,6 @@ const MainStackNavigator = () => {
     },
   };
 
-  // useEffect(() => {
-  //   dynamicLinks()
-  //     .getInitialLink()
-  //     .then(link => {
-  //       console.log('link::::::::', link);
-  //       if (link.url === 'https://invertase.io/offer') {
-  //         // ...set initial route as offers screen
-  //       }
-  //     });
-  // }, []);
-
-  // MenuDetail;
   const linking = {
     prefixes: [
       'https://www.dongnaebook.com',
@@ -338,6 +255,23 @@ const MainStackNavigator = () => {
       }
 
       if (Platform.OS === 'ios') {
+        //링크가 다이나믹 링크일 때(카카오에서 링크 타는 거 제외)
+        const link2 = await dynamicLinks()
+          .getInitialLink()
+          .then(link2 => {
+            if (link2) {
+              console.warn('dynamic ', link2);
+              return link2?.url;
+            }
+          });
+        if (link2) return link2;
+
+        //ios 앱 켜져있거나 백그라운드 일때
+        dynamicLinks().onLink(link => {
+          console.warn('link', link);
+          if (link) return link.url;
+        });
+
         //앱이 종료된 상태에서 가동될 때
         const link = await Linking.getInitialURL().then(link => {
           console.warn('exit link', link);
@@ -347,17 +281,7 @@ const MainStackNavigator = () => {
           // Linking.openURL(decodedUrl);
           // return link;
         });
-        if (link) {
-          return link;
-        }
-
-        //ios 앱 켜져있거나 백그라운드 일때
-        dynamicLinks().onLink(link => {
-          console.warn('link', link);
-          if (link) {
-            return link;
-          }
-        });
+        if (link) return link;
       }
     },
     subscribe(listener) {
@@ -367,6 +291,8 @@ const MainStackNavigator = () => {
           console.warn('origin evetn', event);
           if (event?.url) {
             const decodedUrl = _decodeUri(event.url);
+            if (decodedUrl) {
+            }
             console.warn('ios event', decodedUrl);
             return listener(decodedUrl);
           }
@@ -446,25 +372,19 @@ const MainStackNavigator = () => {
             'Notification caused app to open from quit state:',
             remoteMessage.data,
           );
-          switch (remoteMessage.data.type) {
-            case 'order':
-              return naviRef.current?.navigate('OrderList');
-            default:
-              return;
+          if (remoteMessage.data.od_id)
+            return naviRef.current?.navigate('OrderList');
+          else {
+            return naviRef.current?.navigate('MenuDetail', {
+              jumju_id: remoteMessage.data.jumju_id,
+              jumju_code: remoteMessage.data.jumju_code,
+              // mb_company: remoteMessage.data.mb_company,
+              category: remoteMessage.data.jumju_type,
+            });
           }
-          // console.log(
-          //   'Notification caused app to open from quit state:',
-          //   remoteMessage.data.type,
-          // );
-          // setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
         }
-        // setLoading(false);
       });
   };
-
-  // useEffect(() => {
-
-  // }, [naviRef.current]);
 
   if (!initRoute) return <Loading />;
 
@@ -472,11 +392,13 @@ const MainStackNavigator = () => {
     <NavigationContainer
       ref={naviRef}
       linking={linking}
-      onReady={_routeBackGround}>
+      onReady={_routeBackGround}
+    >
       <Stack.Navigator
         initialRouteName={initRoute}
         // initialRouteName={'Test'}
-        screenOptions={{headerShown: false}}>
+        screenOptions={{headerShown: false}}
+      >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
