@@ -396,11 +396,13 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 </Text>
               </View>
             </Pressable>
-            <MenuDescTab
-              info={storeInfo}
-              navigation={navigation}
-              routeData={routeData}
-            />
+            {storeInfo && (
+              <MenuDescTab
+                info={storeInfo}
+                navigation={navigation}
+                routeData={routeData}
+              />
+            )}
           </>
         )}
       </View>

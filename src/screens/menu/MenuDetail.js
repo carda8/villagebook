@@ -40,6 +40,8 @@ import Caution from '../../component/Caution';
 import AuthStorageModuel from '../../store/localStorage/AuthStorageModuel';
 import {Shadow} from 'react-native-shadow-2';
 import {getDeviceId, hasNotch} from 'react-native-device-info';
+import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
+import {useDispatch} from 'react-redux';
 
 const MenuDetail = ({navigation, route}) => {
   const {
@@ -66,6 +68,7 @@ const MenuDetail = ({navigation, route}) => {
   const focusTarget = useRef([]);
   const chipTarget = useRef([]);
 
+  const dispatch = useDispatch();
   const _init = () => {
     // if (!userInfo) {
     //   Alert.alert('알림', '로그인이 필요합니다.', [
@@ -79,6 +82,8 @@ const MenuDetail = ({navigation, route}) => {
     //   ]);
     //   return;
     // }
+    dispatch(setIsLifeStyle(false));
+
     console.log('_init data1', routeData);
     const data = {
       jumju_id: routeData.jumju_id,
@@ -864,7 +869,7 @@ const MenuDetail = ({navigation, route}) => {
           )}
 
           {index !== 2 && (
-            <>
+            <View style={{paddingBottom: hasNotch() ? 50 : 0}}>
               <DividerL />
               <View
                 style={{
@@ -894,7 +899,7 @@ const MenuDetail = ({navigation, route}) => {
                 </TextNotoR>
               </View>
               <Caution />
-            </>
+            </View>
           )}
         </ScrollView>
 

@@ -4,7 +4,6 @@ import FastImage from 'react-native-fast-image';
 import Swiper from 'react-native-swiper';
 
 const ImageSwipe = ({images, imageStyle}) => {
-  const imagee = [1, 2, 3, 4, 5];
   const layout = useWindowDimensions();
   return (
     <View style={{flex: 1}}>
@@ -17,11 +16,11 @@ const ImageSwipe = ({images, imageStyle}) => {
         removeClippedSubviews={false}
         style={{height: 300}}
       >
-        {imagee.map((item, index) => (
+        {images.map((item, index) => (
           <View style={{flex: 1}} key={index}>
             <FastImage
-              // source={{uri: item}}
-              source={require('~/assets/no_use_img.png')}
+              source={{uri: item}}
+              // source={require('~/assets/no_use_img.png')}
               style={{flex: 1, maxWidth: layout.width, maxHeight: 300}}
               resizeMode={FastImage.resizeMode.cover}
             />

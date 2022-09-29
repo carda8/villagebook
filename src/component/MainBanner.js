@@ -50,14 +50,14 @@ const MainBanner = ({navigation, style, position}) => {
         return navigation.navigate('MenuDetail', {
           jumju_id: item.bn_jumju_id,
           jumju_code: item.bn_jumju_code,
-          jumju_type: 'food',
+          category: 'food',
         });
       case 'marekt':
         dispatch(setIsLifeStyle(false));
         return navigation.navigate('MenuDetail', {
           jumju_id: item.bn_jumju_id,
           jumju_code: item.bn_jumju_code,
-          jumju_type: 'market',
+          category: 'market',
         });
       case 'lifestyle':
         dispatch(setIsLifeStyle(true));
@@ -96,7 +96,8 @@ const MainBanner = ({navigation, style, position}) => {
           borderRadius: 10,
           backgroundColor: colors.mainBG3,
           ...style,
-        }}></View>
+        }}
+      ></View>
     );
 
   return (
@@ -123,12 +124,14 @@ const MainBanner = ({navigation, style, position}) => {
               justifyContent: 'center',
               backgroundColor: 'rgba(22, 22, 22, 0.57)',
               position: 'absolute',
-            }}>
+            }}
+          >
             <TextRegular style={{color: 'white'}}>
               {index + 1}/{total}
             </TextRegular>
           </View>
-        )}>
+        )}
+      >
         {bannerImg.map((item, idx) => (
           <Pressable
             key={idx}
@@ -143,7 +146,8 @@ const MainBanner = ({navigation, style, position}) => {
               backgroundColor: colors.mainBG3,
               borderRadius: 10,
               overflow: 'hidden',
-            }}>
+            }}
+          >
             <FastImage
               source={{uri: item.bn_img}}
               style={{

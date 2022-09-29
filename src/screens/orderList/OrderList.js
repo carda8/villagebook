@@ -75,7 +75,8 @@ const OrderList = ({navigation}) => {
           flex: 1,
           borderTopWidth: 1,
           borderTopColor: colors.borderColor,
-        }}>
+        }}
+      >
         <View
           style={{
             flex: 1,
@@ -84,7 +85,8 @@ const OrderList = ({navigation}) => {
             paddingVertical: 10,
             alignItems: 'center',
             flexDirection: 'row',
-          }}>
+          }}
+        >
           <View style={{flex: 1}}>
             <TextRegular>주문일자 : {data.od_time}</TextRegular>
           </View>
@@ -96,7 +98,8 @@ const OrderList = ({navigation}) => {
               backgroundColor: colors.primary,
               alignItems: 'center',
               justifyContent: 'center',
-            }}>
+            }}
+          >
             <TextRegular style={{color: 'white'}}>
               {data.od_process_status}
             </TextRegular>
@@ -110,7 +113,8 @@ const OrderList = ({navigation}) => {
             paddingTop: 15,
             flexDirection: 'row',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <FastImage
             source={
               data.store_logo
@@ -130,7 +134,8 @@ const OrderList = ({navigation}) => {
             height: 40,
             paddingHorizontal: 22,
             marginBottom: 15,
-          }}>
+          }}
+        >
           <Pressable
             onPress={() => {
               dispatch(setIsLifeStyle(false));
@@ -148,7 +153,8 @@ const OrderList = ({navigation}) => {
               borderRadius: 10,
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <TextRegular style={{color: colors.fontColor2}}>
               가게보기
             </TextRegular>
@@ -172,7 +178,8 @@ const OrderList = ({navigation}) => {
               borderRadius: 10,
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <TextRegular style={{color: colors.fontColor2}}>
               주문상세
             </TextRegular>
@@ -195,11 +202,13 @@ const OrderList = ({navigation}) => {
               borderRadius: 10,
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <TextRegular
               style={{
                 color: isDeliveried ? colors.fontColor2 : colors.fontColorA,
-              }}>
+              }}
+            >
               리뷰쓰기
             </TextRegular>
           </Pressable>
@@ -237,7 +246,8 @@ const OrderList = ({navigation}) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: colors.primary,
-              }}>
+              }}
+            >
               <TextBold style={{color: 'white'}}>더보기</TextBold>
             </Pressable>
           ) : (

@@ -27,6 +27,7 @@ import DividerL from '../../component/DividerL';
 import ReviewScore from './ReviewScore';
 import {useWindowDimensions} from 'react-native';
 import ReviewImg from './ReviewImg';
+import {hasNotch} from 'react-native-device-info';
 
 const MenuReview = ({storeInfo}) => {
   const {mutateGetReview} = useCustomMutation();
@@ -180,7 +181,7 @@ const MenuReview = ({storeInfo}) => {
 
   const ListHeader = () => {
     return (
-      <>
+      <View style={{paddingBottom: hasNotch() ? 50 : 0}}>
         <View style={{padding: 22, paddingBottom: 0}}>
           <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
             리뷰 정보
@@ -239,7 +240,7 @@ const MenuReview = ({storeInfo}) => {
             <View style={{marginLeft: 30}}>{_setSlider()}</View>
           </View>
         </View>
-      </>
+      </View>
     );
   };
 
