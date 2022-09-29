@@ -11,6 +11,8 @@ import ImageSwipe from '../../component/menuDetail/ImageSwipe';
 import MenuDesc from '../../component/menuDetail/MenuDesc';
 import MiniMap from '../map/MiniMap';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
+import {useFocusEffect} from '@react-navigation/native';
+import {useCallback} from 'react';
 
 const LifeStyleStoreInfo = ({navigation, route}) => {
   const {mutateGetLifeStyleStoreInfo} = useCustomMutation();
@@ -32,8 +34,6 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
     //   ]);
     //   return;
     // }
-    dispatch(setIsLifeStyle(true));
-
     const data = {
       jumju_id: routeData.jumju_id,
       jumju_code: routeData.jumju_code,
@@ -51,11 +51,21 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
     });
   };
 
-  useEffect(() => {
-    _init();
-  }, []);
+  if (routeData.link) {
+    useFocusEffect(
+      useCallback(() => {
+        dispatch(setIsLifeStyle(true));
+        _init();
+      }, []),
+    );
+  } else {
+    useEffect(() => {
+      _init();
+    }, []);
+  }
 
   if (!lifeInfo) return <Loading />;
+  console.warn('lifeinfo', lifeInfo);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>

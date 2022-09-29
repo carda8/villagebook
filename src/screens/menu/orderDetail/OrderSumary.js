@@ -109,6 +109,7 @@ const OrderSumary = ({navigation, route}) => {
                 navigation.navigate('MenuDetail', {
                   jumju_id: orderData.data.store.jumju_id,
                   jumju_code: orderData.data.store.jumju_code,
+                  category: route.params.orderData.category,
                   mb_company: orderData.data.store.mb_company,
                 });
               }}

@@ -25,7 +25,6 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const {isGuest} = useSelector(state => state.authReducer);
 
-  const dispatch = useDispatch();
   const [moreInfo, setMoreInfo] = useState(false);
   const [more, setMore] = useState(false);
   const storeInfo = info?.data?.arrItems ?? info;
@@ -377,11 +376,13 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 </Text>
               </View>
             </Pressable>
-            <MenuDescTab
-              info={storeInfo}
-              navigation={navigation}
-              routeData={routeData}
-            />
+            {storeInfo && (
+              <MenuDescTab
+                info={storeInfo}
+                navigation={navigation}
+                routeData={routeData}
+              />
+            )}
           </>
         )}
       </View>
@@ -389,4 +390,4 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
   );
 };
 
-export default React.memo(MenuDesc);
+export default MenuDesc;

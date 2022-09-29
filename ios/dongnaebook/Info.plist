@@ -49,6 +49,12 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>3b2d0193b43c447113dbdf6e68dfdc2b</string>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+	<string>https://www.dongnaebook.com/</string>
+	<string>https://dongnaebook.page.link/</string>
+	<string>com.dmonster.dongnaebook://google/link</string>
+	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakao3b2d0193b43c447113dbdf6e68dfdc2b</string>

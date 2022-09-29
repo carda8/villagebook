@@ -137,6 +137,7 @@ const OrderList = ({navigation}) => {
               navigation.navigate('MenuDetail', {
                 jumju_id: data.jumju_id,
                 jumju_code: data.jumju_code,
+                category: data.jumju_type,
                 mb_company: data.mb_company,
               });
             }}
@@ -161,6 +162,7 @@ const OrderList = ({navigation}) => {
                   od_id: data.od_id,
                   jumju_id: data.jumju_id,
                   jumju_code: data.jumju_code,
+                  category: data.jumju_type,
                 },
               });
             }}

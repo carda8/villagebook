@@ -7,6 +7,8 @@ import notifee, {
 import messaging from '@react-native-firebase/messaging';
 
 import {
+  getStateFromPath,
+  Link,
   NavigationContainer,
   useIsFocused,
   useNavigation,
@@ -79,7 +81,6 @@ import SearchResult from '../screens/home/SearchResult';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import MenuDetail2 from '../screens/menu/MenuDetail2';
 import IamCertification from '../screens/IamCertification';
-
 const Stack = createNativeStackNavigator();
 
 const MainStackNavigator = () => {
@@ -171,46 +172,46 @@ const MainStackNavigator = () => {
     },
   });
 
-  const _typeNumOfsns = async (loginTypeNum, token) => {
-    let result;
-    let data;
-    switch (loginTypeNum) {
-      case localStorageConfig.loginTypeNum.naver:
-        result = await SNSLogin._NaverLogin(token);
-        data = {
-          mt_id: result.mt_id,
-          mt_pwd: result.mt_pwd,
-          mt_app_token: result.mt_app_token,
-          mt_login_type: '2',
-          mt_sns_url: result.mt_image1,
-          mt_hp: result.mt_hp,
-          mt_name: result.mt_name,
-          mt_email: result.mt_email,
-          mt_nickname: result.mt_nickname,
-        };
-        return data;
-      case localStorageConfig.loginTypeNum.kakao:
-        result = await SNSLogin._KakaoLogin(token);
-        data = {
-          mt_id: result.mt_id,
-          mt_pwd: result.mt_pwd,
-          mt_app_token: result.mt_app_token,
-          mt_login_type: '3',
-          mt_sns_url: result.mt_image1,
-          mt_hp: result.mt_hp,
-          mt_name: result.mt_name,
-          mt_email: result.mt_email,
-          mt_nickname: result.mt_nickname,
-        };
-        return data;
-      case localStorageConfig.loginTypeNum.facebook:
-        return;
-      case localStorageConfig.loginTypeNum.apple:
-        return;
-      default:
-        return customAlert('알림', '현재 sns 로그인을 사용 할 수 없습니다.');
-    }
-  };
+  // const _typeNumOfsns = async (loginTypeNum, token) => {
+  //   let result;
+  //   let data;
+  //   switch (loginTypeNum) {
+  //     case localStorageConfig.loginTypeNum.naver:
+  //       result = await SNSLogin._NaverLogin(token);
+  //       data = {
+  //         mt_id: result.mt_id,
+  //         mt_pwd: result.mt_pwd,
+  //         mt_app_token: result.mt_app_token,
+  //         mt_login_type: '2',
+  //         mt_sns_url: result.mt_image1,
+  //         mt_hp: result.mt_hp,
+  //         mt_name: result.mt_name,
+  //         mt_email: result.mt_email,
+  //         mt_nickname: result.mt_nickname,
+  //       };
+  //       return data;
+  //     case localStorageConfig.loginTypeNum.kakao:
+  //       result = await SNSLogin._KakaoLogin(token);
+  //       data = {
+  //         mt_id: result.mt_id,
+  //         mt_pwd: result.mt_pwd,
+  //         mt_app_token: result.mt_app_token,
+  //         mt_login_type: '3',
+  //         mt_sns_url: result.mt_image1,
+  //         mt_hp: result.mt_hp,
+  //         mt_name: result.mt_name,
+  //         mt_email: result.mt_email,
+  //         mt_nickname: result.mt_nickname,
+  //       };
+  //       return data;
+  //     case localStorageConfig.loginTypeNum.facebook:
+  //       return;
+  //     case localStorageConfig.loginTypeNum.apple:
+  //       return;
+  //     default:
+  //       return customAlert('알림', '현재 sns 로그인을 사용 할 수 없습니다.');
+  //   }
+  // };
 
   const _autoLogin = async (token, id, type, loginTypeNum) => {
     let data;
@@ -278,19 +279,28 @@ const MainStackNavigator = () => {
     }
   };
 
+  const _decodeUri = url => {
+    let temp = url.split('=');
+    let decodedUrl = decodeURIComponent(temp[1]);
+
+    decodedUrl = decodedUrl.substring(0, decodedUrl.length - 3);
+
+    return decodedUrl;
+  };
+
   const config = {
     initialRouteName: 'Main',
     screens: {
       Login: 'login',
       Main: 'main',
       MenuDetail: {
-        path: '/food/:jumju_id/:jumju_code' || '/market/:jumju_id/:jumju_code',
+        path: '/main/:category/:jumju_id/:jumju_code/:link',
         // parse: {
         //   category: String,
         // },
       },
       LifeStyleStoreInfo: {
-        path: '/lifestyle/:jumju_id/:jumju_code',
+        path: '/mainlife/lifestyle/:jumju_id/:jumju_code/:link',
       },
     },
   };
@@ -314,48 +324,63 @@ const MainStackNavigator = () => {
       'dongnaebook://',
       'applinks://',
       'applinks:',
+      'kakao://3b2d0193b43c447113dbdf6e68dfdc2b',
     ],
     async getInitialURL() {
       if (Platform.OS === 'android') {
         const url = await Linking.getInitialURL();
         // console.log(1);
         if (url != null) {
-          Linking.console.log('URLLLL:::', url);
+          console.log('path:::', url);
           return url;
         }
         return;
       }
+
       if (Platform.OS === 'ios') {
-        const link = await dynamicLinks()
-          .getInitialLink()
-          .then(link => {
-            // console.log(2);
-            if (link?.url != null) {
-              console.log('link::::::::', link);
-              return link.url;
-            } else return null;
-            // if (link.url === 'https://invertase.io/offer') {
-            //   // ...set initial route as offers screen
-            // }
-          });
+        //앱이 종료된 상태에서 가동될 때
+        const link = await Linking.getInitialURL().then(link => {
+          console.warn('exit link', link);
+          const decodedUrl = _decodeUri(link);
+          console.warn('decoded', decodedUrl);
+          return decodedUrl;
+          // Linking.openURL(decodedUrl);
+          // return link;
+        });
         if (link) {
           return link;
-        } else {
-          return null;
         }
+
+        //ios 앱 켜져있거나 백그라운드 일때
+        dynamicLinks().onLink(link => {
+          console.warn('link', link);
+          if (link) {
+            return link;
+          }
+        });
       }
     },
     subscribe(listener) {
-      // console.log('linking subscribe to ', listener);
-      const onReceiveURL = event => {
-        const {url} = event;
-        console.log('link has url', url, event);
-        return listener(url);
-      };
+      let onReceiveURL;
+      if (Platform.OS === 'ios') {
+        onReceiveURL = async event => {
+          console.warn('origin evetn', event);
+          if (event?.url) {
+            const decodedUrl = _decodeUri(event.url);
+            console.warn('ios event', decodedUrl);
+            return listener(decodedUrl);
+          }
+        };
+      } else {
+        onReceiveURL = event => {
+          const {url} = event;
+          console.log('link has url path66', url, event);
+          return listener(url);
+        };
+      }
 
       Linking.addEventListener('url', onReceiveURL);
       return () => {
-        // console.log('linking unsubscribe to ', listener);
         Linking.removeAllListeners('url');
       };
     },
@@ -364,7 +389,7 @@ const MainStackNavigator = () => {
 
   const _getLocalData = async () => {
     const cartData = await AuthStorageModuel._getCartData();
-    console.log('::::::::::: MAIN DATA', JSON.parse(cartData));
+    // console.log('::::::::::: MAIN DATA', JSON.parse(cartData));
     if (cartData) {
       const copyData = JSON.parse(cartData);
       delete cartData.logo;

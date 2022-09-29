@@ -65,11 +65,11 @@ const MenuDescTab = ({info, navigation, routeData}) => {
       setTabIdx(0);
       return;
     }
-    if (type.do_delivery === true) {
+    if (type?.do_delivery === true) {
       setTabIdx(1);
       return;
     }
-    if (type.do_take_out === true) {
+    if (type?.do_take_out === true) {
       setTabIdx(2);
       return;
     }
@@ -78,17 +78,17 @@ const MenuDescTab = ({info, navigation, routeData}) => {
   useEffect(() => {
     // console.warn(' ++++++++++++++++++++++++++++++++++ ');
     // 0 : 배달, 1 : 포장, 2 : 먹고가기
-    if (info.store_service.do_for_here) {
+    if (info.store_service?.do_for_here) {
       console.log(1);
       dispatch(setDeliveryType(2));
       return;
     }
-    if (info.store_service.do_delivery) {
+    if (info.store_service?.do_delivery) {
       console.log(2);
       dispatch(setDeliveryType(0));
       return;
     }
-    if (info.store_service.do_take_out) {
+    if (info.store_service?.do_take_out) {
       console.log(3);
       dispatch(setDeliveryType(1));
       return;
@@ -107,7 +107,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
           height: 40,
           marginTop: 13,
         }}>
-        {info.forHere === true && (
+        {info?.forHere === true && (
           <Pressable
             style={{
               flex: 1,
@@ -139,7 +139,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
             </View>
           </Pressable>
         )}
-        {info.store_service.do_delivery === true && (
+        {info?.store_service?.do_delivery === true && (
           <Pressable
             style={{
               flex: 1,
@@ -173,7 +173,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
           </Pressable>
         )}
 
-        {info.store_service.do_take_out === true && (
+        {info?.store_service?.do_take_out === true && (
           <Pressable
             style={{
               flex: 1,
@@ -224,7 +224,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                   </TextRegular>
                 </View>
                 <TextRegular style={{...styles.subTitleTakeout}}>
-                  {replaceString(info.store_service.minPriceForHere)}
+                  {replaceString(info?.store_service?.minPriceForHere)}
                 </TextRegular>
               </View>
               <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -246,7 +246,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                   </TextRegular>
                 </View>
                 <TextRegular style={{...styles.subTitleTakeout}}>
-                  {info.cooking_time ? info.cooking_time : '-'}
+                  {info?.cooking_time ? info?.cooking_time : '-'}
                 </TextRegular>
               </View>
               <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -269,7 +269,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                 </View>
                 <View style={{flex: 1}}>
                   <TextRegular style={{...styles.subTitleTakeout}}>
-                    {info.mb_addr1 + ' ' + info.mb_addr2}
+                    {info?.mb_addr1 + ' ' + info?.mb_addr2}
                   </TextRegular>
                 </View>
               </View>
@@ -298,14 +298,15 @@ const MenuDescTab = ({info, navigation, routeData}) => {
 
             <View style={{marginLeft: 22, justifyContent: 'space-between'}}>
               <TextRegular style={{fontSize: 16, color: colors.fontColor3}}>
-                {replaceString(info.minPrice)}
+                {replaceString(info?.minPrice)}
               </TextRegular>
               <TextRegular style={{fontSize: 16, color: colors.fontColor3}}>
-                {info.delivery_time ? info.delivery_time : '-'}
+                {info?.delivery_time ? info?.delivery_time : '-'}
               </TextRegular>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TextRegular style={{fontSize: 16, color: colors.fontColor3}}>
-                  {replaceString(info.tipFrom)}원~{replaceString(info.tipTo)}원
+                  {replaceString(info?.tipFrom)}원~{replaceString(info?.tipTo)}
+                  원
                 </TextRegular>
                 <Pressable
                   onPress={() => {
@@ -341,7 +342,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                   </TextRegular>
                 </View>
                 <TextRegular style={{...styles.subTitleTakeout}}>
-                  {replaceString(info.minPriceWrap)}
+                  {replaceString(info?.minPriceWrap)}
                 </TextRegular>
               </View>
               <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -363,7 +364,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                   </TextRegular>
                 </View>
                 <TextRegular style={{...styles.subTitleTakeout}}>
-                  {info.cooking_time ? info.cooking_time : '-'}
+                  {info?.cooking_time ? info?.cooking_time : '-'}
                 </TextRegular>
               </View>
               <View style={{flexDirection: 'row', marginBottom: 10}}>
@@ -387,7 +388,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                 <View style={{flex: 1}}>
                   <TextRegular
                     style={{fontSize: 16, ...styles.subTitleTakeout}}>
-                    {info.mb_addr1 + ' ' + info.mb_addr2}
+                    {info?.mb_addr1 + ' ' + info?.mb_addr2}
                   </TextRegular>
                 </View>
               </View>
@@ -407,8 +408,8 @@ const MenuDescTab = ({info, navigation, routeData}) => {
             overflow: 'hidden',
           }}>
           <MiniMap
-            lat={info.mb_lat}
-            lng={info.mb_lng}
+            lat={info?.mb_lat}
+            lng={info?.mb_lng}
             isStore
             width={layout.width - 144}
             height={130}
@@ -440,8 +441,8 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               onPress={() =>
                 navigation.navigate('Map', {
                   isStore: true,
-                  lat: info.mb_lat,
-                  lng: info.mb_lng,
+                  lat: info?.mb_lat,
+                  lng: info?.mb_lng,
                 })
               }
               style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -456,7 +457,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
   );
 };
 
-export default React.memo(MenuDescTab);
+export default MenuDescTab;
 
 const styles = StyleSheet.create({
   titleTakout: {

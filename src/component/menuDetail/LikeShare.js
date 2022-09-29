@@ -1,4 +1,4 @@
-import {View, Text, Pressable, Image, Share} from 'react-native';
+import {View, Text, Pressable, Image, Share, Linking} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
@@ -23,7 +23,6 @@ const LikeShare = ({
   const [likeNum, setLikeNum] = useState(likeCount);
   console.log('likenum', likeNum, likeCount);
   console.warn(storeInfo);
-
   const _setLikeStore = () => {
     const data = {
       mt_id: userInfo.mt_id,
@@ -53,20 +52,24 @@ const LikeShare = ({
   const _share = async () => {
     try {
       const link = await dynamicLinks().buildShortLink({
-        link: `https://www.dongnaebook.com/${categoryMain}/${storeInfo.mb_id}/${storeInfo.mb_jumju_code}`,
+        link:
+          categoryMain === 'lifestyle'
+            ? `https://www.dongnaebook.com/mainlife/${categoryMain}/${storeInfo.mb_id}/${storeInfo.mb_jumju_code}/link`
+            : `https://www.dongnaebook.com/main/${categoryMain}/${storeInfo.mb_id}/${storeInfo.mb_jumju_code}/link`,
         domainUriPrefix: 'https://dongnaebook.page.link',
         navigation: {forcedRedirectEnabled: true},
         social: {
           title: '동네북',
           descriptionText: storeInfo.mb_company,
-          imageUrl:
-            'https://conservationaction.co.za/wp-content/uploads/2019/05/Elephant-Botswana-lifts-ban-on-elephant-hunting-800x400.jpg',
-          // imageUrl: storeInfo.store_logo,
+          // imageUrl:
+          //   'https://conservationaction.co.za/wp-content/uploads/2019/05/Elephant-Botswana-lifts-ban-on-elephant-hunting-800x400.jpg',
+          imageUrl: storeInfo.mb_share_img,
         },
         android: {
           packageName: 'com.dmonster.dongnaebook',
         },
         ios: {
+          appStoreId: '1643631343',
           bundleId: 'com.dmonster.dongnaebook',
         },
       });
