@@ -8,7 +8,13 @@ import TextSBold from '../text/TextSBold';
 import colors from '../../styles/colors';
 import {_guestAlert} from '../../config/utils/modules';
 
-const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
+const LikeShare = ({
+  storeInfo,
+  categoryMain,
+  likeCount,
+  navigation,
+  imgUrl,
+}) => {
   const {userInfo} = useSelector(state => state.authReducer);
   const {isGuest} = useSelector(state => state.authReducer);
   const {mutateSetLikeStore} = useCustomMutation();
@@ -16,6 +22,7 @@ const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
   const [like, setLike] = useState();
   const [likeNum, setLikeNum] = useState(likeCount);
   console.log('likenum', likeNum, likeCount);
+  console.warn(storeInfo);
 
   const _setLikeStore = () => {
     const data = {
@@ -49,6 +56,13 @@ const LikeShare = ({storeInfo, categoryMain, likeCount, navigation}) => {
         link: `https://www.dongnaebook.com/${categoryMain}/${storeInfo.mb_id}/${storeInfo.mb_jumju_code}`,
         domainUriPrefix: 'https://dongnaebook.page.link',
         navigation: {forcedRedirectEnabled: true},
+        social: {
+          title: '동네북',
+          descriptionText: storeInfo.mb_company,
+          imageUrl:
+            'https://conservationaction.co.za/wp-content/uploads/2019/05/Elephant-Botswana-lifts-ban-on-elephant-hunting-800x400.jpg',
+          // imageUrl: storeInfo.store_logo,
+        },
         android: {
           packageName: 'com.dmonster.dongnaebook',
         },

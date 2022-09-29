@@ -447,13 +447,11 @@ const MainStackNavigator = () => {
     <NavigationContainer
       ref={naviRef}
       linking={linking}
-      onReady={_routeBackGround}
-    >
+      onReady={_routeBackGround}>
       <Stack.Navigator
-        initialRouteName={'MenuDetail2'}
+        initialRouteName={initRoute}
         // initialRouteName={'Test'}
-        screenOptions={{headerShown: false}}
-      >
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
