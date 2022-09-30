@@ -30,12 +30,10 @@ const FAQWrite = ({navigation, route}) => {
 
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  const [img, setImg] = useState([]);
   const [fsImage, setFsImage] = useState([]);
   const [imageUrl, setImageUrl] = useState([]);
   const [modal, setModal] = useState(false);
   const [modalPic, setModalPic] = useState(false);
-  const layou = useWindowDimensions();
 
   const [imgDel, setImgDel] = useState({
     qa_img_del1: 0,
@@ -172,8 +170,7 @@ const FAQWrite = ({navigation, route}) => {
               ...commonStyles.inputContainer,
               marginTop: 5,
               marginBottom: 20,
-            }}
-          ></TextInput>
+            }}></TextInput>
           <TextBold>문의내용</TextBold>
           <TextInput
             value={body}
@@ -187,8 +184,7 @@ const FAQWrite = ({navigation, route}) => {
               marginTop: 5,
               marginBottom: 20,
               height: 200,
-            }}
-          ></TextInput>
+            }}></TextInput>
 
           <View style={{flexDirection: 'row', marginBottom: 20}}>
             {fsImage.length > 0 &&
@@ -206,8 +202,7 @@ const FAQWrite = ({navigation, route}) => {
                     overflow: 'hidden',
                     marginHorizontal: 3,
                     marginTop: 10,
-                  }}
-                >
+                  }}>
                   <Pressable
                     onPress={() => {
                       _removeImage(item.uri, index);
@@ -217,8 +212,7 @@ const FAQWrite = ({navigation, route}) => {
                       zIndex: 100,
                       right: 3,
                       top: 3,
-                    }}
-                  >
+                    }}>
                     <Image
                       source={require('~/assets/pop_close.png')}
                       style={{
@@ -249,8 +243,7 @@ const FAQWrite = ({navigation, route}) => {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-            }}
-          >
+            }}>
             <Image
               source={require('~/assets/btn_add.png')}
               style={{
@@ -261,8 +254,7 @@ const FAQWrite = ({navigation, route}) => {
               }}
             />
             <TextBold
-              style={{color: colors.fontColor2, includeFontPadding: false}}
-            >
+              style={{color: colors.fontColor2, includeFontPadding: false}}>
               문의사진을 등록해주세요. (최대 5개)
             </TextBold>
           </Pressable>
@@ -276,8 +268,7 @@ const FAQWrite = ({navigation, route}) => {
               alignItems: 'center',
               backgroundColor: colors.couponBG,
               borderRadius: 10,
-            }}
-          >
+            }}>
             {mutatePostFaq.isLoading ? (
               <ActivityIndicator color={'white'} />
             ) : (
@@ -292,8 +283,7 @@ const FAQWrite = ({navigation, route}) => {
       <Modal
         saveToLocalByLongPress={false}
         visible={modal}
-        onRequestClose={() => setModal(!modal)}
-      >
+        onRequestClose={() => setModal(!modal)}>
         <ImageViewer
           imageUrls={imageUrl}
           enablePreload
@@ -304,8 +294,7 @@ const FAQWrite = ({navigation, route}) => {
               onPress={() => {
                 setModal(!modal);
               }}
-              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
-            >
+              style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}>
               <Image
                 source={require('~/assets/pop_close.png')}
                 style={{
@@ -330,16 +319,14 @@ const FAQWrite = ({navigation, route}) => {
         visible={modalPic}
         onRequestClose={() => {
           setModalPic(!modalPic);
-        }}
-      >
+        }}>
         <View
           style={{
             flex: 1,
             backgroundColor: 'rgba(0,0,0,0.6)',
             paddingHorizontal: 22,
             flexDirection: 'column',
-          }}
-        >
+          }}>
           <Pressable
             hitSlop={20}
             onPress={() => {
@@ -348,8 +335,7 @@ const FAQWrite = ({navigation, route}) => {
             style={{
               alignSelf: 'flex-end',
               zIndex: 300,
-            }}
-          >
+            }}>
             <Image
               source={require('~/assets/pop_close.png')}
               style={{
@@ -361,8 +347,7 @@ const FAQWrite = ({navigation, route}) => {
             />
           </Pressable>
           <View
-            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}
-          >
+            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
             <View
               style={{
                 width: '100%',
@@ -385,8 +370,7 @@ const FAQWrite = ({navigation, route}) => {
                     elevation: 5,
                   },
                 }),
-              }}
-            >
+              }}>
               <View style={{flexDirection: 'row'}}>
                 <Pressable
                   onPress={() => _setProfileImage()}
@@ -397,8 +381,7 @@ const FAQWrite = ({navigation, route}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/btn_add.png')}
                     style={{
@@ -415,8 +398,7 @@ const FAQWrite = ({navigation, route}) => {
                       color: colors.fontColor2,
                       includeFontPadding: false,
                       flex: 1,
-                    }}
-                  >
+                    }}>
                     사진 촬영
                   </TextBold>
                 </Pressable>
@@ -430,8 +412,7 @@ const FAQWrite = ({navigation, route}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/btn_add.png')}
                     style={{
@@ -448,8 +429,7 @@ const FAQWrite = ({navigation, route}) => {
                       flex: 1,
                       color: colors.fontColor2,
                       includeFontPadding: false,
-                    }}
-                  >
+                    }}>
                     갤러리 가져오기
                   </TextBold>
                 </Pressable>

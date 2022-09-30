@@ -1,21 +1,24 @@
-import {View, Text} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import commonStyles from '../../styles/commonStyle';
-import TextBold from '../../component/text/TextBold';
-import Header from '../../component/Header';
-import {useCustomMutation} from '../../hooks/useCustomMutation';
-import {FlatList} from 'react-native';
-import {useSelector} from 'react-redux';
-import TextMedium from '../../component/text/TextMedium';
-import colors from '../../styles/colors';
 import dayjs from 'dayjs';
+import React from 'react';
+import {useEffect} from 'react';
+import {useRef, useState} from 'react';
+import {FlatList, Pressable, Text} from 'react-native';
+import {View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
+import Header from '../../component/Header';
+import TextBold from '../../component/text/TextBold';
+import TextMedium from '../../component/text/TextMedium';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import colors from '../../styles/colors';
+import commonStyles from '../../styles/commonStyle';
+import PushLIstRenderItem from './PushLIstRenderItem';
 
 const PushList = ({navigation}) => {
   const {userInfo} = useSelector(state => state.authReducer);
   const {mutateGetPushList} = useCustomMutation();
   const [pushList, setPushList] = useState([]);
-
+  const [canMore, setCanMore] = useState(true);
   const count = useRef(0);
 
   const _getPushList = more => {
@@ -32,47 +35,18 @@ const PushList = ({navigation}) => {
     mutateGetPushList.mutate(data, {
       onSettled: res => {
         if (res.result === 'true') {
-          let arr = [];
           const items = res.data.arrItems;
-          arr.push(items);
-          setPushList(prev => prev.concat(arr));
-        }
-        console.warn(res);
+          // let temp = JSON.parse(JSON.stringify(pushList));
+          // temp = temp.concat(items);
+          // console.log('items', temp);
+          setPushList(prev => prev.concat(items));
+        } else setCanMore(!canMore);
       },
     });
   };
 
-  const renderItem = item => {
-    const data = item.item;
-    return (
-      <View
-        style={{
-          // backgroundColor: colors.inputBoxBG,
-          padding: 14,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.borderColor,
-        }}>
-        <View style={{marginBottom: 4}}>
-          <TextBold style={{color: colors.fontColor2, fontSize: 15}}>
-            {data.pst_title}
-          </TextBold>
-        </View>
-        <View style={{marginBottom: 2}}>
-          <TextMedium style={{color: colors.fontColor2}}>
-            {data.pst_content}
-          </TextMedium>
-        </View>
-        <TextMedium style={{color: colors.fontColorA, fontSize: 12}}>
-          {dayjs(data.pst_wdate).format('YYYY년 MM월 DD일 HH:mm')}
-        </TextMedium>
-      </View>
-    );
-  };
-
   useEffect(() => {
     _getPushList();
-
-    return () => {};
   }, []);
 
   return (
@@ -82,18 +56,16 @@ const PushList = ({navigation}) => {
       <FlatList
         data={pushList}
         keyExtractor={(item, idx) => idx}
-        renderItem={item => renderItem(item)}
-        ItemSeparatorComponent={
-          <View style={{height: 1, width: '100%', backgroundColor: 'black'}} />
-        }
+        renderItem={item => <PushLIstRenderItem data={item.item} />}
         ListEmptyComponent={
           <View style={{padding: 22, alignItems: 'center'}}>
             <TextBold>알림이 없습니다</TextBold>
           </View>
         }
         onEndReached={() => {
-          _getPushList(true);
+          if (canMore) _getPushList(true);
         }}
+        onEndReachedThreshold={0}
       />
     </SafeAreaView>
   );
