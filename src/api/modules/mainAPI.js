@@ -113,4 +113,8 @@ export default {
     const result = await _reqAPI('proc_address_delete.php', data);
     return result;
   },
+  _getPushList: async data => {
+    const result = await _reqAPI('proc_allim_list.php', data);
+    return result;
+  },
 };

@@ -358,6 +358,11 @@ export const useCustomMutation = () => {
       console.log('mutateDeleteUserAddr', e);
     },
   });
+  const mutateGetPushList = useMutation(mainAPI._getPushList, {
+    onSettled: e => {
+      console.log('mutateGetPushList', e);
+    },
+  });
 
   return {
     mutateSignIn,
@@ -408,5 +413,6 @@ export const useCustomMutation = () => {
     mutateDeleteUserAddr,
     mutateBoardDetail,
     mutateUpdatePhone,
+    mutateGetPushList,
   };
 };
