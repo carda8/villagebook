@@ -117,7 +117,6 @@ const AddressMain = ({navigation, route}) => {
         // return customAlert('알림', '');
       },
     });
-    console.warn('currentAdd', currentAdd);
   };
 
   const renderItem = item => {

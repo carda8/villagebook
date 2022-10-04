@@ -156,6 +156,11 @@ const FAQWrite = ({navigation, route}) => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(':: fs', fsImage);
+    console.log(':: url', imageUrl);
+  }, [fsImage, imageUrl]);
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Header title={'1:1문의'} navigation={navigation} showCart={true} />

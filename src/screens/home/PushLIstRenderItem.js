@@ -1,5 +1,5 @@
-import {View, Text} from 'react-native';
-import React from 'react';
+import {View, Text, Animated} from 'react-native';
+import React, {useEffect, useRef} from 'react';
 import {Pressable} from 'react-native';
 import TextBold from '../../component/text/TextBold';
 import TextMedium from '../../component/text/TextMedium';
@@ -10,11 +10,30 @@ import {Image} from 'react-native';
 
 const PushLIstRenderItem = ({data}) => {
   const [toggle, setToggle] = useState({id: '', visible: false});
+  const [height, setHeight] = useState(0);
 
   const _onPressTitle = id => {
     console.log('id', id);
     setToggle({id: id, visible: !toggle.visible});
   };
+
+  // const animHeight = useRef(new Animated.Value(0)).current;
+
+  // const showAnim = () => {
+  //   Animated.timing(animHeight, {
+  //     toValue: toggle.visible ? 40 : 0,
+  //     useNativeDriver: false,
+  //     duration: 400,
+  //   }).start();
+  // };
+
+  // useEffect(() => {
+  //   showAnim();
+  // }, [toggle]);
+
+  // useEffect(() => {
+  //   console.log('height', height);
+  // }, [height]);
 
   return (
     <Pressable
@@ -42,10 +61,16 @@ const PushLIstRenderItem = ({data}) => {
         />
       </View>
       {toggle.id === data.od_id && toggle.visible && (
-        <View style={{marginBottom: 2}}>
-          <TextMedium style={{color: colors.fontColor2}}>
-            {data.pst_content}
-          </TextMedium>
+        <View
+          style={{
+            marginBottom: 2,
+            // height: animHeight,
+          }}>
+          <View onLayout={e => setHeight(e.nativeEvent.layout.height)}>
+            <TextMedium style={{color: colors.fontColor2}}>
+              {data.pst_content}
+            </TextMedium>
+          </View>
         </View>
       )}
       <TextMedium style={{color: colors.fontColorA, fontSize: 12}}>

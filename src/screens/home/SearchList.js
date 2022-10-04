@@ -63,14 +63,12 @@ const SearchList = ({navigation, JType, route}) => {
       mb_lng: currentLocation.lon,
     };
 
-    console.warn('c', data);
-
     if (JType === 'lifestyle') {
       mutateSearchLifeStyle.mutate(data, {
         onSuccess: e => {
           if (e.result === 'true') {
-            console.warn(e.data);
-            console.warn(lifestyleResult);
+            // console.warn(e.data);
+            // console.warn(lifestyleResult);
             let temp = e.data.arrItems;
             let origin = JSON.parse(JSON.stringify(lifestyleResult));
             origin = origin.concat(temp);
@@ -165,8 +163,7 @@ const SearchList = ({navigation, JType, route}) => {
           containerStyle={{
             marginVertical: 7,
             flex: 1,
-          }}
-        >
+          }}>
           <Pressable
             onPress={() => {
               if (JType === 'lifestyle') {
@@ -189,15 +186,13 @@ const SearchList = ({navigation, JType, route}) => {
             style={{
               borderRadius: 10,
               backgroundColor: 'white',
-            }}
-          >
+            }}>
             <View
               style={{
                 height: IMG_HEIGHT,
                 borderRadius: 10,
                 flexDirection: 'row',
-              }}
-            >
+              }}>
               <View
                 style={{
                   flex: 1,
@@ -208,8 +203,7 @@ const SearchList = ({navigation, JType, route}) => {
                     storeInfo.store_image?.length === 1 ? 10 : null,
                   // borderBottomLeftRadius: 10,
                   overflow: 'hidden',
-                }}
-              >
+                }}>
                 {!item?.section?.isOpen && JType !== 'lifestyle' && (
                   <ImageCover text />
                 )}
@@ -229,16 +223,14 @@ const SearchList = ({navigation, JType, route}) => {
                   <View
                     style={{
                       width: layout.width * 0.24,
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         flex: 1,
                         borderTopRightRadius: 10,
                         marginBottom: 1,
                         overflow: 'hidden',
-                      }}
-                    >
+                      }}>
                       {!item?.section?.isOpen && JType !== 'lifestyle' && (
                         <ImageCover />
                       )}
@@ -257,8 +249,7 @@ const SearchList = ({navigation, JType, route}) => {
                         flex: 1,
                         // borderBottomRightRadius: 10,
                         overflow: 'hidden',
-                      }}
-                    >
+                      }}>
                       {!item?.section?.isOpen && JType !== 'lifestyle' && (
                         <ImageCover />
                       )}
@@ -283,38 +274,33 @@ const SearchList = ({navigation, JType, route}) => {
                 flex: 1,
                 // justifyContent: 'flex-end',
                 padding: 10,
-              }}
-            >
+              }}>
               <View style={{}}>
                 <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                  }}
-                >
+                  }}>
                   <View style={{flex: 1}}>
                     <View
                       style={{
                         // marginBottom: 5,
                         flexDirection: 'row',
                         alignItems: 'center',
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           flex: 1,
                           flexDirection: 'row',
                           alignItems: 'flex-end',
-                        }}
-                      >
+                        }}>
                         <View
                           style={{
                             width: '100%',
                             flexDirection: 'row',
                             justifyContent: 'space-between',
-                          }}
-                        >
+                          }}>
                           <View style={{flex: 1}}>
                             <Text
                               style={{
@@ -322,8 +308,7 @@ const SearchList = ({navigation, JType, route}) => {
                                 fontSize: 16,
                               }}
                               ellipsizeMode="tail"
-                              numberOfLines={1}
-                            >
+                              numberOfLines={1}>
                               {storeInfo.mb_company}
                             </Text>
                           </View>
@@ -338,8 +323,7 @@ const SearchList = ({navigation, JType, route}) => {
                         <View style={{marginLeft: 5, flex: 1}}>
                           <TextRegular
                             numberOfLines={1}
-                            style={{color: colors.fontColorA2, fontSize: 12}}
-                          >
+                            style={{color: colors.fontColorA2, fontSize: 12}}>
                             {storeInfo.mb_jongmog}
                           </TextRegular>
                         </View>
@@ -352,8 +336,7 @@ const SearchList = ({navigation, JType, route}) => {
                             flexDirection: 'row',
                             alignItems: 'center',
                             marginRight: 5,
-                          }}
-                        >
+                          }}>
                           <Image
                             source={require('~/assets/top_heart_on.png')}
                             style={{width: 20, height: 20, marginRight: 5}}
@@ -370,8 +353,7 @@ const SearchList = ({navigation, JType, route}) => {
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <View style={{}}>
                         <TextRegular
-                          style={{color: colors.fontColorA2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColorA2, fontSize: 12}}>
                           {storeInfo.distance}
                         </TextRegular>
                       </View>
@@ -384,8 +366,7 @@ const SearchList = ({navigation, JType, route}) => {
                             color: colors.fontColorA,
                           }}
                           ellipsizeMode="tail"
-                          numberOfLines={1}
-                        >
+                          numberOfLines={1}>
                           {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
                         </Text>
                       </View>
@@ -398,12 +379,10 @@ const SearchList = ({navigation, JType, route}) => {
                     style={{
                       marginTop: 2,
                       // flexDirection: 'row',
-                    }}
-                  >
+                    }}>
                     <TextRegular
                       numberOfLines={1}
-                      style={{color: colors.fontColorA2, fontSize: 12}}
-                    >
+                      style={{color: colors.fontColorA2, fontSize: 12}}>
                       {storeInfo?.mb_opening_hours2}
                     </TextRegular>
                   </View>
@@ -415,29 +394,24 @@ const SearchList = ({navigation, JType, route}) => {
                       flexDirection: 'row',
                       flexWrap: 'wrap',
                       // marginTop: 9,
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         flexDirection: 'row',
-                      }}
-                    >
+                      }}>
                       <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
                         배달팁{' '}
                       </TextRegular>
                       <TextRegular
-                        style={{color: colors.fontColor6, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColor6, fontSize: 12}}>
                         {replaceString(storeInfo.tipFrom)}원~
                         {replaceString(storeInfo.tipTo)}원
                       </TextRegular>
                       <Dot />
                       <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                         <TextRegular
-                          style={{color: colors.fontColorA2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColorA2, fontSize: 12}}>
                           최소 주문{' '}
                         </TextRegular>
                         <TextRegular style={{fontSize: 12}}>
@@ -449,16 +423,14 @@ const SearchList = ({navigation, JType, route}) => {
                     <View
                       style={{
                         flexDirection: 'row',
-                      }}
-                    >
+                      }}>
                       <>
                         <View
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'center',
-                          }}
-                        >
+                          }}>
                           <Image
                             source={require('~/assets/time.png')}
                             style={{width: 14, height: 14}}
@@ -489,8 +461,7 @@ const SearchList = ({navigation, JType, route}) => {
                         // flex: 1,
                         flexDirection: 'row',
                         alignItems: 'center',
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           width: 50,
@@ -501,8 +472,7 @@ const SearchList = ({navigation, JType, route}) => {
                           borderRadius: 5,
                           marginTop: 4,
                           marginRight: 10,
-                        }}
-                      >
+                        }}>
                         <TextMedium style={{fontSize: 12, color: 'white'}}>
                           먹고가기
                         </TextMedium>
@@ -515,8 +485,7 @@ const SearchList = ({navigation, JType, route}) => {
                           flexDirection: 'row',
                           alignItems: 'center',
                           // justifyContent: 'center',
-                        }}
-                      >
+                        }}>
                         <Image
                           source={require('~/assets/time.png')}
                           style={{width: 14, height: 14}}
@@ -527,14 +496,12 @@ const SearchList = ({navigation, JType, route}) => {
                         <Dot />
 
                         <TextRegular
-                          style={{color: colors.fontColorA2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColorA2, fontSize: 12}}>
                           최소 주문{' '}
                         </TextRegular>
 
                         <TextRegular
-                          style={{color: colors.fontColor2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColor2, fontSize: 12}}>
                           {replaceString(storeInfo.minPriceForHere)}원{' '}
                         </TextRegular>
 
@@ -558,8 +525,7 @@ const SearchList = ({navigation, JType, route}) => {
                         // flex: 1,
                         flexDirection: 'row',
                         alignItems: 'center',
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           width: 50,
@@ -570,8 +536,7 @@ const SearchList = ({navigation, JType, route}) => {
                           borderRadius: 5,
                           marginTop: 4,
                           marginRight: 10,
-                        }}
-                      >
+                        }}>
                         <TextMedium style={{fontSize: 12, color: 'white'}}>
                           배달하기
                         </TextMedium>
@@ -584,8 +549,7 @@ const SearchList = ({navigation, JType, route}) => {
                           flexDirection: 'row',
                           alignItems: 'center',
                           // justifyContent: 'center',
-                        }}
-                      >
+                        }}>
                         <Image
                           source={require('~/assets/time.png')}
                           style={{width: 14, height: 14}}
@@ -596,25 +560,21 @@ const SearchList = ({navigation, JType, route}) => {
                         <Dot />
 
                         <TextRegular
-                          style={{color: colors.fontColorA2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColorA2, fontSize: 12}}>
                           최소 주문{' '}
                         </TextRegular>
 
                         <TextRegular
-                          style={{color: colors.fontColor2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColor2, fontSize: 12}}>
                           {replaceString(storeInfo.minPrice)}원{' '}
                         </TextRegular>
                         <Dot />
                         <TextRegular
-                          style={{color: colors.fontColorA2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColorA2, fontSize: 12}}>
                           배달팁{' '}
                         </TextRegular>
                         <TextRegular
-                          style={{color: colors.fontColor6, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColor6, fontSize: 12}}>
                           {replaceString(storeInfo.tipFrom)}원~
                           {replaceString(storeInfo.tipTo)}원
                         </TextRegular>
@@ -628,8 +588,7 @@ const SearchList = ({navigation, JType, route}) => {
                         // flex: 1,
                         flexDirection: 'row',
                         alignItems: 'center',
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           width: 50,
@@ -640,8 +599,7 @@ const SearchList = ({navigation, JType, route}) => {
                           borderRadius: 5,
                           marginTop: 4,
                           marginRight: 10,
-                        }}
-                      >
+                        }}>
                         <TextMedium style={{fontSize: 12, color: 'white'}}>
                           포장하기
                         </TextMedium>
@@ -654,8 +612,7 @@ const SearchList = ({navigation, JType, route}) => {
                           flexDirection: 'row',
                           alignItems: 'center',
                           // justifyContent: 'center',
-                        }}
-                      >
+                        }}>
                         <Image
                           source={require('~/assets/time.png')}
                           style={{width: 14, height: 14}}
@@ -666,14 +623,12 @@ const SearchList = ({navigation, JType, route}) => {
                         <Dot />
 
                         <TextRegular
-                          style={{color: colors.fontColorA2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColorA2, fontSize: 12}}>
                           최소 주문{' '}
                         </TextRegular>
 
                         <TextRegular
-                          style={{color: colors.fontColor2, fontSize: 12}}
-                        >
+                          style={{color: colors.fontColor2, fontSize: 12}}>
                           {replaceString(storeInfo.minPriceWrap)}원{' '}
                         </TextRegular>
 
@@ -698,8 +653,7 @@ const SearchList = ({navigation, JType, route}) => {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                  }}
-                >
+                  }}>
                   {/* <Text style={{color: colors.fontColorA, fontSize: 12}}>
                   {storeInfo?.major_menu}
                 </Text> */}
@@ -733,8 +687,7 @@ const SearchList = ({navigation, JType, route}) => {
                 marginTop: '30%',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}
-            >
+              }}>
               <TextSBold>검색결과가 없습니다.</TextSBold>
               {/* <Image
                 source={require('~/assets/no_store.png')}
@@ -786,8 +739,7 @@ const SearchList = ({navigation, JType, route}) => {
                 marginTop: '30%',
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}
-            >
+              }}>
               <TextSBold>검색결과가 없습니다.</TextSBold>
               {/* <Image
                 source={require('~/assets/no_store.png')}

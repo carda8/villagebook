@@ -39,8 +39,6 @@ const Header = ({
   const {currentCategory} = useSelector(state => state.categoryReducer);
   const {optionHeader} = useSelector(state => state.menuReducer);
   const {currentStoreCode, savedItem} = useSelector(state => state.cartReducer);
-  const {userInfo} = useSelector(state => state.authReducer);
-  const {mutateSetLikeStore} = useCustomMutation();
   const [like, setLike] = useState();
   const {isGuest} = useSelector(state => state.authReducer);
   const {resultCount} = useSelector(state => state.searchReducerSub);
