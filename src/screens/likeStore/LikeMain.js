@@ -20,8 +20,11 @@ import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 
 const LikeMain = ({navigation}) => {
   const [tabIdx, setTabIdx] = useState(0);
-  const {mutateGetLikeList, mutateSetLikeStore, mutateLikeLifeStyle} =
-    useCustomMutation();
+  const {
+    mutateGetLikeList,
+    mutateSetLikeStore,
+    mutateLikeLifeStyle,
+  } = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
   const dispatch = useDispatch();
   const [list, setList] = useState([]);
@@ -131,7 +134,8 @@ const LikeMain = ({navigation}) => {
           borderBottomColor: colors.borderColor,
           // marginBottom: 10,
           borderRadius: 12,
-        }}>
+        }}
+      >
         <View style={{flexDirection: 'row'}}>
           <Pressable
             style={{flexDirection: 'row', flex: 1}}
@@ -145,7 +149,8 @@ const LikeMain = ({navigation}) => {
                   category: _getCategory(),
                 },
               );
-            }}>
+            }}
+          >
             <View
               style={{
                 width: 100,
@@ -155,7 +160,8 @@ const LikeMain = ({navigation}) => {
                 marginRight: 15,
                 borderColor: colors.borderColor,
                 overflow: 'hidden',
-              }}>
+              }}
+            >
               <FastImage
                 source={
                   data.store_logo
@@ -176,13 +182,15 @@ const LikeMain = ({navigation}) => {
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
-                    }}>
+                    }}
+                  >
                     <Image
                       source={require('~/assets/ico_star_on.png')}
                       style={{width: 15, height: 15}}
                     />
                     <TextMedium
-                      style={{fontSize: 14, color: colors.fontColor8}}>
+                      style={{fontSize: 14, color: colors.fontColor8}}
+                    >
                       {data.stars}
                     </TextMedium>
                   </View>
@@ -203,6 +211,7 @@ const LikeMain = ({navigation}) => {
                 customAlert(
                   '찜 삭제',
                   '단골찜에서 삭제하시겠습니까?',
+                  () => {},
                   '확인',
                   () => {
                     _setLikeStore(item);
@@ -211,7 +220,8 @@ const LikeMain = ({navigation}) => {
                   () => {},
                 );
               }}
-              style={{alignItems: 'center', justifyContent: 'center'}}>
+              style={{alignItems: 'center', justifyContent: 'center'}}
+            >
               <Image
                 source={require('~/assets/top_heart_on.png')}
                 style={{width: 30, height: 30}}
@@ -259,7 +269,8 @@ const LikeMain = ({navigation}) => {
       <View
         style={{
           ...styles.tabContainer,
-        }}>
+        }}
+      >
         <Pressable
           style={{
             ...styles.tabItemContainer,
@@ -269,17 +280,20 @@ const LikeMain = ({navigation}) => {
             dispatch(setIsLifeStyle(false));
             setTabIdx(0);
             _getList('food');
-          }}>
+          }}
+        >
           <View
             style={{
               borderBottomWidth: tabIdx === 0 ? 2 : 0,
               ...styles.tabItem,
-            }}>
+            }}
+          >
             <TextBold
               style={{
                 fontSize: 16,
                 color: tabIdx === 0 ? colors.fontColor2 : colors.fontColorA2,
-              }}>
+              }}
+            >
               맛집
             </TextBold>
           </View>
@@ -293,17 +307,20 @@ const LikeMain = ({navigation}) => {
             dispatch(setIsLifeStyle(false));
             setTabIdx(1);
             _getList('market');
-          }}>
+          }}
+        >
           <View
             style={{
               borderBottomWidth: tabIdx === 1 ? 2 : 0,
               ...styles.tabItem,
-            }}>
+            }}
+          >
             <TextBold
               style={{
                 fontSize: 16,
                 color: tabIdx === 1 ? colors.fontColor2 : colors.fontColorA2,
-              }}>
+              }}
+            >
               마켓
             </TextBold>
           </View>
@@ -317,17 +334,20 @@ const LikeMain = ({navigation}) => {
             dispatch(setIsLifeStyle(true));
             setTabIdx(2);
             _getLifeList();
-          }}>
+          }}
+        >
           <View
             style={{
               borderBottomWidth: tabIdx === 2 ? 2 : 0,
               ...styles.tabItem,
-            }}>
+            }}
+          >
             <TextBold
               style={{
                 fontSize: 16,
                 color: tabIdx === 2 ? colors.fontColor2 : colors.fontColorA2,
-              }}>
+              }}
+            >
               동네정보
             </TextBold>
           </View>
@@ -339,7 +359,8 @@ const LikeMain = ({navigation}) => {
           <FlatList
             ListHeaderComponent={
               <View
-                style={{flexDirection: 'row', alignSelf: 'flex-end'}}></View>
+                style={{flexDirection: 'row', alignSelf: 'flex-end'}}
+              ></View>
             }
             data={list}
             ListEmptyComponent={
@@ -348,7 +369,8 @@ const LikeMain = ({navigation}) => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginVertical: 25,
-                }}>
+                }}
+              >
                 <TextBold>찜내역이 없습니다.</TextBold>
               </View>
             }
