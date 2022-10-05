@@ -130,6 +130,13 @@ const App = () => {
     }
   }
 
+  // useEffect(() => {
+  //   Linking.getInitialURL().then(link => console.warn('app::::::', link));
+  //   dynamicLinks()
+  //     .getInitialLink()
+  //     .then(link => console.warn('app dynamic :::::::', link));
+  // }, []);
+
   useEffect(() => {
     requestUserPermission();
     // _deepLink();

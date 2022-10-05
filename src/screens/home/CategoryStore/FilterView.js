@@ -23,7 +23,7 @@ const FilterView = ({isSearch, category}) => {
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const scrollRef = useRef();
   const filterRef = useRef([]);
-  console.warn(category);
+  // console.warn(category);
   const Fliter = ({index, item}) => {
     return (
       <Pressable

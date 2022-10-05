@@ -282,6 +282,7 @@ const MainStackNavigator = () => {
           // return link;
         });
         if (link) return link;
+        else return;
       }
     },
     subscribe(listener) {

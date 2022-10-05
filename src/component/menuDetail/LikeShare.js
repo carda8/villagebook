@@ -22,7 +22,7 @@ const LikeShare = ({
   const [like, setLike] = useState();
   const [likeNum, setLikeNum] = useState(likeCount);
   console.log('likenum', likeNum, likeCount);
-  console.warn(storeInfo);
+  // console.warn(storeInfo);
   const _setLikeStore = () => {
     const data = {
       mt_id: userInfo.mt_id,
@@ -103,7 +103,8 @@ const LikeShare = ({
     <View
       style={{
         flexDirection: 'row',
-      }}>
+      }}
+    >
       <Pressable
         hitSlop={10}
         onPress={() => {
@@ -113,7 +114,8 @@ const LikeShare = ({
             _guestAlert(navigation);
           }
         }}
-        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}>
+        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}
+      >
         <Image
           source={
             like === 'Y'
@@ -134,7 +136,8 @@ const LikeShare = ({
           } else {
             _guestAlert(navigation);
           }
-        }}>
+        }}
+      >
         <Image
           source={require('~/assets/top_share_w.png')}
           style={{width: 30, height: 30, tintColor: 'black'}}

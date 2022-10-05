@@ -18,6 +18,7 @@ import {hasNotch} from 'react-native-device-info';
 const LifeStyleStoreInfo = ({navigation, route}) => {
   const {mutateGetLifeStyleStoreInfo} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
+  const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const [lifeInfo, setLifeInfo] = useState();
   const routeData = route.params;
   const dispatch = useDispatch();
@@ -52,12 +53,16 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
     });
   };
 
-  if (routeData.link) {
+  if (routeData?.link) {
     useFocusEffect(
       useCallback(() => {
+        // dispatch(setIsLifeStyle(true));
+        // _init();
         dispatch(setIsLifeStyle(true));
-        _init();
-      }, []),
+        if (isLifeStyle) {
+          _init();
+        }
+      }, [isLifeStyle]),
     );
   } else {
     useEffect(() => {
@@ -65,8 +70,15 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
     }, []);
   }
 
+  // useEffect(() => {
+  //   dispatch(setIsLifeStyle(true));
+  //   if (isLifeStyle) {
+  //     _init();
+  //   }
+  // }, [isLifeStyle]);
+
   if (!lifeInfo) return <Loading />;
-  console.warn('lifeinfo', lifeInfo);
+  // console.warn('lifeinfo', lifeInfo);
 
   return (
     <SafeAreaView
