@@ -79,6 +79,17 @@ const MenuDetail2 = ({navigation, route}) => {
   } = useCustomMutation();
 
   const _init = async () => {
+    if (!userInfo) {
+      return Alert.alert('알림', '로그인이 필요합니다.', [
+        {
+          text: '로그인 하러 가기',
+          onPress: () =>
+            navigation.reset({
+              routes: [{name: 'Login'}],
+            }),
+        },
+      ]);
+    }
     const data = {
       jumju_id: routeData.jumju_id,
       jumju_code: routeData.jumju_code,
@@ -146,7 +157,7 @@ const MenuDetail2 = ({navigation, route}) => {
   const _scrollToTarget = () => {
     scrollRef.current.scrollToOffset({
       animated: true,
-      offset: tabPosition - (55 + inset.top),
+      offset: tabPosition - (inset.top + 60),
     });
   };
 
@@ -154,7 +165,8 @@ const MenuDetail2 = ({navigation, route}) => {
     return (
       <SafeAreaView
         edges={['left', 'right']}
-        style={{marginTop: hasNotch() ? 101 : 57}}
+        // style={{backgroundColor: 'teal'}}
+        style={{marginTop: showFilter ? 101 : 0}}
       >
         <View>
           <View
@@ -398,7 +410,7 @@ const MenuDetail2 = ({navigation, route}) => {
             if (offset.y > tabPosition * 0.35 && showHeader === false)
               setShowHeader(true);
 
-            if (offset.y > tabPosition) setShowFilter(true);
+            if (offset.y > tabPosition - 400) setShowFilter(true);
             if (offset.y < tabPosition) setShowFilter(false);
 
             if (selected.isScrolling && index == 0 && res) {
@@ -429,7 +441,7 @@ const MenuDetail2 = ({navigation, route}) => {
             )
           }
           stickyHeaderIndices={[1]}
-          ListHeaderComponentStyle={{marginBottom: hasNotch() ? -101 : -57}}
+          // ListHeaderComponentStyle={{paddingBottom: hasNotch() ? -101 : -101}}
           // ListFooterComponentStyle={{marginTop: -20}}
           ListFooterComponent={
             res && (

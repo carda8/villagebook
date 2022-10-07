@@ -206,7 +206,7 @@ const StoreItems = ({navigation, route}) => {
             >
               {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
                 <>
-                  <ImageCover text />
+                  <ImageCover text={true} />
                 </>
               )}
               <FastImage
@@ -290,6 +290,7 @@ const StoreItems = ({navigation, route}) => {
                 <View style={{flex: 1}}>
                   <View
                     style={{
+                      flex: 1,
                       // marginBottom: 5,
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -300,16 +301,18 @@ const StoreItems = ({navigation, route}) => {
                         flex: 1,
                         flexDirection: 'row',
                         alignItems: 'flex-end',
+                        marginRight: 20,
                       }}
                     >
                       <View
                         style={{
                           width: '100%',
                           flexDirection: 'row',
+                          alignItems: 'center',
                           justifyContent: 'space-between',
                         }}
                       >
-                        <View style={{flex: 1}}>
+                        <View style={{}}>
                           <Text
                             style={{
                               fontFamily: 'Pretendard-Medium',
@@ -321,7 +324,26 @@ const StoreItems = ({navigation, route}) => {
                             {storeInfo.mb_company}
                           </Text>
                         </View>
-
+                        <View style={{flex: 1}}>
+                          <TextRegular
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={{
+                              color: colors.fontColorA2,
+                              fontSize: 12,
+                              marginLeft: 5,
+                            }}
+                          >
+                            {storeInfo.mb_jongmog}
+                          </TextRegular>
+                        </View>
+                        {/* <View
+                          style={{
+                            marginLeft: 5,
+                            flex: 1,
+                            // backgroundColor: 'teal',
+                          }}
+                        ></View> */}
                         {routeData.category !== 'lifestyle' && (
                           <ReviewSimple
                             star={storeInfo.stars}
@@ -329,19 +351,12 @@ const StoreItems = ({navigation, route}) => {
                           />
                         )}
                       </View>
-                      <View style={{marginLeft: 5, flex: 1}}>
-                        <TextRegular
-                          numberOfLines={1}
-                          style={{color: colors.fontColorA2, fontSize: 12}}
-                        >
-                          {storeInfo.mb_jongmog}
-                        </TextRegular>
-                      </View>
                     </View>
                     {routeData.category === 'lifestyle' && (
                       <View
                         style={{
-                          width: 40,
+                          flex: 1,
+                          maxWidth: 40,
                           justifyContent: 'center',
                           flexDirection: 'row',
                           alignItems: 'center',
