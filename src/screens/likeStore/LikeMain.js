@@ -141,7 +141,7 @@ const LikeMain = ({navigation}) => {
             style={{flexDirection: 'row', flex: 1}}
             onPress={() => {
               navigation.navigate(
-                tabIdx !== 2 ? 'MenuDetail' : 'LifeStyleStoreInfo',
+                tabIdx !== 2 ? 'MenuDetail2' : 'LifeStyleStoreInfo',
                 {
                   jumju_id: data.jumju_id,
                   jumju_code: data.jumju_code,

@@ -47,14 +47,14 @@ const MainBanner = ({navigation, style, position}) => {
     switch (item?.bn_link_type) {
       case 'food':
         dispatch(setIsLifeStyle(false));
-        return navigation.navigate('MenuDetail', {
+        return navigation.navigate('MenuDetail2', {
           jumju_id: item.bn_jumju_id,
           jumju_code: item.bn_jumju_code,
           category: 'food',
         });
       case 'marekt':
         dispatch(setIsLifeStyle(false));
-        return navigation.navigate('MenuDetail', {
+        return navigation.navigate('MenuDetail2', {
           jumju_id: item.bn_jumju_id,
           jumju_code: item.bn_jumju_code,
           category: 'market',

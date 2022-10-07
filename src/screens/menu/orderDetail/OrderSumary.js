@@ -65,7 +65,8 @@ const OrderSumary = ({navigation, route}) => {
             backgroundColor: colors.inputBoxBG,
             paddingHorizontal: 22,
             paddingVertical: 20,
-          }}>
+          }}
+        >
           <View style={{flexDirection: 'row'}}>
             <Image
               source={
@@ -76,7 +77,8 @@ const OrderSumary = ({navigation, route}) => {
               style={{width: 60, height: 60, borderRadius: 10}}
             />
             <View
-              style={{flex: 1, marginLeft: 10, justifyContent: 'space-evenly'}}>
+              style={{flex: 1, marginLeft: 10, justifyContent: 'space-evenly'}}
+            >
               <TextMedium style={{color: colors.fontColor2}}>
                 {orderData.data.store.mb_company}
               </TextMedium>
@@ -100,13 +102,14 @@ const OrderSumary = ({navigation, route}) => {
                 backgroundColor: colors.primary,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               <TextNotoM style={{color: 'white'}}>가게 전화</TextNotoM>
             </Pressable>
             <Pressable
               onPress={() => {
                 console.log('data', orderData.data.store);
-                navigation.navigate('MenuDetail', {
+                navigation.navigate('MenuDetail2', {
                   jumju_id: orderData.data.store.jumju_id,
                   jumju_code: orderData.data.store.jumju_code,
                   category: route.params.orderData.category,
@@ -122,7 +125,8 @@ const OrderSumary = ({navigation, route}) => {
                 borderColor: colors.borderColor,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               <TextNotoM style={{color: colors.fontColorA}}>
                 가게 보기
               </TextNotoM>
@@ -139,7 +143,8 @@ const OrderSumary = ({navigation, route}) => {
                   style={{
                     fontSize: 12,
                     color: colors.fontColorA,
-                  }}>
+                  }}
+                >
                   수량 : {item2.count}
                 </TextRegular>
               </TextMedium>
@@ -148,7 +153,8 @@ const OrderSumary = ({navigation, route}) => {
                 {item2.main.option.map((item3, index) => (
                   <TextRegular
                     key={item3 + index}
-                    style={{color: colors.fontColor99}}>
+                    style={{color: colors.fontColor99}}
+                  >
                     - {item3.name} : {item3.value}
                   </TextRegular>
                 ))}
@@ -163,7 +169,8 @@ const OrderSumary = ({navigation, route}) => {
                     {item2.sub.map((item3, index) => (
                       <TextRegular
                         key={item3 + index}
-                        style={{color: colors.fontColor99}}>
+                        style={{color: colors.fontColor99}}
+                      >
                         - {item3.itemCategory} : {item3.itemName}
                       </TextRegular>
                     ))}
@@ -189,7 +196,8 @@ const OrderSumary = ({navigation, route}) => {
             paddingVertical: 24,
             marginVertical: 16,
             marginHorizontal: 22,
-          }}>
+          }}
+        >
           <TextBold style={{fontSize: 18, color: colors.fontColor2}}>
             결제금액
           </TextBold>
@@ -199,7 +207,8 @@ const OrderSumary = ({navigation, route}) => {
                 marginBottom: 11,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 총 주문금액
               </TextRegular>
@@ -213,7 +222,8 @@ const OrderSumary = ({navigation, route}) => {
                 marginBottom: 11,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 배달팁
               </TextRegular>
@@ -227,7 +237,8 @@ const OrderSumary = ({navigation, route}) => {
                 marginBottom: 11,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 추가배달팁
               </TextRegular>
@@ -241,7 +252,8 @@ const OrderSumary = ({navigation, route}) => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginBottom: 11,
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 포인트
               </TextRegular>
@@ -255,7 +267,8 @@ const OrderSumary = ({navigation, route}) => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginBottom: 11,
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 먹고가기 할인
               </TextRegular>
@@ -270,7 +283,8 @@ const OrderSumary = ({navigation, route}) => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginBottom: 11,
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 포장 할인
               </TextRegular>
@@ -285,7 +299,8 @@ const OrderSumary = ({navigation, route}) => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginBottom: 11,
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 점주쿠폰 할인
               </TextRegular>
@@ -295,7 +310,8 @@ const OrderSumary = ({navigation, route}) => {
             </View>
 
             <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 동네북쿠폰 할인
               </TextRegular>
@@ -311,7 +327,8 @@ const OrderSumary = ({navigation, route}) => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginTop: 10,
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 {'주문방법'}
               </TextRegular>
@@ -330,7 +347,8 @@ const OrderSumary = ({navigation, route}) => {
                 justifyContent: 'space-between',
                 marginVertical: 10,
                 marginBottom: 20,
-              }}>
+              }}
+            >
               <TextRegular style={{color: colors.fontColor99}}>
                 {'결제방법'}
               </TextRegular>
@@ -358,7 +376,8 @@ const OrderSumary = ({navigation, route}) => {
                 style={{
                   color: colors.fontColor99,
                   marginBottom: 13,
-                }}>
+                }}
+              >
                 배달주소
               </TextRegular>
             </View>
@@ -368,7 +387,8 @@ const OrderSumary = ({navigation, route}) => {
                   color: colors.fontColor99,
                   marginBottom: 13,
                   color: colors.fontColor3,
-                }}>
+                }}
+              >
                 {console.log('orderData.data.order.', orderData.data.order)}
                 {orderData.data.order.order_addr1}{' '}
                 {orderData.data.order?.order_addr2}{' '}
@@ -383,7 +403,8 @@ const OrderSumary = ({navigation, route}) => {
                 style={{
                   color: colors.fontColor99,
                   marginBottom: 13,
-                }}>
+                }}
+              >
                 전화번호
               </TextRegular>
             </View>
@@ -393,7 +414,8 @@ const OrderSumary = ({navigation, route}) => {
                   color: colors.fontColor99,
                   marginBottom: 13,
                   color: colors.fontColor3,
-                }}>
+                }}
+              >
                 {orderData.data.order.order_hp}
               </TextRegular>
             </View>
@@ -405,7 +427,8 @@ const OrderSumary = ({navigation, route}) => {
                 style={{
                   color: colors.fontColor99,
                   marginBottom: 13,
-                }}>
+                }}
+              >
                 가게 사장님에게
               </TextRegular>
             </View>
@@ -415,7 +438,8 @@ const OrderSumary = ({navigation, route}) => {
                   color: colors.fontColor99,
                   marginBottom: 13,
                   color: colors.fontColor3,
-                }}>
+                }}
+              >
                 {orderData.data.order.order_seller}
               </TextRegular>
             </View>
@@ -427,7 +451,8 @@ const OrderSumary = ({navigation, route}) => {
                 style={{
                   color: colors.fontColor99,
                   marginBottom: 13,
-                }}>
+                }}
+              >
                 배달 기사님에게
               </TextRegular>
             </View>
@@ -437,7 +462,8 @@ const OrderSumary = ({navigation, route}) => {
                   color: colors.fontColor99,
                   marginBottom: 13,
                   color: colors.fontColor3,
-                }}>
+                }}
+              >
                 {orderData.data.order.order_officer}
               </TextRegular>
             </View>

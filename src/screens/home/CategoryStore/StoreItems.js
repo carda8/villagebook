@@ -168,7 +168,7 @@ const StoreItems = ({navigation, route}) => {
               });
             } else {
               dispatch(setIsLifeStyle(false));
-              navigation.navigate('MenuDetail', {
+              navigation.navigate('MenuDetail2', {
                 jumju_id: storeInfo.mb_id,
                 jumju_code: storeInfo.mb_jumju_code,
                 mb_company: storeInfo.mb_company,

@@ -299,7 +299,7 @@ const SummitOrder = ({navigation, route}) => {
             <Pressable
               onPress={() => {
                 console.log('path1', cartStore.currentStoreCode);
-                navigation.navigate('MenuDetail', {
+                navigation.navigate('MenuDetail2', {
                   jumju_id:
                     cartStore.currentStoreCode?.jumju_id ??
                     cartStore.savedItem.savedStoreCode.jumju_id,

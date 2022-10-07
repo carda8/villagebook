@@ -81,6 +81,7 @@ import SearchResult from '../screens/home/SearchResult';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import MenuDetail2 from '../screens/menu/MenuDetail2';
 import IamCertification from '../screens/IamCertification';
+import MenuDetail3 from '../screens/menu/MenuDetail3';
 const Stack = createNativeStackNavigator();
 
 const MainStackNavigator = () => {
@@ -105,7 +106,7 @@ const MainStackNavigator = () => {
       if (e.type === 1) {
         if (message.data.od_id) return naviRef.current?.navigate('OrderList');
         else {
-          return naviRef.current?.navigate('MenuDetail', {
+          return naviRef.current?.navigate('MenuDetail2', {
             jumju_id: message.data.jumju_id,
             jumju_code: message.data.jumju_code,
             // mb_company: message.data.mb_company,
@@ -376,7 +377,7 @@ const MainStackNavigator = () => {
           if (remoteMessage.data.od_id)
             return naviRef.current?.navigate('OrderList');
           else {
-            return naviRef.current?.navigate('MenuDetail', {
+            return naviRef.current?.navigate('MenuDetail2', {
               jumju_id: remoteMessage.data.jumju_id,
               jumju_code: remoteMessage.data.jumju_code,
               // mb_company: remoteMessage.data.mb_company,
@@ -431,6 +432,7 @@ const MainStackNavigator = () => {
         <Stack.Screen name="MyPage" component={MyPage} />
         <Stack.Screen name="MenuDetail" component={MenuDetail} />
         <Stack.Screen name="MenuDetail2" component={MenuDetail2} />
+        <Stack.Screen name="MenuDetail3" component={MenuDetail3} />
 
         <Stack.Screen
           name="DeliveryTipInfo"

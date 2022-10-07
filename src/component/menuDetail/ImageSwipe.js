@@ -5,6 +5,7 @@ import Swiper from 'react-native-swiper';
 
 const ImageSwipe = ({images, imageStyle}) => {
   const layout = useWindowDimensions();
+  // console.log('images', images);
   return (
     <View style={{flex: 1}}>
       <Swiper

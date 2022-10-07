@@ -10,16 +10,20 @@ const MiniMap = ({lng, lat, isStore, width, height}) => {
     <View
       style={{
         paddingHorizontal: isStore ? 0 : 22,
-      }}>
+      }}
+    >
       <NaverMapView
         style={{width: width ? width : '100%', height: height ? height : 300}}
         showsMyLocationButton={isStore ? false : true}
         zoomControl={isStore ? false : true}
         scaleBar={false}
         center={{latitude: Number(lat), longitude: Number(lng), zoom: 16}}
-        // scrollGesturesEnabled={false}
+        scrollGesturesEnabled={true}
+        zoomGesturesEnabled={true}
         tiltGesturesEnabled={false}
-        rotateGesturesEnabled={false}
+        rotateGesturesEnabled={true}
+        stopGesturesEnabled={false}
+        liteModeEnabled={false}
         onCameraChange={e => {
           //   setPosition({latitude: e.latitude, longitude: e.longitude});
           //   _convertCoor({lon: e.longitude, lat: e.latitude});
@@ -28,7 +32,8 @@ const MiniMap = ({lng, lat, isStore, width, height}) => {
           //   setPosition({latitude: e.latitude, longitude: e.longitude});
           //   _convertCoor({lon: e.longitude, lat: e.latitude});
           // setPosition({latitude: e.latitude, longitude: e.longitude});
-        }}>
+        }}
+      >
         <Marker
           width={25}
           height={30}
