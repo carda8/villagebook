@@ -226,7 +226,7 @@ const MainStackNavigator = () => {
     screens: {
       Login: 'login',
       Main: 'main',
-      MenuDetail: {
+      MenuDetail2: {
         path: '/main/:category/:jumju_id/:jumju_code/:link',
       },
       LifeStyleStoreInfo: {
@@ -394,13 +394,11 @@ const MainStackNavigator = () => {
     <NavigationContainer
       ref={naviRef}
       linking={linking}
-      onReady={_routeBackGround}
-    >
+      onReady={_routeBackGround}>
       <Stack.Navigator
         initialRouteName={initRoute}
         // initialRouteName={'Test'}
-        screenOptions={{headerShown: false}}
-      >
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="CheckTerms" component={CheckTerms} />
         <Stack.Screen
