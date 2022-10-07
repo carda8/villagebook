@@ -177,6 +177,10 @@ const MenuDetail2 = ({navigation, route}) => {
                 zIndex: 300,
               }}
               onPress={() => {
+                scrollRef.current.scrollToOffset({
+                  animated: true,
+                  offset: tabPosition - 55,
+                });
                 setIndex(0);
               }}>
               <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
@@ -199,6 +203,10 @@ const MenuDetail2 = ({navigation, route}) => {
                 zIndex: 300,
               }}
               onPress={() => {
+                scrollRef.current.scrollToOffset({
+                  animated: true,
+                  offset: tabPosition - 55,
+                });
                 setIndex(1);
               }}>
               <TextMedium style={{fontSize: 17}}>정보</TextMedium>
@@ -219,6 +227,10 @@ const MenuDetail2 = ({navigation, route}) => {
                 zIndex: 300,
               }}
               onPress={() => {
+                scrollRef.current.scrollToOffset({
+                  animated: true,
+                  offset: tabPosition - 55,
+                });
                 setIndex(2);
               }}>
               <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
@@ -816,9 +828,9 @@ const MenuDetail2 = ({navigation, route}) => {
 
                 {/* 리뷰 탭 */}
                 {index === 2 && (
-                  <>
+                  <View style={{marginBottom: 55}}>
                     <MenuReview storeInfo={res[0].StoreInfo} />
-                  </>
+                  </View>
                 )}
                 {index !== 2 && (
                   <View style={{paddingBottom: hasNotch() ? 50 : 0}}>
