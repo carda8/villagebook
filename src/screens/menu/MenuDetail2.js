@@ -147,8 +147,7 @@ const MenuDetail2 = ({navigation, route}) => {
     return (
       <SafeAreaView
         edges={['left', 'right']}
-        style={{marginTop: hasNotch() ? 101 : 57}}
-      >
+        style={{marginTop: hasNotch() ? 101 : 57}}>
         <View>
           <View
             //aos
@@ -161,8 +160,7 @@ const MenuDetail2 = ({navigation, route}) => {
             style={{
               flexDirection: 'row',
               height: 55,
-            }}
-          >
+            }}>
             <Pressable
               style={{
                 flex: 1,
@@ -180,8 +178,7 @@ const MenuDetail2 = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(0);
-              }}
-            >
+              }}>
               <TextMedium style={{fontSize: 17}}>메뉴</TextMedium>
             </Pressable>
             <Pressable
@@ -203,8 +200,7 @@ const MenuDetail2 = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(1);
-              }}
-            >
+              }}>
               <TextMedium style={{fontSize: 17}}>정보</TextMedium>
             </Pressable>
             <Pressable
@@ -224,8 +220,7 @@ const MenuDetail2 = ({navigation, route}) => {
               }}
               onPress={() => {
                 setIndex(2);
-              }}
-            >
+              }}>
               <TextMedium style={{fontSize: 17}}>리뷰</TextMedium>
             </Pressable>
           </View>
@@ -238,9 +233,8 @@ const MenuDetail2 = ({navigation, route}) => {
               }}
               showsHorizontalScrollIndicator={false}
               horizontal
-              ref={scrollRefSub}
-            >
-              {item.item.StoreAllMenu.map((item, index) => (
+              ref={scrollRefSub}>
+              {item.item?.StoreAllMenu?.map((item, index) => (
                 <Pressable
                   disabled={showFilter ? false : true}
                   key={index}
@@ -282,15 +276,13 @@ const MenuDetail2 = ({navigation, route}) => {
                     borderRadius: 10,
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <TextMedium
                     style={{
                       fontSize: 14,
                       color:
                         selected.idx === index ? 'white' : colors.fontColor2,
-                    }}
-                  >
+                    }}>
                     {item.ca_name}
                   </TextMedium>
                 </Pressable>
@@ -320,6 +312,9 @@ const MenuDetail2 = ({navigation, route}) => {
       );
     }
   }, [selected]);
+
+  if (!res) return <Loading />;
+
   return (
     <SafeAreaView
       edges={
@@ -335,16 +330,14 @@ const MenuDetail2 = ({navigation, route}) => {
         ...commonStyles.safeAreaStyle,
         backgroundColor:
           res && res[0].StoreInfo.isOpen ? colors.primary : colors.borderColor,
-      }}
-    >
+      }}>
       <View style={{...commonStyles.safeAreaStyle}} ref={containerRef}>
         <SafeAreaView
           style={{
             zIndex: 100,
             backgroundColor: showHeader ? 'white' : 'rgba(0,0,0,0)',
           }}
-          edges={['top']}
-        >
+          edges={['top']}>
           <View style={{flex: 1}}>
             <Header
               title={res && showHeader && res[0].StoreInfo.mb_company}
@@ -360,7 +353,7 @@ const MenuDetail2 = ({navigation, route}) => {
         <FlatList
           ref={scrollRef}
           data={res}
-          decelerationRate={0.996}
+          decelerationRate={Platform.OS === 'ios' ? 0.996 : 'normal'}
           keyExtractor={(item, index) => index}
           renderItem={item => renderItem(item)}
           overScrollMode="never"
@@ -426,15 +419,13 @@ const MenuDetail2 = ({navigation, route}) => {
                       style={{flex: 1, marginTop: -20}}
                       onLayout={e => {
                         setTemp(e.nativeEvent.layout.y + 20);
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           paddingHorizontal: 22,
                           paddingBottom: 29,
                           // top: -20,
-                        }}
-                      >
+                        }}>
                         <TextRegular style={{fontSize: 15}}>
                           {
                             res[0].StoreInfo.store_service
@@ -449,16 +440,14 @@ const MenuDetail2 = ({navigation, route}) => {
                           paddingBottom: 20,
                           paddingHorizontal: 22,
                           backgroundColor: colors.couponBG,
-                        }}
-                      >
+                        }}>
                         <View
                           style={{
                             flexDirection: 'row',
                             marginBottom: 11,
                             alignItems: 'center',
                             justifyContent: 'center',
-                          }}
-                        >
+                          }}>
                           <Dot
                             style={{
                               width: 8,
@@ -473,8 +462,7 @@ const MenuDetail2 = ({navigation, route}) => {
                               color: colors.fontColor2,
                               fontSize: 22,
                               marginHorizontal: 14,
-                            }}
-                          >
+                            }}>
                             대표메뉴
                           </Text>
                           <Dot
@@ -503,8 +491,7 @@ const MenuDetail2 = ({navigation, route}) => {
                                 borderColor: colors.primary,
                                 marginBottom: 10,
                                 borderRadius: 12,
-                              }}
-                            >
+                              }}>
                               <View style={{flexDirection: 'row'}}>
                                 <Shadow distance={4} offset={[0, 2]}>
                                   <View
@@ -516,8 +503,7 @@ const MenuDetail2 = ({navigation, route}) => {
                                       marginRight: 15,
                                       borderColor: colors.borderColor,
                                       overflow: 'hidden',
-                                    }}
-                                  >
+                                    }}>
                                     <FastImage
                                       source={
                                         item.it_img1
@@ -534,8 +520,7 @@ const MenuDetail2 = ({navigation, route}) => {
                                     style={{
                                       fontSize: 17,
                                       color: colors.fontColor2,
-                                    }}
-                                  >
+                                    }}>
                                     {item.it_name}
                                   </TextMedium>
                                   <TextMedium
@@ -543,8 +528,7 @@ const MenuDetail2 = ({navigation, route}) => {
                                     style={{
                                       fontSize: 12,
                                       color: colors.fontColor8,
-                                    }}
-                                  >
+                                    }}>
                                     {item.it_basic}
                                   </TextMedium>
                                 </View>
@@ -554,8 +538,7 @@ const MenuDetail2 = ({navigation, route}) => {
                                   style={{
                                     fontSize: 17,
                                     color: colors.fontColor2,
-                                  }}
-                                >
+                                  }}>
                                   {replaceString(item.it_price)}원
                                 </TextBold>
                               </View>
@@ -571,8 +554,7 @@ const MenuDetail2 = ({navigation, route}) => {
                             if (el) {
                               focusTarget.current[index] = el;
                             }
-                          }}
-                        >
+                          }}>
                           {/* {console.warn('dafdsfasdf', item)} */}
                           <View
                             style={{
@@ -581,8 +563,7 @@ const MenuDetail2 = ({navigation, route}) => {
                               paddingHorizontal: 22,
                               borderBottomWidth: 1,
                               borderColor: colors.borderColor,
-                            }}
-                          >
+                            }}>
                             <Text style={{color: colors.fontColor2}}>
                               {item.ca_name}
                             </Text>
@@ -592,8 +573,7 @@ const MenuDetail2 = ({navigation, route}) => {
                             style={{
                               flex: 1,
                               backgroundColor: 'white',
-                            }}
-                          >
+                            }}>
                             {/* ALL */}
                             <View style={{flex: 1}}>
                               {item.menus.map((item, index) => (
@@ -608,14 +588,12 @@ const MenuDetail2 = ({navigation, route}) => {
                                     backgroundColor: 'white',
                                     borderBottomWidth: 1,
                                     borderColor: colors.borderColor,
-                                  }}
-                                >
+                                  }}>
                                   <View
                                     style={{
                                       flexDirection: 'row',
                                       alignItems: 'center',
-                                    }}
-                                  >
+                                    }}>
                                     <Shadow distance={4} offset={[0, 2]}>
                                       <View
                                         style={{
@@ -626,8 +604,7 @@ const MenuDetail2 = ({navigation, route}) => {
                                           marginRight: 15,
                                           borderColor: colors.borderColor,
                                           overflow: 'hidden',
-                                        }}
-                                      >
+                                        }}>
                                         <FastImage
                                           source={
                                             item.it_img1
@@ -646,8 +623,7 @@ const MenuDetail2 = ({navigation, route}) => {
                                         style={{
                                           fontSize: 17,
                                           color: colors.fontColor2,
-                                        }}
-                                      >
+                                        }}>
                                         {item.it_name}
                                       </TextMedium>
                                       <TextMedium
@@ -655,16 +631,14 @@ const MenuDetail2 = ({navigation, route}) => {
                                         style={{
                                           fontSize: 12,
                                           color: colors.fontColor8,
-                                        }}
-                                      >
+                                        }}>
                                         {item.it_basic}
                                       </TextMedium>
                                       <TextBold
                                         style={{
                                           fontSize: 17,
                                           color: colors.fontColor2,
-                                        }}
-                                      >
+                                        }}>
                                         {replaceString(item.it_price)}
                                       </TextBold>
                                     </View>
@@ -686,20 +660,17 @@ const MenuDetail2 = ({navigation, route}) => {
                       style={{
                         paddingVertical: 32,
                         paddingHorizontal: 22,
-                      }}
-                    >
+                      }}>
                       <TextNotoM style={{fontSize: 17}}>매장정보</TextNotoM>
                       <View
                         style={{
                           flex: 1,
                           paddingTop: 13,
                           flexDirection: 'row',
-                        }}
-                      >
+                        }}>
                         <View style={{}}>
                           <View
-                            style={{flexDirection: 'row', marginBottom: 10}}
-                          >
+                            style={{flexDirection: 'row', marginBottom: 10}}>
                             <View style={{width: 100}}>
                               <TextRegular style={{color: colors.fontColor99}}>
                                 상호
@@ -710,8 +681,7 @@ const MenuDetail2 = ({navigation, route}) => {
                             </TextRegular>
                           </View>
                           <View
-                            style={{flexDirection: 'row', marginBottom: 10}}
-                          >
+                            style={{flexDirection: 'row', marginBottom: 10}}>
                             <View style={{width: 100}}>
                               <TextRegular style={{color: colors.fontColor99}}>
                                 대표자명
@@ -722,8 +692,7 @@ const MenuDetail2 = ({navigation, route}) => {
                             </TextRegular>
                           </View>
                           <View
-                            style={{flexDirection: 'row', marginBottom: 10}}
-                          >
+                            style={{flexDirection: 'row', marginBottom: 10}}>
                             <View style={{width: 100}}>
                               <TextRegular style={{color: colors.fontColor99}}>
                                 전화번호
@@ -734,8 +703,7 @@ const MenuDetail2 = ({navigation, route}) => {
                             </TextRegular>
                           </View>
                           <View
-                            style={{flexDirection: 'row', marginBottom: 10}}
-                          >
+                            style={{flexDirection: 'row', marginBottom: 10}}>
                             <View style={{width: 100}}>
                               <TextRegular style={{color: colors.fontColor99}}>
                                 사업자번호
@@ -746,8 +714,7 @@ const MenuDetail2 = ({navigation, route}) => {
                             </TextRegular>
                           </View>
                           <View
-                            style={{flexDirection: 'row', marginBottom: 10}}
-                          >
+                            style={{flexDirection: 'row', marginBottom: 10}}>
                             <View style={{width: 100}}>
                               <TextRegular style={{color: colors.fontColor99}}>
                                 주소
@@ -768,60 +735,58 @@ const MenuDetail2 = ({navigation, route}) => {
                       style={{
                         paddingVertical: 32,
                         paddingHorizontal: 22,
-                      }}
-                    >
+                      }}>
                       <TextNotoM style={{fontSize: 17}}>영업시간</TextNotoM>
                       <View
                         style={{
                           flex: 1,
                           paddingTop: 13,
                           flexDirection: 'row',
-                        }}
-                      >
+                        }}>
                         <View style={{}}>
                           <TextRegular
                             style={{
                               color: colors.fontColor99,
                               marginBottom: 11,
-                            }}
-                          >
+                            }}>
                             영업일
                           </TextRegular>
                           <TextRegular
                             style={{
                               color: colors.fontColor99,
                               marginBottom: 11,
-                            }}
-                          >
+                            }}>
                             영업시간
                           </TextRegular>
                           <TextRegular
                             style={{
                               color: colors.fontColor99,
                               marginBottom: 11,
-                            }}
-                          >
+                            }}>
                             BREAK TIME
                           </TextRegular>
                           <TextRegular
                             style={{
                               color: colors.fontColor99,
                               marginBottom: 11,
-                            }}
-                          >
+                            }}>
                             휴무일
                           </TextRegular>
                         </View>
 
                         <View style={{marginLeft: 22, flex: 1}}>
                           <TextRegular
-                            style={{color: colors.fontColor3, marginBottom: 11}}
-                          >
+                            style={{
+                              color: colors.fontColor3,
+                              marginBottom: 11,
+                            }}>
                             {res[0].StoreServiceTimes?.service_open ?? '-'}
                           </TextRegular>
                           <TextRegular
-                            style={{color: colors.fontColor3, marginBottom: 11}}
-                          >
+                            style={{
+                              color: colors.fontColor3,
+                              marginBottom: 11,
+                            }}>
                             {!res[0].StoreServiceTimes
                               ? '-'
                               : res[0].StoreServiceTimes?.service_stime +
@@ -829,8 +794,10 @@ const MenuDetail2 = ({navigation, route}) => {
                                 res[0].StoreServiceTimes?.service_etime}
                           </TextRegular>
                           <TextRegular
-                            style={{color: colors.fontColor3, marginBottom: 11}}
-                          >
+                            style={{
+                              color: colors.fontColor3,
+                              marginBottom: 11,
+                            }}>
                             {!res[0].StoreBreakeTimes?.service_breakstime &&
                             !res[0].StoreBreakeTimes?.service_breaketime
                               ? '-'
@@ -861,16 +828,14 @@ const MenuDetail2 = ({navigation, route}) => {
                         paddingHorizontal: 22,
                         paddingVertical: 20,
                         backgroundColor: 'white',
-                      }}
-                    >
+                      }}>
                       <TextNotoM
                         style={{
                           fontSize: 17,
                           color: colors.fontColor2,
                           includeFontPadding: false,
                           marginBottom: 7,
-                        }}
-                      >
+                        }}>
                         원산지 표기
                       </TextNotoM>
                       <TextNotoR
@@ -878,8 +843,7 @@ const MenuDetail2 = ({navigation, route}) => {
                           fontSize: 13,
                           color: colors.fontColor8,
                           includeFontPadding: false,
-                        }}
-                      >
+                        }}>
                         {res && res[0].StoreInfo.store_service.do_jumju_origin}
                       </TextNotoR>
                     </View>
@@ -914,23 +878,20 @@ const MenuDetail2 = ({navigation, route}) => {
                     ? colors.primary
                     : colors.borderColor,
                   justifyContent: 'center',
-                }}
-              >
+                }}>
                 <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                  }}
-                >
+                  }}>
                   {res[0].StoreInfo.isOpen && (
                     <View
                       style={{
                         flex: 1,
                         alignItems: 'flex-start',
                         justifyContent: 'center',
-                      }}
-                    >
+                      }}>
                       <View
                         style={{
                           backgroundColor: 'white',
@@ -940,15 +901,13 @@ const MenuDetail2 = ({navigation, route}) => {
                           marginLeft: 30,
                           alignItems: 'center',
                           justifyContent: 'center',
-                        }}
-                      >
+                        }}>
                         <TextBold
                           style={{
                             fontSize: 16,
                             color: colors.primary,
                             includeFontPadding: false,
-                          }}
-                        >
+                          }}>
                           {savedItem.savedItems.length > 9
                             ? '9+'
                             : savedItem.savedItems.length}
@@ -962,8 +921,7 @@ const MenuDetail2 = ({navigation, route}) => {
                       style={{
                         fontSize: 18,
                         color: res[0].StoreInfo.isOpen ? 'white' : 'gray',
-                      }}
-                    >
+                      }}>
                       {res[0].StoreInfo.isOpen
                         ? '카트 확인하기'
                         : '동네사람들을 만날 준비 중이에요!'}
