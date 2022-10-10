@@ -166,10 +166,10 @@ const MenuDetail2 = ({navigation, route}) => {
 
   const renderItem = item => {
     return (
-      <SafeAreaView
-        edges={['left', 'right']}
+      <View
+        // edges={['left', 'right']}
         // style={{backgroundColor: 'teal'}}
-        style={{marginTop: showFilter ? 101 : 0}}>
+        style={{marginTop: hasNotch() ? 101 : 57}}>
         <View>
           <View
             //aos
@@ -315,7 +315,7 @@ const MenuDetail2 = ({navigation, route}) => {
             </ScrollView>
           )}
         </View>
-      </SafeAreaView>
+      </View>
     );
   };
   useEffect(() => {
@@ -426,15 +426,88 @@ const MenuDetail2 = ({navigation, route}) => {
           ListEmptyComponent={<Loading />}
           ListHeaderComponent={
             res && (
-              <MenuHeader
-                item={res}
-                routeData={routeData}
-                navigation={navigation}
-              />
+              <>
+                <View style={{zIndex: 3000, paddingBottom: 120}}>
+                  <MenuHeader
+                    item={res}
+                    routeData={routeData}
+                    navigation={navigation}
+                  />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      flex: 1,                      
+                      bottom: -30,
+                      right:0,
+                      zIndex: 3000,
+                      alignSelf: 'flex-end',
+                      marginRight: 22,
+                      borderWidth: 1,
+                      borderRadius: 10,
+                      borderColor: colors.borderColor,
+                      overflow: 'hidden',
+                    }}>
+                    <MiniMap
+                      lat={res[0].StoreInfo?.mb_lat}
+                      lng={res[0].StoreInfo?.mb_lng}
+                      isStore
+                      width={layout.width - 144}
+                      height={130}
+                    />
+
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        height: 40,
+                        zIndex: 3000,
+
+                        // width: layout.width - 144,
+                      }}>
+                      <Pressable
+                        // hitSlop={100}
+                        onPress={() => {
+                          console.warn('hello');
+                          // _copyAdd();
+                        }}
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRightWidth: 1,
+                          borderColor: colors.borderColor,
+                        }}>
+                        <TextRegular style={{color: colors.fontColor2}}>
+                          주소복사
+                        </TextRegular>
+                      </Pressable>
+
+                      <Pressable
+                        onPress={() =>
+                          navigation.navigate('Map', {
+                            isStore: true,
+                            lat: res[0].StoreInfo?.mb_lat,
+                            lng: res[0].StoreInfo?.mb_lng,
+                          })
+                        }
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <TextRegular style={{color: colors.fontColor2}}>
+                          지도보기
+                        </TextRegular>
+                      </Pressable>
+                    </View>
+                  </View>
+                </View>
+              </>
             )
           }
+          ListHeaderComponentStyle={{zIndex:3000}}
           stickyHeaderIndices={[1]}
-          // ListHeaderComponentStyle={{paddingBottom: hasNotch() ? -101 : -101}}
+          // CellRendererComponent={()=><View style={{width:100, height:10, backgroundColor:'teal', marginTop:57}}/>}
+          // ListHeaderComponentStyle={{}}
           // ListFooterComponentStyle={{marginTop: -20}}
           ListFooterComponent={
             res && (

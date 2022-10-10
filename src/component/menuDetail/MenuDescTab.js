@@ -421,7 +421,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
           </>
         )}
       </View>
-
+{/* 
       {(tabIdx === 0 || tabIdx === 2) && (
         <View
           style={{
@@ -452,11 +452,13 @@ const MenuDescTab = ({info, navigation, routeData}) => {
             }}
           >
             <Pressable
+            // hitSlop={}
               onPress={() => {
                 _copyAdd();
               }}
               style={{
                 flex: 1,
+                // zIndex:1000,
                 alignItems: 'center',
                 justifyContent: 'center',
                 borderRightWidth: 1,
@@ -484,7 +486,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
             </Pressable>
           </View>
         </View>
-      )}
+      )} */}
     </>
   );
 };
