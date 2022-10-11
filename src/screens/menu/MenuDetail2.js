@@ -43,6 +43,7 @@ import {hasNotch} from 'react-native-device-info';
 import MenuHeader from './MenuHeader';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import {useDispatch} from 'react-redux';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const MenuDetail2 = ({navigation, route}) => {
   const [index, setIndex] = useState(0);
@@ -63,6 +64,7 @@ const MenuDetail2 = ({navigation, route}) => {
   const {savedItem} = useSelector(state => state.cartReducer);
   const cartStore = useSelector(state => state.cartReducer);
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
+  const {deliveryType} = useSelector(state => state.deliveryReducer);
 
   const focusTarget = useRef([]);
   const chipTarget = useRef([]);
@@ -142,8 +144,19 @@ const MenuDetail2 = ({navigation, route}) => {
       ]);
     }
   };
+
   const _pressMenu = item => {
-    _checkLogin();
+    if (!userInfo) {
+      return Alert.alert('알림', '로그인이 필요합니다.', [
+        {
+          text: '로그인 하러 가기',
+          onPress: () =>
+            navigation.reset({
+              routes: [{name: 'Login'}],
+            }),
+        },
+      ]);
+    }
     if (res[0].StoreInfo.isOpen === false)
       return customAlert('알림', '현재 가게는 오픈 준비중 입니다.');
     navigation.navigate('OptionSelect', {
@@ -164,12 +177,23 @@ const MenuDetail2 = ({navigation, route}) => {
     });
   };
 
+  const _copyAdd = async () => {
+    if (res) {
+      Clipboard.setString(
+        res[0].StoreInfo.mb_addr1 + ' ' + res[0].StoreInfo.mb_addr2,
+      );
+      customAlert('알림', '주소가 복사되었습니다.');
+    }
+
+    // ToastAndroid.show('주소가 복사되었습니다.', ToastAndroid.SHORT);
+  };
+
   const renderItem = item => {
     return (
       <SafeAreaView
         edges={['left', 'right']}
         // style={{backgroundColor: 'teal'}}
-        style={{marginTop: showFilter ? 101 : 0}}>
+        style={{marginTop: hasNotch() ? 101 : 57}}>
         <View>
           <View
             //aos
@@ -424,17 +448,104 @@ const MenuDetail2 = ({navigation, route}) => {
             }
           }}
           ListEmptyComponent={<Loading />}
+          ListHeaderComponentStyle={{zIndex: 3000}}
           ListHeaderComponent={
+            // res && (
+            //   <MenuHeader
+            //     item={res}
+            //     routeData={routeData}
+            //     navigation={navigation}
+            //   />
+            // )
             res && (
-              <MenuHeader
-                item={res}
-                routeData={routeData}
-                navigation={navigation}
-              />
+              <>
+                <View
+                  style={{
+                    zIndex: 3000,
+                    paddingBottom: deliveryType === 0 ? 0 : 120,
+                  }}>
+                  <MenuHeader
+                    item={res}
+                    routeData={routeData}
+                    navigation={navigation}
+                  />
+                  {(deliveryType === 1 || deliveryType === 2) && (
+                    <>
+                      <View
+                        style={{
+                          position: 'absolute',
+                          flex: 1,
+                          bottom: -30,
+                          right: 0,
+                          zIndex: 3000,
+                          alignSelf: 'flex-end',
+                          marginRight: 22,
+                          borderWidth: 1,
+                          borderRadius: 10,
+                          borderColor: colors.borderColor,
+                          overflow: 'hidden',
+                        }}>
+                        <MiniMap
+                          lat={res[0].StoreInfo?.mb_lat}
+                          lng={res[0].StoreInfo?.mb_lng}
+                          isStore
+                          width={layout.width - 144}
+                          height={130}
+                        />
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            height: 40,
+                            zIndex: 3000,
+
+                            // width: layout.width - 144,
+                          }}>
+                          <Pressable
+                            // hitSlop={100}
+                            onPress={() => {
+                              // console.warn('hello');
+                              _copyAdd();
+                            }}
+                            style={{
+                              flex: 1,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRightWidth: 1,
+                              borderColor: colors.borderColor,
+                            }}>
+                            <TextRegular style={{color: colors.fontColor2}}>
+                              주소복사
+                            </TextRegular>
+                          </Pressable>
+
+                          <Pressable
+                            onPress={() =>
+                              navigation.navigate('Map', {
+                                isStore: true,
+                                lat: res[0].StoreInfo?.mb_lat,
+                                lng: res[0].StoreInfo?.mb_lng,
+                              })
+                            }
+                            style={{
+                              flex: 1,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <TextRegular style={{color: colors.fontColor2}}>
+                              지도보기
+                            </TextRegular>
+                          </Pressable>
+                        </View>
+                      </View>
+                    </>
+                  )}
+                </View>
+              </>
             )
           }
           stickyHeaderIndices={[1]}
-          // ListHeaderComponentStyle={{paddingBottom: hasNotch() ? -101 : -101}}
+          // ListHeaderComponentStyle={{paddingBottom: hasNotch() ? -101 : -57}}
           // ListFooterComponentStyle={{marginTop: -20}}
           ListFooterComponent={
             res && (

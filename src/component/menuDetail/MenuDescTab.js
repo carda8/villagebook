@@ -107,8 +107,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
           height: 40,
           marginTop: 13,
           // backgroundColor: 'teal',
-        }}
-      >
+        }}>
         {info?.forHere === true && (
           <Pressable
             style={{
@@ -120,8 +119,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
             onPress={() => {
               setTabIdx(0);
               dispatch(setDeliveryType(2));
-            }}
-          >
+            }}>
             <View
               style={{
                 width: 70,
@@ -131,14 +129,12 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                 justifyContent: 'flex-end',
                 borderBottomWidth: tabIdx === 0 ? 2 : 0,
                 borderBottomColor: colors.borderColor22,
-              }}
-            >
+              }}>
               <TextSBold
                 style={{
                   fontSize: 17,
                   color: tabIdx === 0 ? colors.fontColor2 : colors.fontColorA2,
-                }}
-              >
+                }}>
                 먹고가기
               </TextSBold>
             </View>
@@ -156,8 +152,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               setTabIdx(1);
               dispatch(setDeliveryType(0));
               dispatch(setIsDeliveryStore(true));
-            }}
-          >
+            }}>
             <View
               style={{
                 borderBottomWidth: tabIdx === 1 ? 2 : 0,
@@ -167,14 +162,12 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                 alignItems: 'center',
                 justifyContent: 'flex-end',
                 paddingBottom: 9,
-              }}
-            >
+              }}>
               <TextSBold
                 style={{
                   fontSize: 17,
                   color: tabIdx === 1 ? colors.fontColor2 : colors.fontColorA2,
-                }}
-              >
+                }}>
                 배달하기
               </TextSBold>
             </View>
@@ -193,8 +186,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               setTabIdx(2);
               dispatch(setDeliveryType(1));
               dispatch(setIsDeliveryStore(false));
-            }}
-          >
+            }}>
             <View
               style={{
                 width: 70,
@@ -204,14 +196,12 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                 justifyContent: 'flex-end',
                 borderBottomWidth: tabIdx === 2 ? 2 : 0,
                 borderBottomColor: colors.borderColor22,
-              }}
-            >
+              }}>
               <TextSBold
                 style={{
                   fontSize: 17,
                   color: tabIdx === 2 ? colors.fontColor2 : colors.fontColorA2,
-                }}
-              >
+                }}>
                 포장하기
               </TextSBold>
             </View>
@@ -223,16 +213,14 @@ const MenuDescTab = ({info, navigation, routeData}) => {
           paddingHorizontal: 22,
           paddingTop: 20,
           flexDirection: 'row',
-        }}
-      >
+        }}>
         {tabIdx === 0 && (
           <>
             <View style={{flex: 1}}>
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     최소주문금액
                   </TextRegular>
                 </View>
@@ -243,8 +231,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     이용방법
                   </TextRegular>
                 </View>
@@ -255,8 +242,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     조리시간
                   </TextRegular>
                 </View>
@@ -267,8 +253,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     결제방법
                   </TextRegular>
                 </View>
@@ -279,8 +264,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10, flex: 1}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     위치안내
                   </TextRegular>
                 </View>
@@ -305,8 +289,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                   fontSize: 16,
                   color: colors.fontColor99,
                   marginVertical: 11,
-                }}
-              >
+                }}>
                 배달시간
               </TextRegular>
               <TextRegular style={{fontSize: 16, color: colors.fontColor99}}>
@@ -339,8 +322,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
                     marginLeft: 7,
                     justifyContent: 'center',
                     alignItems: 'center',
-                  }}
-                >
+                  }}>
                   <TextNotoM style={{fontSize: 12, color: colors.fontColor2}}>
                     자세히
                   </TextNotoM>
@@ -356,8 +338,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     최소주문금액
                   </TextRegular>
                 </View>
@@ -368,8 +349,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     이용방법
                   </TextRegular>
                 </View>
@@ -380,8 +360,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     {routeData.category === 'food' ? '조리시간' : '포장시간'}
                   </TextRegular>
                 </View>
@@ -392,8 +371,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     결제방법
                   </TextRegular>
                 </View>
@@ -404,15 +382,13 @@ const MenuDescTab = ({info, navigation, routeData}) => {
               <View style={{flexDirection: 'row', marginBottom: 10, flex: 1}}>
                 <View style={{width: 100}}>
                   <TextRegular
-                    style={{fontSize: 16, color: colors.fontColor99}}
-                  >
+                    style={{fontSize: 16, color: colors.fontColor99}}>
                     위치안내
                   </TextRegular>
                 </View>
                 <View style={{flex: 1}}>
                   <TextRegular
-                    style={{fontSize: 16, ...styles.subTitleTakeout}}
-                  >
+                    style={{fontSize: 16, ...styles.subTitleTakeout}}>
                     {info?.mb_addr1 + ' ' + info?.mb_addr2}
                   </TextRegular>
                 </View>
@@ -421,7 +397,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
           </>
         )}
       </View>
-
+      {/* 
       {(tabIdx === 0 || tabIdx === 2) && (
         <View
           style={{
@@ -484,7 +460,7 @@ const MenuDescTab = ({info, navigation, routeData}) => {
             </Pressable>
           </View>
         </View>
-      )}
+      )} */}
     </>
   );
 };
