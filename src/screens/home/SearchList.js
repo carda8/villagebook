@@ -110,38 +110,38 @@ const SearchList = ({navigation, JType, route}) => {
     }
   };
 
-  const _init = () => {
-    const data = {
-      item_count: 0,
-      limit_count: 20,
-      stx: keyword,
-      mb_jumju_type: JType,
-      mb_ca_sort: currentFilter + 1,
-      mb_lat: currentLocation.lat,
-      mb_lng: currentLocation.lon,
-    };
+  // const _init = () => {
+  //   const data = {
+  //     item_count: 0,
+  //     limit_count: 20,
+  //     stx: keyword,
+  //     mb_jumju_type: JType,
+  //     mb_ca_sort: currentFilter + 1,
+  //     mb_lat: currentLocation.lat,
+  //     mb_lng: currentLocation.lon,
+  //   };
 
-    if (JType === 'lifestyle') {
-      mutateSearchLifeStyle.mutate(data, {
-        onSuccess: e => {
-          if (e.result === 'true') {
-            let temp = e.data.arrItems;
-            dispatch(setSearchResult({type: JType, item: temp}));
-          }
-        },
-      });
-    } else {
-      mutateSearch.mutate(data, {
-        onSuccess: e => {
-          if (e.result === 'true') {
-            let temp = e.data.arrItems;
-            temp = temp.filter(item => item !== null);
-            dispatch(setSearchResult({type: JType, item: temp}));
-          }
-        },
-      });
-    }
-  };
+  //   if (JType === 'lifestyle') {
+  //     mutateSearchLifeStyle.mutate(data, {
+  //       onSuccess: e => {
+  //         if (e.result === 'true') {
+  //           let temp = e.data.arrItems;
+  //           dispatch(setSearchResult({type: JType, item: temp}));
+  //         }
+  //       },
+  //     });
+  //   } else {
+  //     mutateSearch.mutate(data, {
+  //       onSuccess: e => {
+  //         if (e.result === 'true') {
+  //           let temp = e.data.arrItems;
+  //           temp = temp.filter(item => item !== null);
+  //           dispatch(setSearchResult({type: JType, item: temp}));
+  //         }
+  //       },
+  //     });
+  //   }
+  // };
 
   // useEffect(() => {
   //   console.warn('food changed', foodResult);
