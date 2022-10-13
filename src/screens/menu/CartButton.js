@@ -30,7 +30,7 @@ const CartButton = ({
 }) => {
   const dispatch = useDispatch();
   const cartStore = useSelector(state => state.cartReducer);
-  const {isGuest} = useSelector(state => state.authReducer);
+  const {isGuest, userInfo} = useSelector(state => state.authReducer);
   const {deliveryType} = useSelector(state => state.deliveryReducer);
 
   // console.warn('deliveryData', deliveryData);
@@ -267,7 +267,7 @@ const CartButton = ({
     <Pressable
       onPress={() => {
         if (_checkMin()) {
-          if (!isGuest) {
+          if (!isGuest && userInfo) {
             _router();
           } else {
             _guestAlert(navigation);
@@ -277,14 +277,12 @@ const CartButton = ({
       style={{
         ...style.btnContainer,
         backgroundColor: _checkMin() ? colors.primary : colors.borderColor,
-      }}
-    >
+      }}>
       <View style={{...style.innerView}}>
         <View style={{flex: 1}} />
         <View style={{flex: 1, alignItems: 'center'}}>
           <TextBold
-            style={{color: _checkMin() ? 'white' : 'gray', fontSize: 16}}
-          >
+            style={{color: _checkMin() ? 'white' : 'gray', fontSize: 16}}>
             {goTo === 'OrderPage'
               ? '주문하기'
               : cartStore.mainCount.count + '개 담기'}
@@ -293,8 +291,7 @@ const CartButton = ({
 
         <View style={{flex: 1, alignItems: 'center'}}>
           <TextMedium
-            style={{color: _checkMin() ? 'white' : 'gray', fontSize: 16}}
-          >
+            style={{color: _checkMin() ? 'white' : 'gray', fontSize: 16}}>
             {goTo === 'OrderPage'
               ? replaceString(lastPrice)
               : ' ' + replaceString(cartStore.totalPrice) + '원'}

@@ -24,8 +24,7 @@ const CategoryView = ({navigation, route}) => {
   const selectedCategory = route.params?.selectedCategory;
   const [categoryData, setCategoryData] = useState();
   const {mutateGetAddress} = useCustomMutation();
-  const {userInfo} = useSelector(state => state.authReducer);
-  const {isGuest} = useSelector(state => state.authReducer);
+  const {userInfo, isGuest} = useSelector(state => state.authReducer);
   const [addr, setAddr] = useState();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
@@ -140,7 +139,7 @@ const CategoryView = ({navigation, route}) => {
       <View style={{paddingHorizontal: 14, marginBottom: 17}}>
         <Pressable
           onPress={() => {
-            if (!isGuest) {
+            if (!isGuest && userInfo) {
               navigation.navigate('AddressMain');
             } else {
               _guestAlert(navigation);

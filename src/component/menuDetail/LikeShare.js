@@ -103,19 +103,17 @@ const LikeShare = ({
     <View
       style={{
         flexDirection: 'row',
-      }}
-    >
+      }}>
       <Pressable
         hitSlop={10}
         onPress={() => {
-          if (!isGuest) {
+          if (!isGuest && userInfo) {
             _onPressLike();
           } else {
             _guestAlert(navigation);
           }
         }}
-        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}
-      >
+        style={{flexDirection: 'row', marginRight: 15, alignItems: 'center'}}>
         <Image
           source={
             like === 'Y'
@@ -131,13 +129,12 @@ const LikeShare = ({
       <Pressable
         hitSlop={10}
         onPress={() => {
-          if (!isGuest) {
+          if (!isGuest && userInfo) {
             _share();
           } else {
             _guestAlert(navigation);
           }
-        }}
-      >
+        }}>
         <Image
           source={require('~/assets/top_share_w.png')}
           style={{width: 30, height: 30, tintColor: 'black'}}

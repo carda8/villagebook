@@ -34,7 +34,7 @@ import {setCurrentAdd, setPostData} from '../../store/reducers/AddressReducer';
 
 const Main = ({navigation}) => {
   const dispatch = useDispatch();
-  const {userInfo} = useSelector(state => state.authReducer);
+  const {userInfo, isGuest} = useSelector(state => state.authReducer);
   // const {postData} = useSelector(state => state.addressReducer);
   const {savedItem} = useSelector(state => state.cartReducer);
   const {mutateGetAddress, mutateGetCompanyInfo} = useCustomMutation();
@@ -42,8 +42,6 @@ const Main = ({navigation}) => {
   const [toggleInfo, setToggleInfo] = useState(false);
   const [addr, setAddr] = useState();
   const isFocused = useIsFocused();
-
-  const {isGuest} = useSelector(state => state.authReducer);
 
   const _getAddr = () => {
     const data = {
@@ -135,7 +133,7 @@ const Main = ({navigation}) => {
           }}>
           <Pressable
             onPress={() => {
-              if (!isGuest) {
+              if (!isGuest && userInfo) {
                 navigation.navigate('AddressMain');
               } else {
                 _guestAlert(navigation);
@@ -333,7 +331,12 @@ const Main = ({navigation}) => {
         </View>
 
         {/* 약관 */}
-        <View style={{paddingHorizontal: 14, backgroundColor: 'white'}}>
+        <View
+          style={{
+            paddingHorizontal: 14,
+            backgroundColor: 'white',
+            paddingBottom: toggleInfo ? 20 : 80,
+          }}>
           <View
             style={{
               flexDirection: 'row',
@@ -392,7 +395,7 @@ const Main = ({navigation}) => {
               resizeMode={'contain'}
             />
           </Pressable>
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -403,7 +406,7 @@ const Main = ({navigation}) => {
               (주)어스닉은 통신판매중개자이며, 따라서 (주)어스닉은 상품,
               거래정보 및 거래에 대하여 책임을 지지 않습니다.
             </TextRegular>
-          </View>
+          </View> */}
           {toggleInfo && (
             <>
               <View
