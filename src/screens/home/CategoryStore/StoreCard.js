@@ -1,4 +1,11 @@
-import {View, Text, Pressable, Image, useWindowDimensions} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  Image,
+  useWindowDimensions,
+  Platform,
+} from 'react-native';
 import React, {useState} from 'react';
 import {Shadow} from 'react-native-shadow-2';
 import {setIsLifeStyle} from '../../../store/reducers/CategoryReducer';
@@ -40,23 +47,28 @@ const StoreCard = ({item, navigation, routeData}) => {
     // >
     <View
       style={{
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 1,
-        },
-        shadowOpacity: 0.22,
-        shadowRadius: 2.22,
+        ...Platform.select({
+          ios: {
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
+          },
+        }),
 
-        elevation: 3,
         marginVertical: 7,
         marginHorizontal: 14,
-      }}
-    >
+      }}>
       <View
-        style={{borderRadius: 10, flex: 1}}
-        onLayout={e => setTemp(e.nativeEvent.layout.height)}
-      >
+        style={{
+          borderRadius: 10,
+          flex: 1,
+          elevation: Platform.OS === 'android' ? 2 : undefined,
+        }}
+        onLayout={e => setTemp(e.nativeEvent.layout.height)}>
         <Pressable
           onPress={() => {
             console.log('code', storeInfo.mb_jumju_code);
@@ -86,15 +98,13 @@ const StoreCard = ({item, navigation, routeData}) => {
             // marginVertical: 11,
             borderRadius: 10,
             backgroundColor: 'white',
-          }}
-        >
+          }}>
           <View
             style={{
               height: IMG_HEIGHT,
               borderRadius: 10,
               flexDirection: 'row',
-            }}
-          >
+            }}>
             <View
               style={{
                 flex: 1,
@@ -105,8 +115,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                   storeInfo.store_image?.length === 1 ? 10 : null,
                 // borderBottomLeftRadius: 10,
                 overflow: 'hidden',
-              }}
-            >
+              }}>
               {!item?.section?.isOpen && routeData.category !== 'lifestyle' && (
                 <>
                   <ImageCover text={true} />
@@ -123,16 +132,14 @@ const StoreCard = ({item, navigation, routeData}) => {
                 <View
                   style={{
                     width: layout.width * 0.24,
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       flex: 1,
                       borderTopRightRadius: 10,
                       marginBottom: 1,
                       overflow: 'hidden',
-                    }}
-                  >
+                    }}>
                     {!item?.section?.isOpen &&
                       routeData.category !== 'lifestyle' && <ImageCover />}
 
@@ -152,8 +159,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                       flex: 1,
                       // borderBottomRightRadius: 10,
                       overflow: 'hidden',
-                    }}
-                  >
+                    }}>
                     {!item?.section?.isOpen &&
                       routeData.category !== 'lifestyle' && (
                         <>
@@ -180,15 +186,13 @@ const StoreCard = ({item, navigation, routeData}) => {
               flex: 1,
               // justifyContent: 'flex-end',
               padding: 10,
-            }}
-          >
+            }}>
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-              }}
-            >
+              }}>
               <View style={{flex: 1}}>
                 <View
                   style={{
@@ -196,24 +200,21 @@ const StoreCard = ({item, navigation, routeData}) => {
                     // marginBottom: 5,
                     flexDirection: 'row',
                     alignItems: 'center',
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       flex: 1,
                       flexDirection: 'row',
                       alignItems: 'flex-end',
                       marginRight: 20,
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         width: '100%',
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                      }}
-                    >
+                      }}>
                       <View style={{}}>
                         <Text
                           style={{
@@ -221,8 +222,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                             fontSize: 16,
                           }}
                           ellipsizeMode="tail"
-                          numberOfLines={1}
-                        >
+                          numberOfLines={1}>
                           {storeInfo.mb_company}
                         </Text>
                       </View>
@@ -234,8 +234,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                             color: colors.fontColorA2,
                             fontSize: 12,
                             marginLeft: 5,
-                          }}
-                        >
+                          }}>
                           {storeInfo.mb_jongmog}
                         </TextRegular>
                       </View>
@@ -263,8 +262,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                         marginRight: 5,
-                      }}
-                    >
+                      }}>
                       <Image
                         source={require('~/assets/top_heart_on.png')}
                         style={{width: 20, height: 20, marginRight: 5}}
@@ -281,8 +279,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <View style={{}}>
                     <TextRegular
-                      style={{color: colors.fontColorA2, fontSize: 12}}
-                    >
+                      style={{color: colors.fontColorA2, fontSize: 12}}>
                       {storeInfo.distance}
                     </TextRegular>
                   </View>
@@ -295,8 +292,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                         color: colors.fontColorA,
                       }}
                       ellipsizeMode="tail"
-                      numberOfLines={1}
-                    >
+                      numberOfLines={1}>
                       {storeInfo?.mb_addr1} {storeInfo?.mb_addr2}
                     </Text>
                   </View>
@@ -308,12 +304,10 @@ const StoreCard = ({item, navigation, routeData}) => {
                 style={{
                   marginTop: 2,
                   // flexDirection: 'row',
-                }}
-              >
+                }}>
                 <TextRegular
                   numberOfLines={1}
-                  style={{color: colors.fontColorA2, fontSize: 12}}
-                >
+                  style={{color: colors.fontColorA2, fontSize: 12}}>
                   {storeInfo?.mb_opening_hours2}
                 </TextRegular>
               </View>
@@ -364,8 +358,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                       // flex: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         width: 50,
@@ -376,8 +369,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                         borderRadius: 5,
                         marginTop: 4,
                         marginRight: 10,
-                      }}
-                    >
+                      }}>
                       <TextMedium style={{fontSize: 12, color: 'white'}}>
                         포장하기
                       </TextMedium>
@@ -390,8 +382,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                         // justifyContent: 'center',
-                      }}
-                    >
+                      }}>
                       {storeInfo.cooking_time ? (
                         <>
                           <Image
@@ -408,14 +399,12 @@ const StoreCard = ({item, navigation, routeData}) => {
                       )}
 
                       <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
                         최소 주문{' '}
                       </TextRegular>
 
                       <TextRegular
-                        style={{color: colors.fontColor2, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColor2, fontSize: 12}}>
                         {replaceString(storeInfo.minPriceWrap)}원{' '}
                       </TextRegular>
                     </View>
@@ -432,8 +421,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                       // flex: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         width: 50,
@@ -444,8 +432,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                         borderRadius: 5,
                         marginTop: 4,
                         marginRight: 10,
-                      }}
-                    >
+                      }}>
                       <TextMedium style={{fontSize: 12, color: 'white'}}>
                         먹고가기
                       </TextMedium>
@@ -456,8 +443,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                         flexWrap: 'wrap',
                         flexDirection: 'row',
                         alignItems: 'center',
-                      }}
-                    >
+                      }}>
                       {storeInfo.cooking_time ? (
                         <>
                           <Image
@@ -474,14 +460,12 @@ const StoreCard = ({item, navigation, routeData}) => {
                       )}
 
                       <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
                         최소 주문{' '}
                       </TextRegular>
 
                       <TextRegular
-                        style={{color: colors.fontColor2, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColor2, fontSize: 12}}>
                         {replaceString(storeInfo.minPriceForHere)}원{' '}
                       </TextRegular>
                     </View>
@@ -494,8 +478,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                       // flex: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
                         width: 50,
@@ -506,8 +489,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                         borderRadius: 5,
                         marginTop: 4,
                         marginRight: 10,
-                      }}
-                    >
+                      }}>
                       <TextMedium style={{fontSize: 12, color: 'white'}}>
                         포장하기
                       </TextMedium>
@@ -518,8 +500,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                         flexWrap: 'wrap',
                         flexDirection: 'row',
                         alignItems: 'center',
-                      }}
-                    >
+                      }}>
                       {storeInfo.cooking_time ? (
                         <>
                           <Image
@@ -536,14 +517,12 @@ const StoreCard = ({item, navigation, routeData}) => {
                       )}
 
                       <TextRegular
-                        style={{color: colors.fontColorA2, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColorA2, fontSize: 12}}>
                         최소 주문{' '}
                       </TextRegular>
 
                       <TextRegular
-                        style={{color: colors.fontColor2, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColor2, fontSize: 12}}>
                         {replaceString(storeInfo.minPriceWrap)}원{' '}
                       </TextRegular>
 
@@ -569,8 +548,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                   flexDirection: 'row',
                   // alignItems: 'center',
                   // justifyContent: 'center',
-                }}
-              >
+                }}>
                 <View
                   style={{
                     width: 50,
@@ -581,8 +559,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                     borderRadius: 5,
                     marginTop: 4,
                     marginRight: 10,
-                  }}
-                >
+                  }}>
                   <TextMedium style={{fontSize: 12, color: 'white'}}>
                     배달하기
                   </TextMedium>
@@ -591,16 +568,14 @@ const StoreCard = ({item, navigation, routeData}) => {
                   style={{
                     flex: 1,
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
                       flex: 1,
                       flexWrap: 'wrap',
-                    }}
-                  >
+                    }}>
                     {storeInfo.delivery_time ? (
                       <>
                         <Image
@@ -617,14 +592,12 @@ const StoreCard = ({item, navigation, routeData}) => {
                     )}
 
                     <TextRegular
-                      style={{color: colors.fontColorA2, fontSize: 12}}
-                    >
+                      style={{color: colors.fontColorA2, fontSize: 12}}>
                       최소 주문{' '}
                     </TextRegular>
 
                     <TextRegular
-                      style={{color: colors.fontColor2, fontSize: 12}}
-                    >
+                      style={{color: colors.fontColor2, fontSize: 12}}>
                       {replaceString(storeInfo.minPrice)}원{' '}
                     </TextRegular>
                   </View>
@@ -636,17 +609,14 @@ const StoreCard = ({item, navigation, routeData}) => {
                       flex: 1,
                       flexWrap: 'wrap',
                       marginLeft: 8,
-                    }}
-                  >
+                    }}>
                     <Dot />
                     <TextRegular
-                      style={{color: colors.fontColorA2, fontSize: 12}}
-                    >
+                      style={{color: colors.fontColorA2, fontSize: 12}}>
                       배달팁{' '}
                     </TextRegular>
                     <TextRegular
-                      style={{color: colors.fontColor6, fontSize: 12}}
-                    >
+                      style={{color: colors.fontColor6, fontSize: 12}}>
                       {replaceString(storeInfo.tipFrom)}원~
                       {replaceString(storeInfo.tipTo)}원
                     </TextRegular>
@@ -661,8 +631,7 @@ const StoreCard = ({item, navigation, routeData}) => {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                }}
-              >
+                }}>
                 <Chip
                   coupon={storeInfo.coupon}
                   newStore={storeInfo.new}
