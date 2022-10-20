@@ -22,7 +22,7 @@ const BottomBar = ({navigation}) => {
   const dispatch = useDispatch();
   const layout = useWindowDimensions();
   const width = layout.width / 5;
-  console.warn('userINFOOOOO', userInfo);
+  // console.warn('userINFOOOOO', userInfo);
 
   return (
     <View style={{...styles.bottomBar}}>

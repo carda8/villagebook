@@ -52,7 +52,7 @@ export const API = axios.create({
 
 export const ImageAPI = axios.create({
   baseURL,
-  timeout: 5000,
+  timeout: 10000,
   timeoutErrorMessage: '###### IMAGE API REQ/REP TIMEOUT',
   headers: {'Content-Type': 'multipart/form-data;charset=UTF-8'},
 

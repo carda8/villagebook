@@ -157,7 +157,7 @@ const Map = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <Header
+      {/* <Header
         title={!isStore ? '주소 설정' : '가게 위치'}
         navigation={navigation}
       />
@@ -180,10 +180,10 @@ const Map = ({navigation, route}) => {
             resizeMode="contain"
           />
         )}
-      </View>
+      </View> */}
       <NaverMapView
         animateToCoordinates={e => console.log('e:::::::', e)}
-        style={{width: '100%', height: layout.height - (isStore ? 57 : 187)}}
+        style={{width: '100%', height: layout.height}}
         zoomControl={false}
         scaleBar={false}
         showsMyLocationButton={true}
@@ -199,24 +199,43 @@ const Map = ({navigation, route}) => {
             setPosition({latitude: e.latitude, longitude: e.longitude});
             _convertCoor({lon: e.longitude, lat: e.latitude});
           }
+          console.log('e', e);
         }}
         onMapClick={e => {
           // setPosition({latitude: e.latitude, longitude: e.longitude});
           // _convertCoor({lon: e.longitude, lat: e.latitude});
           // setPosition({latitude: e.latitude, longitude: e.longitude});
-        }}
-      >
-        {isStore && (
-          <Marker
-            animateToCoordinate={e => {
-              console.log('anime', e);
-            }}
-            coordinate={position}
-            onClick={() => console.log('onClick! p0')}
-          />
-        )}
+        }}>
+        {/* <Marker
+          animateToCoordinate={e => {
+            console.log('anime', e);
+          }}
+          coordinate={position}
+          onClick={() => console.log('onClick! p0')}
+        /> */}
+        <Marker
+          // animateToCoordinate={e => {
+          //   console.log('anime', e);
+          // }}
+          coordinate={{latitude: 35.2451603, longitude: 129.086871}}
+          onClick={() => console.log('onClick! p0')}
+        />
+        <Marker
+          // animateToCoordinate={e => {
+          //   console.log('anime', e);
+          // }}
+          coordinate={{latitude: 35.2450603, longitude: 129.076871}}
+          onClick={() => console.log('onClick! p0')}
+        />
+        <Marker
+          // animateToCoordinate={e => {
+          //   console.log('anime', e);
+          // }}
+          coordinate={{latitude: 35.2430603, longitude: 129.074871}}
+          onClick={() => console.log('onClick! p0')}
+        />
       </NaverMapView>
-      {!isStore && (
+      {/* {!isStore && (
         <>
           <View
             style={{
@@ -241,8 +260,7 @@ const Map = ({navigation, route}) => {
                   elevation: 10,
                 },
               }),
-            }}
-          >
+            }}>
             <Text style={{fontSize: 15}}>
               {console.log('converted', converted)}
               {converted
@@ -266,8 +284,7 @@ const Map = ({navigation, route}) => {
                   height: 50,
                   borderRadius: 10,
                   padding: 10,
-                }}
-              ></TextInput>
+                }}></TextInput>
               <Pressable
                 onPress={() => {
                   if (converted) {
@@ -283,14 +300,13 @@ const Map = ({navigation, route}) => {
                   backgroundColor: colors.primary,
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}
-              >
+                }}>
                 <TextBold style={{color: 'white', fontSize: 17}}>저장</TextBold>
               </Pressable>
             </View>
           </View>
         </>
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

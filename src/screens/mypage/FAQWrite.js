@@ -72,26 +72,30 @@ const FAQWrite = ({navigation, route}) => {
     });
   };
 
-  console.log('imgs', imageUrl);
-
-  const _setProfileImage = () => {
+  const _setProfileImage = async () => {
     if (fsImage.length === 5)
-      return customAlert('알림', '리뷰 사진은 최대 5장 등록가능합니다.');
+      return customAlert('알림', '문의 사진은 최대 5장 등록가능합니다.');
 
-    ImageCropPicker.openCamera({
-      compressImageMaxHeight: 3000,
-      compressImageMaxWidth: 2000,
+    const image = await ImageCropPicker.openCamera({
+      forceJpg: true,
+      multiple: true,
+      mediaType: 'photo',
+      // compressImageQuality: 0.5,
+      compressImageMaxHeight: 2700,
+      compressImageMaxWidth: 1800,
       // cropping: true,
-    }).then(image => {
+    });
+    await ImageCropPicker.clean();
+    if (image) {
       let temp = image.path.split('.');
       const convert = {
-        uri: image.path,
-        name: image.modificationDate + '.' + temp[temp.length - 1],
-        type: image.mime,
+        uri: image?.path,
+        name: image?.modificationDate + '.' + temp[temp.length - 1],
+        type: image?.mime,
       };
       console.log('convert', convert);
       console.log('image :', image);
-      setModalPic(!modalPic);
+
       setFsImage(prev => [...prev, convert]);
       setImageUrl(prev => [
         ...prev,
@@ -105,15 +109,15 @@ const FAQWrite = ({navigation, route}) => {
           url: convert.uri,
         },
       ]);
-      // <Image source={{uri}}/>
-      // imageUrls={[{originSizeKb, originUrl, sizeKb, }]}
-    });
+
+      setModalPic(false);
+    }
+    // imageUrls={[{originSizeKb, originUrl, sizeKb, }]}
   };
 
   const _setProfileImageFromLocal = () => {
     if (fsImage.length === 5)
       return customAlert('알림', '리뷰 사진은 최대 5장 등록가능합니다.');
-
     ImageCropPicker.openPicker({}).then(image => {
       let temp = image.path.split('.');
       const convert = {
@@ -124,6 +128,8 @@ const FAQWrite = ({navigation, route}) => {
       console.log('convert', convert);
       console.log('image :', image);
       setModalPic(!modalPic);
+      // let tempFs = JSON.parse(JSON.stringify(fsImage));
+      // setFsImage();
       setFsImage(prev => [...prev, convert]);
       setImageUrl(prev => [...prev, {uri: convert.uri}]);
     });
@@ -286,13 +292,14 @@ const FAQWrite = ({navigation, route}) => {
       </ScrollView>
 
       <Modal
-        saveToLocalByLongPress={false}
         visible={modal}
-        onRequestClose={() => setModal(!modal)}>
+        onRequestClose={() => setModal(!modal)}
+        transparent>
         <ImageViewer
           imageUrls={imageUrl}
-          enablePreload
-          useNativeDriver
+          saveToLocalByLongPress={false}
+          enablePreload={true}
+          useNativeDriver={true}
           renderHeader={() => (
             <Pressable
               hitSlop={20}
