@@ -15,6 +15,7 @@ import {customAlert} from './CustomAlert';
 import {_guestAlert} from '../config/utils/modules';
 import {Shadow} from 'react-native-shadow-2';
 import {setIsLifeStyle} from '../store/reducers/CategoryReducer';
+import colors from '../styles/colors';
 
 const BottomBar = ({navigation}) => {
   const {current} = useSelector(state => state.btBarReducer);
@@ -46,7 +47,7 @@ const BottomBar = ({navigation}) => {
               ? require('~/assets/bottom_ic02_on.png')
               : require('~/assets/bottom_ic02_on.png')
           }
-          style={{width, height: 60}}
+          style={{width, height: 60, tintColor: colors.primary}}
           resizeMode="contain"
         />
       </Pressable>
@@ -66,7 +67,7 @@ const BottomBar = ({navigation}) => {
               ? require('~/assets/bottom_ic03_on.png')
               : require('~/assets/bottom_ic03_on.png')
           }
-          style={{width, height: 60}}
+          style={{width, height: 60, tintColor: colors.primary}}
           resizeMode="contain"
         />
       </Pressable>
@@ -76,7 +77,10 @@ const BottomBar = ({navigation}) => {
         hitSlop={10}
         onPress={() => {
           dispatch(setCurrent(0));
-          navigation.navigate('Main');
+          navigation.navigate('CategoryView', {
+            selectedCategory: 'lifestyle',
+          });
+          // navigation.navigate('Main');
         }}>
         <Image
           source={require('~/assets/bottom_ic06.png')}
@@ -85,6 +89,7 @@ const BottomBar = ({navigation}) => {
             width: layout.width / 4,
             height: 62,
             top: -10,
+            // tintColor: colors.primary,
             // borderWidth: 2,
           }}
         />
@@ -109,7 +114,7 @@ const BottomBar = ({navigation}) => {
               ? require('~/assets/bottom_ic04_on.png')
               : require('~/assets/bottom_ic04_on.png')
           }
-          style={{width, height: 60}}
+          style={{width, height: 60, tintColor: colors.primary}}
           resizeMode="contain"
         />
       </Pressable>
@@ -130,7 +135,7 @@ const BottomBar = ({navigation}) => {
               : require('~/assets/bottom_ic05_on.png')
           }
           resizeMode="contain"
-          style={{width, height: 60}}
+          style={{width, height: 60, tintColor: colors.primary}}
         />
       </Pressable>
     </View>

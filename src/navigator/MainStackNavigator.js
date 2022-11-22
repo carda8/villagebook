@@ -58,7 +58,7 @@ import localStorageConfig from '../store/localStorage/localStorageConfig';
 import Loading from '../component/Loading';
 import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {setFcmToken, setUserInfo} from '../store/reducers/AuthReducer';
 import PaymentMain from '../screens/payment/PaymentMain';
 import {Errorhandler} from '../config/ErrorHandler';
@@ -67,8 +67,6 @@ import {useCustomMutation} from '../hooks/useCustomMutation';
 import LifeStyleStoreInfo from '../screens/lifeStyle/LifeStyleStoreInfo';
 import AddressMain from '../screens/home/AddressMain';
 import AddressSetDetail from '../screens/home/AddressSetDetail';
-import SNSLogin from '../screens/login/SNSLogin';
-import {customAlert} from '../component/CustomAlert';
 import {useGeoLocation} from '../hooks/useGeoLocation';
 import DeliveryTipInfo from '../screens/menu/DeliveryTipInfo';
 import CouponSelect from '../screens/menu/orderDetail/CouponSelect';
@@ -82,6 +80,7 @@ import dynamicLinks from '@react-native-firebase/dynamic-links';
 import MenuDetail2 from '../screens/menu/MenuDetail2';
 import IamCertification from '../screens/IamCertification';
 import MenuDetail3 from '../screens/menu/MenuDetail3';
+import CouponBookMain from '../screens/couponbook/CouponBookMain';
 const Stack = createNativeStackNavigator();
 
 const MainStackNavigator = () => {
@@ -185,7 +184,7 @@ const MainStackNavigator = () => {
           console.log('mutateSNSlogin result :::', e);
           if (userInfo) {
             dispatch(setUserInfo(userInfo));
-            setInitRoute('Main');
+            setInitRoute('CategoryView');
           } else setInitRoute('Login');
         },
       });
@@ -421,7 +420,11 @@ const MainStackNavigator = () => {
         <Stack.Screen name="AddressMain" component={AddressMain} />
         <Stack.Screen name="AddressSetDetail" component={AddressSetDetail} />
 
-        <Stack.Screen name="CategoryView" component={CategoryView} />
+        <Stack.Screen
+          name="CategoryView"
+          component={CategoryView}
+          initialParams={{selectedCategory: 'lifestyle'}}
+        />
         <Stack.Screen name="StoreList" component={StoreList} />
         <Stack.Screen name="LikeMain" component={LikeMain} />
         <Stack.Screen name="OrderList" component={OrderList} />
@@ -484,6 +487,9 @@ const MainStackNavigator = () => {
         <Stack.Screen name="PushSetting" component={PushSetting} />
 
         <Stack.Screen name="IamCertification" component={IamCertification} />
+
+        {/* 쿠폰북 추가 22.11.22 */}
+        <Stack.Screen name="CouponBookMain" component={CouponBookMain} />
 
         <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>

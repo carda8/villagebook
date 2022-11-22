@@ -1,8 +1,12 @@
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
+import {Platform} from 'react-native';
+import {useWindowDimensions} from 'react-native';
 import {FlatList, Image, Text, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Pressable} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {Shadow} from 'react-native-shadow-2';
 import {useMutation} from 'react-query';
 import {useDispatch, useSelector} from 'react-redux';
 import mainAPI from '../../api/modules/mainAPI';
@@ -14,40 +18,70 @@ import SearchBox from '../../component/mainScreen/SearchBox';
 import TextEBold from '../../component/text/TextEBold';
 import TextMedium from '../../component/text/TextMedium';
 import BannerList from '../../config/BannerList';
+import {Errorhandler} from '../../config/ErrorHandler';
 import {_guestAlert} from '../../config/utils/modules';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 const CategoryView = ({navigation, route}) => {
   const selectedCategory = route.params?.selectedCategory;
   const [categoryData, setCategoryData] = useState();
+  const [foodData, setFoodData] = useState([]);
+  const [marketData, setMarketData] = useState([]);
+
   const {mutateGetAddress} = useCustomMutation();
   const {userInfo, isGuest} = useSelector(state => state.authReducer);
   const [addr, setAddr] = useState();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
+  const layout = useWindowDimensions();
 
   const mutateCategory = useMutation(mainAPI._getCategory, {
     onSuccess: e => {
       if (e.result === 'true') {
-        console.log('e', e);
-        console.log('LENGHT OF ITEMS', e.data.arrItems.length);
         let temp = e.data.arrItems;
-        let isNumTrue = e.data.arrItems.length % 5;
-        // if (isNumTrue != 0) {
-        //   console.log('IS NUM', isNumTrue);
-        //   for (let i = isNumTrue; i < 5; i++) {
-        //     temp.push('');
-        //   }
-        //   console.log('TEMP ::', temp);
-        // }
+        temp.push({
+          ca_name: '동네북 오더',
+          ca_img: require('~/assets/food_icon.png'),
+        });
+        temp.push({
+          ca_name: '순간이동 마켓',
+          ca_img: require('~/assets/market_icon.png'),
+        });
+        console.log('temppp', temp);
         setCategoryData(temp);
       } else setCategoryData([]);
     },
   });
-  console.log('selectedCategory', selectedCategory);
+
+  const mutateFood = useMutation(mainAPI._getCategory, {
+    onSuccess: e => {
+      if (e.result === 'true') {
+        let temp = e.data.arrItems;
+        console.log('food data', temp);
+        setFoodData(temp);
+      }
+    },
+    onError: err => {
+      Errorhandler(err);
+    },
+  });
+  const mutateMarket = useMutation(mainAPI._getCategory, {
+    onSuccess: e => {
+      if (e.result === 'true') {
+        let temp = e.data.arrItems;
+        console.log('market temp', temp);
+        setMarketData(temp);
+      }
+    },
+    onError: err => {
+      Errorhandler(err);
+    },
+  });
+
   const _getAddr = () => {
     const data = {
       mt_id: userInfo.mt_id,
@@ -72,6 +106,16 @@ const CategoryView = ({navigation, route}) => {
       ca_type: selectedCategory,
     };
     mutateCategory.mutate(data);
+
+    const data2 = {
+      ca_type: 'food',
+    };
+    mutateFood.mutate(data2);
+
+    const data3 = {
+      ca_type: 'market',
+    };
+    mutateMarket.mutate(data3);
   };
 
   useEffect(() => {
@@ -83,6 +127,7 @@ const CategoryView = ({navigation, route}) => {
   }, [isFocused]);
 
   const renderItem = item => {
+    const caName = item.item.ca_name;
     return (
       <>
         <Pressable
@@ -93,8 +138,18 @@ const CategoryView = ({navigation, route}) => {
               else dispatch(setIsLifeStyle(false));
               navigation.navigate('StoreList', {
                 routeIdx: item.item.ca_name,
-                category: selectedCategory,
-                categoryData: categoryData,
+                category:
+                  caName === '동네북 오더'
+                    ? 'food'
+                    : caName === '순간이동 마켓'
+                    ? 'market'
+                    : selectedCategory,
+                categoryData:
+                  caName === '동네북 오더'
+                    ? foodData
+                    : caName === '순간이동 마켓'
+                    ? marketData
+                    : categoryData,
               });
             }
           }}
@@ -106,7 +161,13 @@ const CategoryView = ({navigation, route}) => {
           }}>
           <View style={{width: 80, alignItems: 'center'}}>
             <Image
-              source={{uri: item.item.ca_img}}
+              source={
+                caName === '동네북 오더'
+                  ? require('~/assets/food_icon.png')
+                  : caName === '순간이동 마켓'
+                  ? require('~/assets/market_icon.png')
+                  : {uri: item.item.ca_img}
+              }
               style={{width: 55, height: 55}}
               resizeMode="contain"
             />
@@ -115,7 +176,7 @@ const CategoryView = ({navigation, route}) => {
                 textAlign: 'center',
                 fontSize: 13,
               }}>
-              {item.item.ca_name}
+              {caName}
             </TextMedium>
           </View>
         </Pressable>
@@ -154,9 +215,14 @@ const CategoryView = ({navigation, route}) => {
           }}>
           <Image
             source={require('~/assets/ico_location.png')}
-            style={{width: 19, height: 19, marginRight: 8}}
+            style={{
+              width: 19,
+              height: 19,
+              marginRight: 8,
+              tintColor: colors.primary,
+            }}
           />
-          <View style={{marginLeft: 10, marginRight: 3}}>
+          <View style={{marginLeft: 0, marginRight: 3}}>
             <TextEBold
               numberOfLines={1}
               style={{
@@ -198,21 +264,44 @@ const CategoryView = ({navigation, route}) => {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => <Loading />}
         ListHeaderComponent={
-          <MainBanner
-            navigation={navigation}
-            style={{marginBottom: 17}}
-            position={BannerList[`${selectedCategory}`]}
-          />
+          <View style={{}}>
+            <MainBanner
+              navigation={navigation}
+              style={{
+                marginBottom: 17,
+              }}
+              position={BannerList[`${selectedCategory}`]}
+            />
+            {/* <Shadow> */}
+            <Pressable
+              onPress={() => {
+                navigation.navigate('CouponBookMain', {data: categoryData});
+              }}
+              style={{
+                alignItems: 'center',
+                marginBottom: 10,
+              }}>
+              <Shadow distance={5} offset={[0, 1]} style={{borderRadius: 10}}>
+                {/* <View style={{height: 100}}> */}
+                <AutoHeightImage
+                  source={require('~/assets/coupon.png')}
+                  width={layout.width - 28}
+                />
+                {/* </View> */}
+              </Shadow>
+            </Pressable>
+            {/* </Shadow> */}
+          </View>
         }
         renderItem={item => renderItem(item)}
         numColumns={4}
         contentContainerStyle={{
-          paddingHorizontal: 14,
           paddingBottom: 70,
         }}
         columnWrapperStyle={{
           alignSelf: 'center',
           marginBottom: 10,
+          paddingHorizontal: 14,
         }}
         keyExtractor={(item, index) => index}
       />
@@ -222,3 +311,9 @@ const CategoryView = ({navigation, route}) => {
 };
 
 export default CategoryView;
+
+const styles = StyleSheet.create({
+  bookStyle: {
+    flex: 1,
+  },
+});

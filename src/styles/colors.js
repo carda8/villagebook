@@ -1,5 +1,6 @@
 export default {
-  primary: '#20ABC8',
+  // primary: '#20ABC8',
+  primary: '#00C2FF',
   fontColorA: '#AAAAAA',
   fontColorA2: '#A2A2A2',
   fontColor6: '#666666',

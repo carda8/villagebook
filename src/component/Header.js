@@ -129,13 +129,17 @@ const Header = ({
               });
             } else {
               if (!showLogo && navigation.canGoBack()) navigation.goBack();
-              else navigation.navigate('Main');
+              else
+                navigation.navigate('CategoryView', {
+                  selectedCategory: 'lifestyle',
+                });
+              // else navigation.navigate('Main');
             }
           }}>
           {showLogo ? (
             <Image
               source={require('~/assets/logo.png')}
-              style={{height: 23, width: 94}}
+              style={{height: 23, width: 94, tintColor: '#00C2FF'}}
               resizeMode={'contain'}
             />
           ) : (

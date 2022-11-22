@@ -35,16 +35,17 @@ const OrderFinish = ({navigation, route}) => {
       <SafeAreaView style={{flex: 0, backgroundColor: 'white'}} />
       <SafeAreaView
         edges={['bottom', 'left', 'right']}
-        style={{...commonStyles.safeAreaStyle, backgroundColor: colors.primary}}
-      >
+        style={{
+          ...commonStyles.safeAreaStyle,
+          backgroundColor: colors.primary,
+        }}>
         <ScrollView style={{backgroundColor: 'white'}}>
           <View
             style={{
               paddingHorizontal: 22,
               paddingTop: 20,
               paddingBottom: 100,
-            }}
-          >
+            }}>
             <View style={{alignItems: 'center'}}>
               <Image
                 source={require('~/assets/top_ic_map_on.png')}
@@ -63,23 +64,20 @@ const OrderFinish = ({navigation, route}) => {
                   borderRadius: 10,
                   padding: 10,
                   marginVertical: 10,
-                }}
-              >
+                }}>
                 <View style={{flexDirection: 'row'}}>
                   <Image
                     source={{uri: orderData.store_logo}}
                     style={{width: 80, height: 80, borderRadius: 10}}
                   />
                   <View
-                    style={{marginLeft: 10, justifyContent: 'space-evenly'}}
-                  >
+                    style={{marginLeft: 10, justifyContent: 'space-evenly'}}>
                     <TextBold numberOfLines={1}>
                       {orderData.store_name}
                     </TextBold>
                     <TextRegular
                       style={{color: colors.fontColorA, fontSize: 12}}
-                      numberOfLines={2}
-                    >
+                      numberOfLines={2}>
                       {orderData.od_it_name}
                     </TextRegular>
                   </View>
@@ -94,8 +92,7 @@ const OrderFinish = ({navigation, route}) => {
                   borderColor: colors.borderColor,
                   paddingBottom: 10,
                   paddingHorizontal: 10,
-                }}
-              >
+                }}>
                 <View style={{alignItems: 'center', flex: 1}}>
                   <View style={{marginVertical: 10}}>
                     <TextBold style={{fontSize: 16, color: colors.primary}}>
@@ -117,8 +114,7 @@ const OrderFinish = ({navigation, route}) => {
                   style={{
                     marginVertical: 10,
                     alignItems: 'center',
-                  }}
-                >
+                  }}>
                   <TextRegular style={{color: colors.fontColor2, fontSize: 12}}>
                     {'<추가선택>'}
                   </TextRegular>
@@ -127,16 +123,14 @@ const OrderFinish = ({navigation, route}) => {
                       item.sub.map((item, index) => (
                         <View key={item + '_' + index}>
                           <TextRegular
-                            style={{color: colors.fontColorA, fontSize: 12}}
-                          >
+                            style={{color: colors.fontColorA, fontSize: 12}}>
                             {item.itemCategory} : {item.itemName}
                           </TextRegular>
                         </View>
                       ))
                     ) : (
                       <TextRegular
-                        style={{color: colors.fontColorA, fontSize: 12}}
-                      >
+                        style={{color: colors.fontColorA, fontSize: 12}}>
                         없음
                       </TextRegular>
                     )}
@@ -157,7 +151,10 @@ const OrderFinish = ({navigation, route}) => {
         <View style={{flex: 1}}>
           <Pressable
             onPress={() => {
-              navigation.navigate('Main');
+              navigation.navigate('CategoryView', {
+                selectedCategory: 'lifestyle',
+              });
+              // navigation.navigate('Main');
             }}
             style={{
               height: 50,
@@ -169,8 +166,7 @@ const OrderFinish = ({navigation, route}) => {
               position: 'absolute',
               bottom: 0,
               // top: layout.height - 50,
-            }}
-          >
+            }}>
             <TextMedium style={{color: 'white', fontSize: 17}}>
               메인화면으로 이동
             </TextMedium>

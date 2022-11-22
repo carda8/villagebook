@@ -4,6 +4,7 @@ import commonStyles from '../../styles/commonStyle';
 import Postcode from '@actbase/react-daum-postcode';
 import {useDispatch, useSelector} from 'react-redux';
 import {setPostData} from '../../store/reducers/AddressReducer';
+import axios from 'axios';
 
 const AddressSearch = ({navigation, route}) => {
   const fromOrder = route.params?.fromWriteOrder;
@@ -15,7 +16,7 @@ const AddressSearch = ({navigation, route}) => {
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <Postcode
         style={{flex: 1}}
-        jsOptions={{animation: true}}
+        jsOptions={{animation: true, showMoreHName: true}}
         onSelected={data => {
           console.log('post data', data);
           if (fromOrder) {

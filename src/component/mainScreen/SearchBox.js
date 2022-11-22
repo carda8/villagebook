@@ -126,8 +126,7 @@ const SearchBox = ({
           borderColor: colors.primary,
           borderRadius: 18,
           alignItems: 'center',
-        }}
-      >
+        }}>
         <TextInput
           // editable={isMain || isSub ? false : true}
           style={{
@@ -165,14 +164,13 @@ const SearchBox = ({
             height: 40,
             borderRadius: 10,
             right: 10,
-            backgroundColor: colors.primary,
+            // backgroundColor: colors.primary,
             justifyContent: 'center',
             alignItems: 'center',
-          }}
-        >
+          }}>
           <Image
             source={require('~/assets/ico_search.png')}
-            style={{width: 18, height: 18}}
+            style={{width: 23, height: 23, tintColor: colors.primary}}
           />
         </Pressable>
       </Pressable>

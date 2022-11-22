@@ -139,7 +139,7 @@ const AddressMain = ({navigation, route}) => {
           <View style={{marginRight: 20}}>
             <Image
               source={require('~/assets/ico_location.png')}
-              style={{width: 20, height: 20}}
+              style={{width: 20, height: 20, tintColor: colors.primary}}
             />
           </View>
           <View

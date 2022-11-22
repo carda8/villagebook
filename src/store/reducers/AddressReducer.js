@@ -6,6 +6,7 @@ const addressSlice = createSlice({
     trigger: false,
     currentAdd: '',
     postData: {addrId: '', addrMain: '', addrSub: '', zipCode: ''},
+    userCoor: {x: '', y: ''},
   },
   reducers: {
     setCurrentAdd: (state, action) => {
@@ -17,9 +18,12 @@ const addressSlice = createSlice({
     setTrigger: (state, action) => {
       state.trigger = action.payload;
     },
+    setUserCoor: (state, action) => {
+      state.userCoor = action.payload;
+    },
   },
 });
 
 const {actions, reducer} = addressSlice;
-export const {setCurrentAdd, setPostData, setTrigger} = actions;
+export const {setCurrentAdd, setPostData, setTrigger, setUserCoor} = actions;
 export const addressReducer = reducer;

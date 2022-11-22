@@ -137,7 +137,10 @@ const Map = ({navigation, route}) => {
       onSuccess: e => {
         if (e.result === 'true') {
           customAlert('알림', '우리동네 등록이 완료되었습니다.');
-          navigation.navigate('Main');
+          navigation.navigate('CategoryView', {
+            selectedCategory: 'lifestyle',
+          });
+          // navigation.navigate('Main');
           dispatch(
             setPostData({
               ...postData,
@@ -157,7 +160,7 @@ const Map = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      {/* <Header
+      <Header
         title={!isStore ? '주소 설정' : '가게 위치'}
         navigation={navigation}
       />
@@ -168,19 +171,23 @@ const Map = ({navigation, route}) => {
           alignItems: 'center',
           justifyContent: 'center',
           alignSelf: 'center',
-          top: layout.height / 2 - 87,
+          top: layout.height / 2 + 4,
           zIndex: 100,
           // opacity: 0.5,
-        }}
-      >
+        }}>
         {!isStore && (
           <Image
             source={require('~/assets/ico_location.png')}
-            style={{width: 50, height: 50, zIndex: 100}}
+            style={{
+              width: 50,
+              height: 50,
+              zIndex: 100,
+              tintColor: colors.primary,
+            }}
             resizeMode="contain"
           />
         )}
-      </View> */}
+      </View>
       <NaverMapView
         animateToCoordinates={e => console.log('e:::::::', e)}
         style={{width: '100%', height: layout.height}}
@@ -202,40 +209,19 @@ const Map = ({navigation, route}) => {
           console.log('e', e);
         }}
         onMapClick={e => {
-          // setPosition({latitude: e.latitude, longitude: e.longitude});
-          // _convertCoor({lon: e.longitude, lat: e.latitude});
-          // setPosition({latitude: e.latitude, longitude: e.longitude});
+          setPosition({latitude: e.latitude, longitude: e.longitude});
+          _convertCoor({lon: e.longitude, lat: e.latitude});
+          setPosition({latitude: e.latitude, longitude: e.longitude});
         }}>
-        {/* <Marker
+        <Marker
           animateToCoordinate={e => {
             console.log('anime', e);
           }}
           coordinate={position}
           onClick={() => console.log('onClick! p0')}
-        /> */}
-        <Marker
-          // animateToCoordinate={e => {
-          //   console.log('anime', e);
-          // }}
-          coordinate={{latitude: 35.2451603, longitude: 129.086871}}
-          onClick={() => console.log('onClick! p0')}
-        />
-        <Marker
-          // animateToCoordinate={e => {
-          //   console.log('anime', e);
-          // }}
-          coordinate={{latitude: 35.2450603, longitude: 129.076871}}
-          onClick={() => console.log('onClick! p0')}
-        />
-        <Marker
-          // animateToCoordinate={e => {
-          //   console.log('anime', e);
-          // }}
-          coordinate={{latitude: 35.2430603, longitude: 129.074871}}
-          onClick={() => console.log('onClick! p0')}
         />
       </NaverMapView>
-      {/* {!isStore && (
+      {!isStore && (
         <>
           <View
             style={{
@@ -306,7 +292,7 @@ const Map = ({navigation, route}) => {
             </View>
           </View>
         </>
-      )} */}
+      )}
     </SafeAreaView>
   );
 };

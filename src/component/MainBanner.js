@@ -19,8 +19,6 @@ const MainBanner = ({navigation, style, position}) => {
     const data = {
       bn_position: position !== 'lifestyle' ? position : '동네편의',
     };
-    console.log('_getBanner_getBanner', data);
-
     //market, food
     // jumju_id: routeData.jumju_id,
     // jumju_code: routeData.jumju_code,
@@ -37,13 +35,11 @@ const MainBanner = ({navigation, style, position}) => {
           // console.log('fail');
           // setBannerImg([]);
         }
-        console.log('e', e);
       },
     });
   };
 
   const _onPressBanner = item => {
-    console.log('itme', item);
     switch (item?.bn_link_type) {
       case 'food':
         dispatch(setIsLifeStyle(false));
@@ -96,8 +92,7 @@ const MainBanner = ({navigation, style, position}) => {
           borderRadius: 10,
           backgroundColor: colors.mainBG3,
           ...style,
-        }}
-      ></View>
+        }}></View>
     );
 
   return (
@@ -124,14 +119,12 @@ const MainBanner = ({navigation, style, position}) => {
               justifyContent: 'center',
               backgroundColor: 'rgba(22, 22, 22, 0.57)',
               position: 'absolute',
-            }}
-          >
+            }}>
             <TextRegular style={{color: 'white'}}>
               {index + 1}/{total}
             </TextRegular>
           </View>
-        )}
-      >
+        )}>
         {bannerImg.map((item, idx) => (
           <Pressable
             key={idx}
@@ -144,17 +137,19 @@ const MainBanner = ({navigation, style, position}) => {
             style={{
               flex: 1,
               backgroundColor: colors.mainBG3,
-              borderRadius: 10,
+              // borderRadius: 10,
+              borderRadius: 0,
               overflow: 'hidden',
-            }}
-          >
+            }}>
             <FastImage
               source={{uri: item.bn_img}}
               style={{
                 flex: 1,
-                maxWidth: layout.width - 28,
+                // maxWidth: layout.width - 28,
+                maxWidth: layout.width,
                 maxHeight: 140,
-                borderRadius: 10,
+                // borderRadius: 10,
+                borderRadius: 0,
               }}
               resizeMode={FastImage.resizeMode.cover}
             />
