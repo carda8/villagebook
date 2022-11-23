@@ -26,7 +26,7 @@ import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-const CategoryView = ({navigation, route}) => {
+const FoodScreen = ({navigation, route}) => {
   const selectedCategory = route.params?.selectedCategory;
   const [categoryData, setCategoryData] = useState();
   const [foodData, setFoodData] = useState([]);
@@ -44,17 +44,33 @@ const CategoryView = ({navigation, route}) => {
     onSuccess: e => {
       if (e.result === 'true') {
         let temp = e.data.arrItems;
-        temp.push({
-          ca_name: '동네북 오더',
-          ca_img: require('~/assets/food_icon.png'),
-        });
-        temp.push({
-          ca_name: '순간이동 마켓',
-          ca_img: require('~/assets/market_icon.png'),
-        });
-        console.log('temppp', temp);
         setCategoryData(temp);
       } else setCategoryData([]);
+    },
+  });
+
+  const mutateFood = useMutation(mainAPI._getCategory, {
+    onSuccess: e => {
+      if (e.result === 'true') {
+        let temp = e.data.arrItems;
+        console.log('food data', temp);
+        setFoodData(temp);
+      }
+    },
+    onError: err => {
+      Errorhandler(err);
+    },
+  });
+  const mutateMarket = useMutation(mainAPI._getCategory, {
+    onSuccess: e => {
+      if (e.result === 'true') {
+        let temp = e.data.arrItems;
+        console.log('market temp', temp);
+        setMarketData(temp);
+      }
+    },
+    onError: err => {
+      Errorhandler(err);
     },
   });
 
@@ -83,12 +99,7 @@ const CategoryView = ({navigation, route}) => {
     };
     mutateCategory.mutate(data);
   };
-  const _onPressBook = () => {
-    let temp = [];
-    temp.push({ca_id: '111', ca_name: '전체'});
-    temp.push(...categoryData);
-    navigation.navigate('CouponBookMain', {data: temp});
-  };
+
   useEffect(() => {
     _init();
   }, [cateRoute]);
@@ -107,21 +118,28 @@ const CategoryView = ({navigation, route}) => {
               if (selectedCategory === 'lifestyle')
                 dispatch(setIsLifeStyle(true));
               else dispatch(setIsLifeStyle(false));
-              if (caName === '동네북 오더') {
-                return navigation.navigate('FoodScreen', {
-                  selectedCategory: 'food',
-                });
-              }
-              if (caName === '순간이동 마켓')
-                return navigation.navigate('MarketScreen', {
-                  selectedCategory: 'market',
-                });
 
               navigation.navigate('StoreList', {
                 routeIdx: item.item.ca_name,
                 category: selectedCategory,
                 categoryData: categoryData,
               });
+
+              // navigation.navigate('StoreList', {
+              //   routeIdx: item.item.ca_name,
+              //   category:
+              //     caName === '동네북 오더'
+              //       ? 'food'
+              //       : caName === '순간이동 마켓'
+              //       ? 'market'
+              //       : selectedCategory,
+              //   categoryData:
+              //     caName === '동네북 오더'
+              //       ? foodData
+              //       : caName === '순간이동 마켓'
+              //       ? marketData
+              //       : categoryData,
+              // });
             }
           }}
           style={{
@@ -244,23 +262,21 @@ const CategoryView = ({navigation, route}) => {
               position={BannerList[`${selectedCategory}`]}
             />
             {/* <Shadow> */}
-            <Pressable
+            {/* <Pressable
               onPress={() => {
-                _onPressBook();
+                navigation.navigate('CouponBookMain', {data: categoryData});
               }}
               style={{
                 alignItems: 'center',
                 marginBottom: 10,
               }}>
-              <Shadow distance={5} offset={[0, 1]} style={{borderRadius: 10}}>
-                {/* <View style={{height: 100}}> */}
+              <Shadow distance={5} offset={[0, 1]} style={{borderRadius: 10}}>                
                 <AutoHeightImage
                   source={require('~/assets/coupon.png')}
                   width={layout.width - 28}
-                />
-                {/* </View> */}
+                />                
               </Shadow>
-            </Pressable>
+            </Pressable> */}
             {/* </Shadow> */}
           </View>
         }
@@ -281,7 +297,7 @@ const CategoryView = ({navigation, route}) => {
   );
 };
 
-export default CategoryView;
+export default FoodScreen;
 
 const styles = StyleSheet.create({
   bookStyle: {

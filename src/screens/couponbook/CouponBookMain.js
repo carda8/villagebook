@@ -13,6 +13,11 @@ import {Pressable} from 'react-native';
 import {_guestAlert} from '../../config/utils/modules';
 import {ScrollView} from 'react-native';
 import TextRegular from '../../component/text/TextRegular';
+import TextSBold from '../../component/text/TextSBold';
+import {FlatList} from 'react-native';
+import TextBold from '../../component/text/TextBold';
+import {Platform} from 'react-native';
+import {Shadow} from 'react-native-shadow-2';
 
 // onPress={() => {
 //     if (!isGuest && userInfo) {
@@ -25,10 +30,23 @@ import TextRegular from '../../component/text/TextRegular';
 const CouponBookMain = ({navigation, route}) => {
   const {mutateGetAddress} = useCustomMutation();
   const {userInfo, isGuest} = useSelector(state => state.authReducer);
-  const data = route.params?.data;
-  console.log('book data', data);
-  const [addr, setAddr] = useState();
   const isFocused = useIsFocused();
+
+  const [addr, setAddr] = useState();
+  const [filterCate, setFilterCate] = useState('전체');
+  const [filterSub, setFilterSub] = useState('추천순');
+  const [couponList, setCouponList] = useState([1, 1, 1, 1, 1, 1, 1, 1, 1]);
+
+  const data = route.params?.data;
+
+  const filterList = [
+    '추천순',
+    '인기순',
+    '기간 마감 임박 순',
+    '개수 마감 임박 순',
+  ];
+
+  console.log('book data', data);
 
   const _getAddr = () => {
     const data = {
@@ -49,8 +67,33 @@ const CouponBookMain = ({navigation, route}) => {
     });
   };
 
+  const _onPressCate = item => {
+    console.log('item', item);
+    setFilterCate(item.ca_name);
+  };
+
+  const _onPressSub = item => {
+    setFilterSub(item);
+  };
+
+  const renderItem = item => {
+    return (
+      <Shadow distance={5} offset={[0, 2]} style={{width: '100%'}}>
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: colors.primary,
+            borderRadius: 10,
+            height: 100,
+            backgroundColor: 'white',
+            marginBottom: 15,
+          }}></View>
+      </Shadow>
+    );
+  };
+
   useEffect(() => {
-    if (isFocused) _getAddr();
+    _getAddr();
   }, [isFocused]);
 
   return (
@@ -116,6 +159,9 @@ const CouponBookMain = ({navigation, route}) => {
       {/* 
         END 쿠폰북 헤더 
         */}
+      {/* 
+       카테고리 필터 스크롤
+        */}
       <View
         style={{
           flexDirection: 'row',
@@ -123,35 +169,137 @@ const CouponBookMain = ({navigation, route}) => {
           marginTop: 10,
           marginHorizontal: 14,
         }}>
-        <ScrollView
-          horizontal
-          style={{}}
-          showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {data.map(
             (item, index) =>
               index < data.length - 2 && (
                 <Pressable
+                  hitSlop={3}
+                  key={item.ca_id}
+                  onPress={() => {
+                    _onPressCate(item);
+                  }}
                   style={{
                     height: 25,
                     alignItems: 'center',
                     justifyContent: 'center',
                     paddingHorizontal: 13,
                     borderWidth: 1,
-                    borderColor: colors.colorE3,
+                    borderColor:
+                      item.ca_name === filterCate
+                        ? colors.primary
+                        : colors.colorE3,
+                    backgroundColor:
+                      item.ca_name === filterCate ? colors.primary : 'white',
                     borderRadius: 30,
                     marginRight: 10,
                   }}>
-                  <TextRegular>{item.ca_name}</TextRegular>
+                  <TextRegular
+                    style={{
+                      color:
+                        item.ca_name === filterCate
+                          ? 'white'
+                          : colors.fontColor2,
+                    }}>
+                    {item.ca_name}
+                  </TextRegular>
                 </Pressable>
               ),
           )}
         </ScrollView>
+
         <Image
           source={require('~/assets/down_arrow.png')}
           style={{width: 23, height: 23}}
           resizeMode="contain"
         />
       </View>
+      {/* 
+        END 카테고리 필터 스크롤
+        */}
+
+      {/* 
+      필터 스크롤 
+      */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{
+          marginTop: 10,
+          marginBottom: 10,
+          marginHorizontal: 14,
+          height: 25,
+        }}
+        contentContainerStyle={{height: 25}}>
+        {filterList.map(
+          (item, index) =>
+            index < data.length - 2 && (
+              <Pressable
+                hitSlop={3}
+                key={item + index}
+                onPress={() => {
+                  _onPressSub(item);
+                }}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: 15,
+                  flexDirection: 'row',
+                }}>
+                <View
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: 6 / 2,
+                    backgroundColor:
+                      item === filterSub ? colors.primary : colors.fontColorA,
+                    marginRight: 5,
+                  }}
+                />
+                {item === filterSub ? (
+                  <TextSBold
+                    style={{
+                      color:
+                        item === filterSub
+                          ? colors.fontColor2
+                          : colors.fontColorA,
+                    }}>
+                    {item}
+                  </TextSBold>
+                ) : (
+                  <TextRegular
+                    style={{
+                      color:
+                        item === filterSub
+                          ? colors.fontColor2
+                          : colors.fontColorA,
+                    }}>
+                    {item}
+                  </TextRegular>
+                )}
+              </Pressable>
+            ),
+        )}
+      </ScrollView>
+      <FlatList
+        data={couponList}
+        keyExtractor={(item, index) => index}
+        overScrollMode={'never'}
+        contentContainerStyle={{
+          paddingTop: 15,
+          paddingHorizontal: 14,
+          paddingBottom: 20,
+        }}
+        ListEmptyComponent={
+          <View style={{alignItems: 'center', marginBottom: '60%'}}>
+            <TextBold style={{fontSize: 33}}>아직 준비중입니다!</TextBold>
+          </View>
+        }
+        renderItem={item => renderItem(item)}
+      />
+      {/*
+      END 필터 스크롤 
+      */}
     </SafeAreaView>
   );
 };

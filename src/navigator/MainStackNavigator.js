@@ -81,6 +81,8 @@ import MenuDetail2 from '../screens/menu/MenuDetail2';
 import IamCertification from '../screens/IamCertification';
 import MenuDetail3 from '../screens/menu/MenuDetail3';
 import CouponBookMain from '../screens/couponbook/CouponBookMain';
+import MarketScreen from '../screens/home/MarketScreen';
+import FoodScreen from '../screens/home/FoodScreen';
 const Stack = createNativeStackNavigator();
 
 const MainStackNavigator = () => {
@@ -488,8 +490,13 @@ const MainStackNavigator = () => {
 
         <Stack.Screen name="IamCertification" component={IamCertification} />
 
-        {/* 쿠폰북 추가 22.11.22 */}
+        {/*
+         쿠폰북 추가 22.11.22 
+         푸드, 마켓 스크린 별도로 분리하여 추가
+        */}
         <Stack.Screen name="CouponBookMain" component={CouponBookMain} />
+        <Stack.Screen name="FoodScreen" component={FoodScreen} />
+        <Stack.Screen name="MarketScreen" component={MarketScreen} />
 
         <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>

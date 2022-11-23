@@ -77,8 +77,13 @@ const Login = ({navigation}) => {
         dispatch(setIsGuest(false));
         dispatch(setUserInfo(e.data.arrItems));
         navigation.reset({
-          routes: [{name: 'Main'}],
+          routes: [
+            {name: 'CategoryView', params: {selectedCategory: 'lifestyle'}},
+          ],
         });
+        // navigation.reset({
+        //   routes: [{name: 'Main'}],
+        // });
       }
     },
   });
@@ -157,8 +162,13 @@ const Login = ({navigation}) => {
             dispatch(setIsGuest(false));
             dispatch(setUserInfo(e.data.arrItems));
             navigation.reset({
-              routes: [{name: 'Main'}],
+              routes: [
+                {name: 'CategoryView', params: {selectedCategory: 'lifestyle'}},
+              ],
             });
+            // navigation.reset({
+            //   routes: [{name: 'Main'}],
+            // });
           } catch (err) {
             Errorhandler(err);
           }
@@ -201,8 +211,13 @@ const Login = ({navigation}) => {
             dispatch(setIsGuest(false));
             dispatch(setUserInfo(e.data.arrItems));
             navigation.reset({
-              routes: [{name: 'Main'}],
+              routes: [
+                {name: 'CategoryView', params: {selectedCategory: 'lifestyle'}},
+              ],
             });
+            // navigation.reset({
+            //   routes: [{name: 'Main'}],
+            // });
           } catch (err) {
             Errorhandler(err);
           }
@@ -271,8 +286,16 @@ const Login = ({navigation}) => {
               await AuthStorageModuel._setItemUserId(e.data.arrItems.mt_id);
               dispatch(setIsGuest(false));
               dispatch(setUserInfo(e.data.arrItems));
+              // navigation.reset({
+              //   routes: [{name: 'Main'}],
+              // });
               navigation.reset({
-                routes: [{name: 'Main'}],
+                routes: [
+                  {
+                    name: 'CategoryView',
+                    params: {selectedCategory: 'lifestyle'},
+                  },
+                ],
               });
             } catch (err) {
               Errorhandler(err);
@@ -286,8 +309,11 @@ const Login = ({navigation}) => {
   const _guestLogin = () => {
     dispatch(setIsGuest(true));
     navigation.reset({
-      routes: [{name: 'Main'}],
+      routes: [{name: 'CategoryView', params: {selectedCategory: 'lifestyle'}}],
     });
+    // navigation.navigate('CategoryView', {
+    //   selectedCategory: 'lifestyle',
+    // });
   };
 
   useEffect(() => {
