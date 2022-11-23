@@ -18,6 +18,10 @@ import {FlatList} from 'react-native';
 import TextBold from '../../component/text/TextBold';
 import {Platform} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
+import TextLight from '../../component/text/TextLight';
+import TextMedium from '../../component/text/TextMedium';
+import {useWindowDimensions} from 'react-native';
+import {Alert} from 'react-native';
 
 // onPress={() => {
 //     if (!isGuest && userInfo) {
@@ -35,7 +39,22 @@ const CouponBookMain = ({navigation, route}) => {
   const [addr, setAddr] = useState();
   const [filterCate, setFilterCate] = useState('전체');
   const [filterSub, setFilterSub] = useState('추천순');
-  const [couponList, setCouponList] = useState([1, 1, 1, 1, 1, 1, 1, 1, 1]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [cateList, setCateList] = useState([]);
+  const [couponList, setCouponList] = useState([
+    '카페 드 비니',
+    '주니뷰티',
+    '백색소음',
+    '개미상회',
+    '카페 드 비니',
+    '주니뷰티',
+    '백색소음',
+    '개미상회',
+    '카페 드 비니',
+    '주니뷰티',
+    '백색소음',
+    '개미상회',
+  ]);
 
   const data = route.params?.data;
 
@@ -45,8 +64,6 @@ const CouponBookMain = ({navigation, route}) => {
     '기간 마감 임박 순',
     '개수 마감 임박 순',
   ];
-
-  console.log('book data', data);
 
   const _getAddr = () => {
     const data = {
@@ -76,6 +93,10 @@ const CouponBookMain = ({navigation, route}) => {
     setFilterSub(item);
   };
 
+  const _openFilter = () => {
+    setIsOpen(!isOpen);
+  };
+
   const renderItem = item => {
     return (
       <Shadow distance={5} offset={[0, 2]} style={{width: '100%'}}>
@@ -87,8 +108,115 @@ const CouponBookMain = ({navigation, route}) => {
             height: 100,
             backgroundColor: 'white',
             marginBottom: 15,
-          }}></View>
+            flexDirection: 'row',
+            paddingVertical: 10,
+            // alignItems: 'center',
+            paddingHorizontal: 10,
+          }}>
+          <Image
+            source={require('~/assets/no_use_img.png')}
+            style={{height: 80, width: 80}}
+            resizeMode="contain"
+          />
+          <View
+            style={{
+              flex: 1,
+              marginLeft: 10,
+              justifyContent: 'space-between',
+            }}>
+            <TextMedium style={{color: colors.fontColor3}}>
+              {item.item}
+            </TextMedium>
+            <TextBold
+              style={{fontSize: 16, color: colors.fontColor2}}
+              numberOfLines={2}>
+              {item.item} 50% 할인쿠폰
+            </TextBold>
+            <TextLight style={{color: colors.fontColorA}}>
+              {'2022년 12월 31일까지'}
+            </TextLight>
+          </View>
+          <View
+            style={{
+              width: 1,
+              height: 60,
+              backgroundColor: colors.primary,
+              alignSelf: 'center',
+              marginRight: 5,
+            }}
+          />
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Image
+              source={require('~/assets/down_coupon.png')}
+              style={{width: 45, height: 45}}
+              resizeMode="contain"
+            />
+            <TextLight style={{fontSize: 12}}>
+              {item.index + 1}개 남음
+            </TextLight>
+          </View>
+        </View>
       </Shadow>
+    );
+  };
+
+  const layout = useWindowDimensions();
+  const WIDTH = layout.width - 28;
+  const num = data.length % 4;
+  const convert = index => {
+    // if(index > data.length - 4)    )
+    if (num !== 0) {
+      return layout.width / 5 / 5;
+      // if (data.length - index < 4 && data.length - index > 0) {
+      // }
+    }
+  };
+  const _popData = () => {
+    let temp = data;
+    if (temp.length > 1 && filterCate) {
+      temp.pop();
+      temp.pop();
+    }
+    return temp;
+  };
+
+  useEffect(() => {
+    console.log(data);
+    setCateList(data);
+  }, []);
+
+  const renderOpenItem = item => {
+    const items = item.item;
+    // console.log('items', items);
+    return (
+      <Pressable
+        hitSlop={3}
+        onPress={() => {
+          _onPressCate(items);
+        }}
+        style={{
+          // flex: windo,
+          width: layout.width / 4.6,
+          height: 25,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingHorizontal: 3,
+          borderWidth: 1,
+          borderColor:
+            items.ca_name === filterCate ? colors.primary : colors.colorE3,
+          backgroundColor:
+            items.ca_name === filterCate ? colors.primary : 'white',
+          borderRadius: 30,
+          marginRight: 7,
+        }}>
+        <TextRegular
+          style={{
+            color: items.ca_name === filterCate ? 'white' : colors.fontColor2,
+            fontSize: 13,
+          }}>
+          {items.ca_name}
+        </TextRegular>
+      </Pressable>
     );
   };
 
@@ -148,12 +276,29 @@ const CouponBookMain = ({navigation, route}) => {
               style={{width: 17, height: 17}}
             />
           </Pressable>
-          <View style={{}}>
+
+          <Pressable
+            hitSlop={10}
+            style={{marginRight: 12}}
+            onPress={() => {
+              Alert.alert('', '아직 준비중입니다!');
+            }}>
             <Image
               source={require('~/assets/ico_search.png')}
               style={{width: 23, height: 23, tintColor: colors.primary}}
             />
-          </View>
+          </Pressable>
+
+          <Pressable
+            hitSlop={10}
+            onPress={() => {
+              Alert.alert('', '아직 준비중입니다!');
+            }}>
+            <Image
+              source={require('~/assets/bar.png')}
+              style={{width: 27, height: 27, tintColor: colors.primary}}
+            />
+          </Pressable>
         </View>
       </View>
       {/* 
@@ -167,53 +312,131 @@ const CouponBookMain = ({navigation, route}) => {
           flexDirection: 'row',
           alignItems: 'center',
           marginTop: 10,
-          marginHorizontal: 14,
         }}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {data.map(
-            (item, index) =>
-              index < data.length - 2 && (
-                <Pressable
-                  hitSlop={3}
-                  key={item.ca_id}
-                  onPress={() => {
-                    _onPressCate(item);
-                  }}
-                  style={{
-                    height: 25,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingHorizontal: 13,
-                    borderWidth: 1,
-                    borderColor:
-                      item.ca_name === filterCate
-                        ? colors.primary
-                        : colors.colorE3,
-                    backgroundColor:
-                      item.ca_name === filterCate ? colors.primary : 'white',
-                    borderRadius: 30,
-                    marginRight: 10,
-                  }}>
-                  <TextRegular
+        {!isOpen ? (
+          <>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{marginHorizontal: 14}}>
+              {data.map(
+                (item, index) =>
+                  index < data.length - 2 && (
+                    <Pressable
+                      hitSlop={3}
+                      key={item.ca_id}
+                      onPress={() => {
+                        _onPressCate(item);
+                      }}
+                      style={{
+                        height: 25,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingHorizontal: 13,
+                        borderWidth: 1,
+                        borderColor:
+                          item.ca_name === filterCate
+                            ? colors.primary
+                            : colors.colorE3,
+                        backgroundColor:
+                          item.ca_name === filterCate
+                            ? colors.primary
+                            : 'white',
+                        borderRadius: 30,
+                        marginRight: 10,
+                      }}>
+                      <TextRegular
+                        style={{
+                          color:
+                            item.ca_name === filterCate
+                              ? 'white'
+                              : colors.fontColor2,
+                        }}>
+                        {item.ca_name}
+                      </TextRegular>
+                    </Pressable>
+                  ),
+              )}
+            </ScrollView>
+            <Pressable
+              hitSlop={5}
+              style={{marginRight: 14}}
+              onPress={() => {
+                _openFilter();
+              }}>
+              <Image
+                source={require('~/assets/down_arrow.png')}
+                style={{width: 23, height: 23}}
+                resizeMode="contain"
+              />
+            </Pressable>
+          </>
+        ) : (
+          <View style={{zIndex: 100}}>
+            <FlatList
+              data={cateList}
+              keyExtractor={(item, index) => index}
+              renderItem={item => renderOpenItem(item)}
+              numColumns={4}
+              style={{
+                flex: 1,
+                position: 'absolute',
+                backgroundColor: 'white',
+                zIndex: 100,
+                width: '100%',
+              }}
+              columnWrapperStyle={{
+                flex: 1,
+                marginBottom: 7,
+                marginLeft: 14,
+              }}
+              ListFooterComponent={
+                <Shadow distance={1} offset={[0, 1]} style={{width: '100%'}}>
+                  <Pressable
+                    onPress={() => setIsOpen(!isOpen)}
                     style={{
-                      color:
-                        item.ca_name === filterCate
-                          ? 'white'
-                          : colors.fontColor2,
+                      backgroundColor: 'white',
+                      width: '100%',
+                      height: 60,
+                      marginBottom: 10,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderTopWidth: 1,
+                      borderBottomWidth: 1,
+                      borderColor: colors.borderColor,
+                      flexDirection: 'row',
                     }}>
-                    {item.ca_name}
-                  </TextRegular>
-                </Pressable>
-              ),
-          )}
-        </ScrollView>
-
-        <Image
-          source={require('~/assets/down_arrow.png')}
-          style={{width: 23, height: 23}}
-          resizeMode="contain"
-        />
+                    <TextSBold style={{color: colors.fontColor2, fontSize: 16}}>
+                      접어두기
+                    </TextSBold>
+                    <Image
+                      source={require('~/assets/down_arrow.png')}
+                      style={{
+                        width: 26,
+                        height: 26,
+                        transform: [{rotate: '180deg'}],
+                      }}
+                      resizeMode="contain"
+                    />
+                  </Pressable>
+                </Shadow>
+              }
+            />
+          </View>
+        )}
       </View>
+
+      {/* <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
+            {data.map((item, index) => (
+              <View
+                style={{
+                  flex: 1 / 4,
+                  marginRight: 5,
+                  height: 60,
+                  backgroundColor: 'teal',
+                }}></View>
+            ))}
+          </View> */}
       {/* 
         END 카테고리 필터 스크롤
         */}
@@ -221,19 +444,19 @@ const CouponBookMain = ({navigation, route}) => {
       {/* 
       필터 스크롤 
       */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={{
-          marginTop: 10,
-          marginBottom: 10,
-          marginHorizontal: 14,
-          height: 25,
-        }}
-        contentContainerStyle={{height: 25}}>
-        {filterList.map(
-          (item, index) =>
-            index < data.length - 2 && (
+      {!isOpen && (
+        <>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{
+              marginTop: 10,
+              marginBottom: 10,
+              marginHorizontal: 14,
+              height: 25,
+            }}
+            contentContainerStyle={{height: 25}}>
+            {filterList.map((item, index) => (
               <Pressable
                 hitSlop={3}
                 key={item + index}
@@ -278,15 +501,19 @@ const CouponBookMain = ({navigation, route}) => {
                   </TextRegular>
                 )}
               </Pressable>
-            ),
-        )}
-      </ScrollView>
+            ))}
+          </ScrollView>
+        </>
+      )}
+
       <FlatList
-        data={couponList}
-        keyExtractor={(item, index) => index}
+        data={[]}
         overScrollMode={'never'}
+        keyExtractor={(item, index) => index}
+        showsVerticalScrollIndicator={false}
+        renderItem={item => renderItem(item)}
         contentContainerStyle={{
-          paddingTop: 15,
+          paddingTop: 10,
           paddingHorizontal: 14,
           paddingBottom: 20,
         }}
@@ -295,8 +522,30 @@ const CouponBookMain = ({navigation, route}) => {
             <TextBold style={{fontSize: 33}}>아직 준비중입니다!</TextBold>
           </View>
         }
-        renderItem={item => renderItem(item)}
       />
+      <Shadow
+        distance={4}
+        offset={[0, 1]}
+        style={{width: 90, height: 40}}
+        containerStyle={{position: 'absolute', bottom: 30, right: 14}}>
+        <Pressable
+          hitSlop={5}
+          onPress={() => {
+            Alert.alert('', '아직 준비중입니다!');
+          }}
+          style={{
+            borderRadius: 40,
+            width: 90,
+            height: 40,
+            backgroundColor: colors.primary,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <TextRegular style={{color: 'white', fontSize: 17}}>
+            지도보기
+          </TextRegular>
+        </Pressable>
+      </Shadow>
       {/*
       END 필터 스크롤 
       */}

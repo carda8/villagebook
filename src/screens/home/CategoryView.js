@@ -87,6 +87,8 @@ const CategoryView = ({navigation, route}) => {
     let temp = [];
     temp.push({ca_id: '111', ca_name: '전체'});
     temp.push(...categoryData);
+    temp.pop();
+    temp.pop();
     navigation.navigate('CouponBookMain', {data: temp});
   };
   useEffect(() => {

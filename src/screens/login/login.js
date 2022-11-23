@@ -335,7 +335,12 @@ const Login = ({navigation}) => {
         contentContainerStyle={{paddingBottom: 20}}>
         <View style={{flex: 1, alignItems: 'center', marginTop: '17%'}}>
           <FastImage
-            style={{width: 221, height: 54, marginBottom: 20}}
+            style={{
+              width: 221,
+              height: 54,
+              marginBottom: 20,
+            }}
+            tintColor={colors.primary}
             source={require('../../assets/logo.png')}
             resizeMode={FastImage.resizeMode.contain}
           />

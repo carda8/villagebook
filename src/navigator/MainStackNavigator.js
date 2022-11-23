@@ -223,10 +223,10 @@ const MainStackNavigator = () => {
   };
 
   const config = {
-    initialRouteName: 'Main',
+    initialRouteName: 'CategoryView',
     screens: {
       Login: 'login',
-      Main: 'main',
+      // Main: 'main',
       MenuDetail2: {
         path: '/main/:category/:jumju_id/:jumju_code/:link',
       },
@@ -494,7 +494,11 @@ const MainStackNavigator = () => {
          쿠폰북 추가 22.11.22 
          푸드, 마켓 스크린 별도로 분리하여 추가
         */}
-        <Stack.Screen name="CouponBookMain" component={CouponBookMain} />
+        <Stack.Screen
+          name="CouponBookMain"
+          component={CouponBookMain}
+          // options={{animation: 'slide_from_right'}}
+        />
         <Stack.Screen name="FoodScreen" component={FoodScreen} />
         <Stack.Screen name="MarketScreen" component={MarketScreen} />
 
