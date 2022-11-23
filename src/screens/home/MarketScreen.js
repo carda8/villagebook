@@ -84,6 +84,7 @@ const MarketScreen = ({navigation, route}) => {
         if (e.result === 'true') {
           let tempAddr =
             e.data.arrItems[0].ad_addr1 +
+            ' ' +
             e.data.arrItems[0].ad_addr2 +
             e.data.arrItems[0].ad_addr3;
           setAddr(tempAddr);

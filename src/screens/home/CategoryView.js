@@ -25,6 +25,14 @@ import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
 import commonStyles from '../../styles/commonStyle';
 import AutoHeightImage from 'react-native-auto-height-image';
+import {resetSavedItem} from '../../store/reducers/CartReducer';
+import dayjs from 'dayjs';
+import TextSBold from '../../component/text/TextSBold';
+import {hasNotch} from 'react-native-device-info';
+import TextRegular from '../../component/text/TextRegular';
+import TextBold from '../../component/text/TextBold';
+import Divider from '../../component/Divider';
+import policyConfig from '../signIn/policyConfig';
 
 const CategoryView = ({navigation, route}) => {
   const selectedCategory = route.params?.selectedCategory;
@@ -33,12 +41,48 @@ const CategoryView = ({navigation, route}) => {
   const [marketData, setMarketData] = useState([]);
   const [cateRoute, setCateRoute] = useState();
 
-  const {mutateGetAddress} = useCustomMutation();
+  const {mutateGetAddress, mutateGetCompanyInfo} = useCustomMutation();
   const {userInfo, isGuest} = useSelector(state => state.authReducer);
   const [addr, setAddr] = useState();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const layout = useWindowDimensions();
+
+  const [companyInfo, setCompanyInfo] = useState();
+  const {savedItem} = useSelector(state => state.cartReducer);
+  const [toggleInfo, setToggleInfo] = useState(false);
+  const _getCompanyInfo = () => {
+    const data = {};
+    mutateGetCompanyInfo.mutate(data, {
+      onSuccess: e => {
+        if (e.result === 'true') setCompanyInfo(e.data.arrItems);
+      },
+    });
+  };
+
+  const _checkTime = () => {
+    const date = new Date();
+    const diff = dayjs(date).diff(savedItem.savedTime, 'minutes');
+    //minute of a day
+    const limit = 60 * Number(companyInfo.de_local_time);
+    console.log('savedItem', savedItem);
+    console.log('DIFF :::::', diff, limit);
+    if (diff >= limit) {
+      dispatch(resetSavedItem());
+    }
+    // if (diff >= 1440) console.log('copyData', copyData);
+  };
+
+  useEffect(() => {
+    _getCompanyInfo();
+    console.log('::: USER INFO', userInfo);
+  }, []);
+
+  useEffect(() => {
+    if (companyInfo) {
+      _checkTime();
+    }
+  }, [companyInfo]);
 
   const mutateCategory = useMutation(mainAPI._getCategory, {
     onSuccess: e => {
@@ -68,6 +112,7 @@ const CategoryView = ({navigation, route}) => {
         if (e.result === 'true') {
           let tempAddr =
             e.data.arrItems[0].ad_addr1 +
+            ' ' +
             e.data.arrItems[0].ad_addr2 +
             e.data.arrItems[0].ad_addr3;
           setAddr(tempAddr);
@@ -277,7 +322,98 @@ const CategoryView = ({navigation, route}) => {
           paddingHorizontal: 14,
         }}
         keyExtractor={(item, index) => index}
+        ListFooterComponent={
+          <View
+            style={{
+              marginTop: 20,
+              paddingHorizontal: 14,
+              backgroundColor: 'white',
+              paddingBottom: toggleInfo ? 20 : hasNotch() ? 40 : 40,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 14,
+                marginBottom: 10,
+              }}>
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('Policy', {
+                    target: policyConfig.target.location,
+                  });
+                }}>
+                <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
+                  위치기반 서비스 이용약관
+                </TextRegular>
+              </Pressable>
+              <Divider style={{marginHorizontal: 5}} />
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('Policy', {
+                    target: policyConfig.target.personal,
+                  });
+                }}>
+                <TextBold style={{color: colors.fontColor8, fontSize: 10}}>
+                  개인정보 처리방침
+                </TextBold>
+              </Pressable>
+              <Divider style={{marginHorizontal: 5}} />
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('Policy', {
+                    target: policyConfig.target.use,
+                  });
+                }}>
+                <TextRegular style={{color: colors.fontColor8, fontSize: 10}}>
+                  이용약관
+                </TextRegular>
+              </Pressable>
+            </View>
+
+            <Pressable
+              onPress={() => {
+                setToggleInfo(!toggleInfo);
+              }}
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <TextSBold>(주)어스닉</TextSBold>
+              <Image
+                source={require('~/assets/btn_top_left.png')}
+                style={{
+                  transform: [{rotate: toggleInfo ? '90deg' : '-90deg'}],
+                  width: 20,
+                  height: 20,
+                  marginLeft: 4,
+                }}
+                resizeMode={'contain'}
+              />
+            </Pressable>
+            {toggleInfo && (
+              <>
+                <View
+                  style={{
+                    marginBottom: hasNotch() ? 30 : 10,
+                    // alignItems: 'center',
+                  }}>
+                  <View style={{marginBottom: 10}}>
+                    <TextRegular
+                      style={{color: colors.fontColor8, fontSize: 11}}>
+                      {companyInfo?.de_admin_company_memo}
+                    </TextRegular>
+                  </View>
+                  <TextRegular style={{color: colors.fontColor8, fontSize: 11}}>
+                    {companyInfo?.de_admin_company_addr} 대표이사 :{' '}
+                    {companyInfo?.de_admin_company_owner} | 사업자등록번호 :
+                    {companyInfo?.de_admin_company_saupja_no} 통신판매업신고 :{' '}
+                    {companyInfo?.de_admin_tongsin_no}
+                  </TextRegular>
+                </View>
+              </>
+            )}
+          </View>
+        }
       />
+
       <BottomBar navigation={navigation} />
     </SafeAreaView>
   );

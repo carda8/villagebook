@@ -98,9 +98,9 @@ const Main = ({navigation}) => {
     }
   }, [companyInfo]);
 
-  useEffect(() => {
-    if (isFocused) _getAddr();
-  }, [isFocused]);
+  // useEffect(() => {
+  //   if (isFocused) _getAddr();
+  // }, [isFocused]);
 
   return (
     <SafeAreaView

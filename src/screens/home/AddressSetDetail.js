@@ -13,6 +13,7 @@ import {customAlert} from '../../component/CustomAlert';
 import {useEffect} from 'react';
 import axios from 'axios';
 import {Modal} from 'react-native';
+import {setCurrentLocation} from '../../store/reducers/LocationRecuder';
 
 const AddressSetDetail = ({navigation, route}) => {
   const addrData = route.params?.addData;
@@ -79,6 +80,8 @@ const AddressSetDetail = ({navigation, route}) => {
       onSuccess: e => {
         if (e.result === 'true') {
           customAlert('알림', '우리동네 등록이 완료되었습니다.');
+          dispatch(setCurrentLocation({lat: userCoor.y, lon: userCoor.x}));
+
           navigation.navigate('CategoryView', {
             selectedCategory: 'lifestyle',
           });
