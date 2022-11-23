@@ -277,7 +277,7 @@ const CouponBookMain = ({navigation, route}) => {
             />
           </Pressable>
 
-          <Pressable
+          {/* <Pressable
             hitSlop={10}
             style={{marginRight: 12}}
             onPress={() => {
@@ -298,7 +298,7 @@ const CouponBookMain = ({navigation, route}) => {
               source={require('~/assets/bar.png')}
               style={{width: 27, height: 27, tintColor: colors.primary}}
             />
-          </Pressable>
+          </Pressable> */}
         </View>
       </View>
       {/* 
@@ -519,11 +519,16 @@ const CouponBookMain = ({navigation, route}) => {
         }}
         ListEmptyComponent={
           <View style={{alignItems: 'center', marginBottom: '60%'}}>
-            <TextBold style={{fontSize: 33}}>아직 준비중입니다!</TextBold>
+            <Image
+              source={require('~/assets/no_coupon.png')}
+              style={{height: layout.width * 0.7}}
+              resizeMode="contain"
+            />
+            {/* <TextBold style={{fontSize: 33}}>아직 준비중입니다!</TextBold> */}
           </View>
         }
       />
-      <Shadow
+      {/* <Shadow
         distance={4}
         offset={[0, 1]}
         style={{width: 90, height: 40}}
@@ -545,7 +550,7 @@ const CouponBookMain = ({navigation, route}) => {
             지도보기
           </TextRegular>
         </Pressable>
-      </Shadow>
+      </Shadow> */}
       {/*
       END 필터 스크롤 
       */}
