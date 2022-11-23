@@ -15,6 +15,7 @@ import AddressMainRenderItem from './AddressMainRenderItem';
 import {useDispatch} from 'react-redux';
 import {setCurrentAdd, setPostData} from '../../store/reducers/AddressReducer';
 import {customAlert} from '../../component/CustomAlert';
+import {setCurrentLocation} from '../../store/reducers/LocationRecuder';
 
 const AddressMain = ({navigation, route}) => {
   const addData = route.params?.addData;
@@ -126,6 +127,7 @@ const AddressMain = ({navigation, route}) => {
       <>
         <Pressable
           onPress={() => {
+            dispatch(setCurrentLocation({lat: data.ad_lat, lon: data.ad_lng}));
             if (currentAdd.ad_id !== data.ad_id) _setAdd(data);
           }}
           style={{

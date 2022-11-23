@@ -33,6 +33,7 @@ import TextRegular from '../../component/text/TextRegular';
 import TextBold from '../../component/text/TextBold';
 import Divider from '../../component/Divider';
 import policyConfig from '../signIn/policyConfig';
+import {setCurrentLocation} from '../../store/reducers/LocationRecuder';
 
 const CategoryView = ({navigation, route}) => {
   const selectedCategory = route.params?.selectedCategory;
@@ -65,8 +66,8 @@ const CategoryView = ({navigation, route}) => {
     const diff = dayjs(date).diff(savedItem.savedTime, 'minutes');
     //minute of a day
     const limit = 60 * Number(companyInfo.de_local_time);
-    console.log('savedItem', savedItem);
-    console.log('DIFF :::::', diff, limit);
+    // console.log('savedItem', savedItem);
+    // console.log('DIFF :::::', diff, limit);
     if (diff >= limit) {
       dispatch(resetSavedItem());
     }
@@ -96,7 +97,7 @@ const CategoryView = ({navigation, route}) => {
           ca_name: '순간이동 마켓',
           ca_img: require('~/assets/market_icon.png'),
         });
-        console.log('temppp', temp);
+        // console.log('temppp', temp);
         setCategoryData(temp);
       } else setCategoryData([]);
     },
@@ -116,8 +117,15 @@ const CategoryView = ({navigation, route}) => {
             e.data.arrItems[0].ad_addr2 +
             e.data.arrItems[0].ad_addr3;
           setAddr(tempAddr);
+          if (e.data?.arrItems[0]?.ad_lat) {
+            dispatch(
+              setCurrentLocation({
+                lat: e.data.arrItems[0].ad_lat,
+                lon: e.data.arrItems[0].ad_lng,
+              }),
+            );
+          }
         } else setAddr('주소설정');
-        console.log('mutateGetAddress', e);
       },
     });
   };

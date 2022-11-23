@@ -169,8 +169,7 @@ const StoreItems = ({navigation, route}) => {
                     marginTop: '30%',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/no_store.png')}
                     style={{width: 250, height: 250}}
@@ -199,8 +198,7 @@ const StoreItems = ({navigation, route}) => {
                     marginTop: '30%',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}
-                >
+                  }}>
                   <Image
                     source={require('~/assets/no_store.png')}
                     style={{width: 250, height: 250}}
