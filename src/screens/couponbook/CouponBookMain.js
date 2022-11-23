@@ -112,7 +112,8 @@ const CouponBookMain = ({navigation, route}) => {
             paddingVertical: 10,
             // alignItems: 'center',
             paddingHorizontal: 10,
-          }}>
+          }}
+        >
           <Image
             source={require('~/assets/no_use_img.png')}
             style={{height: 80, width: 80}}
@@ -123,13 +124,15 @@ const CouponBookMain = ({navigation, route}) => {
               flex: 1,
               marginLeft: 10,
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             <TextMedium style={{color: colors.fontColor3}}>
               {item.item}
             </TextMedium>
             <TextBold
               style={{fontSize: 16, color: colors.fontColor2}}
-              numberOfLines={2}>
+              numberOfLines={2}
+            >
               {item.item} 50% 할인쿠폰
             </TextBold>
             <TextLight style={{color: colors.fontColorA}}>
@@ -208,12 +211,14 @@ const CouponBookMain = ({navigation, route}) => {
             items.ca_name === filterCate ? colors.primary : 'white',
           borderRadius: 30,
           marginRight: 7,
-        }}>
+        }}
+      >
         <TextRegular
           style={{
             color: items.ca_name === filterCate ? 'white' : colors.fontColor2,
             fontSize: 13,
-          }}>
+          }}
+        >
           {items.ca_name}
         </TextRegular>
       </Pressable>
@@ -234,14 +239,16 @@ const CouponBookMain = ({navigation, route}) => {
           borderBottomWidth: 1,
           paddingBottom: 15,
           borderColor: colors.borderColor,
-        }}>
+        }}
+      >
         <View
           style={{
             marginTop: 15,
             marginHorizontal: 14,
             flexDirection: 'row',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <Image
             source={require('~/assets/ico_location.png')}
             style={{
@@ -260,14 +267,16 @@ const CouponBookMain = ({navigation, route}) => {
                 _guestAlert(navigation);
               }
             }}
-            style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+            style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}
+          >
             <View style={{marginLeft: 0, marginRight: 3}}>
               <TextEBold
                 numberOfLines={1}
                 style={{
                   fontSize: 15,
                   color: colors.fontColor2,
-                }}>
+                }}
+              >
                 {addr}
               </TextEBold>
             </View>
@@ -311,14 +320,17 @@ const CouponBookMain = ({navigation, route}) => {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+          zIndex: Platform.OS === 'ios' ? 1000 : undefined,
           marginTop: 10,
-        }}>
+        }}
+      >
         {!isOpen ? (
           <>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{marginHorizontal: 14}}>
+              contentContainerStyle={{marginHorizontal: 14}}
+            >
               {data.map(
                 (item, index) =>
                   index < data.length - 2 && (
@@ -344,14 +356,16 @@ const CouponBookMain = ({navigation, route}) => {
                             : 'white',
                         borderRadius: 30,
                         marginRight: 10,
-                      }}>
+                      }}
+                    >
                       <TextRegular
                         style={{
                           color:
                             item.ca_name === filterCate
                               ? 'white'
                               : colors.fontColor2,
-                        }}>
+                        }}
+                      >
                         {item.ca_name}
                       </TextRegular>
                     </Pressable>
@@ -363,7 +377,8 @@ const CouponBookMain = ({navigation, route}) => {
               style={{marginRight: 14}}
               onPress={() => {
                 _openFilter();
-              }}>
+              }}
+            >
               <Image
                 source={require('~/assets/down_arrow.png')}
                 style={{width: 23, height: 23}}
@@ -372,7 +387,7 @@ const CouponBookMain = ({navigation, route}) => {
             </Pressable>
           </>
         ) : (
-          <View style={{zIndex: 100}}>
+          <View style={{zIndex: 1000}}>
             <FlatList
               data={cateList}
               keyExtractor={(item, index) => index}
@@ -382,18 +397,20 @@ const CouponBookMain = ({navigation, route}) => {
                 flex: 1,
                 position: 'absolute',
                 backgroundColor: 'white',
-                zIndex: 100,
                 width: '100%',
               }}
               columnWrapperStyle={{
                 flex: 1,
                 marginBottom: 7,
                 marginLeft: 14,
+                zIndex: 1000,
               }}
               ListFooterComponent={
                 <Shadow distance={1} offset={[0, 1]} style={{width: '100%'}}>
                   <Pressable
-                    onPress={() => setIsOpen(!isOpen)}
+                    onPress={() => {
+                      setIsOpen(!isOpen);
+                    }}
                     style={{
                       backgroundColor: 'white',
                       width: '100%',
@@ -405,7 +422,8 @@ const CouponBookMain = ({navigation, route}) => {
                       borderBottomWidth: 1,
                       borderColor: colors.borderColor,
                       flexDirection: 'row',
-                    }}>
+                    }}
+                  >
                     <TextSBold style={{color: colors.fontColor2, fontSize: 16}}>
                       접어두기
                     </TextSBold>
@@ -455,7 +473,8 @@ const CouponBookMain = ({navigation, route}) => {
               marginHorizontal: 14,
               height: 25,
             }}
-            contentContainerStyle={{height: 25}}>
+            contentContainerStyle={{height: 25}}
+          >
             {filterList.map((item, index) => (
               <Pressable
                 hitSlop={3}
@@ -468,7 +487,8 @@ const CouponBookMain = ({navigation, route}) => {
                   justifyContent: 'center',
                   marginRight: 15,
                   flexDirection: 'row',
-                }}>
+                }}
+              >
                 <View
                   style={{
                     width: 6,
@@ -486,7 +506,8 @@ const CouponBookMain = ({navigation, route}) => {
                         item === filterSub
                           ? colors.fontColor2
                           : colors.fontColorA,
-                    }}>
+                    }}
+                  >
                     {item}
                   </TextSBold>
                 ) : (
@@ -496,7 +517,8 @@ const CouponBookMain = ({navigation, route}) => {
                         item === filterSub
                           ? colors.fontColor2
                           : colors.fontColorA,
-                    }}>
+                    }}
+                  >
                     {item}
                   </TextRegular>
                 )}
@@ -518,14 +540,16 @@ const CouponBookMain = ({navigation, route}) => {
           paddingBottom: 20,
         }}
         ListEmptyComponent={
-          <View style={{alignItems: 'center', marginBottom: '60%'}}>
-            <Image
-              source={require('~/assets/no_coupon.png')}
-              style={{height: layout.width * 0.7}}
-              resizeMode="contain"
-            />
-            {/* <TextBold style={{fontSize: 33}}>아직 준비중입니다!</TextBold> */}
-          </View>
+          !isOpen && (
+            <View style={{alignItems: 'center', marginBottom: '60%'}}>
+              <Image
+                source={require('~/assets/no_coupon.png')}
+                style={{height: layout.width * 0.7}}
+                resizeMode="contain"
+              />
+              {/* <TextBold style={{fontSize: 33}}>아직 준비중입니다!</TextBold> */}
+            </View>
+          )
         }
       />
       {/* <Shadow
