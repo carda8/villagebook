@@ -28,24 +28,25 @@ const CouponFilterView = ({isSearch, category}) => {
   return (
     <View
       style={{
-        flex: 1,
-        height: 80,
-        zIndex: 200,
+        // flex: 1,
+        height: 30,
         marginLeft: 14,
         top: 110,
         position: Platform.OS === 'ios' ? 'relative' : 'absolute',
         minWidth: layout.width,
-      }}>
+      }}
+    >
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{
           // marginTop: 10,
-          marginBottom: 10,
+          // marginBottom: 10,
           // marginHorizontal: 14,
           height: 25,
         }}
-        contentContainerStyle={{height: 40}}>
+        // contentContainerStyle={{height: 40}}
+      >
         {filterList.map((item, index) => (
           <Pressable
             hitSlop={3}
@@ -58,7 +59,8 @@ const CouponFilterView = ({isSearch, category}) => {
               justifyContent: 'center',
               marginRight: 15,
               flexDirection: 'row',
-            }}>
+            }}
+          >
             {/* <View
               style={{
                 width: 6,
@@ -76,11 +78,13 @@ const CouponFilterView = ({isSearch, category}) => {
                   paddingHorizontal: 13,
                   paddingVertical: 5,
                   borderRadius: 20,
-                }}>
+                }}
+              >
                 <TextSBold
                   style={{
                     color: item === filterSub ? 'white' : colors.fontColorA,
-                  }}>
+                  }}
+                >
                   {item}
                 </TextSBold>
               </View>
@@ -89,7 +93,8 @@ const CouponFilterView = ({isSearch, category}) => {
                 style={{
                   color:
                     item === filterSub ? colors.fontColor2 : colors.fontColorA,
-                }}>
+                }}
+              >
                 {item}
               </TextRegular>
             )}

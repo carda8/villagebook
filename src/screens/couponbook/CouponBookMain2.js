@@ -70,12 +70,14 @@ const Coupon2 = ({navigation, route}) => {
             items.ca_name === filterCate ? colors.primary : 'white',
           borderRadius: 30,
           marginRight: 7,
-        }}>
+        }}
+      >
         <TextRegular
           style={{
             color: items.ca_name === filterCate ? 'white' : colors.fontColor2,
             fontSize: 13,
-          }}>
+          }}
+        >
           {items.ca_name}
         </TextRegular>
       </Pressable>
@@ -83,11 +85,30 @@ const Coupon2 = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
+    <SafeAreaView
+      edges={['left', 'right', 'top']}
+      style={{...commonStyles.safeAreaStyle}}
+    >
       <Header navigation={navigation} title="쿠폰북" />
-      <CouponFilterView />
+
+      {Platform.OS === 'ios' ? (
+        <SafeAreaView
+          style={{
+            // flex: 1,
+            position: 'absolute',
+            // 헤더 버튼보다 낮도록 설정
+            zIndex: 200,
+            // width: 100,
+            // height: 100,
+          }}
+        >
+          <CouponFilterView />
+        </SafeAreaView>
+      ) : (
+        <CouponFilterView />
+      )}
       {isOpen && (
-        <View style={{zIndex: 10000}}>
+        <View style={{zIndex: 1000}}>
           <FlatList
             data={data}
             keyExtractor={(item, index) => index}
@@ -120,7 +141,8 @@ const Coupon2 = ({navigation, route}) => {
                     borderBottomWidth: 1,
                     borderColor: colors.borderColor,
                     flexDirection: 'row',
-                  }}>
+                  }}
+                >
                   <TextSBold style={{color: colors.fontColor2, fontSize: 16}}>
                     접어두기
                   </TextSBold>
@@ -139,26 +161,29 @@ const Coupon2 = ({navigation, route}) => {
           />
         </View>
       )}
-
-      <Pressable
-        onPress={() => setIsOpen(!isOpen)}
-        style={{
-          top: 55,
-          right: 0,
-          width: 30,
-          height: 50,
-          zIndex: 2000,
-          alignItems: 'center',
-          backgroundColor: 'white',
-          justifyContent: 'center',
-          position: 'absolute',
-        }}>
-        <Image
-          source={require('~/assets/down_arrow.png')}
-          style={{width: 20, height: 20}}
-          resizeMode={'contain'}
-        />
-      </Pressable>
+      <SafeAreaView style={{position: 'absolute', zIndex: 300}}>
+        <Pressable
+          onPress={() => setIsOpen(!isOpen)}
+          style={{
+            top: 55,
+            // right: 0,
+            left: layout.width - 40,
+            width: 30,
+            height: 50,
+            // zIndex: ,
+            alignItems: 'center',
+            backgroundColor: 'white',
+            justifyContent: 'center',
+            // position: 'absolute',
+          }}
+        >
+          <Image
+            source={require('~/assets/down_arrow.png')}
+            style={{width: 20, height: 20}}
+            resizeMode={'contain'}
+          />
+        </Pressable>
+      </SafeAreaView>
       <Tab.Navigator
         backBehavior="none"
         sceneContainerStyle={{
@@ -180,12 +205,14 @@ const Coupon2 = ({navigation, route}) => {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}>
+              }}
+            >
               <Text
                 style={{
                   fontFamily: 'Pretendard-Bold',
                   color: props.focused ? colors.primary : colors.fontColor2,
-                }}>
+                }}
+              >
                 {route.name}
               </Text>
             </View>
@@ -193,6 +220,7 @@ const Coupon2 = ({navigation, route}) => {
           tabBarScrollEnabled: true,
           tabBarItemStyle: {
             // flexGrow: 2,
+            zIndex: 300,
             width: 'auto',
           },
           tabBarIndicatorStyle: {
@@ -202,6 +230,7 @@ const Coupon2 = ({navigation, route}) => {
             // justifyContent: 'center',
             justifyContent: 'flex-end',
             paddingLeft: 14,
+            zIndex: 300,
           },
           tabBarIndicator: props => {
             props.position.addListener(value => {
@@ -250,7 +279,8 @@ const Coupon2 = ({navigation, route}) => {
               </>
             );
           },
-        })}>
+        })}
+      >
         {data.map((item, index) => (
           <Tab.Screen
             key={index}
