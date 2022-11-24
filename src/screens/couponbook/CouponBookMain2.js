@@ -70,14 +70,12 @@ const Coupon2 = ({navigation, route}) => {
             items.ca_name === filterCate ? colors.primary : 'white',
           borderRadius: 30,
           marginRight: 7,
-        }}
-      >
+        }}>
         <TextRegular
           style={{
             color: items.ca_name === filterCate ? 'white' : colors.fontColor2,
             fontSize: 13,
-          }}
-        >
+          }}>
           {items.ca_name}
         </TextRegular>
       </Pressable>
@@ -87,8 +85,7 @@ const Coupon2 = ({navigation, route}) => {
   return (
     <SafeAreaView
       edges={['left', 'right', 'top']}
-      style={{...commonStyles.safeAreaStyle}}
-    >
+      style={{...commonStyles.safeAreaStyle}}>
       <Header navigation={navigation} title="쿠폰북" />
 
       {Platform.OS === 'ios' ? (
@@ -100,13 +97,13 @@ const Coupon2 = ({navigation, route}) => {
             zIndex: 200,
             // width: 100,
             // height: 100,
-          }}
-        >
+          }}>
           <CouponFilterView />
         </SafeAreaView>
       ) : (
         <CouponFilterView />
       )}
+
       {isOpen && (
         <View style={{zIndex: 1000}}>
           <FlatList
@@ -141,8 +138,7 @@ const Coupon2 = ({navigation, route}) => {
                     borderBottomWidth: 1,
                     borderColor: colors.borderColor,
                     flexDirection: 'row',
-                  }}
-                >
+                  }}>
                   <TextSBold style={{color: colors.fontColor2, fontSize: 16}}>
                     접어두기
                   </TextSBold>
@@ -175,8 +171,7 @@ const Coupon2 = ({navigation, route}) => {
             backgroundColor: 'white',
             justifyContent: 'center',
             // position: 'absolute',
-          }}
-        >
+          }}>
           <Image
             source={require('~/assets/down_arrow.png')}
             style={{width: 20, height: 20}}
@@ -205,14 +200,12 @@ const Coupon2 = ({navigation, route}) => {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontFamily: 'Pretendard-Bold',
                   color: props.focused ? colors.primary : colors.fontColor2,
-                }}
-              >
+                }}>
                 {route.name}
               </Text>
             </View>
@@ -279,8 +272,7 @@ const Coupon2 = ({navigation, route}) => {
               </>
             );
           },
-        })}
-      >
+        })}>
         {data.map((item, index) => (
           <Tab.Screen
             key={index}
