@@ -142,7 +142,7 @@ const CategoryView = ({navigation, route}) => {
     temp.push(...categoryData);
     temp.pop();
     temp.pop();
-    navigation.navigate('CouponBookMain', {data: temp});
+    navigation.navigate('Coupon2', {data: temp});
   };
   useEffect(() => {
     _init();

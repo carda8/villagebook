@@ -83,15 +83,17 @@ import MenuDetail3 from '../screens/menu/MenuDetail3';
 import CouponBookMain from '../screens/couponbook/CouponBookMain';
 import MarketScreen from '../screens/home/MarketScreen';
 import FoodScreen from '../screens/home/FoodScreen';
+import Coupon2 from '../screens/couponbook/CouponBookMain2';
 const Stack = createNativeStackNavigator();
-
+const naviRef = React.createRef();
+export {naviRef};
 const MainStackNavigator = () => {
   const [initRoute, setInitRoute] = useState();
   const dispatch = useDispatch();
   const {mutateSNSlogin} = useCustomMutation();
   // const cartStore = useSelector(state => state.cartReducer);
   const {_getCurrentLocation, _requestPermissions} = useGeoLocation();
-  const naviRef = useRef();
+  // const naviRef = useRef();
 
   const onMessageReceived = async message => {
     console.log('message onForeground', message);
@@ -494,11 +496,8 @@ const MainStackNavigator = () => {
          쿠폰북 추가 22.11.22 
          푸드, 마켓 스크린 별도로 분리하여 추가
         */}
-        <Stack.Screen
-          name="CouponBookMain"
-          component={CouponBookMain}
-          // options={{animation: 'slide_from_right'}}
-        />
+        <Stack.Screen name="CouponBookMain" component={CouponBookMain} />
+        <Stack.Screen name="Coupon2" component={Coupon2} />
         <Stack.Screen name="FoodScreen" component={FoodScreen} />
         <Stack.Screen name="MarketScreen" component={MarketScreen} />
 

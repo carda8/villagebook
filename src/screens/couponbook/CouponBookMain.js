@@ -181,7 +181,6 @@ const CouponBookMain = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    console.log(data);
     setCateList(data);
   }, []);
 
@@ -330,10 +329,10 @@ const CouponBookMain = ({navigation, route}) => {
                       }}
                       style={{
                         height: 25,
+                        borderWidth: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
                         paddingHorizontal: 13,
-                        borderWidth: 1,
                         borderColor:
                           item.ca_name === filterCate
                             ? colors.primary
