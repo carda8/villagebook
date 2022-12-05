@@ -213,13 +213,13 @@ const Map = ({navigation, route}) => {
           _convertCoor({lon: e.longitude, lat: e.latitude});
           setPosition({latitude: e.latitude, longitude: e.longitude});
         }}>
-        <Marker
+        {/* <Marker
           animateToCoordinate={e => {
             console.log('anime', e);
           }}
           coordinate={position}
           onClick={() => console.log('onClick! p0')}
-        />
+        /> */}
       </NaverMapView>
       {!isStore && (
         <>

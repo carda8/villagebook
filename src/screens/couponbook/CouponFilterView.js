@@ -10,8 +10,10 @@ import React, {useRef, useState} from 'react';
 import colors from '../../styles/colors';
 import TextSBold from '../../component/text/TextSBold';
 import TextRegular from '../../component/text/TextRegular';
+import MainBanner from '../../component/MainBanner';
+import BannerList from '../../config/BannerList';
 
-const CouponFilterView = ({isSearch, category}) => {
+const CouponFilterView = ({isSearch, category, navigation}) => {
   const layout = useWindowDimensions();
   const filterList = [
     '추천순',

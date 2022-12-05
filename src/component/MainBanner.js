@@ -160,4 +160,4 @@ const MainBanner = ({navigation, style, position}) => {
   );
 };
 
-export default MainBanner;
+export default React.memo(MainBanner);

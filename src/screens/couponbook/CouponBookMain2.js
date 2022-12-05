@@ -27,6 +27,8 @@ import TextSBold from '../../component/text/TextSBold';
 import TextRegular from '../../component/text/TextRegular';
 import {NavigationContainer} from '@react-navigation/native';
 import {naviRef} from '../../navigator/MainStackNavigator';
+import MainBanner from '../../component/MainBanner';
+import BannerList from '../../config/BannerList';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -86,7 +88,9 @@ const Coupon2 = ({navigation, route}) => {
     <SafeAreaView
       edges={['left', 'right', 'top']}
       style={{...commonStyles.safeAreaStyle}}>
-      <Header navigation={navigation} title="쿠폰북" />
+      <View style={{zIndex: 2000}}>
+        <Header navigation={navigation} title="쿠폰북" isSearch={true} />
+      </View>
 
       {Platform.OS === 'ios' ? (
         <SafeAreaView
@@ -99,9 +103,27 @@ const Coupon2 = ({navigation, route}) => {
             // height: 100,
           }}>
           <CouponFilterView />
+          <MainBanner
+            navigation={navigation}
+            style={{
+              marginBottom: 17,
+            }}
+            position={BannerList['lifestyle']}
+          />
         </SafeAreaView>
       ) : (
-        <CouponFilterView />
+        <>
+          <CouponFilterView navigation={navigation} />
+          <View style={{position: 'absolute', top: 155, zIndex: 200}}>
+            <MainBanner
+              navigation={navigation}
+              style={{
+                marginBottom: 17,
+              }}
+              position={BannerList['lifestyle']}
+            />
+          </View>
+        </>
       )}
 
       {isOpen && (
@@ -163,7 +185,7 @@ const Coupon2 = ({navigation, route}) => {
           style={{
             top: 55,
             // right: 0,
-            left: layout.width - 40,
+            left: layout.width - 30,
             width: 30,
             height: 50,
             // zIndex: ,
@@ -185,14 +207,16 @@ const Coupon2 = ({navigation, route}) => {
           flex: 1,
           backgroundColor: 'white',
           paddingTop: 45,
-          paddingHorizontal: 14,
+          // paddingHorizontal: 14,
+          marginTop: 160,
         }}
-        style={{flex: 1}}
+        // style={{flex: 1}}
         screenOptions={({route}) => ({
           lazy: true,
           tabBarStyle: {
             paddingLeft: 14,
             paddingRight: 30,
+            // marginRight: 40,
           },
           tabBarLabel: props => (
             <View
@@ -200,6 +224,7 @@ const Coupon2 = ({navigation, route}) => {
                 flex: 1,
                 alignItems: 'center',
                 justifyContent: 'center',
+                // marginRight: 30,
               }}>
               <Text
                 style={{
@@ -215,6 +240,7 @@ const Coupon2 = ({navigation, route}) => {
             // flexGrow: 2,
             zIndex: 300,
             width: 'auto',
+            // marginRight: 30,
           },
           tabBarIndicatorStyle: {
             height: 30,
@@ -278,7 +304,11 @@ const Coupon2 = ({navigation, route}) => {
             key={index}
             name={item.ca_name}
             component={CouponList}
-            // initialParams={{cate: 'lifestyle'}}
+            // 코드값으로 불러오기
+            // initialParams={{cate: 'lifestyle'
+            // cate: item.ca_name,
+            // ca_code: item.ca_code,
+            // category: category,}}
           />
         ))}
       </Tab.Navigator>

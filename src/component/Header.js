@@ -34,6 +34,7 @@ const Header = ({
   isOption,
   isPayment,
   isSummit,
+  isSearch,
   storeInfo,
 }) => {
   const {currentCategory} = useSelector(state => state.categoryReducer);
@@ -120,6 +121,7 @@ const Header = ({
         ]}>
         <Pressable
           hitSlop={15}
+          // style={{zIndex: 1000}}
           onPress={() => {
             console.log('pressed');
             if (isSummit) {
@@ -128,7 +130,8 @@ const Header = ({
                 jumju_code: currentStoreCode.code,
               });
             } else {
-              if (!showLogo && navigation.canGoBack()) navigation.goBack();
+              // if (!showLogo && navigation.canGoBack()) navigation.goBack();
+              if (!showLogo) navigation.goBack();
               else
                 navigation.navigate('CategoryView', {
                   selectedCategory: 'lifestyle',
@@ -207,12 +210,6 @@ const Header = ({
                 } else {
                   _guestAlert(navigation);
                 }
-
-                // if (showLike) {
-                //   if (like === 'Y') setLike('N');
-                //   if (like === 'N') setLike('Y');
-                //   _setLikeStore();
-                // }
               }}>
               <Image
                 source={
@@ -229,11 +226,6 @@ const Header = ({
                       : iconColor
                       ? iconColor
                       : null,
-                  // tintColor: iconColor
-                  //   ? iconColor
-                  //   : like === 'Y'
-                  //   ? 'red'
-                  //   : null,
                 }}
                 resizeMode={'contain'}
               />
@@ -258,6 +250,26 @@ const Header = ({
                         : iconColor
                         ? iconColor
                         : null,
+                  }}
+                  resizeMode={'contain'}
+                />
+              </Pressable>
+            </>
+          )}
+          {isSearch && (
+            <>
+              <Pressable
+                hitSlop={10}
+                onPress={() => {
+                  navigation.navigate('CouponBookSearch');
+                }}>
+                <Image
+                  source={require('~/assets/ico_search.png')}
+                  style={{
+                    height: 23,
+                    width: 23,
+                    marginRight: 10,
+                    tintColor: colors.primary,
                   }}
                   resizeMode={'contain'}
                 />
