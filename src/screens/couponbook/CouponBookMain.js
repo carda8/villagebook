@@ -1,189 +1,51 @@
-import {View, Text, Image} from 'react-native';
-import React from 'react';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {useRef} from 'react';
+import {FlatList, Text} from 'react-native';
+import {Animated} from 'react-native';
+import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useDispatch} from 'react-redux';
+import Header from '../../component/Header';
+import FilterView from '../home/CategoryStore/FilterView';
+import React from 'react';
 import commonStyles from '../../styles/commonStyle';
-import {useEffect} from 'react';
-import {useIsFocused} from '@react-navigation/native';
-import {useCustomMutation} from '../../hooks/useCustomMutation';
-import {useSelector} from 'react-redux';
-import {useState} from 'react';
-import TextEBold from '../../component/text/TextEBold';
+import Category from '../../config/Category';
+import StoreItems from '../home/CategoryStore/StoreItems';
 import colors from '../../styles/colors';
+import {
+  setcurrentCategory,
+  setcurrentFilter,
+} from '../../store/reducers/CategoryReducer';
+import CouponList from './CouponList';
+import CouponFilterView from './CouponFilterView';
 import {Pressable} from 'react-native';
-import {_guestAlert} from '../../config/utils/modules';
-import {ScrollView} from 'react-native';
-import TextRegular from '../../component/text/TextRegular';
-import TextSBold from '../../component/text/TextSBold';
-import {FlatList} from 'react-native';
-import TextBold from '../../component/text/TextBold';
-import {Platform} from 'react-native';
-import {Shadow} from 'react-native-shadow-2';
-import TextLight from '../../component/text/TextLight';
-import TextMedium from '../../component/text/TextMedium';
 import {useWindowDimensions} from 'react-native';
-import {Alert} from 'react-native';
+import {Image} from 'react-native';
+import {useState} from 'react';
+import {Shadow} from 'react-native-shadow-2';
+import TextSBold from '../../component/text/TextSBold';
+import TextRegular from '../../component/text/TextRegular';
+import {NavigationContainer} from '@react-navigation/native';
+import {naviRef} from '../../navigator/MainStackNavigator';
+import MainBanner from '../../component/MainBanner';
+import BannerList from '../../config/BannerList';
 
-// onPress={() => {
-//     if (!isGuest && userInfo) {
-//       navigation.navigate('AddressMain');
-//     } else {
-//       _guestAlert(navigation);
-//     }
-//   }}
+const Tab = createMaterialTopTabNavigator();
 
 const CouponBookMain = ({navigation, route}) => {
-  const {mutateGetAddress} = useCustomMutation();
-  const {userInfo, isGuest} = useSelector(state => state.authReducer);
-  const isFocused = useIsFocused();
-
-  const [addr, setAddr] = useState();
-  const [filterCate, setFilterCate] = useState('전체');
-  const [filterSub, setFilterSub] = useState('추천순');
-  const [isOpen, setIsOpen] = useState(false);
-  const [cateList, setCateList] = useState([]);
-  const [couponList, setCouponList] = useState([
-    '카페 드 비니',
-    '주니뷰티',
-    '백색소음',
-    '개미상회',
-    '카페 드 비니',
-    '주니뷰티',
-    '백색소음',
-    '개미상회',
-    '카페 드 비니',
-    '주니뷰티',
-    '백색소음',
-    '개미상회',
-  ]);
-
   const data = route.params?.data;
+  console.log('data', data);
 
-  const filterList = [
-    '추천순',
-    '인기순',
-    '기간 마감 임박 순',
-    '개수 마감 임박 순',
-  ];
-
-  const _getAddr = () => {
-    const data = {
-      mt_id: userInfo.mt_id,
-    };
-
-    mutateGetAddress.mutate(data, {
-      onSuccess: e => {
-        if (e.result === 'true') {
-          let tempAddr =
-            e.data.arrItems[0].ad_addr1 +
-            e.data.arrItems[0].ad_addr2 +
-            e.data.arrItems[0].ad_addr3;
-          setAddr(tempAddr);
-        } else setAddr('주소설정');
-        console.log('mutateGetAddress', e);
-      },
-    });
-  };
-
-  const _onPressCate = item => {
-    console.log('item', item);
-    setFilterCate(item.ca_name);
-  };
-
-  const _onPressSub = item => {
-    setFilterSub(item);
-  };
-
-  const _openFilter = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const renderItem = item => {
-    return (
-      <Shadow distance={5} offset={[0, 2]} style={{width: '100%'}}>
-        <View
-          style={{
-            borderWidth: 1,
-            borderColor: colors.primary,
-            borderRadius: 10,
-            height: 100,
-            backgroundColor: 'white',
-            marginBottom: 15,
-            flexDirection: 'row',
-            paddingVertical: 10,
-            // alignItems: 'center',
-            paddingHorizontal: 10,
-          }}>
-          <Image
-            source={require('~/assets/no_use_img.png')}
-            style={{height: 80, width: 80}}
-            resizeMode="contain"
-          />
-          <View
-            style={{
-              flex: 1,
-              marginLeft: 10,
-              justifyContent: 'space-between',
-            }}>
-            <TextMedium style={{color: colors.fontColor3}}>
-              {item.item}
-            </TextMedium>
-            <TextBold
-              style={{fontSize: 16, color: colors.fontColor2}}
-              numberOfLines={2}>
-              {item.item} 50% 할인쿠폰
-            </TextBold>
-            <TextLight style={{color: colors.fontColorA}}>
-              {'2022년 12월 31일까지'}
-            </TextLight>
-          </View>
-          <View
-            style={{
-              width: 1,
-              height: 60,
-              backgroundColor: colors.primary,
-              alignSelf: 'center',
-              marginRight: 5,
-            }}
-          />
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
-            <Image
-              source={require('~/assets/down_coupon.png')}
-              style={{width: 45, height: 45}}
-              resizeMode="contain"
-            />
-            <TextLight style={{fontSize: 12}}>
-              {item.index + 1}개 남음
-            </TextLight>
-          </View>
-        </View>
-      </Shadow>
-    );
-  };
+  const tabRef = useRef(0);
 
   const layout = useWindowDimensions();
-  const WIDTH = layout.width - 28;
-  const num = data.length % 4;
-  const convert = index => {
-    // if(index > data.length - 4)    )
-    if (num !== 0) {
-      return layout.width / 5 / 5;
-      // if (data.length - index < 4 && data.length - index > 0) {
-      // }
-    }
-  };
-  const _popData = () => {
-    let temp = data;
-    if (temp.length > 1 && filterCate) {
-      temp.pop();
-      temp.pop();
-    }
-    return temp;
-  };
 
-  useEffect(() => {
-    setCateList(data);
-  }, []);
-
+  const [filterCate, setFilterCate] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+  const _onPressCate = item => {
+    console.log('item', Tab.na);
+    setFilterCate(item.ca_name);
+  };
   const renderOpenItem = item => {
     const items = item.item;
     // console.log('items', items);
@@ -192,6 +54,9 @@ const CouponBookMain = ({navigation, route}) => {
         hitSlop={3}
         onPress={() => {
           _onPressCate(items);
+          setIsOpen(!isOpen);
+          naviRef.current.navigate(items.ca_name);
+          //   setInit(items.ca_name);
         }}
         style={{
           // flex: windo,
@@ -219,345 +84,234 @@ const CouponBookMain = ({navigation, route}) => {
     );
   };
 
-  useEffect(() => {
-    _getAddr();
-  }, [isFocused]);
-
   return (
-    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      {/* 
-        쿠폰북 헤더 
-        */}
-      <View
-        style={{
-          borderBottomWidth: 1,
-          paddingBottom: 15,
-          borderColor: colors.borderColor,
-        }}>
-        <View
-          style={{
-            marginTop: 15,
-            marginHorizontal: 14,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Image
-            source={require('~/assets/ico_location.png')}
-            style={{
-              width: 19,
-              height: 19,
-              marginRight: 8,
-              tintColor: colors.primary,
-            }}
-          />
-          <Pressable
-            hitSlop={10}
-            onPress={() => {
-              if (!isGuest && userInfo) {
-                navigation.navigate('AddressMain');
-              } else {
-                _guestAlert(navigation);
-              }
-            }}
-            style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-            <View style={{marginLeft: 0, marginRight: 3}}>
-              <TextEBold
-                numberOfLines={1}
-                style={{
-                  fontSize: 15,
-                  color: colors.fontColor2,
-                }}>
-                {addr}
-              </TextEBold>
-            </View>
-            <Image
-              source={require('~/assets/down_arrow.png')}
-              style={{width: 17, height: 17}}
-            />
-          </Pressable>
-
-          {/* <Pressable
-            hitSlop={10}
-            style={{marginRight: 12}}
-            onPress={() => {
-              Alert.alert('', '아직 준비중입니다!');
-            }}>
-            <Image
-              source={require('~/assets/ico_search.png')}
-              style={{width: 23, height: 23, tintColor: colors.primary}}
-            />
-          </Pressable>
-
-          <Pressable
-            hitSlop={10}
-            onPress={() => {
-              Alert.alert('', '아직 준비중입니다!');
-            }}>
-            <Image
-              source={require('~/assets/bar.png')}
-              style={{width: 27, height: 27, tintColor: colors.primary}}
-            />
-          </Pressable> */}
-        </View>
+    <SafeAreaView
+      edges={['left', 'right', 'top']}
+      style={{...commonStyles.safeAreaStyle}}>
+      <View style={{zIndex: 2000}}>
+        <Header navigation={navigation} title="쿠폰북" isSearch={true} />
       </View>
-      {/* 
-        END 쿠폰북 헤더 
-        */}
-      {/* 
-       카테고리 필터 스크롤
-        */}
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          zIndex: Platform.OS === 'ios' ? 1000 : undefined,
-          marginTop: 10,
-        }}>
-        {!isOpen ? (
-          <>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{marginHorizontal: 14}}>
-              {data.map(
-                (item, index) =>
-                  index < data.length - 2 && (
-                    <Pressable
-                      hitSlop={3}
-                      key={item.ca_id}
-                      onPress={() => {
-                        _onPressCate(item);
-                      }}
-                      style={{
-                        height: 25,
-                        borderWidth: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        paddingHorizontal: 13,
-                        borderColor:
-                          item.ca_name === filterCate
-                            ? colors.primary
-                            : colors.colorE3,
-                        backgroundColor:
-                          item.ca_name === filterCate
-                            ? colors.primary
-                            : 'white',
-                        borderRadius: 30,
-                        marginRight: 10,
-                      }}>
-                      <TextRegular
-                        style={{
-                          color:
-                            item.ca_name === filterCate
-                              ? 'white'
-                              : colors.fontColor2,
-                        }}>
-                        {item.ca_name}
-                      </TextRegular>
-                    </Pressable>
-                  ),
-              )}
-            </ScrollView>
-            <Pressable
-              hitSlop={5}
-              style={{marginRight: 14}}
-              onPress={() => {
-                _openFilter();
-              }}>
-              <Image
-                source={require('~/assets/down_arrow.png')}
-                style={{width: 23, height: 23}}
-                resizeMode="contain"
-              />
-            </Pressable>
-          </>
-        ) : (
-          <View style={{zIndex: 1000}}>
-            <FlatList
-              data={cateList}
-              keyExtractor={(item, index) => index}
-              renderItem={item => renderOpenItem(item)}
-              numColumns={4}
+
+      {Platform.OS === 'ios' ? (
+        <SafeAreaView
+          style={{
+            // flex: 1,
+            position: 'absolute',
+            // 헤더 버튼보다 낮도록 설정
+            zIndex: 200,
+            // width: 100,
+            // height: 100,
+          }}>
+          <CouponFilterView />
+          <MainBanner
+            navigation={navigation}
+            style={{
+              marginBottom: 17,
+            }}
+            position={BannerList['lifestyle']}
+          />
+        </SafeAreaView>
+      ) : (
+        <>
+          <CouponFilterView navigation={navigation} />
+          <View style={{position: 'absolute', top: 155, zIndex: 200}}>
+            <MainBanner
+              navigation={navigation}
               style={{
-                flex: 1,
-                position: 'absolute',
-                backgroundColor: 'white',
-                width: '100%',
+                marginBottom: 17,
               }}
-              columnWrapperStyle={{
-                flex: 1,
-                marginBottom: 7,
-                marginLeft: 14,
-                zIndex: 1000,
-              }}
-              ListFooterComponent={
-                <Shadow distance={1} offset={[0, 1]} style={{width: '100%'}}>
-                  <Pressable
-                    onPress={() => {
-                      setIsOpen(!isOpen);
-                    }}
-                    style={{
-                      backgroundColor: 'white',
-                      width: '100%',
-                      height: 60,
-                      marginBottom: 10,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderTopWidth: 1,
-                      borderBottomWidth: 1,
-                      borderColor: colors.borderColor,
-                      flexDirection: 'row',
-                    }}>
-                    <TextSBold style={{color: colors.fontColor2, fontSize: 16}}>
-                      접어두기
-                    </TextSBold>
-                    <Image
-                      source={require('~/assets/down_arrow.png')}
-                      style={{
-                        width: 26,
-                        height: 26,
-                        transform: [{rotate: '180deg'}],
-                      }}
-                      resizeMode="contain"
-                    />
-                  </Pressable>
-                </Shadow>
-              }
+              position={BannerList['lifestyle']}
             />
           </View>
-        )}
-      </View>
-
-      {/* <View style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}>
-            {data.map((item, index) => (
-              <View
-                style={{
-                  flex: 1 / 4,
-                  marginRight: 5,
-                  height: 60,
-                  backgroundColor: 'teal',
-                }}></View>
-            ))}
-          </View> */}
-      {/* 
-        END 카테고리 필터 스크롤
-        */}
-
-      {/* 
-      필터 스크롤 
-      */}
-      {!isOpen && (
-        <>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{
-              marginTop: 10,
-              marginBottom: 10,
-              marginHorizontal: 14,
-              height: 25,
-            }}
-            contentContainerStyle={{height: 25}}>
-            {filterList.map((item, index) => (
-              <Pressable
-                hitSlop={3}
-                key={item + index}
-                onPress={() => {
-                  _onPressSub(item);
-                }}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginRight: 15,
-                  flexDirection: 'row',
-                }}>
-                <View
-                  style={{
-                    width: 6,
-                    height: 6,
-                    borderRadius: 6 / 2,
-                    backgroundColor:
-                      item === filterSub ? colors.primary : colors.fontColorA,
-                    marginRight: 5,
-                  }}
-                />
-                {item === filterSub ? (
-                  <TextSBold
-                    style={{
-                      color:
-                        item === filterSub
-                          ? colors.fontColor2
-                          : colors.fontColorA,
-                    }}>
-                    {item}
-                  </TextSBold>
-                ) : (
-                  <TextRegular
-                    style={{
-                      color:
-                        item === filterSub
-                          ? colors.fontColor2
-                          : colors.fontColorA,
-                    }}>
-                    {item}
-                  </TextRegular>
-                )}
-              </Pressable>
-            ))}
-          </ScrollView>
         </>
       )}
 
-      <FlatList
-        data={[]}
-        overScrollMode={'never'}
-        keyExtractor={(item, index) => index}
-        showsVerticalScrollIndicator={false}
-        renderItem={item => renderItem(item)}
-        contentContainerStyle={{
-          paddingTop: 10,
-          paddingHorizontal: 14,
-          paddingBottom: 20,
-        }}
-        ListEmptyComponent={
-          !isOpen && (
-            <View style={{alignItems: 'center', marginBottom: '60%'}}>
-              <Image
-                source={require('~/assets/no_coupon.png')}
-                style={{height: layout.width * 0.7}}
-                resizeMode="contain"
-              />
-              {/* <TextBold style={{fontSize: 33}}>아직 준비중입니다!</TextBold> */}
-            </View>
-          )
-        }
-      />
-      {/* <Shadow
-        distance={4}
-        offset={[0, 1]}
-        style={{width: 90, height: 40}}
-        containerStyle={{position: 'absolute', bottom: 30, right: 14}}>
+      {isOpen && (
+        <View style={{zIndex: 1000}}>
+          <FlatList
+            data={data}
+            keyExtractor={(item, index) => index}
+            renderItem={item => renderOpenItem(item)}
+            numColumns={4}
+            style={{
+              flex: 1,
+              position: 'absolute',
+              backgroundColor: 'white',
+              zIndex: 100,
+              width: '100%',
+            }}
+            columnWrapperStyle={{
+              flex: 1,
+              marginBottom: 7,
+              marginLeft: 14,
+            }}
+            ListFooterComponent={
+              <Shadow distance={1} offset={[0, 1]} style={{width: '100%'}}>
+                <Pressable
+                  onPress={() => setIsOpen(!isOpen)}
+                  style={{
+                    backgroundColor: 'white',
+                    width: '100%',
+                    height: 60,
+                    marginBottom: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderTopWidth: 1,
+                    borderBottomWidth: 1,
+                    borderColor: colors.borderColor,
+                    flexDirection: 'row',
+                  }}>
+                  <TextSBold style={{color: colors.fontColor2, fontSize: 16}}>
+                    접어두기
+                  </TextSBold>
+                  <Image
+                    source={require('~/assets/down_arrow.png')}
+                    style={{
+                      width: 26,
+                      height: 26,
+                      transform: [{rotate: '180deg'}],
+                    }}
+                    resizeMode="contain"
+                  />
+                </Pressable>
+              </Shadow>
+            }
+          />
+        </View>
+      )}
+      <SafeAreaView style={{position: 'absolute', zIndex: 300}}>
         <Pressable
-          hitSlop={5}
-          onPress={() => {
-            Alert.alert('', '아직 준비중입니다!');
-          }}
+          onPress={() => setIsOpen(!isOpen)}
           style={{
-            borderRadius: 40,
-            width: 90,
-            height: 40,
-            backgroundColor: colors.primary,
+            top: 55,
+            // right: 0,
+            left: layout.width - 30,
+            width: 30,
+            height: 50,
+            // zIndex: ,
             alignItems: 'center',
+            backgroundColor: 'white',
             justifyContent: 'center',
+            // position: 'absolute',
           }}>
-          <TextRegular style={{color: 'white', fontSize: 17}}>
-            지도보기
-          </TextRegular>
+          <Image
+            source={require('~/assets/down_arrow.png')}
+            style={{width: 20, height: 20}}
+            resizeMode={'contain'}
+          />
         </Pressable>
-      </Shadow> */}
-      {/*
-      END 필터 스크롤 
-      */}
+      </SafeAreaView>
+      <Tab.Navigator
+        backBehavior="none"
+        sceneContainerStyle={{
+          flex: 1,
+          backgroundColor: 'white',
+          paddingTop: 45,
+          // paddingHorizontal: 14,
+          marginTop: 160,
+        }}
+        // style={{flex: 1}}
+        screenOptions={({route}) => ({
+          lazy: true,
+          tabBarStyle: {
+            paddingLeft: 14,
+            paddingRight: 30,
+            // marginRight: 40,
+          },
+          tabBarLabel: props => (
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                // marginRight: 30,
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Pretendard-Bold',
+                  color: props.focused ? colors.primary : colors.fontColor2,
+                }}>
+                {route.name}
+              </Text>
+            </View>
+          ),
+          tabBarScrollEnabled: true,
+          tabBarItemStyle: {
+            // flexGrow: 2,
+            zIndex: 300,
+            width: 'auto',
+            // marginRight: 30,
+          },
+          tabBarIndicatorStyle: {
+            height: 30,
+          },
+          tabBarIndicatorContainerStyle: {
+            // justifyContent: 'center',
+            justifyContent: 'flex-end',
+            paddingLeft: 14,
+            zIndex: 300,
+          },
+          tabBarIndicator: props => {
+            props.position.addListener(value => {
+              if (props.state.index <= value.value)
+                tabRef.current = props.state.index;
+            });
+            let arr = [];
+            const index = props.state.index;
+            const tabWidth = props.getTabWidth(index);
+            const _getWidth = idx => {
+              return props.getTabWidth(idx);
+            };
+            props.state.routes.map((item, idx) => {
+              if (idx === 0) arr.push(0);
+              else arr.push(_getWidth(idx - 1));
+            });
+
+            const _getToValue = idx => {
+              let temp = 0;
+              for (let i = 0; i <= idx; i++) {
+                temp += arr[i];
+              }
+              return temp;
+            };
+            let animation = new Animated.Value(_getToValue(tabRef.current));
+            Animated.spring(animation, {
+              toValue: _getToValue(index),
+              duration: 800,
+              friction: 10,
+              tension: 20,
+              useNativeDriver: true,
+            }).start();
+            return (
+              <>
+                <Animated.View
+                  style={{
+                    transform: [{translateX: animation}],
+                    width: tabWidth * 0.9,
+                    marginHorizontal: tabWidth * 0.05,
+                    backgroundColor: colors.primary,
+                    // height: 25,
+                    height: 3,
+                    // borderRadius: 20,
+                  }}
+                />
+              </>
+            );
+          },
+        })}>
+        {data.map((item, index) => (
+          <Tab.Screen
+            key={index}
+            name={item.ca_name}
+            component={CouponList}
+            // 코드값으로 불러오기
+            // initialParams={{cate: 'lifestyle'
+            // cate: item.ca_name,
+            // ca_code: item.ca_code,
+            // category: category,}}
+          />
+        ))}
+      </Tab.Navigator>
     </SafeAreaView>
   );
 };

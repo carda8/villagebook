@@ -13,7 +13,7 @@ import TextRegular from '../../component/text/TextRegular';
 import MainBanner from '../../component/MainBanner';
 import BannerList from '../../config/BannerList';
 
-const CouponFilterView = ({isSearch, category, navigation}) => {
+const CouponFilterView = ({isSearch, category, navigation, top}) => {
   const layout = useWindowDimensions();
   const filterList = [
     '추천순',
@@ -34,7 +34,7 @@ const CouponFilterView = ({isSearch, category, navigation}) => {
         zIndex: 1000,
         height: 40,
         marginLeft: 14,
-        top: 110,
+        top: top ? top : 110,
         position: Platform.OS === 'ios' ? 'relative' : 'absolute',
         minWidth: layout.width,
       }}>

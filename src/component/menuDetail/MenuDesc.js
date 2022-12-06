@@ -25,7 +25,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const {isGuest, userInfo} = useSelector(state => state.authReducer);
 
-  const [moreInfo, setMoreInfo] = useState(false);
+  const [moreInfo, setMoreInfo] = useState(true);
   const [more, setMore] = useState(false);
   const storeInfo = info?.data?.arrItems ?? info;
   console.log('info', storeInfo);
@@ -224,7 +224,13 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 <View style={{flex: 1}}>
                   <Pressable
                     onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}>
-                    <TextRegular style={{color: colors.fontColor3}}>
+                    <TextRegular
+                      // style={{color: colors.fontColor3}}
+                      style={{
+                        color: storeInfo?.mb_homepage
+                          ? colors.primary
+                          : colors.fontColor3,
+                      }}>
                       {storeInfo?.mb_homepage ? storeInfo?.mb_homepage : '-'}
                     </TextRegular>
                   </Pressable>
@@ -254,7 +260,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 </View>
               </View>
 
-              <Pressable
+              {/* <Pressable
                 onPress={() => setMoreInfo(!moreInfo)}
                 style={{
                   width: '100%',
@@ -273,7 +279,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                   }}
                   resizeMode={'contain'}
                 />
-              </Pressable>
+              </Pressable> */}
             </View>
 
             <DividerL />

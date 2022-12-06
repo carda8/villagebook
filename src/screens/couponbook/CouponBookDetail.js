@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, useWindowDimensions} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
@@ -15,12 +15,34 @@ import {Shadow} from 'react-native-shadow-2';
 import {Pressable} from 'react-native';
 import MiniMap from '../map/MiniMap';
 import TextRegular from '../../component/text/TextRegular';
+import {useDispatch} from 'react-redux';
+import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 
 const CouponBookDetail = ({navigation}) => {
+  const dispatch = useDispatch();
+  const layout = useWindowDimensions();
+  const _onPressInfo = () => {
+    // navigation.navigate('LifeStyleStoreInfo', {
+    //   jumju_id: storeInfo.mb_id,
+    //   jumju_code: storeInfo.mb_jumju_code,
+    //   mb_company: storeInfo.mb_company,
+    //   category: routeData.category,
+    //   likeCount: storeInfo?.mb_zzim_count,
+    // });
+    dispatch(setIsLifeStyle(true));
+    navigation.navigate('LifeStyleStoreInfo', {
+      jumju_id: 'L2022120028263',
+      jumju_code: 'L2022120028263',
+      mb_company: '감성바베큐',
+      category: 'lifestyle',
+      likeCount: '0',
+    });
+  };
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <ScrollView>
+      <ScrollView contentContainerStyle={{paddingBottom: 100}}>
         <Header
+          navigation={navigation}
           title={'쿠폰 상세보기'}
           style={{
             borderBottomWidth: 1,
@@ -151,19 +173,22 @@ const CouponBookDetail = ({navigation}) => {
         {/* 안내사항  */}
         <View
           style={{
-            borderTopWidth: 1,
-            borderBottomWidth: 1,
-            borderColor: colors.borderColor,
-            marginTop: 10,
             padding: 14,
+            marginTop: 10,
+            borderTopWidth: 1,
+            // borderBottomWidth: 1,
+            borderColor: colors.borderColor,
           }}>
           <TextBold>안내사항</TextBold>
           <TextRegular>
-            백색소음의 시그니처 파스타 알리오올리오 파스타 50% 할인쿠폰입니다 ^^
-            백색소음의 시그니처 파스타 알리오올리오 파스타 50% 할인쿠폰입니다 ^^
+            {`백색소음의 시그니처 파스타 알리오올리오 파스타 50% 할인쿠폰입니다 ^^
+계산하실 떄 보여주시면 할인 적용해드립니다.
+감사합니다.`}
           </TextRegular>
           <Pressable
-            onPress={() => {}}
+            onPress={() => {
+              _onPressInfo();
+            }}
             style={{
               alignItems: 'center',
               justifyContent: 'center',
@@ -179,6 +204,33 @@ const CouponBookDetail = ({navigation}) => {
           </Pressable>
         </View>
       </ScrollView>
+      <View
+        style={{
+          width: '100%',
+          position: 'absolute',
+          backgroundColor: 'white',
+          borderTopWidth: 1,
+          borderColor: colors.borderColor,
+          bottom: 10,
+        }}>
+        <View style={{marginHorizontal: 14}}>
+          <View style={{marginVertical: 10}}>
+            <TextRegular style={{color: colors.fontColor3}}>
+              쿠폰을 사용한 후{'<사용완료>'}버튼을 꼭 눌러주세요.
+            </TextRegular>
+          </View>
+          <Pressable
+            style={{
+              height: 50,
+              backgroundColor: colors.primary,
+              borderRadius: 22,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TextBold style={{color: 'white', fontSize: 18}}>사용완료</TextBold>
+          </Pressable>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };

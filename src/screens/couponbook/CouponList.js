@@ -22,7 +22,10 @@ const CouponList = ({navigation, route, couponData}) => {
       <Shadow distance={5} offset={[0, 2]} style={{width: '100%'}}>
         <Pressable
           onPress={() => {
-            navigation.navigate('CouponBookDetail');
+            if (isExpired) {
+            } else {
+              navigation.navigate('CouponBookDetail');
+            }
           }}
           style={{
             borderWidth: 1,
@@ -104,7 +107,7 @@ const CouponList = ({navigation, route, couponData}) => {
         // flex: 1,
       }}>
       <FlatList
-        data={couponData ? couponData : [1, 2, 3, 4, 5, 1, 2, 3, 4, 56]}
+        data={couponData ? couponData : [1, 2, 3, 4, 5, 1, 2, 6]}
         // data={[]}
         keyExtractor={(item, index) => index}
         renderItem={item => renderItem(item)}
