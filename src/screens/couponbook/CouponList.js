@@ -3,9 +3,6 @@ import React from 'react';
 import {Image} from 'react-native';
 import {useWindowDimensions} from 'react-native';
 import {Pressable} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import MainBanner from '../../component/MainBanner';
-import BannerList from '../../config/BannerList';
 import {FlatList} from 'react-native';
 import {Shadow} from 'react-native-shadow-2';
 import TextMedium from '../../component/text/TextMedium';
@@ -13,19 +10,20 @@ import TextBold from '../../component/text/TextBold';
 import TextLight from '../../component/text/TextLight';
 import colors from '../../styles/colors';
 
-const CouponList = ({navigation, route, couponData}) => {
+const CouponList = ({navigation, route, couponData, isMy}) => {
   const layout = useWindowDimensions();
   console.log('route', route);
   console.log('navigation', navigation);
   const renderItem = item => {
     return (
-      <Shadow distance={5} offset={[0, 2]} style={{width: '100%'}}>
+      <Shadow
+        distance={5}
+        offset={[0, 2]}
+        style={{width: '100%'}}
+        containerStyle={{marginTop: item.index === 0 && isMy ? 14 : 0}}>
         <Pressable
           onPress={() => {
-            if (isExpired) {
-            } else {
-              navigation.navigate('CouponBookDetail');
-            }
+            navigation.navigate('CouponBookDetail');
           }}
           style={{
             borderWidth: 1,

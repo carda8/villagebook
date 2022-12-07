@@ -83,9 +83,8 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
   return (
     <SafeAreaView
       style={{...commonStyles.safeAreaStyle}}
-      edges={['left', 'right']}
-    >
-      <ScrollView contentContainerStyle={{paddingBottom: 60}}>
+      edges={['left', 'right']}>
+      <ScrollView contentContainerStyle={{paddingBottom: 0}}>
         <Header
           navigation={navigation}
           showLike={true}
@@ -108,7 +107,7 @@ const LifeStyleStoreInfo = ({navigation, route}) => {
           categoryMain={routeData.category}
           navigation={navigation}
         />
-        <MiniMap lat={lifeInfo.mb_lat} lng={lifeInfo.mb_lng} />
+        {/* <MiniMap lat={lifeInfo.mb_lat} lng={lifeInfo.mb_lng} /> */}
       </ScrollView>
     </SafeAreaView>
   );

@@ -4,18 +4,10 @@ import {FlatList, Text} from 'react-native';
 import {Animated} from 'react-native';
 import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDispatch} from 'react-redux';
 import Header from '../../component/Header';
-import FilterView from '../home/CategoryStore/FilterView';
 import React from 'react';
 import commonStyles from '../../styles/commonStyle';
-import Category from '../../config/Category';
-import StoreItems from '../home/CategoryStore/StoreItems';
 import colors from '../../styles/colors';
-import {
-  setcurrentCategory,
-  setcurrentFilter,
-} from '../../store/reducers/CategoryReducer';
 import CouponList from './CouponList';
 import CouponFilterView from './CouponFilterView';
 import {Pressable} from 'react-native';
@@ -25,7 +17,6 @@ import {useState} from 'react';
 import {Shadow} from 'react-native-shadow-2';
 import TextSBold from '../../component/text/TextSBold';
 import TextRegular from '../../component/text/TextRegular';
-import {NavigationContainer} from '@react-navigation/native';
 import {naviRef} from '../../navigator/MainStackNavigator';
 import MainBanner from '../../component/MainBanner';
 import BannerList from '../../config/BannerList';
@@ -312,6 +303,29 @@ const CouponBookMain = ({navigation, route}) => {
           />
         ))}
       </Tab.Navigator>
+      <Shadow
+        distance={4}
+        offset={[0, 1]}
+        style={{width: 90, height: 40}}
+        containerStyle={{position: 'absolute', bottom: 30, right: 14}}>
+        <Pressable
+          hitSlop={5}
+          onPress={() => {
+            navigation.navigate('CouponBookMap');
+          }}
+          style={{
+            borderRadius: 40,
+            width: 90,
+            height: 40,
+            backgroundColor: colors.primary,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <TextRegular style={{color: 'white', fontSize: 17}}>
+            지도보기
+          </TextRegular>
+        </Pressable>
+      </Shadow>
     </SafeAreaView>
   );
 };

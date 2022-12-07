@@ -87,6 +87,8 @@ import FoodScreen from '../screens/home/FoodScreen';
 import CouponBookSearch from '../screens/couponbook/CouponBookSearch';
 import CouponBookDetail from '../screens/couponbook/CouponBookDetail';
 import CouponBookMy from '../screens/couponbook/CouponBookMy';
+import CouponBookMap from '../screens/couponbook/CouponBookMap';
+import CouponBookReview from '../screens/couponbook/CouponBookReview';
 const Stack = createNativeStackNavigator();
 const naviRef = React.createRef();
 export {naviRef};
@@ -506,6 +508,8 @@ const MainStackNavigator = () => {
         <Stack.Screen name="CouponBookSearch" component={CouponBookSearch} />
         <Stack.Screen name="CouponBookDetail" component={CouponBookDetail} />
         <Stack.Screen name="CouponBookMy" component={CouponBookMy} />
+        <Stack.Screen name="CouponBookMap" component={CouponBookMap} />
+        <Stack.Screen name="CouponBookReview" component={CouponBookReview} />
 
         <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>
