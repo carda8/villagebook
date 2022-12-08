@@ -2,7 +2,12 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const couponSlice = createSlice({
   name: 'menu',
-  initialState: {storeCoupon: '', systemCoupon: '', couponbookData: ''},
+  initialState: {
+    storeCoupon: '',
+    systemCoupon: '',
+    couponbookData: '',
+    couponBoolFilterIndex: '1',
+  },
   reducers: {
     setStoreCoupon: (state, action) => {
       state.storeCoupon = action.payload;
@@ -17,6 +22,9 @@ const couponSlice = createSlice({
     setCouponBookMenus: (state, action) => {
       state.couponbookData = action.payload;
     },
+    setCouponBookFilterIndex: (state, action) => {
+      state.couponBoolFilterIndex = action.payload;
+    },
   },
 });
 
@@ -26,5 +34,6 @@ export const {
   setSystemCoupon,
   resetCoupon,
   setCouponBookMenus,
+  setCouponBookFilterIndex,
 } = actions;
 export const couponReducer = reducer;

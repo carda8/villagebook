@@ -204,8 +204,7 @@ const MenuReview = ({storeInfo}) => {
             alignItems: 'center',
             justifyContent: 'center',
             paddingHorizontal: 22,
-          }}
-        >
+          }}>
           <View style={{flexDirection: 'row'}}>
             <TextBold style={{fontSize: 15}}>이 상품에 </TextBold>
             <TextBold style={{fontSize: 15, color: colors.primary}}>
@@ -223,13 +222,11 @@ const MenuReview = ({storeInfo}) => {
               justifyContent: 'center',
               alignItems: 'center',
               marginTop: 20,
-            }}
-          >
+            }}>
             <View
               style={{
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <TextBold style={{fontSize: 44, color: colors.primary}}>
                 {_showRateAvg(review.rate?.avg ? review.rate?.avg : 0)}
               </TextBold>
@@ -255,15 +252,13 @@ const MenuReview = ({storeInfo}) => {
             backgroundColor: 'white',
             paddingHorizontal: 22,
             paddingVertical: 35,
-          }}
-        >
+          }}>
           <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
               marginBottom: 15,
-            }}
-          >
+            }}>
             <Image
               source={
                 item.profile
@@ -297,8 +292,7 @@ const MenuReview = ({storeInfo}) => {
             onPress={() => {
               if (item.pic.length > 0)
                 setModal({visible: !modal.visible, image: item.pic});
-            }}
-          >
+            }}>
             {item?.pic.map((item, index) => (
               <View key={index}>
                 {index === 0 && (
@@ -327,14 +321,12 @@ const MenuReview = ({storeInfo}) => {
                 backgroundColor: colors.storeIcon,
                 paddingVertical: 16,
                 paddingHorizontal: 13,
-              }}
-            >
+              }}>
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'flex-start',
-                }}
-              >
+                }}>
                 <Image
                   source={
                     storeInfo.store_logo
@@ -349,8 +341,7 @@ const MenuReview = ({storeInfo}) => {
                     {storeInfo.mb_company}
                   </TextBold>
                   <TextRegular
-                    style={{fontSize: 13, color: colors.fontColorA2}}
-                  >
+                    style={{fontSize: 13, color: colors.fontColorA2}}>
                     {item.replayDate}
                   </TextRegular>
                   <TextRegular
@@ -358,8 +349,7 @@ const MenuReview = ({storeInfo}) => {
                       fontSize: 15,
                       color: colors.fontColor2,
                       marginTop: 7,
-                    }}
-                  >
+                    }}>
                     {item.replyComment}
                   </TextRegular>
                 </View>
@@ -420,8 +410,7 @@ const MenuReview = ({storeInfo}) => {
             flexDirection: 'row',
             alignItems: 'center',
             borderColor: colors.borderColor,
-          }}
-        >
+          }}>
           <Image
             source={
               !onlyPic
@@ -459,8 +448,7 @@ const MenuReview = ({storeInfo}) => {
               justifyContent: 'center',
               backgroundColor: colors.primary,
               marginTop: 30,
-            }}
-          >
+            }}>
             <TextBold style={{color: 'white'}}>더보기</TextBold>
           </Pressable>
         )}
@@ -469,8 +457,7 @@ const MenuReview = ({storeInfo}) => {
           visible={modal.visible}
           onRequestClose={() => {
             setModal({...modal, visible: !modal.visible});
-          }}
-        >
+          }}>
           {/* {console.log('modal img', modal.image)} */}
           <ImageViewer
             useNativeDriver
@@ -480,8 +467,7 @@ const MenuReview = ({storeInfo}) => {
                 onPress={() => {
                   setModal({...modal, visible: !modal.visible});
                 }}
-                style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}
-              >
+                style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}>
                 <Image
                   source={require('~/assets/pop_close.png')}
                   style={{

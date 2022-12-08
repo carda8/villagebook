@@ -75,7 +75,7 @@ const ReviewScore = ({review}) => {
     <>
       <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
         <TextRegular style={{fontSize: 15}}>
-          {review?.notice.noticeContent}
+          {/* {review?.notice.noticeContent} */}
         </TextRegular>
       </View>
 
@@ -90,7 +90,7 @@ const ReviewScore = ({review}) => {
         <View style={{flexDirection: 'row'}}>
           <TextBold style={{fontSize: 15}}>이 상품에 </TextBold>
           <TextBold style={{fontSize: 15, color: colors.primary}}>
-            {review.rate?.total_cnt ? review.rate?.total_cnt : '0'}명
+            {/* {review.rate?.total_cnt ? review.rate?.total_cnt : '0'}명 */}
           </TextBold>
           <TextBold style={{fontSize: 15}}>이</TextBold>
         </View>
@@ -110,13 +110,13 @@ const ReviewScore = ({review}) => {
               alignItems: 'center',
             }}>
             <TextBold style={{fontSize: 44, color: colors.primary}}>
-              {_showRateAvg(review.rate?.avg ? review.rate?.avg : 0)}
+              {/* {_showRateAvg(review.rate?.avg ? review.rate?.avg : 0)} */}
             </TextBold>
             <View style={{flexDirection: 'row'}}>
-              {_setRating(true, review.rate?.avg ? review.rate?.avg : 0)}
+              {/* {_setRating(true, review.rate?.avg ? review.rate?.avg : 0)} */}
             </View>
           </View>
-          <View style={{marginLeft: 30}}>{_setSlider()}</View>
+          {/* <View style={{marginLeft: 30}}>{_setSlider()}</View> */}
         </View>
       </View>
     </>

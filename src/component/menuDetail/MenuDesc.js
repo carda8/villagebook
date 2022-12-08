@@ -7,6 +7,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {_guestAlert} from '../../config/utils/modules';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import MiniMap from '../../screens/map/MiniMap';
+import MenuReview from '../../screens/menu/MenuReview';
+import ReviewScore from '../../screens/menu/ReviewScore';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
 import {customAlert} from '../CustomAlert';
@@ -381,28 +383,32 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
               </>
             ) : (
               <>
-                <View style={{marginHorizontal: 22, marginTop: 20}}>
-                  <View
+                <View
+                  style={{
+                    marginHorizontal: 22,
+                    marginTop: 22,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                  <TextNotoB>리뷰 0개</TextNotoB>
+                  <Pressable
+                    hitSlop={5}
+                    onPress={() => {
+                      navigation.navigate('CouponBookReview');
+                    }}
                     style={{
-                      flexDirection: 'row',
+                      backgroundColor: colors.primary,
+                      paddingHorizontal: 10,
+                      paddingVertical: 4,
+                      borderRadius: 15,
                       alignItems: 'center',
-                      justifyContent: 'space-between',
+                      justifyContent: 'center',
                     }}>
-                    <TextNotoB>리뷰 0개</TextNotoB>
-                    <Pressable
-                      onPress={() => {}}
-                      style={{
-                        backgroundColor: colors.primary,
-                        paddingHorizontal: 10,
-                        paddingVertical: 4,
-                        borderRadius: 15,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <TextNotoM style={{color: 'white'}}>리뷰쓰기</TextNotoM>
-                    </Pressable>
-                  </View>
+                    <TextNotoM style={{color: 'white'}}>리뷰쓰기</TextNotoM>
+                  </Pressable>
                 </View>
+                <MenuReview storeInfo={info} />
               </>
             )}
           </>

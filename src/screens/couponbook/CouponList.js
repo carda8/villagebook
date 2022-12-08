@@ -9,18 +9,52 @@ import TextMedium from '../../component/text/TextMedium';
 import TextBold from '../../component/text/TextBold';
 import TextLight from '../../component/text/TextLight';
 import colors from '../../styles/colors';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useEffect} from 'react';
+import {useState} from 'react';
+import {useSelector} from 'react-redux';
 
 const CouponList = ({navigation, route, couponData, isMy}) => {
   const layout = useWindowDimensions();
-  console.log('route', route);
-  console.log('navigation', navigation);
+  const routeData = route?.params;
+  const [couponData2, setCouponData] = useState([]);
+  const {couponBoolFilterIndex} = useSelector(state => state.couponReducer);
+
+  const {mutateGetCouponBookList} = useCustomMutation();
+
+  const _getBookList = () => {
+    const data = {
+      item_count: 0,
+      limit_count: 10,
+      ca_code: routeData?.ca_code,
+      ca_sort: couponBoolFilterIndex,
+    };
+    console.log('## data', data);
+    // return;
+    mutateGetCouponBookList.mutate(data, {
+      onSuccess: res => {
+        console.log('## res', res.data);
+        if (res.data.arrItems.length > 0) {
+          setCouponData(res.data.arrItems);
+        }
+      },
+    });
+  };
+
+  useEffect(() => {
+    _getBookList();
+  }, [couponBoolFilterIndex]);
+
   const renderItem = item => {
+    const element = item.item;
+    const elementIdx = item.index;
+    console.log('element', element);
     return (
       <Shadow
         distance={5}
         offset={[0, 2]}
         style={{width: '100%'}}
-        containerStyle={{marginTop: item.index === 0 && isMy ? 14 : 0}}>
+        containerStyle={{marginTop: elementIdx === 0 && isMy ? 14 : 0}}>
         <Pressable
           onPress={() => {
             navigation.navigate('CouponBookDetail');
@@ -37,9 +71,13 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
             backgroundColor: 'white',
           }}>
           <Image
-            source={require('~/assets/no_img.png')}
+            source={
+              element.store_logo
+                ? {uri: element.store_logo}
+                : require('~/assets/no_img.png')
+            }
             style={{height: 80, width: 80}}
-            resizeMode="center"
+            resizeMode="cover"
           />
           <View
             style={{
@@ -51,7 +89,7 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
               <TextMedium
                 style={{color: colors.fontColor3, flex: 1}}
                 numberOfLines={1}>
-                기마상회{item.item}
+                {element.store_name}
               </TextMedium>
               <TextLight
                 style={{
@@ -59,18 +97,18 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
                   fontSize: 11,
                   marginRight: 5,
                 }}>
-                {'2022년 12월 31일까지'}
+                {element.cp_end_txt}
               </TextLight>
             </View>
             <TextBold
               style={{fontSize: 16, color: colors.fontColor2}}
               numberOfLines={2}>
-              50% 할인쿠폰{item.item}
+              {element.cp_subject}
             </TextBold>
             <TextBold
               style={{fontSize: 13, color: colors.fontColorA2}}
               numberOfLines={2}>
-              {'첫, 방문 고객 한정 쿠폰 사용가능'}
+              {element.cp_memo}
             </TextBold>
           </View>
           <View
@@ -82,14 +120,15 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
               marginRight: 5,
             }}
           />
-          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <View
+            style={{width: 55, justifyContent: 'center', alignItems: 'center'}}>
             <Image
               source={require('~/assets/down_coupon.png')}
               style={{width: 45, height: 45}}
               resizeMode="contain"
             />
             <TextLight style={{fontSize: 12}}>
-              {item.index + 1}개 남음
+              {element.cp_coupon_download_txt}
             </TextLight>
           </View>
         </Pressable>
@@ -105,7 +144,7 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
         // flex: 1,
       }}>
       <FlatList
-        data={couponData ? couponData : [1, 2, 3, 4, 5, 1, 2, 6]}
+        data={couponData2}
         // data={[]}
         keyExtractor={(item, index) => index}
         renderItem={item => renderItem(item)}

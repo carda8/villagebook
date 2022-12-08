@@ -20,6 +20,8 @@ import TextRegular from '../../component/text/TextRegular';
 import {naviRef} from '../../navigator/MainStackNavigator';
 import MainBanner from '../../component/MainBanner';
 import BannerList from '../../config/BannerList';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useEffect} from 'react';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -33,10 +35,12 @@ const CouponBookMain = ({navigation, route}) => {
 
   const [filterCate, setFilterCate] = useState();
   const [isOpen, setIsOpen] = useState(false);
+
   const _onPressCate = item => {
     console.log('item', Tab.na);
     setFilterCate(item.ca_name);
   };
+
   const renderOpenItem = item => {
     const items = item.item;
     // console.log('items', items);
@@ -296,10 +300,11 @@ const CouponBookMain = ({navigation, route}) => {
             name={item.ca_name}
             component={CouponList}
             // 코드값으로 불러오기
-            // initialParams={{cate: 'lifestyle'
-            // cate: item.ca_name,
-            // ca_code: item.ca_code,
-            // category: category,}}
+            initialParams={{
+              cate: item.ca_name,
+              ca_code: item.ca_code,
+              category: 'lifestyle',
+            }}
           />
         ))}
       </Tab.Navigator>

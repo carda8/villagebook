@@ -2,6 +2,7 @@ import {Alert} from 'react-native';
 import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
 import cartAPI from '../api/modules/cartAPI';
+import couponBookAPI from '../api/modules/couponBookAPI';
 import mainAPI from '../api/modules/mainAPI';
 import paymentAPI from '../api/modules/paymentAPI';
 import storeAPI from '../api/modules/storeAPI';
@@ -364,7 +365,18 @@ export const useCustomMutation = () => {
     },
   });
 
+  //쿠폰북 api 추가
+  const mutateGetCouponBookList = useMutation(
+    couponBookAPI._getCouponBookList,
+    {
+      onSettled: e => {
+        console.log('mutateGetCouponBookList', e);
+      },
+    },
+  );
+
   return {
+    mutateGetCouponBookList,
     mutateSignIn,
     mutateSNSlogin,
     mutateFindId,
