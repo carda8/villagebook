@@ -57,7 +57,7 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
         containerStyle={{marginTop: elementIdx === 0 && isMy ? 14 : 0}}>
         <Pressable
           onPress={() => {
-            navigation.navigate('CouponBookDetail');
+            navigation.navigate('CouponBookDetail', {...element});
           }}
           style={{
             borderWidth: 1,

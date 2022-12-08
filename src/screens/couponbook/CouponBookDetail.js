@@ -17,10 +17,14 @@ import MiniMap from '../map/MiniMap';
 import TextRegular from '../../component/text/TextRegular';
 import {useDispatch} from 'react-redux';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
+import {useEffect} from 'react';
 
-const CouponBookDetail = ({navigation}) => {
+const CouponBookDetail = ({navigation, route}) => {
+  const params = route?.params;
   const dispatch = useDispatch();
-  const layout = useWindowDimensions();
+  const {mttCpnBookDtl} = useCustomMutation();
+  console.log('route ::', route.params);
   const _onPressInfo = () => {
     // navigation.navigate('LifeStyleStoreInfo', {
     //   jumju_id: storeInfo.mb_id,
@@ -31,13 +35,31 @@ const CouponBookDetail = ({navigation}) => {
     // });
     dispatch(setIsLifeStyle(true));
     navigation.navigate('LifeStyleStoreInfo', {
-      jumju_id: 'L2022120028263',
-      jumju_code: 'L2022120028263',
-      mb_company: '감성바베큐',
+      jumju_id: params.cp_jumju_id,
+      jumju_code: params.cp_jumju_code,
+      mb_company: params.store_name,
       category: 'lifestyle',
       likeCount: '0',
     });
   };
+
+  const _getDtl = () => {
+    const data = {
+      jumju_id: params.cp_jumju_id,
+      jumju_code: params.cp_jumju_code,
+      cp_no: params.cp_no,
+    };
+    mttCpnBookDtl.mutate(data, {
+      onSuccess: res => {
+        console.log('res _getDtl ::', res.data.arrItems);
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (params) _getDtl();
+  }, []);
+
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
       <ScrollView contentContainerStyle={{paddingBottom: 100}}>
@@ -152,7 +174,7 @@ const CouponBookDetail = ({navigation}) => {
               }}
               resizeMode="contain"
             />
-            <TextMedium>서울 서댑문구 연회로 138-12</TextMedium>
+            <TextMedium>{'서울 서댑문구 연회로 138-12'}</TextMedium>
           </View>
           {/* 지도 */}
           <View
@@ -164,8 +186,8 @@ const CouponBookDetail = ({navigation}) => {
               canUseZoom={true}
               height={240}
               isStore
-              lat={35.1795543}
-              lng={129.0756416}
+              lat={params?.store_lat}
+              lng={params?.store_lng}
               // width={200}
             />
           </View>

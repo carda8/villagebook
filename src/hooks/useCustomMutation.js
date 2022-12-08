@@ -374,9 +374,15 @@ export const useCustomMutation = () => {
       },
     },
   );
+  const mttCpnBookDtl = useMutation(couponBookAPI._getCpnBookDtl, {
+    onSettled: e => {
+      console.log('mttCpnBookDtl', e);
+    },
+  });
 
   return {
     mutateGetCouponBookList,
+    mttCpnBookDtl,
     mutateSignIn,
     mutateSNSlogin,
     mutateFindId,

@@ -16,7 +16,15 @@ const MiniMap = ({lng, lat, isStore, width, height, canUseZoom}) => {
         showsMyLocationButton={isStore ? false : true}
         zoomControl={isStore ? (canUseZoom ? true : false) : true}
         scaleBar={false}
-        center={{latitude: Number(lat), longitude: Number(lng), zoom: 16}}
+        center={
+          lat && lng
+            ? {
+                latitude: Number(lat),
+                longitude: Number(lng),
+                zoom: 16,
+              }
+            : undefined
+        }
         scrollGesturesEnabled={true}
         zoomGesturesEnabled={true}
         tiltGesturesEnabled={false}

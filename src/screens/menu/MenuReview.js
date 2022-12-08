@@ -126,7 +126,6 @@ const MenuReview = ({storeInfo}) => {
 
   const _setSlider = () => {
     let temp2 = [];
-    console.log('re@@@@@@@@@@@', review);
     for (let i = 0; i < 5; i++) {
       temp2.push(
         <View key={i} style={{flexDirection: 'row'}}>
