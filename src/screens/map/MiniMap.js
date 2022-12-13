@@ -40,15 +40,24 @@ const MiniMap = ({lng, lat, isStore, width, height, canUseZoom}) => {
           //   _convertCoor({lon: e.longitude, lat: e.latitude});
           // setPosition({latitude: e.latitude, longitude: e.longitude});
         }}>
-        <Marker
-          width={25}
-          height={30}
-          animateToCoordinate={e => {
-            console.log('anime', e);
-          }}
-          coordinate={{latitude: Number(lat), longitude: Number(lng)}}
-          onClick={() => console.log('onClick! p0')}
-        />
+        {lat && lng && (
+          <Marker
+            width={25}
+            height={30}
+            animateToCoordinate={e => {
+              console.log('anime', e);
+            }}
+            coordinate={
+              lat && lng
+                ? {
+                    latitude: Number(lat),
+                    longitude: Number(lng),
+                  }
+                : undefined
+            }
+            onClick={() => console.log('onClick! p0')}
+          />
+        )}
       </NaverMapView>
     </View>
   );

@@ -380,7 +380,35 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mttCpbMy = useMutation(couponBookAPI._getCpbMy, {
+    onSettled: e => {
+      console.log('mttCpbMy', e);
+    },
+  });
+
+  const mttCpbUse = useMutation(couponBookAPI._useCpb, {
+    onSettled: e => {
+      console.log('mttCpbUse', e);
+    },
+  });
+
+  const mttCpbSave = useMutation(couponBookAPI._saveCpn, {
+    onSettled: e => {
+      console.log('mttCpbSave', e);
+    },
+  });
+
+  const mttCpbListOwner = useMutation(couponBookAPI._getCpnlistOwner, {
+    onSettled: e => {
+      console.log('mttCpbListOwner', e);
+    },
+  });
+
   return {
+    mttCpbListOwner,
+    mttCpbSave,
+    mttCpbUse,
+    mttCpbMy,
     mutateGetCouponBookList,
     mttCpnBookDtl,
     mutateSignIn,

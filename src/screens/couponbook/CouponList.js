@@ -13,14 +13,15 @@ import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useEffect} from 'react';
 import {useState} from 'react';
 import {useSelector} from 'react-redux';
+import {Alert} from 'react-native';
 
 const CouponList = ({navigation, route, couponData, isMy}) => {
   const layout = useWindowDimensions();
   const routeData = route?.params;
   const [couponData2, setCouponData] = useState([]);
   const {couponBoolFilterIndex} = useSelector(state => state.couponReducer);
-
-  const {mutateGetCouponBookList} = useCustomMutation();
+  const {mutateGetCouponBookList, mttCpbSave, mttCpbMy} = useCustomMutation();
+  const {userInfo} = useSelector(state => state.authReducer);
 
   const _getBookList = () => {
     const data = {
@@ -41,14 +42,52 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
     });
   };
 
+  const _getMyCBList = () => {
+    const data = {
+      item_count: '0',
+      // limit_count: '10',
+      mt_id: userInfo.mt_id,
+      // N 미사용, Y 사용 완료
+      cp_use: tabIndex === '1' ? 'N' : 'Y',
+    };
+    mttCpbMy.mutate(data, {
+      onSuccess: res => {
+        console.log('res', res.data.arrItems);
+        setMyCpn(res.data.arrItems);
+      },
+    });
+    console.log('data ::', data);
+  };
+
+  // const
+
   useEffect(() => {
     _getBookList();
   }, [couponBoolFilterIndex]);
 
+  const _onPressSave = element => {
+    // console.log('element', element);
+    const data = {
+      jumju_id: element.cp_jumju_id,
+      jumju_code: element.cp_jumju_code,
+      mt_id: userInfo.mt_id,
+      coupon_id: element.cp_id,
+    };
+    console.log('data', data);
+    mttCpbSave.mutate(data, {
+      onSuccess: res => {
+        if (res.data.resultItem.result === 'true')
+          Alert.alert('쿠폰북', '쿠폰북 다운로드 성공');
+        else Alert.alert('쿠폰북', '중복 다운로드는 할 수 없습니다');
+        console.log('res', res.data.resultItem.result === 'true');
+      },
+    });
+  };
+
   const renderItem = item => {
     const element = item.item;
     const elementIdx = item.index;
-    console.log('element', element);
+    // console.log('element', element);
     return (
       <Shadow
         distance={5}
@@ -120,7 +159,10 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
               marginRight: 5,
             }}
           />
-          <View
+          <Pressable
+            onPress={() => {
+              _onPressSave(element);
+            }}
             style={{width: 55, justifyContent: 'center', alignItems: 'center'}}>
             <Image
               source={require('~/assets/down_coupon.png')}
@@ -130,7 +172,7 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
             <TextLight style={{fontSize: 12}}>
               {element.cp_coupon_download_txt}
             </TextLight>
-          </View>
+          </Pressable>
         </Pressable>
       </Shadow>
     );

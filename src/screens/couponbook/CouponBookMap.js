@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
@@ -9,7 +9,6 @@ import {Image} from 'react-native';
 import {useSelector} from 'react-redux';
 import {useState} from 'react';
 import {useEffect} from 'react';
-import CouponFilterView from './CouponFilterView';
 import {FlatList} from 'react-native';
 import TextRegular from '../../component/text/TextRegular';
 import {Shadow} from 'react-native-shadow-2';
@@ -31,6 +30,8 @@ const CouponBookMap = ({navigation}) => {
   const [cpbList, setCpbList] = useState([]);
   const [slctdCpb, setSlctdCpd] = useState();
 
+  const [storeCpnList, setStoreCpnList] = useState([]);
+
   // 선택된 카테고리 필터
   const [pickedFilter, setPickedFilter] = useState(
     couponbookData ? '전체' : undefined,
@@ -42,7 +43,7 @@ const CouponBookMap = ({navigation}) => {
   // flat ref
   const flatRef = useRef(null);
 
-  const {mutateGetCouponBookList} = useCustomMutation();
+  const {mutateGetCouponBookList, mttCpbListOwner} = useCustomMutation();
 
   const _getBookList = () => {
     const data = {
@@ -63,8 +64,48 @@ const CouponBookMap = ({navigation}) => {
     });
   };
 
+  const _getCpnOfStore = () => {
+    const data = {
+      item_count: '0',
+      jumju_id: slctdCpb.cp_jumju_id,
+      jumju_code: slctdCpb.cp_jumju_code,
+    };
+    console.log('data', data, slctdCpb);
+    mttCpbListOwner.mutate(data, {
+      onSuccess: res => {
+        console.log('res', res.data.arrItems);
+        setStoreCpnList(res.data.arrItems);
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (slctdCpb) _getCpnOfStore();
+  }, [slctdCpb]);
+
+  // const _getLifeStoreList = () => {
+  //   const data = {
+  //     item_count: 0,
+  //     limit_count: 30,
+  //     mb_jumju_type: 'lifestyle',
+  //     mb_lat: currentLocation?.lat ? currentLocation?.lat : '',
+  //     mb_lng: currentLocation?.lon ? currentLocation?.lon : '',
+  //     mb_ca_sort: '1',
+  //   };
+
+  //   console.log('_getLife data ::', data);
+
+  //   mutateGetLifeStyle.mutate(data, {
+  //     onSuccess: res => {
+  //       console.log('res ::', res.data.arrItems);
+  //       setStoreList(res.data.arrItems);
+  //     },
+  //   });
+  // };
+
   useEffect(() => {
     _getBookList();
+    // _getLifeStoreList();
   }, [pickedFilter]);
 
   useEffect(() => {
@@ -89,6 +130,7 @@ const CouponBookMap = ({navigation}) => {
     temp = temp.slice(0, 7);
     temp = temp.trim();
     temp = temp;
+    if (temp.length >= 7) temp = temp + '...';
     // }
     return temp;
   };
@@ -131,6 +173,105 @@ const CouponBookMap = ({navigation}) => {
           {element?.ca_name}
         </TextRegular>
       </Pressable>
+    );
+  };
+
+  const renderCpnItem = ele => {
+    const item = ele.item;
+    return (
+      <Shadow
+        distance={5}
+        offset={[0, 2]}
+        style={{width: '100%'}}
+        containerStyle={{
+          // position: 'absolute',
+          zIndex: 100,
+          width: '95%',
+          alignSelf: 'center',
+          // bottom: 0,
+        }}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('CouponBookDetail', {...slctdCpb});
+          }}
+          style={{
+            borderWidth: 1,
+            borderColor: colors.primary,
+            borderRadius: 10,
+            height: 100,
+            marginBottom: 15,
+            paddingVertical: 10,
+            paddingHorizontal: 10,
+            flexDirection: 'row',
+            backgroundColor: 'white',
+          }}>
+          <Image
+            source={
+              item?.store_logo
+                ? {uri: item?.store_logo}
+                : require('~/assets/no_img.png')
+            }
+            style={{height: 80, width: 80}}
+            resizeMode="cover"
+          />
+          <View
+            style={{
+              flex: 1,
+              marginLeft: 10,
+              justifyContent: 'space-between',
+            }}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <TextMedium
+                style={{color: colors.fontColor3, flex: 1}}
+                numberOfLines={1}>
+                {item?.store_name}
+              </TextMedium>
+              <TextLight
+                style={{
+                  color: colors.fontColorA,
+                  fontSize: 11,
+                  marginRight: 5,
+                }}>
+                {item?.cp_end_txt}
+              </TextLight>
+            </View>
+            <TextBold
+              style={{fontSize: 16, color: colors.fontColor2}}
+              numberOfLines={2}>
+              {item?.cp_subject}
+            </TextBold>
+            <TextBold
+              style={{fontSize: 13, color: colors.fontColorA2}}
+              numberOfLines={2}>
+              {item?.cp_memo}
+            </TextBold>
+          </View>
+          <View
+            style={{
+              width: 1,
+              height: 60,
+              backgroundColor: colors.primary,
+              alignSelf: 'center',
+              marginRight: 5,
+            }}
+          />
+          <View
+            style={{
+              width: 55,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              source={require('~/assets/down_coupon.png')}
+              style={{width: 45, height: 45}}
+              resizeMode="contain"
+            />
+            <TextLight style={{fontSize: 12}}>
+              {item?.cp_coupon_download_txt}
+            </TextLight>
+          </View>
+        </Pressable>
+      </Shadow>
     );
   };
 
@@ -302,8 +443,21 @@ const CouponBookMap = ({navigation}) => {
           />
         )}
       </View>
-
-      {slctdCpb && (
+      <FlatList
+        data={storeCpnList}
+        renderItem={item => renderCpnItem(item)}
+        keyExtractor={(item, index) => index}
+        ListEmptyComponent={<></>}
+        style={{
+          zIndex: 200,
+          position: 'absolute',
+          width: '100%',
+          maxHeight: 300,
+          bottom: 0,
+        }}
+        showsVerticalScrollIndicator={false}
+      />
+      {/* {slctdCpb && (
         <Shadow
           distance={5}
           offset={[0, 2]}
@@ -317,7 +471,7 @@ const CouponBookMap = ({navigation}) => {
           }}>
           <Pressable
             onPress={() => {
-              navigation.navigate('CouponBookDetail');
+              navigation.navigate('CouponBookDetail', {...slctdCpb});
             }}
             style={{
               borderWidth: 1,
@@ -397,7 +551,7 @@ const CouponBookMap = ({navigation}) => {
             </View>
           </Pressable>
         </Shadow>
-      )}
+      )} */}
 
       <NaverMapView
         center={center}
@@ -429,36 +583,26 @@ const CouponBookMap = ({navigation}) => {
           (item, index) =>
             item?.store_lat &&
             item?.store_lng && (
+              // item.mb_lat &&
+              // item.mb_lng &&
               <Marker
                 key={item.cp_jumju_code}
-                //   anchor={{x: 10, y: 10}}
-                //   alpha={0.1}
-                //   caption={{
-                //     text: '도착',
-                //     align: Align.Center,
-                //     // haloColor: '166DF0',
-                //     textSize: 13,
-                //     // color: 'ffffff',
-                //     offset: -30,
-                //   }}
-                //   image={require('~/assets/ico_location.png')}
-                //   pinColor={'#ffffff'}
-                width={item.store_name.length < 9 ? 85 : 100}
+                width={item.store_name.length < 7 ? 80 : 100}
                 height={47}
                 caption={{
-                  text: _sliceText(item.store_name) + '..',
+                  text: _sliceText(item.store_name),
                   align: Align.Center,
-                  // haloColor: '166DF0',
                   textSize: 12,
-                  // color: 'ffffff',
                 }}
                 image={require('~/assets/map_tag.png')}
                 coordinate={{
                   latitude: Number(
                     item.store_lat ? item.store_lat : currentLocation.lat,
+                    // item.mb_lat ? item.mb_lat : currentLocation.lat,
                   ),
                   longitude: Number(
                     item.store_lng ? item.store_lng : currentLocation.lon,
+                    // item.mb_lng ? item.mb_lng : currentLocation.lat,
                   ),
                 }}
                 onClick={() => {
@@ -467,6 +611,8 @@ const CouponBookMap = ({navigation}) => {
                   setCenter({
                     latitude: Number(item.store_lat),
                     longitude: Number(item.store_lng),
+                    // latitude: Number(item.mb_lat),
+                    // longitude: Number(item.mb_lng),
                     zoom: 16,
                   });
                 }}

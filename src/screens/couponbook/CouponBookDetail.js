@@ -19,25 +19,23 @@ import {useDispatch} from 'react-redux';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useEffect} from 'react';
+import {useState} from 'react';
+import {useSelector} from 'react-redux';
+import {Alert} from 'react-native';
 
 const CouponBookDetail = ({navigation, route}) => {
   const params = route?.params;
   const dispatch = useDispatch();
-  const {mttCpnBookDtl} = useCustomMutation();
-  console.log('route ::', route.params);
+  const {mttCpnBookDtl, mttCpbUse, mttCpbSave} = useCustomMutation();
+  const [cpnDetail, setCpnDetail] = useState();
+  const {userInfo} = useSelector(state => state.authReducer);
+
   const _onPressInfo = () => {
-    // navigation.navigate('LifeStyleStoreInfo', {
-    //   jumju_id: storeInfo.mb_id,
-    //   jumju_code: storeInfo.mb_jumju_code,
-    //   mb_company: storeInfo.mb_company,
-    //   category: routeData.category,
-    //   likeCount: storeInfo?.mb_zzim_count,
-    // });
     dispatch(setIsLifeStyle(true));
     navigation.navigate('LifeStyleStoreInfo', {
-      jumju_id: params.cp_jumju_id,
-      jumju_code: params.cp_jumju_code,
-      mb_company: params.store_name,
+      jumju_id: cpnDetail.cp_jumju_id,
+      jumju_code: cpnDetail.cp_jumju_code,
+      mb_company: cpnDetail.store_name,
       category: 'lifestyle',
       likeCount: '0',
     });
@@ -48,16 +46,59 @@ const CouponBookDetail = ({navigation, route}) => {
       jumju_id: params.cp_jumju_id,
       jumju_code: params.cp_jumju_code,
       cp_no: params.cp_no,
+      mt_id: userInfo.mt_id,
     };
     mttCpnBookDtl.mutate(data, {
       onSuccess: res => {
         console.log('res _getDtl ::', res.data.arrItems);
+        setCpnDetail(res.data.arrItems);
+      },
+    });
+  };
+
+  const _onPressUse = () => {
+    const data = {
+      jumju_id: params.cp_jumju_id,
+      jumju_code: params.cp_jumju_code,
+      mt_id: userInfo.mt_id,
+      coupon_id: params.cp_id,
+    };
+    mttCpbUse.mutate(data, {
+      onSuccess: res => {
+        if (res.data.resultItem.result === 'true')
+          Alert.alert('쿠폰북', '쿠폰북 사용 성공');
+        else Alert.alert('쿠폰북', '중복 사용은 불가능합니다');
+        console.log('res', res.data);
+      },
+    });
+    console.log('## PRESS ::', data);
+  };
+  // 쿠폰 받고 이미지 변경
+  const [isSaved, setIsSaved] = useState(false);
+
+  const _onPressSave = () => {
+    // console.log('element', element);
+    const data = {
+      jumju_id: params.cp_jumju_id,
+      jumju_code: params.cp_jumju_code,
+      mt_id: userInfo.mt_id,
+      coupon_id: params.cp_id,
+    };
+    console.log('data', data);
+    mttCpbSave.mutate(data, {
+      onSuccess: res => {
+        if (res.data.resultItem.result === 'true') {
+          Alert.alert('쿠폰북', '쿠폰북 다운로드 성공');
+          setIsSaved(true);
+        } else Alert.alert('쿠폰북', '중복 다운로드는 할 수 없습니다');
+        console.log('res', res.data.resultItem.result === 'true');
       },
     });
   };
 
   useEffect(() => {
     if (params) _getDtl();
+    console.log('route ::', route.params);
   }, []);
 
   return (
@@ -73,80 +114,106 @@ const CouponBookDetail = ({navigation, route}) => {
           }}
         />
         {/* 상단 쿠폰 */}
-        <View style={{marginHorizontal: 14}}>
-          <Shadow distance={5} offset={[0, 2]} style={{width: '100%'}}>
-            <Pressable
-              onPress={() => {
-                navigation.navigate('CouponBookDetail');
-              }}
-              style={{
-                borderWidth: 1,
-                borderColor: colors.primary,
-                borderRadius: 10,
-                height: 100,
-                marginBottom: 15,
-                paddingVertical: 10,
-                paddingHorizontal: 10,
-                flexDirection: 'row',
-                backgroundColor: 'white',
-              }}>
-              <Image
-                source={require('~/assets/no_img.png')}
-                style={{height: 80, width: 80}}
-                resizeMode="center"
-              />
-              <View
-                style={{
-                  flex: 1,
-                  marginLeft: 10,
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <TextMedium
-                    style={{color: colors.fontColor3, flex: 1}}
-                    numberOfLines={1}>
-                    기마상회
-                  </TextMedium>
-                  <TextLight
-                    style={{
-                      color: colors.fontColorA,
-                      fontSize: 11,
-                      marginRight: 5,
-                    }}>
-                    {'2022년 12월 31일까지'}
-                  </TextLight>
-                </View>
-                <TextBold
-                  style={{fontSize: 16, color: colors.fontColor2}}
-                  numberOfLines={2}>
-                  50% 할인쿠폰
-                </TextBold>
-                <TextBold
-                  style={{fontSize: 13, color: colors.fontColorA2}}
-                  numberOfLines={2}>
-                  {'첫, 방문 고객 한정 쿠폰 사용가능'}
-                </TextBold>
-              </View>
-              <View
-                style={{
-                  width: 1,
-                  height: 60,
-                  backgroundColor: colors.primary,
-                  alignSelf: 'center',
-                  marginRight: 5,
+        {cpnDetail && (
+          <View style={{marginHorizontal: 14}}>
+            <Shadow distance={5} offset={[0, 2]} style={{width: '100%'}}>
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('CouponBookDetail');
                 }}
-              />
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                style={{
+                  borderWidth: 1,
+                  borderColor: colors.primary,
+                  borderRadius: 10,
+                  height: 100,
+                  marginBottom: 15,
+                  paddingVertical: 10,
+                  paddingHorizontal: 10,
+                  flexDirection: 'row',
+                  backgroundColor: 'white',
+                }}>
                 <Image
-                  source={require('~/assets/down_coupon.png')}
-                  style={{width: 45, height: 45}}
-                  resizeMode="contain"
+                  source={
+                    cpnDetail?.store_logo
+                      ? {uri: cpnDetail.store_logo}
+                      : require('~/assets/no_img.png')
+                  }
+                  style={{height: 80, width: 80}}
+                  resizeMode="cover"
                 />
-                <TextLight style={{fontSize: 12}}>{1}개 남음</TextLight>
-              </View>
-            </Pressable>
-          </Shadow>
-        </View>
+                <View
+                  style={{
+                    flex: 1,
+                    marginLeft: 10,
+                    justifyContent: 'space-between',
+                  }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <TextMedium
+                      style={{color: colors.fontColor3, flex: 1}}
+                      numberOfLines={1}>
+                      {cpnDetail?.store_name}
+                    </TextMedium>
+                    <TextLight
+                      style={{
+                        color: colors.fontColorA,
+                        fontSize: 11,
+                        marginRight: 5,
+                      }}>
+                      {cpnDetail?.cp_end_txt}
+                    </TextLight>
+                  </View>
+                  <TextBold
+                    style={{fontSize: 16, color: colors.fontColor2}}
+                    numberOfLines={2}>
+                    {cpnDetail?.cp_subject}
+                  </TextBold>
+                  <TextBold
+                    style={{fontSize: 13, color: colors.fontColorA2}}
+                    numberOfLines={2}>
+                    {cpnDetail?.cp_memo}
+                  </TextBold>
+                </View>
+                <View
+                  style={{
+                    width: 1,
+                    height: 60,
+                    backgroundColor: colors.primary,
+                    alignSelf: 'center',
+                    marginRight: 5,
+                  }}
+                />
+                {cpnDetail.cp_exist === 'N' || isSaved ? (
+                  <Pressable
+                    onPress={() => {
+                      _onPressSave();
+                    }}
+                    style={{justifyContent: 'center', alignItems: 'center'}}>
+                    <Image
+                      source={require('~/assets/down_coupon.png')}
+                      style={{width: 45, height: 45}}
+                      resizeMode="contain"
+                    />
+                    <TextLight style={{fontSize: 12}}>
+                      {cpnDetail?.cp_coupon_download_txt}
+                    </TextLight>
+                  </Pressable>
+                ) : (
+                  <View
+                    style={{justifyContent: 'center', alignItems: 'center'}}>
+                    <Image
+                      source={require('~/assets/down_complet.png')}
+                      style={{width: 45, height: 45}}
+                      resizeMode="contain"
+                    />
+                    <TextLight style={{fontSize: 12, color: colors.fontColor6}}>
+                      {'받기완료'}
+                    </TextLight>
+                  </View>
+                )}
+              </Pressable>
+            </Shadow>
+          </View>
+        )}
         <View
           style={{
             width: '100%',
@@ -154,6 +221,7 @@ const CouponBookDetail = ({navigation, route}) => {
             backgroundColor: colors.borderColor,
           }}
         />
+
         {/* 오시는 길, 주소, 지도 */}
         <View style={{padding: 14}}>
           <TextBold>오시는 길</TextBold>
@@ -174,7 +242,7 @@ const CouponBookDetail = ({navigation, route}) => {
               }}
               resizeMode="contain"
             />
-            <TextMedium>{'서울 서댑문구 연회로 138-12'}</TextMedium>
+            <TextMedium>{cpnDetail?.store_address}</TextMedium>
           </View>
           {/* 지도 */}
           <View
@@ -186,8 +254,8 @@ const CouponBookDetail = ({navigation, route}) => {
               canUseZoom={true}
               height={240}
               isStore
-              lat={params?.store_lat}
-              lng={params?.store_lng}
+              lat={params?.store_lat ? params?.store_lat : undefined}
+              lng={params?.store_lng ? params?.store_lng : undefined}
               // width={200}
             />
           </View>
@@ -202,11 +270,7 @@ const CouponBookDetail = ({navigation, route}) => {
             borderColor: colors.borderColor,
           }}>
           <TextBold>안내사항</TextBold>
-          <TextRegular>
-            {`백색소음의 시그니처 파스타 알리오올리오 파스타 50% 할인쿠폰입니다 ^^
-계산하실 떄 보여주시면 할인 적용해드립니다.
-감사합니다.`}
-          </TextRegular>
+          <TextRegular>{cpnDetail?.store_memo}</TextRegular>
           <Pressable
             onPress={() => {
               _onPressInfo();
@@ -233,7 +297,8 @@ const CouponBookDetail = ({navigation, route}) => {
           backgroundColor: 'white',
           borderTopWidth: 1,
           borderColor: colors.borderColor,
-          bottom: 10,
+          bottom: 0,
+          paddingBottom: 10,
         }}>
         <View style={{marginHorizontal: 14}}>
           <View style={{marginVertical: 10}}>
@@ -242,6 +307,7 @@ const CouponBookDetail = ({navigation, route}) => {
             </TextRegular>
           </View>
           <Pressable
+            onPress={() => _onPressUse()}
             style={{
               height: 50,
               backgroundColor: colors.primary,
