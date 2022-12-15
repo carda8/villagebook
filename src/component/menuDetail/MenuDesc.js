@@ -383,32 +383,11 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
               </>
             ) : (
               <>
-                <View
-                  style={{
-                    marginHorizontal: 22,
-                    marginTop: 22,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}>
-                  <TextNotoB>리뷰 0개</TextNotoB>
-                  <Pressable
-                    hitSlop={5}
-                    onPress={() => {
-                      navigation.navigate('CouponBookReview');
-                    }}
-                    style={{
-                      backgroundColor: colors.primary,
-                      paddingHorizontal: 10,
-                      paddingVertical: 4,
-                      borderRadius: 15,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}>
-                    <TextNotoM style={{color: 'white'}}>리뷰쓰기</TextNotoM>
-                  </Pressable>
-                </View>
-                <MenuReview storeInfo={info} />
+                <MenuReview
+                  storeInfo={info}
+                  isLifeStyle={true}
+                  navigation={navigation}
+                />
               </>
             )}
           </>

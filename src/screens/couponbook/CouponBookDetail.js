@@ -25,10 +25,12 @@ import {Alert} from 'react-native';
 
 const CouponBookDetail = ({navigation, route}) => {
   const params = route?.params;
+  console.log('params', params);
   const dispatch = useDispatch();
   const {mttCpnBookDtl, mttCpbUse, mttCpbSave} = useCustomMutation();
   const [cpnDetail, setCpnDetail] = useState();
   const {userInfo} = useSelector(state => state.authReducer);
+  const [isSaved, setIsSaved] = useState(false);
 
   const _onPressInfo = () => {
     dispatch(setIsLifeStyle(true));
@@ -48,10 +50,12 @@ const CouponBookDetail = ({navigation, route}) => {
       cp_no: params.cp_no,
       mt_id: userInfo.mt_id,
     };
+    console.log('data', data);
     mttCpnBookDtl.mutate(data, {
       onSuccess: res => {
         console.log('res _getDtl ::', res.data.arrItems);
         setCpnDetail(res.data.arrItems);
+        if (res.data.arrItems.cp_exist === 'Y') setIsSaved(true);
       },
     });
   };
@@ -65,16 +69,18 @@ const CouponBookDetail = ({navigation, route}) => {
     };
     mttCpbUse.mutate(data, {
       onSuccess: res => {
-        if (res.data.resultItem.result === 'true')
+        console.log('userInfo ::', userInfo);
+        if (res.data.resultItem.result === 'true') {
           Alert.alert('쿠폰북', '쿠폰북 사용 성공');
-        else Alert.alert('쿠폰북', '중복 사용은 불가능합니다');
-        console.log('res', res.data);
+          _getDtl();
+        } else {
+          Alert.alert('쿠폰북', '중복 사용은 불가능합니다');
+        }
       },
     });
     console.log('## PRESS ::', data);
   };
   // 쿠폰 받고 이미지 변경
-  const [isSaved, setIsSaved] = useState(false);
 
   const _onPressSave = () => {
     // console.log('element', element);
@@ -89,17 +95,17 @@ const CouponBookDetail = ({navigation, route}) => {
       onSuccess: res => {
         if (res.data.resultItem.result === 'true') {
           Alert.alert('쿠폰북', '쿠폰북 다운로드 성공');
+          _getDtl();
           setIsSaved(true);
         } else Alert.alert('쿠폰북', '중복 다운로드는 할 수 없습니다');
-        console.log('res', res.data.resultItem.result === 'true');
       },
     });
   };
 
   useEffect(() => {
-    if (params) _getDtl();
+    _getDtl();
     console.log('route ::', route.params);
-  }, []);
+  }, [isSaved]);
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
@@ -119,7 +125,7 @@ const CouponBookDetail = ({navigation, route}) => {
             <Shadow distance={5} offset={[0, 2]} style={{width: '100%'}}>
               <Pressable
                 onPress={() => {
-                  navigation.navigate('CouponBookDetail');
+                  // navigation.navigate('CouponBookDetail');
                 }}
                 style={{
                   borderWidth: 1,
@@ -182,7 +188,8 @@ const CouponBookDetail = ({navigation, route}) => {
                     marginRight: 5,
                   }}
                 />
-                {cpnDetail.cp_exist === 'N' || isSaved ? (
+                {console.log('::::::::: ', cpnDetail.cp_exist, isSaved)}
+                {cpnDetail.cp_exist === 'N' || !isSaved ? (
                   <Pressable
                     onPress={() => {
                       _onPressSave();
@@ -290,35 +297,45 @@ const CouponBookDetail = ({navigation, route}) => {
           </Pressable>
         </View>
       </ScrollView>
-      <View
-        style={{
-          width: '100%',
-          position: 'absolute',
-          backgroundColor: 'white',
-          borderTopWidth: 1,
-          borderColor: colors.borderColor,
-          bottom: 0,
-          paddingBottom: 10,
-        }}>
-        <View style={{marginHorizontal: 14}}>
-          <View style={{marginVertical: 10}}>
-            <TextRegular style={{color: colors.fontColor3}}>
-              쿠폰을 사용한 후{'<사용완료>'}버튼을 꼭 눌러주세요.
-            </TextRegular>
+      {cpnDetail?.cp_exist === 'Y' && (
+        <View
+          style={{
+            width: '100%',
+            position: 'absolute',
+            backgroundColor: 'white',
+            borderTopWidth: 1,
+            borderColor: colors.borderColor,
+            bottom: 0,
+            paddingBottom: 10,
+          }}>
+          <View style={{marginHorizontal: 14}}>
+            <View style={{marginVertical: 10}}>
+              <TextRegular style={{color: colors.fontColor3}}>
+                쿠폰을 사용한 후{'<사용완료>'}버튼을 꼭 눌러주세요.
+              </TextRegular>
+            </View>
+            <Pressable
+              onPress={() =>
+                cpnDetail?.cp_use === 'N'
+                  ? _onPressUse()
+                  : Alert.alert('쿠폰북', '이미 사용완료된 쿠폰입니다')
+              }
+              style={{
+                height: 50,
+                backgroundColor:
+                  cpnDetail?.cp_use === 'N' ? colors.primary : '#E3E3E3',
+                borderRadius: 22,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <TextBold style={{color: 'white', fontSize: 18}}>
+                {/* {cpnDetail?.cp_use === 'N' ? :'사용완료'} */}
+                사용완료
+              </TextBold>
+            </Pressable>
           </View>
-          <Pressable
-            onPress={() => _onPressUse()}
-            style={{
-              height: 50,
-              backgroundColor: colors.primary,
-              borderRadius: 22,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <TextBold style={{color: 'white', fontSize: 18}}>사용완료</TextBold>
-          </Pressable>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   );
 };

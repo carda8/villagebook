@@ -15,27 +15,30 @@ import {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {Alert} from 'react-native';
 
-const CouponList = ({navigation, route, couponData, isMy}) => {
+const CouponList = ({navigation, route, isMy}) => {
   const layout = useWindowDimensions();
   const routeData = route?.params;
-  const [couponData2, setCouponData] = useState([]);
+  const [couponData, setCouponData] = useState([]);
   const {couponBoolFilterIndex} = useSelector(state => state.couponReducer);
   const {mutateGetCouponBookList, mttCpbSave, mttCpbMy} = useCustomMutation();
+  const {currentLocation} = useSelector(state => state.locationReducer);
   const {userInfo} = useSelector(state => state.authReducer);
 
   const _getBookList = () => {
     const data = {
       item_count: 0,
-      limit_count: 10,
+      limit_count: 20,
       ca_code: routeData?.ca_code,
       ca_sort: couponBoolFilterIndex,
+      mb_lat: currentLocation?.lat,
+      mb_lng: currentLocation?.lon,
     };
     console.log('## data', data);
     // return;
     mutateGetCouponBookList.mutate(data, {
       onSuccess: res => {
         console.log('## res', res.data);
-        if (res.data.arrItems.length > 0) {
+        if (res.data?.arrItems?.length > 0) {
           setCouponData(res.data.arrItems);
         }
       },
@@ -186,8 +189,7 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
         // flex: 1,
       }}>
       <FlatList
-        data={couponData2}
-        // data={[]}
+        data={couponData}
         keyExtractor={(item, index) => index}
         renderItem={item => renderItem(item)}
         showsVerticalScrollIndicator={false}
@@ -195,19 +197,9 @@ const CouponList = ({navigation, route, couponData, isMy}) => {
         ListEmptyComponent={
           <Image
             source={require('~/assets/coupon_ready.png')}
-            style={{height: layout.width * 1.2, width: layout.width}}
+            style={{height: layout.width * 1, width: layout.width}}
             resizeMode="contain"
           />
-        }
-        ListHeaderComponent={
-          <></>
-          // <MainBanner
-          //   navigation={navigation}
-          //   style={{
-          //     marginBottom: 17,
-          //   }}
-          //   position={BannerList['lifestyle']}
-          // />
         }
       />
     </View>

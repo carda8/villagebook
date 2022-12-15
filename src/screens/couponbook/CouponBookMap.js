@@ -21,12 +21,17 @@ import {useCustomMutation} from '../../hooks/useCustomMutation';
 import TextMedium from '../../component/text/TextMedium';
 import TextBold from '../../component/text/TextBold';
 import TextLight from '../../component/text/TextLight';
+import {Modal} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 
 const CouponBookMap = ({navigation}) => {
   const {currentLocation} = useSelector(state => state.locationReducer);
   const {couponbookData} = useSelector(state => state.couponReducer);
   const layout = useWindowDimensions();
+  const [loading, setLoading] = useState(false);
   const [center, setCenter] = useState();
+  const [moveCenter, setMoveCenter] = useState();
+
   const [cpbList, setCpbList] = useState([]);
   const [slctdCpb, setSlctdCpd] = useState();
 
@@ -45,21 +50,30 @@ const CouponBookMap = ({navigation}) => {
 
   const {mutateGetCouponBookList, mttCpbListOwner} = useCustomMutation();
 
-  const _getBookList = () => {
+  const _getBookList = (lat, lon) => {
+    setLoading(true);
     const data = {
       item_count: 0,
-      limit_count: 10,
+      // limit_count: 10,
       ca_code: pickedFilter !== '전체' ? pickedFilter : '',
       ca_sort: '1',
+      mb_lat: lat ? lat : currentLocation?.lat,
+      mb_lng: lon ? lon : currentLocation?.lon,
     };
     console.log('## data', data);
     // return;
     mutateGetCouponBookList.mutate(data, {
       onSuccess: res => {
         console.log('## res', res.data);
-        if (res.data.arrItems.length > 0) {
+        if (res.data?.arrItems?.length > 0) {
           setCpbList(res.data.arrItems);
         }
+      },
+      onSettled: res => {
+        setLoading(false);
+        // setTimeout(() => {
+        //   setLoading(false);
+        // }, 1500);
       },
     });
   };
@@ -130,7 +144,7 @@ const CouponBookMap = ({navigation}) => {
     temp = temp.slice(0, 7);
     temp = temp.trim();
     temp = temp;
-    if (temp.length >= 7) temp = temp + '...';
+    if (temp?.length >= 7) temp = temp + '...';
     // }
     return temp;
   };
@@ -192,7 +206,8 @@ const CouponBookMap = ({navigation}) => {
         }}>
         <Pressable
           onPress={() => {
-            navigation.navigate('CouponBookDetail', {...slctdCpb});
+            // console.log('slctdCpb,', item);
+            navigation.navigate('CouponBookDetail', {...item});
           }}
           style={{
             borderWidth: 1,
@@ -443,115 +458,60 @@ const CouponBookMap = ({navigation}) => {
           />
         )}
       </View>
-      <FlatList
-        data={storeCpnList}
-        renderItem={item => renderCpnItem(item)}
-        keyExtractor={(item, index) => index}
-        ListEmptyComponent={<></>}
-        style={{
-          zIndex: 200,
-          position: 'absolute',
-          width: '100%',
-          maxHeight: 300,
-          bottom: 0,
-        }}
-        showsVerticalScrollIndicator={false}
-      />
-      {/* {slctdCpb && (
-        <Shadow
-          distance={5}
-          offset={[0, 2]}
-          style={{width: '100%'}}
-          containerStyle={{
-            position: 'absolute',
-            zIndex: 100,
-            width: '95%',
-            alignSelf: 'center',
-            bottom: 0,
-          }}>
+      {storeCpnList?.length > 0 && (
+        <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
           <Pressable
+            hitSlop={5}
             onPress={() => {
-              navigation.navigate('CouponBookDetail', {...slctdCpb});
+              setStoreCpnList([]);
             }}
-            style={{
-              borderWidth: 1,
-              borderColor: colors.primary,
-              borderRadius: 10,
-              height: 100,
-              marginBottom: 15,
-              paddingVertical: 10,
-              paddingHorizontal: 10,
-              flexDirection: 'row',
-              backgroundColor: 'white',
-            }}>
+            style={{position: 'absolute', zIndex: 100, top: -30, right: 0}}>
             <Image
-              source={
-                slctdCpb.store_logo
-                  ? {uri: slctdCpb.store_logo}
-                  : require('~/assets/no_img.png')
-              }
-              style={{height: 80, width: 80}}
-              resizeMode="cover"
-            />
-            <View
+              source={require('~/assets/pop_close.png')}
               style={{
-                flex: 1,
-                marginLeft: 10,
-                justifyContent: 'space-between',
-              }}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TextMedium
-                  style={{color: colors.fontColor3, flex: 1}}
-                  numberOfLines={1}>
-                  {slctdCpb.store_name}
-                </TextMedium>
-                <TextLight
-                  style={{
-                    color: colors.fontColorA,
-                    fontSize: 11,
-                    marginRight: 5,
-                  }}>
-                  {slctdCpb.cp_end_txt}
-                </TextLight>
-              </View>
-              <TextBold
-                style={{fontSize: 16, color: colors.fontColor2}}
-                numberOfLines={2}>
-                {slctdCpb.cp_subject}
-              </TextBold>
-              <TextBold
-                style={{fontSize: 13, color: colors.fontColorA2}}
-                numberOfLines={2}>
-                {slctdCpb.cp_memo}
-              </TextBold>
-            </View>
-            <View
-              style={{
-                width: 1,
-                height: 60,
-                backgroundColor: colors.primary,
-                alignSelf: 'center',
-                marginRight: 5,
+                width: 25,
+                height: 25,
+                marginLeft: 'auto',
+                marginRight: 15,
+                marginBottom: 10,
               }}
+              resizeMode="contain"
             />
-            <View
-              style={{
-                width: 55,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={require('~/assets/down_coupon.png')}
-                style={{width: 45, height: 45}}
-                resizeMode="contain"
-              />
-              <TextLight style={{fontSize: 12}}>
-                {slctdCpb.cp_coupon_download_txt}
-              </TextLight>
-            </View>
           </Pressable>
-        </Shadow>
-      )} */}
+          <FlatList
+            data={storeCpnList}
+            renderItem={item => renderCpnItem(item)}
+            keyExtractor={(item, index) => index}
+            style={{
+              zIndex: 200,
+              maxHeight: 300,
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      )}
+
+      {storeCpnList?.length === 0 && (
+        <Pressable
+          onPress={() => {
+            if (moveCenter) _getBookList(moveCenter.lat, moveCenter.lon);
+          }}
+          style={{
+            position: 'absolute',
+            width: 100,
+            height: 40,
+            backgroundColor: colors.primary,
+            zIndex: 100,
+            borderRadius: 40,
+            alignSelf: 'center',
+            bottom: 40,
+            elevation: 5,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <TextBold style={{color: 'white', fontSize: 16}}>매장 보기</TextBold>
+        </Pressable>
+      )}
 
       <NaverMapView
         center={center}
@@ -565,10 +525,16 @@ const CouponBookMap = ({navigation}) => {
         rotateGesturesEnabled={false}
         stopGesturesEnabled={false}
         liteModeEnabled={false}
-        onCameraChange={e => {}}
+        onCameraChange={e => {
+          // console.log('### onCameraChange', e);
+          setMoveCenter({lat: e.latitude, lon: e.longitude});
+          setCenter(undefined);
+          setSlctdCpd(undefined);
+        }}
         // useTextureView={true}
         onMapClick={e => {
           setSlctdCpd(undefined);
+          setStoreCpnList([]);
         }}>
         {/* <Marker
           width={35}
@@ -579,6 +545,14 @@ const CouponBookMap = ({navigation}) => {
             longitude: Number(currentLocation.lon),
           }}
         /> */}
+        {/* {moveCenter && (
+          <Marker
+            coordinate={{
+              latitude: Number(moveCenter.lat),
+              longitude: Number(moveCenter.lon),
+            }}></Marker>
+        )} */}
+
         {cpbList.map(
           (item, index) =>
             item?.store_lat &&
@@ -586,8 +560,8 @@ const CouponBookMap = ({navigation}) => {
               // item.mb_lat &&
               // item.mb_lng &&
               <Marker
-                key={item.cp_jumju_code}
-                width={item.store_name.length < 7 ? 80 : 100}
+                key={item.cp_jumju_code + index}
+                width={item?.store_name?.length < 7 ? 80 : 100}
                 height={47}
                 caption={{
                   text: _sliceText(item.store_name),
@@ -598,11 +572,9 @@ const CouponBookMap = ({navigation}) => {
                 coordinate={{
                   latitude: Number(
                     item.store_lat ? item.store_lat : currentLocation.lat,
-                    // item.mb_lat ? item.mb_lat : currentLocation.lat,
                   ),
                   longitude: Number(
                     item.store_lng ? item.store_lng : currentLocation.lon,
-                    // item.mb_lng ? item.mb_lng : currentLocation.lat,
                   ),
                 }}
                 onClick={() => {
@@ -611,8 +583,7 @@ const CouponBookMap = ({navigation}) => {
                   setCenter({
                     latitude: Number(item.store_lat),
                     longitude: Number(item.store_lng),
-                    // latitude: Number(item.mb_lat),
-                    // longitude: Number(item.mb_lng),
+
                     zoom: 16,
                   });
                 }}
@@ -620,6 +591,21 @@ const CouponBookMap = ({navigation}) => {
             ),
         )}
       </NaverMapView>
+
+      <Modal
+        transparent
+        onRequestClose={() => setLoading(false)}
+        visible={loading}>
+        <View
+          style={{
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator size={'large'} color={colors.primary} />
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };

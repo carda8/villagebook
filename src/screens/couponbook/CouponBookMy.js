@@ -10,24 +10,18 @@ import FilterView from '../home/CategoryStore/FilterView';
 import React from 'react';
 import commonStyles from '../../styles/commonStyle';
 import colors from '../../styles/colors';
-import CouponList from './CouponList';
-import CouponFilterView from './CouponFilterView';
 import {Pressable} from 'react-native';
 import {useWindowDimensions} from 'react-native';
 import {Image} from 'react-native';
 import {useState} from 'react';
 import {Shadow} from 'react-native-shadow-2';
-import TextSBold from '../../component/text/TextSBold';
-import TextRegular from '../../component/text/TextRegular';
-import {NavigationContainer} from '@react-navigation/native';
-import {naviRef} from '../../navigator/MainStackNavigator';
-import MainBanner from '../../component/MainBanner';
-import BannerList from '../../config/BannerList';
+import {useIsFocused} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import TextMedium from '../../component/text/TextMedium';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
 import TextBold from '../../component/text/TextBold';
 import TextLight from '../../component/text/TextLight';
+import dayjs from 'dayjs';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -36,6 +30,7 @@ const CouponBookMy = ({navigation, route}) => {
   const [tabIndex, setTabIndex] = useState('1');
   const {userInfo} = useSelector(state => state.authReducer);
   const [myCpn, setMyCpn] = useState([]);
+  const isFocused = useIsFocused();
   const layout = useWindowDimensions();
 
   const _getMyCBList = () => {
@@ -56,8 +51,19 @@ const CouponBookMy = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    _getMyCBList();
-  }, [tabIndex]);
+    if (isFocused) _getMyCBList();
+  }, [tabIndex, isFocused]);
+
+  const _isExpired = ele => {
+    const diff = dayjs().diff(ele.cp_end);
+    // console.log('Date today', dayjs().diff(ele.cp_end));
+    // console.log('Date', ele.cp_end);
+    if (tabIndex === '1') return '';
+    if (diff > 0) {
+      return '기간만료';
+    } else return '사용완료';
+    // dayjs()
+  };
 
   const renderItem = item => {
     const element = item.item;
@@ -101,7 +107,11 @@ const CouponBookMy = ({navigation, route}) => {
             }}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <TextMedium
-                style={{color: colors.fontColor3, flex: 1}}
+                style={{
+                  color:
+                    tabIndex === '1' ? colors.fontColor3 : colors.fontColorA2,
+                  flex: 1,
+                }}
                 numberOfLines={1}>
                 {element.store_name}
               </TextMedium>
@@ -115,12 +125,20 @@ const CouponBookMy = ({navigation, route}) => {
               </TextLight>
             </View>
             <TextBold
-              style={{fontSize: 16, color: colors.fontColor2}}
+              style={{
+                fontSize: 16,
+                color:
+                  tabIndex === '1' ? colors.fontColor3 : colors.fontColorA2,
+              }}
               numberOfLines={2}>
               {element.cp_subject}
             </TextBold>
             <TextBold
-              style={{fontSize: 13, color: colors.fontColorA2}}
+              style={{
+                fontSize: 13,
+                color:
+                  tabIndex === '1' ? colors.fontColor3 : colors.fontColorA2,
+              }}
               numberOfLines={2}>
               {element.cp_memo}
             </TextBold>
@@ -137,12 +155,18 @@ const CouponBookMy = ({navigation, route}) => {
           <View
             style={{width: 55, justifyContent: 'center', alignItems: 'center'}}>
             <Image
-              source={require('~/assets/down_coupon.png')}
+              source={
+                tabIndex === '1'
+                  ? require('~/assets/down_coupon.png')
+                  : require('~/assets/down_complet.png')
+              }
               style={{width: 45, height: 45}}
               resizeMode="contain"
             />
             <TextLight style={{fontSize: 12}}>
-              {element.cp_coupon_download_txt}
+              {_isExpired(element)}
+              {/* {tabIndex === '2' && '사용완료'} */}
+              {/* {element.cp_coupon_download_txt} */}
             </TextLight>
           </View>
         </Pressable>

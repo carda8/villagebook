@@ -25,26 +25,26 @@ import Loading from '../../component/Loading';
 import TextNotoR from '../../component/text/TextNotoR';
 
 const CouponBookReview = ({navigation, route}) => {
-  // const routeData = route.params.storeInfo;
+  const routeData = route.params;
   const {mutateWriteReveiw} = useCustomMutation();
   const {userInfo} = useSelector(state => state.authReducer);
   const [rating, setRating] = useState(5);
   const [text, setText] = useState('');
-
+  console.log('userInfo', userInfo);
   const [fsImage, setFsImage] = useState([]);
   const [imageUrl, setImageUrl] = useState([]);
 
   const [modal, setModal] = useState(false);
   // const [modalPic, setModalPic] = useState(false);
 
-  // console.log('data', routeData);
+  console.log('data', routeData);
   const _writeReview = () => {
     const data = {
       mt_id: userInfo.mt_id,
-      mt_name: userInfo.mt_name ?? userInfo.mt_nickname,
-      jumju_id: routeData.jumju_id,
-      jumju_code: routeData.jumju_code,
-      od_id: routeData.od_id,
+      mt_name: userInfo.mt_name ? userInfo.mt_name : userInfo.mt_nickname,
+      jumju_id: routeData.mb_id,
+      jumju_code: routeData.mb_jumju_code,
+      // od_id: routeData.od_id,
       wr_score: rating,
       mb_company: routeData.mb_company,
       rt_content: text,
@@ -53,11 +53,11 @@ const CouponBookReview = ({navigation, route}) => {
       // rt_img3: {},
       // rt_img4: {},
       // rt_img5: {},
-      isReview: true,
+      // isReview: true,
       imgArr: fsImage,
     };
-
     console.log('form data', data);
+    // return;
     mutateWriteReveiw.mutate(data, {
       onSuccess: e => {
         if (e.result === 'true') {
@@ -135,8 +135,14 @@ const CouponBookReview = ({navigation, route}) => {
       <ScrollView>
         <View style={{paddingHorizontal: 22, marginBottom: 30}}>
           <View style={{alignItems: 'center', marginVertical: 30}}>
-            <TextBold style={{fontSize: 20, color: colors.fontColor2}}>
-              비니님, {'백색소음'} 어떠셨나요?
+            {/* <Text style={{textAlign:'center'}}></Text> */}
+            <TextBold
+              style={{
+                fontSize: 20,
+                color: colors.fontColor2,
+                textAlign: 'center',
+              }}>
+              {userInfo?.mt_name + '님,'} {routeData?.mb_name} 어떠셨나요?
             </TextBold>
             <View style={{flexDirection: 'row', marginTop: 20}}>
               {/* {_setRating(false, {width: 40, height: 40})} */}
@@ -287,7 +293,7 @@ const CouponBookReview = ({navigation, route}) => {
             </Pressable>
           </View>
           <Pressable
-            // onPress={() => _writeReview()}
+            onPress={() => _writeReview()}
             style={{
               height: 55,
               backgroundColor: colors.primary,

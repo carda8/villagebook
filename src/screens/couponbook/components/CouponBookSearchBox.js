@@ -6,8 +6,7 @@ import colors from '../../../styles/colors';
 import {TextInput} from 'react-native';
 import {useState} from 'react';
 
-const CouponBookSearchBox = ({navigation}) => {
-  const [searchWord, setSearchWord] = useState('');
+const CouponBookSearchBox = ({navigation, searchWord, setSearchWord}) => {
   return (
     <View
       style={{
@@ -48,9 +47,11 @@ const CouponBookSearchBox = ({navigation}) => {
             marginRight: 8,
           }}
           value={searchWord}
+          autoCapitalize={'none'}
           // defaultValue={keyword}
           onChangeText={setSearchWord}
           onSubmitEditing={() => {}}
+          autoFocus
           // placeholder={'검새.'}
         />
         <Pressable

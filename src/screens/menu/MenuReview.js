@@ -28,8 +28,11 @@ import ReviewScore from './ReviewScore';
 import {useWindowDimensions} from 'react-native';
 import ReviewImg from './ReviewImg';
 import {hasNotch} from 'react-native-device-info';
+import TextNotoB from '../../component/text/TextNotoB';
+import TextNotoM from '../../component/text/TextNotoM';
+import {useIsFocused} from '@react-navigation/native';
 
-const MenuReview = ({storeInfo}) => {
+const MenuReview = ({storeInfo, isLifeStyle, navigation}) => {
   const {mutateGetReview} = useCustomMutation();
   const [review, setReview] = useState();
   const [reviewOnlyPic, setReviewOnlyPic] = useState();
@@ -40,13 +43,27 @@ const MenuReview = ({storeInfo}) => {
 
   const _getReview = () => {
     console.log('StoreInfo2', storeInfo);
-    const data = {
-      item_count: itemLimit.current,
-      limit_count: 20,
-      bo_table: 'review',
-      jumju_id: storeInfo.mb_id,
-      jumju_code: storeInfo.mb_jumju_code,
-    };
+    let data;
+    if (!isLifeStyle) {
+      data = {
+        item_count: itemLimit.current,
+        limit_count: 20,
+        bo_table: 'review',
+        jumju_id: storeInfo.mb_id,
+        jumju_code: storeInfo.mb_jumju_code,
+      };
+    }
+    if (isLifeStyle) {
+      data = {
+        item_count: itemLimit.current,
+        limit_count: 20,
+        bo_table: 'review',
+        jumju_id: storeInfo.mb_id,
+        jumju_code: storeInfo.mb_jumju_code,
+      };
+    }
+    console.log('req review data ::', data);
+
     mutateGetReview.mutate(data, {
       onSettled: e => {
         if (e.result === 'true') {
@@ -92,7 +109,7 @@ const MenuReview = ({storeInfo}) => {
     const temp = 5;
     let count = userRate ?? 0;
     let temp2 = [];
-
+    console.log('USER RATE:::', userRate);
     for (let i = 0; i < temp; i++) {
       temp2.push(
         <Image
@@ -181,20 +198,56 @@ const MenuReview = ({storeInfo}) => {
   const ListHeader = () => {
     return (
       <View style={{paddingBottom: hasNotch() ? 50 : 0}}>
-        <View style={{padding: 22, paddingBottom: 0}}>
-          <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
-            리뷰 정보
-          </TextBold>
-        </View>
-        <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
-          <TextRegular style={{fontSize: 15}}>
-            {review?.notice.noticeContent}
-          </TextRegular>
-        </View>
+        {!isLifeStyle && (
+          <>
+            <View style={{padding: 22, paddingBottom: 0}}>
+              <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
+                리뷰 정보
+              </TextBold>
+            </View>
+            <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
+              <TextRegular style={{fontSize: 15}}>
+                {review?.notice.noticeContent}
+              </TextRegular>
+            </View>
+          </>
+        )}
 
         {review.notice?.noticePic?.map((item, index) => (
           <ReviewImg review={review} key={index} />
         ))}
+        {isLifeStyle && (
+          <>
+            <View
+              style={{
+                marginHorizontal: 22,
+                marginVertical: 22,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <TextNotoB>
+                리뷰 {review?.review?.length ? review?.review?.length : '0'}개
+              </TextNotoB>
+              <Pressable
+                hitSlop={5}
+                onPress={() => {
+                  navigation.navigate('CouponBookReview', {...storeInfo});
+                }}
+                style={{
+                  backgroundColor: colors.primary,
+                  paddingHorizontal: 10,
+                  paddingVertical: 4,
+                  borderRadius: 15,
+
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <TextNotoM style={{color: 'white'}}>리뷰쓰기</TextNotoM>
+              </Pressable>
+            </View>
+          </>
+        )}
 
         <View
           style={{
@@ -205,7 +258,9 @@ const MenuReview = ({storeInfo}) => {
             paddingHorizontal: 22,
           }}>
           <View style={{flexDirection: 'row'}}>
-            <TextBold style={{fontSize: 15}}>이 상품에 </TextBold>
+            <TextBold style={{fontSize: 15}}>
+              {isLifeStyle ? '이 가게에 ' : '이 상품에 '}
+            </TextBold>
             <TextBold style={{fontSize: 15, color: colors.primary}}>
               {review.rate?.total_cnt ? review.rate?.total_cnt : '0'}명
             </TextBold>
@@ -281,7 +336,7 @@ const MenuReview = ({storeInfo}) => {
                   {_showDate(item.datetime)}
                 </TextRegular>
                 <View style={{flexDirection: 'row', marginLeft: 23}}>
-                  {_setRating(false, 5)}
+                  {_setRating(false, item.rating)}
                 </View>
               </View>
             </View>
@@ -360,12 +415,12 @@ const MenuReview = ({storeInfo}) => {
       </>
     );
   };
-
+  const isFocused = useIsFocused();
   useEffect(() => {
-    _getReview();
+    if (isFocused) _getReview();
 
     return () => {};
-  }, []);
+  }, [isFocused]);
 
   // useEffect(() => {
   //   console.log('reviewvewvwevw', review);
@@ -386,42 +441,83 @@ const MenuReview = ({storeInfo}) => {
   return (
     <>
       <View style={{flex: 1}}>
-        <View style={{padding: 22}}>
-          <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
-            리뷰 정보
-          </TextBold>
-        </View>
-        {review.notice?.noticePic?.map((item, index) => (
-          <ReviewImg review={review} key={index} />
-        ))}
+        {!isLifeStyle && (
+          <>
+            <View style={{padding: 22}}>
+              <TextBold style={{fontSize: 17, color: colors.fontColor6}}>
+                리뷰 정보
+              </TextBold>
+            </View>
+            {review.notice?.noticePic?.map((item, index) => (
+              <ReviewImg review={review} key={index} />
+            ))}
+          </>
+        )}
+
         {/* 리뷰탭 내부 상단 리뷰 정보*/}
         {/* <ListHeader /> */}
-        <ReviewScore review={review} />
-        <Pressable
-          onPress={() => {
-            setOnlyPic(!onlyPic);
-            _filterOnlyPic();
-          }}
-          style={{
-            paddingHorizontal: 22,
-            paddingVertical: 10,
-            borderBottomWidth: 1,
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderColor: colors.borderColor,
-          }}>
-          <Image
-            source={
-              !onlyPic
-                ? require('~/assets/top_ic_map_off.png')
-                : require('~/assets/top_ic_map_on.png')
-            }
-            style={{width: 17, height: 17, marginRight: 7}}
-          />
-          <TextRegular style={{color: colors.fontColor2, fontSize: 13}}>
-            사진리뷰만
-          </TextRegular>
-        </Pressable>
+        {!isLifeStyle && <ReviewScore review={review} />}
+        {!isLifeStyle && (
+          <>
+            <Pressable
+              onPress={() => {
+                setOnlyPic(!onlyPic);
+                _filterOnlyPic();
+              }}
+              style={{
+                paddingHorizontal: 22,
+                paddingVertical: 10,
+                borderBottomWidth: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+                borderColor: colors.borderColor,
+              }}>
+              <Image
+                source={
+                  !onlyPic
+                    ? require('~/assets/top_ic_map_off.png')
+                    : require('~/assets/top_ic_map_on.png')
+                }
+                style={{width: 17, height: 17, marginRight: 7}}
+              />
+              <TextRegular style={{color: colors.fontColor2, fontSize: 13}}>
+                사진리뷰만
+              </TextRegular>
+            </Pressable>
+          </>
+        )}
+        {isLifeStyle && (
+          <>
+            <View
+              style={{
+                marginHorizontal: 22,
+                marginTop: 22,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <TextNotoB>
+                리뷰 {review?.review?.length ? review?.review?.length : '0'}개
+              </TextNotoB>
+              <Pressable
+                hitSlop={5}
+                onPress={() => {
+                  navigation.navigate('CouponBookReview', {...storeInfo});
+                }}
+                style={{
+                  backgroundColor: colors.primary,
+                  paddingHorizontal: 10,
+                  paddingVertical: 4,
+                  borderRadius: 15,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <TextNotoM style={{color: 'white'}}>리뷰쓰기</TextNotoM>
+              </Pressable>
+            </View>
+          </>
+        )}
+        {isLifeStyle && <ReviewScore review={review} isLifeStyle={true} />}
         {!onlyPic
           ? review?.review?.map((item, index) => (
               <ReviewList item={item} key={index} />
