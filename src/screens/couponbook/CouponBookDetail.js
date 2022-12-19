@@ -35,19 +35,31 @@ const CouponBookDetail = ({navigation, route}) => {
   const _onPressInfo = () => {
     dispatch(setIsLifeStyle(true));
     navigation.navigate('LifeStyleStoreInfo', {
-      jumju_id: cpnDetail.cp_jumju_id,
-      jumju_code: cpnDetail.cp_jumju_code,
-      mb_company: cpnDetail.store_name,
+      jumju_id: cpnDetail?.cp_jumju_id
+        ? cpnDetail?.cp_jumju_id
+        : params?.cp_jumju_id,
+      jumju_code: cpnDetail?.cp_jumju_code
+        ? cpnDetail?.cp_jumju_code
+        : params?.cp_jumju_code,
+      mb_company: cpnDetail?.store_name
+        ? cpnDetail?.store_name
+        : params?.store_name,
       category: 'lifestyle',
       likeCount: '0',
     });
   };
+
+  // 24,
+  // 25,
+
+  // 26,27, 30,33
 
   const _getDtl = () => {
     const data = {
       jumju_id: params.cp_jumju_id,
       jumju_code: params.cp_jumju_code,
       cp_no: params.cp_no,
+      cp_id: params.cp_id,
       mt_id: userInfo.mt_id,
     };
     console.log('data', data);
@@ -55,7 +67,7 @@ const CouponBookDetail = ({navigation, route}) => {
       onSuccess: res => {
         console.log('res _getDtl ::', res.data.arrItems);
         setCpnDetail(res.data.arrItems);
-        if (res.data.arrItems.cp_exist === 'Y') setIsSaved(true);
+        if (res.data.arrItems?.cp_exist === 'Y') setIsSaved(true);
       },
     });
   };

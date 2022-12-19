@@ -98,18 +98,18 @@ const CouponBookMain = ({navigation, route}) => {
             // height: 100,
           }}>
           <CouponFilterView />
-          <MainBanner
+          {/* <MainBanner
             navigation={navigation}
             style={{
               marginBottom: 17,
             }}
             position={BannerList['lifestyle']}
-          />
+          /> */}
         </SafeAreaView>
       ) : (
         <>
           <CouponFilterView navigation={navigation} />
-          <View style={{position: 'absolute', top: 155, zIndex: 200}}>
+          {/* <View style={{position: 'absolute', top: 155, zIndex: 200}}>
             <MainBanner
               navigation={navigation}
               style={{
@@ -117,7 +117,7 @@ const CouponBookMain = ({navigation, route}) => {
               }}
               position={BannerList['lifestyle']}
             />
-          </View>
+          </View> */}
         </>
       )}
 
@@ -203,7 +203,7 @@ const CouponBookMain = ({navigation, route}) => {
           backgroundColor: 'white',
           paddingTop: 45,
           // paddingHorizontal: 14,
-          marginTop: 160,
+          // marginTop: 160,
         }}
         // style={{flex: 1}}
         screenOptions={({route}) => ({
@@ -304,6 +304,7 @@ const CouponBookMain = ({navigation, route}) => {
               cate: item.ca_name,
               ca_code: item.ca_code,
               category: 'lifestyle',
+              isMain: true,
             }}
           />
         ))}

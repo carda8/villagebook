@@ -68,7 +68,7 @@ const CouponBookMy = ({navigation, route}) => {
   const renderItem = item => {
     const element = item.item;
     const elementIdx = item.index;
-    // console.log('element', element);
+    console.log('element', element);
     return (
       <Shadow
         distance={5}
@@ -77,6 +77,7 @@ const CouponBookMy = ({navigation, route}) => {
         containerStyle={{marginTop: elementIdx === 0 ? 14 : 0}}>
         <Pressable
           onPress={() => {
+            console.log('element', element);
             navigation.navigate('CouponBookDetail', {...element});
           }}
           style={{

@@ -508,7 +508,11 @@ const MainStackNavigator = () => {
         <Stack.Screen name="CouponBookSearch" component={CouponBookSearch} />
         <Stack.Screen name="CouponBookDetail" component={CouponBookDetail} />
         <Stack.Screen name="CouponBookMy" component={CouponBookMy} />
-        <Stack.Screen name="CouponBookMap" component={CouponBookMap} />
+        <Stack.Screen
+          name="CouponBookMap"
+          component={CouponBookMap}
+          options={{animation: 'slide_from_right'}}
+        />
         <Stack.Screen name="CouponBookReview" component={CouponBookReview} />
 
         <Stack.Screen name="Test" component={Test} />

@@ -14,6 +14,8 @@ import {useEffect} from 'react';
 import {useState} from 'react';
 import {useSelector} from 'react-redux';
 import {Alert} from 'react-native';
+import MainBanner from '../../component/MainBanner';
+import BannerList from '../../config/BannerList';
 
 const CouponList = ({navigation, route, isMy}) => {
   const layout = useWindowDimensions();
@@ -96,7 +98,10 @@ const CouponList = ({navigation, route, isMy}) => {
         distance={5}
         offset={[0, 2]}
         style={{width: '100%'}}
-        containerStyle={{marginTop: elementIdx === 0 && isMy ? 14 : 0}}>
+        containerStyle={{
+          marginTop: elementIdx === 0 && isMy ? 14 : 0,
+          marginHorizontal: 14,
+        }}>
         <Pressable
           onPress={() => {
             navigation.navigate('CouponBookDetail', {...element});
@@ -193,7 +198,20 @@ const CouponList = ({navigation, route, isMy}) => {
         keyExtractor={(item, index) => index}
         renderItem={item => renderItem(item)}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{width: layout.width, paddingHorizontal: 12}}
+        contentContainerStyle={{width: layout.width}}
+        ListHeaderComponent={
+          <>
+            {routeData?.isMain && (
+              <MainBanner
+                navigation={navigation}
+                style={{
+                  marginBottom: 17,
+                }}
+                position={BannerList['lifestyle']}
+              />
+            )}
+          </>
+        }
         ListEmptyComponent={
           <Image
             source={require('~/assets/coupon_ready.png')}

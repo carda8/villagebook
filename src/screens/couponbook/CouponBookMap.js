@@ -494,7 +494,8 @@ const CouponBookMap = ({navigation}) => {
       {storeCpnList?.length === 0 && (
         <Pressable
           onPress={() => {
-            if (moveCenter) _getBookList(moveCenter.lat, moveCenter.lon);
+            // if (moveCenter) _getBookList(moveCenter.lat, moveCenter.lon);
+            navigation.navigate('CouponBookMain', {data: couponbookData});
           }}
           style={{
             position: 'absolute',
@@ -504,12 +505,13 @@ const CouponBookMap = ({navigation}) => {
             zIndex: 100,
             borderRadius: 40,
             alignSelf: 'center',
-            bottom: 40,
+            bottom: 30,
+            right: 14,
             elevation: 5,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <TextBold style={{color: 'white', fontSize: 16}}>매장 보기</TextBold>
+          <TextBold style={{color: 'white', fontSize: 16}}>리스트보기</TextBold>
         </Pressable>
       )}
 
