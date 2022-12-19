@@ -207,7 +207,7 @@ const CouponList = ({navigation, route, isMy}) => {
                 style={{
                   marginBottom: 17,
                 }}
-                position={BannerList['lifestyle']}
+                position={BannerList['couponBook']}
               />
             )}
           </>

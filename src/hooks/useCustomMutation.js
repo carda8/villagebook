@@ -380,6 +380,12 @@ export const useCustomMutation = () => {
     },
   });
 
+  const mttCpnBookMyBoxDtl = useMutation(couponBookAPI._getCpnBookMyBoxDtl, {
+    onSettled: e => {
+      console.log('mttCpnBookMyBoxDtl', e);
+    },
+  });
+
   const mttCpbMy = useMutation(couponBookAPI._getCpbMy, {
     onSettled: e => {
       console.log('mttCpbMy', e);
@@ -409,6 +415,7 @@ export const useCustomMutation = () => {
     mttCpbSave,
     mttCpbUse,
     mttCpbMy,
+    mttCpnBookMyBoxDtl,
     mutateGetCouponBookList,
     mttCpnBookDtl,
     mutateSignIn,

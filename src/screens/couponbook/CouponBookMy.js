@@ -78,7 +78,10 @@ const CouponBookMy = ({navigation, route}) => {
         <Pressable
           onPress={() => {
             console.log('element', element);
-            navigation.navigate('CouponBookDetail', {...element});
+            navigation.navigate('CouponBookDetail', {
+              ...element,
+              isMyBox: true,
+            });
           }}
           style={{
             borderWidth: 1,

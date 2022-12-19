@@ -8,6 +8,7 @@ import authAPI from '../../api/modules/authAPI';
 import policyConfig from './policyConfig';
 import Loading from '../../component/Loading';
 import TextRegular from '../../component/text/TextRegular';
+import RenderHtml from 'react-native-render-html';
 
 const Policy = ({navigation, route}) => {
   const routeData = route.params?.target;
@@ -51,9 +52,10 @@ const Policy = ({navigation, route}) => {
       <Header title={routeData} navigation={navigation} />
       <ScrollView>
         <View style={{padding: 22}}>
-          <TextRegular>
-            {mutatePolicy?.data?.data.arrItems.co_content}
-          </TextRegular>
+          <RenderHtml
+            source={{
+              html: mutatePolicy?.data?.data.arrItems.co_content,
+            }}></RenderHtml>
         </View>
       </ScrollView>
     </SafeAreaView>

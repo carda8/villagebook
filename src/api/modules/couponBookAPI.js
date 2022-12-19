@@ -10,6 +10,10 @@ export default {
     const result = await _reqAPI('proc_couponbook_detail.php', data);
     return result;
   },
+  _getCpnBookMyBoxDtl: async data => {
+    const result = await _reqAPI('proc_couponbook_box_detail.php', data);
+    return result;
+  },
   _getCpbMy: async data => {
     const result = await _reqAPI('proc_couponbook_box.php', data);
     return result;

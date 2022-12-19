@@ -27,7 +27,8 @@ const CouponBookDetail = ({navigation, route}) => {
   const params = route?.params;
   console.log('params', params);
   const dispatch = useDispatch();
-  const {mttCpnBookDtl, mttCpbUse, mttCpbSave} = useCustomMutation();
+  const {mttCpnBookDtl, mttCpbUse, mttCpbSave, mttCpnBookMyBoxDtl} =
+    useCustomMutation();
   const [cpnDetail, setCpnDetail] = useState();
   const {userInfo} = useSelector(state => state.authReducer);
   const [isSaved, setIsSaved] = useState(false);
@@ -49,11 +50,6 @@ const CouponBookDetail = ({navigation, route}) => {
     });
   };
 
-  // 24,
-  // 25,
-
-  // 26,27, 30,33
-
   const _getDtl = () => {
     const data = {
       jumju_id: params.cp_jumju_id,
@@ -64,6 +60,23 @@ const CouponBookDetail = ({navigation, route}) => {
     };
     console.log('data', data);
     mttCpnBookDtl.mutate(data, {
+      onSuccess: res => {
+        console.log('res _getDtl ::', res.data.arrItems);
+        setCpnDetail(res.data.arrItems);
+        if (res.data.arrItems?.cp_exist === 'Y') setIsSaved(true);
+      },
+    });
+  };
+
+  const _getBoxDtl = () => {
+    const data = {
+      jumju_id: params.cp_jumju_id,
+      jumju_code: params.cp_jumju_code,
+      cp_no: params.cp_no,
+      cp_id: params.cp_id,
+      mt_id: userInfo.mt_id,
+    };
+    mttCpnBookMyBoxDtl.mutate(data, {
       onSuccess: res => {
         console.log('res _getDtl ::', res.data.arrItems);
         setCpnDetail(res.data.arrItems);
@@ -115,7 +128,12 @@ const CouponBookDetail = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    _getDtl();
+    if (params.isMyBox) {
+      _getBoxDtl();
+    } else {
+      _getDtl();
+    }
+
     console.log('route ::', route.params);
   }, [isSaved]);
 
