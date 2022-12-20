@@ -29,7 +29,8 @@ const CouponFilterView = ({isSearch, category}) => {
     <View
       style={{
         // flex: 1,
-        height: 30,
+        height: 40,
+        zIndex: 1000,
         marginLeft: 14,
         top: 110,
         position: Platform.OS === 'ios' ? 'relative' : 'absolute',
