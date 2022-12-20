@@ -3,4 +3,5 @@ export default {
   food: '동네맛집',
   market: '동네마켓',
   lifestyle: '동네편의',
+  couponBook: '쿠폰북',
 };

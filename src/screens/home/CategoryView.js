@@ -34,6 +34,7 @@ import TextBold from '../../component/text/TextBold';
 import Divider from '../../component/Divider';
 import policyConfig from '../signIn/policyConfig';
 import {setCurrentLocation} from '../../store/reducers/LocationRecuder';
+import {setCouponBookMenus} from '../../store/reducers/CouponReducer';
 
 const CategoryView = ({navigation, route}) => {
   const selectedCategory = route.params?.selectedCategory;
@@ -99,6 +100,12 @@ const CategoryView = ({navigation, route}) => {
         });
         // console.log('temppp', temp);
         setCategoryData(temp);
+        let temp2 = [];
+        temp2.push({ca_id: '111', ca_name: '전체'});
+        temp2.push(...temp);
+        temp2.pop();
+        temp2.pop();
+        dispatch(setCouponBookMenus(temp2));
       } else setCategoryData([]);
     },
   });
@@ -142,7 +149,7 @@ const CategoryView = ({navigation, route}) => {
     temp.push(...categoryData);
     temp.pop();
     temp.pop();
-    navigation.navigate('Coupon2', {data: temp});
+    navigation.navigate('CouponBookMain', {data: temp});
   };
   useEffect(() => {
     _init();

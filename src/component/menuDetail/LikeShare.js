@@ -21,7 +21,7 @@ const LikeShare = ({
 
   const [like, setLike] = useState();
   const [likeNum, setLikeNum] = useState(likeCount);
-  console.log('likenum', likeNum, likeCount);
+  console.log('likenum', likeNum, likeCount, categoryMain);
   // console.warn(storeInfo);
   const _setLikeStore = () => {
     const data = {

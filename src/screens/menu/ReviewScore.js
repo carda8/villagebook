@@ -5,7 +5,7 @@ import TextBold from '../../component/text/TextBold';
 import colors from '../../styles/colors';
 import {Slider} from '@miblanchard/react-native-slider';
 
-const ReviewScore = ({review}) => {
+const ReviewScore = ({review, isLifeStyle}) => {
   const _showRateAvg = avg => {
     if (avg % 1 === 0) {
       return avg + '.0';
@@ -73,9 +73,9 @@ const ReviewScore = ({review}) => {
 
   return (
     <>
-      <View style={{paddingHorizontal: 22, paddingVertical: 29}}>
+      <View style={{paddingHorizontal: 22, paddingVertical: 0}}>
         <TextRegular style={{fontSize: 15}}>
-          {review?.notice.noticeContent}
+          {/* {review?.notice.noticeContent} */}
         </TextRegular>
       </View>
 
@@ -88,7 +88,9 @@ const ReviewScore = ({review}) => {
           paddingHorizontal: 22,
         }}>
         <View style={{flexDirection: 'row'}}>
-          <TextBold style={{fontSize: 15}}>이 상품에 </TextBold>
+          <TextBold style={{fontSize: 15}}>
+            {isLifeStyle ? '이 가게에' : '이 상품에'}{' '}
+          </TextBold>
           <TextBold style={{fontSize: 15, color: colors.primary}}>
             {review.rate?.total_cnt ? review.rate?.total_cnt : '0'}명
           </TextBold>

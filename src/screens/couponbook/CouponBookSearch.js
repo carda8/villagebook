@@ -1,107 +1,67 @@
 import {View, Text} from 'react-native';
 import React from 'react';
-import {Image} from 'react-native';
-import {useWindowDimensions} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import commonStyles from '../../styles/commonStyle';
+import Header from '../../component/Header';
 import {Pressable} from 'react-native';
-import {FlatList} from 'react-native';
+import {Image} from 'react-native';
+import {TextInput} from 'react-native';
+import colors from '../../styles/colors';
+import CouponBookSearchBox from './components/CouponBookSearchBox';
+import CouponList from './CouponList';
 import {Shadow} from 'react-native-shadow-2';
 import TextMedium from '../../component/text/TextMedium';
-import TextBold from '../../component/text/TextBold';
 import TextLight from '../../component/text/TextLight';
-import colors from '../../styles/colors';
-import {useCustomMutation} from '../../hooks/useCustomMutation';
+import TextBold from '../../component/text/TextBold';
+import {FlatList} from 'react-native';
+import {useWindowDimensions} from 'react-native';
 import {useEffect} from 'react';
 import {useState} from 'react';
+import {useCustomMutation} from '../../hooks/useCustomMutation';
 import {useSelector} from 'react-redux';
-import {Alert} from 'react-native';
-import MainBanner from '../../component/MainBanner';
-import BannerList from '../../config/BannerList';
 
-const CouponList = ({navigation, route, isMy}) => {
+const CouponBookSearch = ({navigation}) => {
   const layout = useWindowDimensions();
-  const routeData = route?.params;
-  const [couponData, setCouponData] = useState([]);
-  const {couponBoolFilterIndex} = useSelector(state => state.couponReducer);
-  const {mutateGetCouponBookList, mttCpbSave, mttCpbMy} = useCustomMutation();
+  const [searchWord, setSearchWord] = useState('');
+  const [schList, setSchList] = useState([]);
+  const {mutateGetCouponBookList} = useCustomMutation();
   const {currentLocation} = useSelector(state => state.locationReducer);
-  const {userInfo} = useSelector(state => state.authReducer);
 
   const _getBookList = () => {
     const data = {
-      item_count: 0,
+      item_count: schList.length,
       limit_count: 20,
-      ca_code: routeData?.ca_code,
-      ca_sort: couponBoolFilterIndex,
+      // ca_code: '',
+      // ca_sort: '',
+      ca_sch: searchWord,
       mb_lat: currentLocation?.lat,
       mb_lng: currentLocation?.lon,
     };
     console.log('## data', data);
-    // return;
     mutateGetCouponBookList.mutate(data, {
       onSuccess: res => {
         console.log('## res', res.data);
         if (res.data?.arrItems?.length > 0) {
-          setCouponData(res.data.arrItems);
+          setSchList(prev => [...prev, ...res.data.arrItems]);
+          // setCouponData(res.data.arrItems);
         }
       },
     });
   };
 
-  const _getMyCBList = () => {
-    const data = {
-      item_count: '0',
-      // limit_count: '10',
-      mt_id: userInfo.mt_id,
-      // N 미사용, Y 사용 완료
-      cp_use: tabIndex === '1' ? 'N' : 'Y',
-    };
-    mttCpbMy.mutate(data, {
-      onSuccess: res => {
-        console.log('res', res.data.arrItems);
-        setMyCpn(res.data.arrItems);
-      },
-    });
-    console.log('data ::', data);
-  };
-
-  // const
-
   useEffect(() => {
-    _getBookList();
-  }, [couponBoolFilterIndex]);
-
-  const _onPressSave = element => {
-    // console.log('element', element);
-    const data = {
-      jumju_id: element.cp_jumju_id,
-      jumju_code: element.cp_jumju_code,
-      mt_id: userInfo.mt_id,
-      coupon_id: element.cp_id,
-    };
-    console.log('data', data);
-    mttCpbSave.mutate(data, {
-      onSuccess: res => {
-        if (res.data.resultItem.result === 'true')
-          Alert.alert('쿠폰북', '쿠폰북 다운로드 성공');
-        else Alert.alert('쿠폰북', '중복 다운로드는 할 수 없습니다');
-        console.log('res', res.data.resultItem.result === 'true');
-      },
-    });
-  };
+    if (searchWord) _getBookList();
+  }, [searchWord]);
 
   const renderItem = item => {
     const element = item.item;
     const elementIdx = item.index;
-    // console.log('element', element);
     return (
       <Shadow
         distance={5}
         offset={[0, 2]}
         style={{width: '100%'}}
-        containerStyle={{
-          marginTop: elementIdx === 0 && isMy ? 14 : 0,
-          marginHorizontal: 14,
-        }}>
+        containerStyle={{marginTop: elementIdx === 0 ? 14 : 0}}>
         <Pressable
           onPress={() => {
             navigation.navigate('CouponBookDetail', {...element});
@@ -169,7 +129,7 @@ const CouponList = ({navigation, route, isMy}) => {
           />
           <Pressable
             onPress={() => {
-              _onPressSave(element);
+              // _onPressSave(element);
             }}
             style={{width: 55, justifyContent: 'center', alignItems: 'center'}}>
             <Image
@@ -178,7 +138,7 @@ const CouponList = ({navigation, route, isMy}) => {
               resizeMode="contain"
             />
             <TextLight style={{fontSize: 12}}>
-              {element.cp_coupon_download_txt}
+              {element?.cp_coupon_download_txt}
             </TextLight>
           </Pressable>
         </Pressable>
@@ -187,41 +147,35 @@ const CouponList = ({navigation, route, isMy}) => {
   };
 
   return (
-    <View
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        // flex: 1,
-      }}>
+    <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
+      <CouponBookSearchBox
+        navigation={navigation}
+        searchWord={searchWord}
+        setSearchWord={setSearchWord}
+      />
       <FlatList
-        data={couponData}
+        data={schList}
         keyExtractor={(item, index) => index}
         renderItem={item => renderItem(item)}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{width: layout.width}}
-        ListHeaderComponent={
-          <>
-            {routeData?.isMain && (
-              <MainBanner
-                navigation={navigation}
-                style={{
-                  marginBottom: 17,
-                }}
-                position={BannerList['couponBook']}
-              />
-            )}
-          </>
-        }
+        contentContainerStyle={{width: layout.width, paddingHorizontal: 12}}
+        onEndReached={() => {
+          _getBookList();
+        }}
         ListEmptyComponent={
           <Image
             source={require('~/assets/coupon_ready.png')}
-            style={{height: layout.width * 1, width: layout.width}}
+            style={{
+              height: layout.width * 1,
+              width: layout.width,
+              marginTop: '40%',
+            }}
             resizeMode="contain"
           />
         }
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default CouponList;
+export default CouponBookSearch;

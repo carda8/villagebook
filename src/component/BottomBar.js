@@ -31,6 +31,32 @@ const BottomBar = ({navigation}) => {
         style={{
           flex: 1,
           alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onPress={() => {
+          if (!isGuest && userInfo) {
+            dispatch(setCurrent(3));
+            // navigation.navigate('DiscountMain');
+            navigation.navigate('CouponBookMy');
+          } else {
+            _guestAlert(navigation);
+          }
+        }}>
+        <Image
+          source={
+            current === 3
+              ? require('~/assets/bottom_ic04_cb.png')
+              : require('~/assets/bottom_ic04_cb.png')
+          }
+          style={{width, height: 60, tintColor: colors.primary}}
+          resizeMode="contain"
+        />
+      </Pressable>
+
+      <Pressable
+        style={{
+          flex: 1,
+          alignItems: 'center',
         }}
         onPress={() => {
           if (!isGuest && userInfo) {
@@ -46,26 +72,6 @@ const BottomBar = ({navigation}) => {
             current === 1
               ? require('~/assets/bottom_ic02_on.png')
               : require('~/assets/bottom_ic02_on.png')
-          }
-          style={{width, height: 60, tintColor: colors.primary}}
-          resizeMode="contain"
-        />
-      </Pressable>
-      <Pressable
-        style={{flex: 1, alignItems: 'center'}}
-        onPress={() => {
-          // dispatch(setCurrent(2));
-          if (!isGuest && userInfo) {
-            navigation.navigate('OrderList');
-          } else {
-            _guestAlert(navigation);
-          }
-        }}>
-        <Image
-          source={
-            current === 2
-              ? require('~/assets/bottom_ic03_on.png')
-              : require('~/assets/bottom_ic03_on.png')
           }
           style={{width, height: 60, tintColor: colors.primary}}
           resizeMode="contain"
@@ -94,30 +100,28 @@ const BottomBar = ({navigation}) => {
           }}
         />
       </Pressable>
+
       <Pressable
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
+        style={{flex: 1, alignItems: 'center'}}
         onPress={() => {
+          // dispatch(setCurrent(2));
           if (!isGuest && userInfo) {
-            dispatch(setCurrent(3));
-            navigation.navigate('DiscountMain');
+            navigation.navigate('OrderList');
           } else {
             _guestAlert(navigation);
           }
         }}>
         <Image
           source={
-            current === 3
-              ? require('~/assets/bottom_ic04_on.png')
-              : require('~/assets/bottom_ic04_on.png')
+            current === 2
+              ? require('~/assets/bottom_ic03_on.png')
+              : require('~/assets/bottom_ic03_on.png')
           }
           style={{width, height: 60, tintColor: colors.primary}}
           resizeMode="contain"
         />
       </Pressable>
+
       <Pressable
         style={{flex: 1, alignItems: 'center'}}
         onPress={() => {

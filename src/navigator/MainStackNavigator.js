@@ -83,7 +83,12 @@ import MenuDetail3 from '../screens/menu/MenuDetail3';
 import CouponBookMain from '../screens/couponbook/CouponBookMain';
 import MarketScreen from '../screens/home/MarketScreen';
 import FoodScreen from '../screens/home/FoodScreen';
-import Coupon2 from '../screens/couponbook/CouponBookMain2';
+// import CouponBookMain from '../screens/couponbook/CouponBookMain2';
+import CouponBookSearch from '../screens/couponbook/CouponBookSearch';
+import CouponBookDetail from '../screens/couponbook/CouponBookDetail';
+import CouponBookMy from '../screens/couponbook/CouponBookMy';
+import CouponBookMap from '../screens/couponbook/CouponBookMap';
+import CouponBookReview from '../screens/couponbook/CouponBookReview';
 const Stack = createNativeStackNavigator();
 const naviRef = React.createRef();
 export {naviRef};
@@ -496,10 +501,19 @@ const MainStackNavigator = () => {
          쿠폰북 추가 22.11.22 
          푸드, 마켓 스크린 별도로 분리하여 추가
         */}
+        {/* <Stack.Screen name="CouponBookMain" component={CouponBookMain} /> */}
         <Stack.Screen name="CouponBookMain" component={CouponBookMain} />
-        <Stack.Screen name="Coupon2" component={Coupon2} />
         <Stack.Screen name="FoodScreen" component={FoodScreen} />
         <Stack.Screen name="MarketScreen" component={MarketScreen} />
+        <Stack.Screen name="CouponBookSearch" component={CouponBookSearch} />
+        <Stack.Screen name="CouponBookDetail" component={CouponBookDetail} />
+        <Stack.Screen name="CouponBookMy" component={CouponBookMy} />
+        <Stack.Screen
+          name="CouponBookMap"
+          component={CouponBookMap}
+          options={{animation: 'slide_from_right'}}
+        />
+        <Stack.Screen name="CouponBookReview" component={CouponBookReview} />
 
         <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>

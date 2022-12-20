@@ -105,6 +105,7 @@ const MainBanner = ({navigation, style, position}) => {
         autoplayTimeout={1.5}
         style={{height: 140}}
         containerStyle={style}
+        scrollEnabled={position === '쿠폰북' ? false : true}
         // renderToHardwareTextureAndroid
         removeClippedSubviews={false}
         renderPagination={(index, total, context) => (
@@ -160,4 +161,4 @@ const MainBanner = ({navigation, style, position}) => {
   );
 };
 
-export default MainBanner;
+export default React.memo(MainBanner);

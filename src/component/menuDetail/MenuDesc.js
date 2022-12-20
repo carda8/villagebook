@@ -6,6 +6,9 @@ import {SceneMap, TabBar, TabView} from 'react-native-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
 import {_guestAlert} from '../../config/utils/modules';
 import {useCustomMutation} from '../../hooks/useCustomMutation';
+import MiniMap from '../../screens/map/MiniMap';
+import MenuReview from '../../screens/menu/MenuReview';
+import ReviewScore from '../../screens/menu/ReviewScore';
 import {setIsLifeStyle} from '../../store/reducers/CategoryReducer';
 import colors from '../../styles/colors';
 import {customAlert} from '../CustomAlert';
@@ -15,6 +18,7 @@ import Loading from '../Loading';
 import ReviewSimple2 from '../reviews/ReviewSimple2';
 import TextBold from '../text/TextBold';
 import TextLight from '../text/TextLight';
+import TextNotoB from '../text/TextNotoB';
 import TextNotoM from '../text/TextNotoM';
 import TextRegular from '../text/TextRegular';
 import LikeShare from './LikeShare';
@@ -25,8 +29,13 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
   const {isLifeStyle} = useSelector(state => state.categoryReducer);
   const {isGuest, userInfo} = useSelector(state => state.authReducer);
 
-  const [moreInfo, setMoreInfo] = useState(false);
+  const [moreInfo, setMoreInfo] = useState(true);
   const [more, setMore] = useState(false);
+
+  // 쿠폰북 추가
+  // 정보, 리뷰 state
+  const [tabIdx, setTabIdx] = useState('1');
+
   const storeInfo = info?.data?.arrItems ?? info;
   console.log('info', storeInfo);
   // return <Loading />;
@@ -224,7 +233,13 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 <View style={{flex: 1}}>
                   <Pressable
                     onPress={() => Linking.openURL(`${storeInfo.mb_homepage}`)}>
-                    <TextRegular style={{color: colors.fontColor3}}>
+                    <TextRegular
+                      // style={{color: colors.fontColor3}}
+                      style={{
+                        color: storeInfo?.mb_homepage
+                          ? colors.primary
+                          : colors.fontColor3,
+                      }}>
                       {storeInfo?.mb_homepage ? storeInfo?.mb_homepage : '-'}
                     </TextRegular>
                   </Pressable>
@@ -254,7 +269,7 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                 </View>
               </View>
 
-              <Pressable
+              {/* <Pressable
                 onPress={() => setMoreInfo(!moreInfo)}
                 style={{
                   width: '100%',
@@ -273,48 +288,108 @@ const MenuDesc = ({navigation, info, routeData, categoryMain, likeCount}) => {
                   }}
                   resizeMode={'contain'}
                 />
-              </Pressable>
+              </Pressable> */}
             </View>
 
             <DividerL />
-            <View style={{padding: 22}}>
-              <View style={{marginBottom: 20}}>
-                <TextNotoM style={{fontSize: 18, color: colors.fontColor6}}>
-                  소개
-                </TextNotoM>
-              </View>
-              <View style={{minHeight: 80, height: more ? 'auto' : 80}}>
-                <TextRegular style={{color: colors.fontColor2}}>
-                  {storeInfo.mb_memo}
-                </TextRegular>
-              </View>
-            </View>
-            <Pressable
-              onPress={() => setMore(!more)}
+
+            <View
               style={{
-                width: '100%',
-                height: 40,
-                alignSelf: 'center',
-                alignItems: 'center',
-                justifyContent: 'center',
+                flexDirection: 'row',
+                borderBottomWidth: 1,
+                borderColor: colors.borderColor,
+                height: 45,
               }}>
-              <Image
-                source={require('~/assets/btn_top_left.png')}
+              <Pressable
+                onPress={() => setTabIdx('1')}
                 style={{
-                  tintColor: colors.primary,
-                  width: 30,
-                  height: 30,
-                  transform: [{rotate: more ? '90deg' : '270deg'}],
-                }}
-                resizeMode={'contain'}
-              />
-            </Pressable>
-            <DividerL />
-            <View style={{paddingHorizontal: 22, paddingTop: 22}}>
-              <TextNotoM style={{fontSize: 18, color: colors.fontColor6}}>
-                위치
-              </TextNotoM>
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: tabIdx === '1' ? 2 : 0,
+                  marginHorizontal: '14%',
+                }}>
+                <TextNotoB
+                  style={{
+                    color:
+                      tabIdx === '1' ? colors.fontColor2 : colors.fontColorA,
+                    fontSize: 15,
+                  }}>
+                  정보
+                </TextNotoB>
+              </Pressable>
+              <Pressable
+                onPress={() => setTabIdx('2')}
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderBottomWidth: tabIdx === '2' ? 2 : 0,
+                  marginHorizontal: '14%',
+                }}>
+                <TextNotoB
+                  style={{
+                    color:
+                      tabIdx === '2' ? colors.fontColor2 : colors.fontColorA,
+                    fontSize: 15,
+                  }}>
+                  리뷰
+                </TextNotoB>
+              </Pressable>
             </View>
+            {tabIdx === '1' ? (
+              <>
+                <View style={{padding: 22}}>
+                  <View style={{marginBottom: 20}}>
+                    <TextNotoM style={{fontSize: 18, color: colors.fontColor6}}>
+                      소개
+                    </TextNotoM>
+                  </View>
+                  <View style={{minHeight: 80, height: more ? 'auto' : 80}}>
+                    <TextRegular style={{color: colors.fontColor2}}>
+                      {storeInfo.mb_memo}
+                    </TextRegular>
+                  </View>
+                </View>
+                <Pressable
+                  onPress={() => setMore(!more)}
+                  style={{
+                    width: '100%',
+                    height: 40,
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={require('~/assets/btn_top_left.png')}
+                    style={{
+                      tintColor: colors.primary,
+                      width: 30,
+                      height: 30,
+                      transform: [{rotate: more ? '90deg' : '270deg'}],
+                    }}
+                    resizeMode={'contain'}
+                  />
+                </Pressable>
+                <DividerL />
+                <View style={{paddingHorizontal: 22, paddingTop: 22}}>
+                  <TextNotoM style={{fontSize: 18, color: colors.fontColor6}}>
+                    위치
+                  </TextNotoM>
+                </View>
+                <View style={{paddingBottom: 60, paddingTop: 40}}>
+                  <MiniMap lat={info.mb_lat} lng={info.mb_lng} />
+                </View>
+              </>
+            ) : (
+              <>
+                <MenuReview
+                  storeInfo={info}
+                  isLifeStyle={true}
+                  navigation={navigation}
+                />
+              </>
+            )}
           </>
         )}
 

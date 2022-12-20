@@ -2,6 +2,7 @@ import {Alert} from 'react-native';
 import {useMutation} from 'react-query';
 import authAPI from '../api/modules/authAPI';
 import cartAPI from '../api/modules/cartAPI';
+import couponBookAPI from '../api/modules/couponBookAPI';
 import mainAPI from '../api/modules/mainAPI';
 import paymentAPI from '../api/modules/paymentAPI';
 import storeAPI from '../api/modules/storeAPI';
@@ -364,7 +365,59 @@ export const useCustomMutation = () => {
     },
   });
 
+  //쿠폰북 api 추가
+  const mutateGetCouponBookList = useMutation(
+    couponBookAPI._getCouponBookList,
+    {
+      onSettled: e => {
+        console.log('mutateGetCouponBookList', e);
+      },
+    },
+  );
+  const mttCpnBookDtl = useMutation(couponBookAPI._getCpnBookDtl, {
+    onSettled: e => {
+      console.log('mttCpnBookDtl', e);
+    },
+  });
+
+  const mttCpnBookMyBoxDtl = useMutation(couponBookAPI._getCpnBookMyBoxDtl, {
+    onSettled: e => {
+      console.log('mttCpnBookMyBoxDtl', e);
+    },
+  });
+
+  const mttCpbMy = useMutation(couponBookAPI._getCpbMy, {
+    onSettled: e => {
+      console.log('mttCpbMy', e);
+    },
+  });
+
+  const mttCpbUse = useMutation(couponBookAPI._useCpb, {
+    onSettled: e => {
+      console.log('mttCpbUse', e);
+    },
+  });
+
+  const mttCpbSave = useMutation(couponBookAPI._saveCpn, {
+    onSettled: e => {
+      console.log('mttCpbSave', e);
+    },
+  });
+
+  const mttCpbListOwner = useMutation(couponBookAPI._getCpnlistOwner, {
+    onSettled: e => {
+      console.log('mttCpbListOwner', e);
+    },
+  });
+
   return {
+    mttCpbListOwner,
+    mttCpbSave,
+    mttCpbUse,
+    mttCpbMy,
+    mttCpnBookMyBoxDtl,
+    mutateGetCouponBookList,
+    mttCpnBookDtl,
     mutateSignIn,
     mutateSNSlogin,
     mutateFindId,
