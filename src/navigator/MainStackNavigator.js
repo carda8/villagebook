@@ -89,6 +89,7 @@ import CouponBookDetail from '../screens/couponbook/CouponBookDetail';
 import CouponBookMy from '../screens/couponbook/CouponBookMy';
 import CouponBookMap from '../screens/couponbook/CouponBookMap';
 import CouponBookReview from '../screens/couponbook/CouponBookReview';
+import CommunityMain from '../screens/community/CommunityMain';
 const Stack = createNativeStackNavigator();
 const naviRef = React.createRef();
 export {naviRef};
@@ -514,6 +515,11 @@ const MainStackNavigator = () => {
           options={{animation: 'slide_from_right'}}
         />
         <Stack.Screen name="CouponBookReview" component={CouponBookReview} />
+
+        {/*
+         커뮤니티 추가 22.12.23
+         */}
+        <Stack.Screen name="CommunityMain" component={CommunityMain} />
 
         <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>
