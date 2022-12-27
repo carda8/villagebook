@@ -44,6 +44,7 @@ const MyPage = ({navigation}) => {
     '이벤트',
     '리뷰 관리',
     '알림 설정',
+    '커뮤니티',
   ];
 
   return (
@@ -185,6 +186,9 @@ const MyPage = ({navigation}) => {
                     break;
                   case 6:
                     navigation.navigate('PushSetting');
+                    break;
+                  case 7:
+                    navigation.navigate('CommunityMain');
                     break;
                   default:
                     break;

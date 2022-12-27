@@ -74,7 +74,7 @@ const Review = ({navigation}) => {
 
   const _convertImage = images => {
     let temp = [];
-    images.map((item, index) => {
+    images?.map((item, index) => {
       temp.push({url: item});
     });
     return temp;
@@ -259,7 +259,7 @@ const Review = ({navigation}) => {
             <Pressable
               hitSlop={20}
               onPress={() => {
-                setModal(!modal);
+                setModal({...modal, visible: false});
               }}
               style={{alignItems: 'flex-end', margin: 20, zIndex: 300}}>
               <Image
