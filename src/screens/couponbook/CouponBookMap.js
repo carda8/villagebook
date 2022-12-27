@@ -1,4 +1,4 @@
-import {View, Text, ScrollView} from 'react-native';
+import {View, Text, ScrollView, Platform} from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import commonStyles from '../../styles/commonStyle';
@@ -175,7 +175,8 @@ const CouponBookMap = ({navigation}) => {
           justifyContent: 'center',
           borderRadius: 30,
           paddingHorizontal: 15,
-        }}>
+        }}
+      >
         <TextRegular
           style={{
             color:
@@ -183,7 +184,8 @@ const CouponBookMap = ({navigation}) => {
               element.ca_name === pickedFilter
                 ? 'white'
                 : colors.fontColor2,
-          }}>
+          }}
+        >
           {element?.ca_name}
         </TextRegular>
       </Pressable>
@@ -203,7 +205,8 @@ const CouponBookMap = ({navigation}) => {
           width: '95%',
           alignSelf: 'center',
           // bottom: 0,
-        }}>
+        }}
+      >
         <Pressable
           onPress={() => {
             // console.log('slctdCpb,', item);
@@ -219,7 +222,8 @@ const CouponBookMap = ({navigation}) => {
             paddingHorizontal: 10,
             flexDirection: 'row',
             backgroundColor: 'white',
-          }}>
+          }}
+        >
           <Image
             source={
               item?.store_logo
@@ -234,11 +238,13 @@ const CouponBookMap = ({navigation}) => {
               flex: 1,
               marginLeft: 10,
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <TextMedium
                 style={{color: colors.fontColor3, flex: 1}}
-                numberOfLines={1}>
+                numberOfLines={1}
+              >
                 {item?.store_name}
               </TextMedium>
               <TextLight
@@ -246,18 +252,21 @@ const CouponBookMap = ({navigation}) => {
                   color: colors.fontColorA,
                   fontSize: 11,
                   marginRight: 5,
-                }}>
+                }}
+              >
                 {item?.cp_end_txt}
               </TextLight>
             </View>
             <TextBold
               style={{fontSize: 16, color: colors.fontColor2}}
-              numberOfLines={2}>
+              numberOfLines={2}
+            >
               {item?.cp_subject}
             </TextBold>
             <TextBold
               style={{fontSize: 13, color: colors.fontColorA2}}
-              numberOfLines={2}>
+              numberOfLines={2}
+            >
               {item?.cp_memo}
             </TextBold>
           </View>
@@ -275,7 +284,8 @@ const CouponBookMap = ({navigation}) => {
               width: 55,
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <Image
               source={require('~/assets/down_coupon.png')}
               style={{width: 45, height: 45}}
@@ -326,7 +336,8 @@ const CouponBookMap = ({navigation}) => {
               : 'white',
           borderRadius: 30,
           marginRight: 7,
-        }}>
+        }}
+      >
         <TextRegular
           style={{
             color:
@@ -335,7 +346,8 @@ const CouponBookMap = ({navigation}) => {
                 ? 'white'
                 : colors.fontColor2,
             fontSize: 13,
-          }}>
+          }}
+        >
           {element.ca_name}
         </TextRegular>
       </Pressable>
@@ -344,14 +356,16 @@ const CouponBookMap = ({navigation}) => {
 
   return (
     <SafeAreaView style={{...commonStyles.safeAreaStyle}}>
-      <View
+      <SafeAreaView
         style={{
           position: 'absolute',
           width: '100%',
           zIndex: 100,
           paddingTop: 15,
           backgroundColor: isOpen ? 'white' : undefined,
-        }}>
+        }}
+        edges={['top']}
+      >
         <Pressable
           onPress={() => navigation.navigate('CouponBookSearch')}
           style={{
@@ -363,7 +377,8 @@ const CouponBookMap = ({navigation}) => {
             borderRadius: 10,
             marginHorizontal: 14,
             justifyContent: 'center',
-          }}>
+          }}
+        >
           <Image
             source={require('~/assets/ico_search.png')}
             style={{
@@ -397,7 +412,8 @@ const CouponBookMap = ({navigation}) => {
             alignItems: 'center',
             justifyContent: 'center',
             position: 'absolute',
-          }}>
+          }}
+        >
           <Image
             source={require('~/assets/down_arrow.png')}
             style={{width: 24, height: 24}}
@@ -406,66 +422,77 @@ const CouponBookMap = ({navigation}) => {
         </Pressable>
         {/* 펼칠시 나오는 뷰 */}
         {isOpen && (
-          <FlatList
-            data={couponbookData}
-            keyExtractor={(item, index) => index}
-            renderItem={item => renderOpenItem(item)}
-            numColumns={4}
-            style={{
-              flex: 1,
-              top: 75,
-              position: 'absolute',
-              backgroundColor: 'white',
-              zIndex: 100,
-              width: '100%',
-            }}
-            columnWrapperStyle={{
-              flex: 1,
-              marginBottom: 7,
-              marginLeft: 14,
-            }}
-            ListFooterComponent={
-              <Shadow distance={1} offset={[0, 1]} style={{width: '100%'}}>
-                <Pressable
-                  onPress={() => setIsOpen(!isOpen)}
-                  style={{
-                    backgroundColor: 'white',
-                    width: '100%',
-                    height: 60,
-                    marginBottom: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderTopWidth: 1,
-                    borderBottomWidth: 1,
-                    borderColor: colors.borderColor,
-                    flexDirection: 'row',
-                  }}>
-                  <TextSBold style={{color: colors.fontColor2, fontSize: 16}}>
-                    접어두기
-                  </TextSBold>
-                  <Image
-                    source={require('~/assets/down_arrow.png')}
+          <SafeAreaView edges={['top']}>
+            <FlatList
+              data={couponbookData}
+              keyExtractor={(item, index) => index}
+              renderItem={item => renderOpenItem(item)}
+              numColumns={4}
+              style={{
+                flex: 1,
+                top: -25,
+                position: 'absolute',
+                backgroundColor: 'white',
+                zIndex: 100,
+                width: '100%',
+              }}
+              columnWrapperStyle={{
+                flex: 1,
+                marginBottom: 7,
+                marginLeft: 14,
+              }}
+              ListFooterComponent={
+                <Shadow distance={1} offset={[0, 1]} style={{width: '100%'}}>
+                  <Pressable
+                    onPress={() => setIsOpen(!isOpen)}
                     style={{
-                      width: 26,
-                      height: 26,
-                      transform: [{rotate: '180deg'}],
+                      backgroundColor: 'white',
+                      width: '100%',
+                      height: 60,
+                      marginBottom: 2,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderTopWidth: 1,
+                      borderBottomWidth: 1,
+                      borderColor: colors.borderColor,
+                      flexDirection: 'row',
                     }}
-                    resizeMode="contain"
-                  />
-                </Pressable>
-              </Shadow>
-            }
-          />
+                  >
+                    <TextSBold style={{color: colors.fontColor2, fontSize: 16}}>
+                      접어두기
+                    </TextSBold>
+                    <Image
+                      source={require('~/assets/down_arrow.png')}
+                      style={{
+                        width: 26,
+                        height: 26,
+                        transform: [{rotate: '180deg'}],
+                      }}
+                      resizeMode="contain"
+                    />
+                  </Pressable>
+                </Shadow>
+              }
+            />
+          </SafeAreaView>
         )}
-      </View>
+      </SafeAreaView>
       {storeCpnList?.length > 0 && (
-        <View style={{position: 'absolute', bottom: 0, width: '100%'}}>
+        <SafeAreaView
+          style={{position: 'absolute', bottom: 0, width: '100%', zIndex: 200}}
+        >
           <Pressable
             hitSlop={5}
             onPress={() => {
               setStoreCpnList([]);
             }}
-            style={{position: 'absolute', zIndex: 100, top: -30, right: 0}}>
+            style={{
+              position: 'absolute',
+              zIndex: 100,
+              top: Platform.OS === 'ios' ? 0 : -30,
+              right: 0,
+            }}
+          >
             <Image
               source={require('~/assets/pop_close.png')}
               style={{
@@ -488,31 +515,42 @@ const CouponBookMap = ({navigation}) => {
             }}
             showsVerticalScrollIndicator={false}
           />
-        </View>
+        </SafeAreaView>
       )}
 
       {storeCpnList?.length === 0 && (
-        <Pressable
-          onPress={() => {
-            // if (moveCenter) _getBookList(moveCenter.lat, moveCenter.lon);
-            navigation.navigate('CouponBookMain', {data: couponbookData});
-          }}
+        <SafeAreaView
           style={{
             position: 'absolute',
-            width: 100,
-            height: 40,
-            backgroundColor: colors.primary,
             zIndex: 100,
-            borderRadius: 40,
-            alignSelf: 'center',
-            bottom: 30,
+            bottom: 10,
+            width: 100,
             right: 14,
-            elevation: 5,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <TextBold style={{color: 'white', fontSize: 16}}>리스트보기</TextBold>
-        </Pressable>
+          }}
+          // edges={['']}
+        >
+          <Pressable
+            onPress={() => {
+              // if (moveCenter) _getBookList(moveCenter.lat, moveCenter.lon);
+              navigation.navigate('CouponBookMain', {data: couponbookData});
+            }}
+            style={{
+              // position: 'absolute',
+              width: 100,
+              height: 40,
+              backgroundColor: colors.primary,
+              borderRadius: 40,
+              alignSelf: 'center',
+              elevation: 5,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <TextBold style={{color: 'white', fontSize: 16}}>
+              리스트보기
+            </TextBold>
+          </Pressable>
+        </SafeAreaView>
       )}
 
       <NaverMapView
@@ -537,7 +575,8 @@ const CouponBookMap = ({navigation}) => {
         onMapClick={e => {
           setSlctdCpd(undefined);
           setStoreCpnList([]);
-        }}>
+        }}
+      >
         {/* <Marker
           width={35}
           height={35}
@@ -597,14 +636,16 @@ const CouponBookMap = ({navigation}) => {
       <Modal
         transparent
         onRequestClose={() => setLoading(false)}
-        visible={loading}>
+        visible={loading}
+      >
         <View
           style={{
             backgroundColor: 'rgba(0,0,0,0.5)',
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-          }}>
+          }}
+        >
           <ActivityIndicator size={'large'} color={colors.primary} />
         </View>
       </Modal>
